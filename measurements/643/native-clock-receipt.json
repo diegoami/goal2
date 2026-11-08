@@ -1,0 +1,57 @@
+{
+  "kind": "Native controlled clock input, invoking original heartbeat method; not actual competitive worker/game acceptance",
+  "runtime": "Bundled Windows CPython3.13.17 and Qt",
+  "tests_passed": 4,
+  "seconds": 0.402,
+  "rows": [
+    {
+      "platform": "win32",
+      "python": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]",
+      "timer_type": "PreciseTimer",
+      "interval_ms": 1,
+      "beats": 73,
+      "elapsed_ms": 120.2569000015501,
+      "lap_count": 74,
+      "poll_ms": {
+        "min": 0.012600008631125093,
+        "max": 0.2165000041713938,
+        "mean": 0.04172026938003664
+      },
+      "events_ms": {
+        "min": 0.011199997970834374,
+        "max": 0.2069000038318336,
+        "mean": 0.04936891983143633
+      },
+      "sleep_ms": {
+        "min": 1.0331000084988773,
+        "max": 2.2262999991653487,
+        "mean": 1.5277810814803012
+      }
+    },
+    {
+      "platform": "win32",
+      "python": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]",
+      "timer_type": "PreciseTimer",
+      "interval_ms": 1,
+      "beats": 1,
+      "elapsed_ms": 141.66860000113957,
+      "lap_count": 1,
+      "poll_ms": {
+        "min": 140.4054000013275,
+        "max": 140.4054000013275,
+        "mean": 140.4054000013275
+      },
+      "events_ms": {
+        "min": 0.17610000213608146,
+        "max": 0.17610000213608146,
+        "mean": 0.17610000213608146
+      },
+      "sleep_ms": {
+        "min": 1.0602999973343685,
+        "max": 1.0602999973343685,
+        "mean": 1.0602999973343685
+      }
+    }
+  ],
+  "full_raw_log": ".cache/643-native-fixture-tests.log (supporting local evidence)"
+}

@@ -1,0 +1,34 @@
+{
+  "source": "fd5f2a5448aead7f64ad3b068f734bb79383912b",
+  "engine_source": "80831d9a1b378d7b4bba78de7a931771f0472669",
+  "captures": 96,
+  "geometry_pass": true,
+  "actual_ui_s": 174.863,
+  "actual_memory_events_result_state_equal": true,
+  "selected": [
+    {
+      "path": "measurements/T188b/1440x900/s19-bench.png",
+      "sha256": "f3ef1a1a4cc2f4b88460114faaa5f59ff8cc501e97b9df179802433a2e77acfc",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "measurements/T188b/2110x1213/s19-bench.png",
+      "sha256": "72de7c35a4d1dbed0052e8fcf5aaf00a73b83cde4b6c7947695ecfd7f19d1945",
+      "width": 2110,
+      "height": 1213
+    },
+    {
+      "path": "measurements/T188b/1440x900/s19-bench-refused.png",
+      "sha256": "b8b54ea1c39214e98323c6373d6fb63a3b80ff4c72d6070af244ffa1ed9b93e5",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "measurements/T188b/2110x1213/s19-bench-refused.png",
+      "sha256": "a3013c97f68f301758533c83155bbe549e2fcba663ea07fcdf2aeceb33b339fc",
+      "width": 2110,
+      "height": 1213
+    }
+  ]
+}

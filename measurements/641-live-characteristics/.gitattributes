@@ -1,0 +1,5 @@
+# [designed: #641] Actual Windows output bytes are retained, including CRLF.
+# Follow the root's existing -text precedent for byte-exact evidence.
+prepared-native-v2.json -text
+ui641-prepared-native-v2.log -text
+native-interpreter-calibration-v1.log -text

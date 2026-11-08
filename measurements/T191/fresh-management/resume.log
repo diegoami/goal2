@@ -1,0 +1,4 @@
+This plugin does not support propagateSizeHints()
+resume separate process Start/Continue reload equals complete saved career
+resume unsaved quit asks before discard; saved file remains untouched
+PASS resume

@@ -33,15 +33,15 @@ class Choice(unittest.TestCase):
     def test_an_explicit_interpreter_is_used_as_given(self):
         with patch.dict(os.environ, {"GOAL2_ENGINE_PYTHON": sys.executable}):
             self.assertEqual(ep.engine_python(), sys.executable)
-            self.assertEqual(ep.worker_command("goal2.game.watched_worker"),
-                             [sys.executable, "-m", "goal2.game.watched_worker"])
+            self.assertEqual(ep.worker_command("goal2.game.engine_server"),
+                             [sys.executable, "-m", "goal2.game.engine_server"])
 
     def test_without_pypy_a_match_fails_with_its_reason_never_on_this_interpreter(self):
         env = {k: v for k, v in os.environ.items() if k != "GOAL2_ENGINE_PYTHON"}
         with patch.dict(os.environ, env, clear=True), patch.object(ep.shutil, "which", return_value=None), \
                 patch.object(ep, "_uv_pythons", return_value=iter(())):
             with self.assertRaises(ep.EngineRuntimeMissing) as caught:
-                ep.worker_command("goal2.game.watched_worker")
+                ep.worker_command("goal2.game.engine_server")
         self.assertIn("uv python install pypy@3.11", str(caught.exception))
         self.assertIn("GOAL2_ENGINE_PYTHON", str(caught.exception))
         self.assertIsInstance(caught.exception, OSError)    # the desktop's starts show an OSError in the status line
@@ -56,8 +56,10 @@ class Choice(unittest.TestCase):
                 with self.subTest(bridge=cls.__name__):
                     self.assertIsNone(cls(SimpleNamespace()).command)    # the choice waits for the start
             chosen.assert_not_called()
-        self.assertEqual((WatchedJobs.WORKER, CompetitiveJobs.WORKER),
-                         ("goal2.game.watched_worker", "goal2.desktop.competitive_worker"))
+        # [designed: T160] both kinds play on the owner's engine process
+        from goal2.game.watched_jobs import ENGINE
+        self.assertEqual((WatchedJobs.KIND, CompetitiveJobs.KIND, ENGINE),
+                         ("watched", "competitive", "goal2.game.engine_server"))
 
     def test_a_found_interpreter_that_is_not_pypy_311_is_passed_over(self):
         env = {k: v for k, v in os.environ.items() if k != "GOAL2_ENGINE_PYTHON"}
@@ -83,7 +85,7 @@ class Choice(unittest.TestCase):
         from goal2.desktop import competitive
         from goal2.game import watched_jobs
         # [designed: #496] one launch site: the competitive bridge inherits WatchedJobs.start with its own WORKER
-        self.assertIn("worker_command(self.WORKER)", Path(watched_jobs.__file__).read_text())
+        self.assertIn("worker_command(ENGINE)", Path(watched_jobs.__file__).read_text())
         self.assertNotIn("Popen", Path(competitive.__file__).read_text())
         self.assertIn("super().start(", Path(competitive.__file__).read_text())
 
@@ -125,8 +127,10 @@ class UnderPyPy(unittest.TestCase):
         raw = self.raw();state = from_savestate(raw);state.captain = 0     # as test_watched_adapter's state()
         owner = Owner(state, raw);before = copy.deepcopy(owner.state)
         t = time.monotonic()
+        from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS   # [T180] the engine server's friendly budget
         direct = pypy_engine.start("goal2.game.watched_match:run_watched_match", before, raw, Fixture(7, 19, 21),
-                                   reference_seed=257, delay_byte=0, record_draws=True)
+                                   reference_seed=257, delay_byte=0, record_draws=True,
+                                   substitutions=FRIENDLY_SUBSTITUTIONS)
         jobs = WatchedJobs(owner);self.addCleanup(jobs.close)
         token = jobs.start(Fixture(7, 19, 21), reference_seed=257, delay_byte=0, record_draws=True)
         self.assertEqual(jobs.interpreter, self.pypy)

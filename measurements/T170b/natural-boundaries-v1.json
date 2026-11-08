@@ -1,0 +1,98 @@
+{
+  "cases": [
+    {
+      "case": "silent-knockout",
+      "direct_deltas_equal": true,
+      "direct_route_state_equal": true,
+      "fixture_count": 4,
+      "input_sha256": "f6a26aaa7678acb3f2c8913ac5390697acd90d1551d50276c26476f3007aa973",
+      "input_state_hash": "ee197a8d889f20e36997b3a92836dc695c2b7f7979646dcc2b94c1a6322890b6",
+      "lineage": {
+        "checkpoint": ".cache/t124d/natural/quarters-constructed-f6a26aaa7678acb3.mem",
+        "checkpoint_sha256": "f6a26aaa7678acb3f2c8913ac5390697acd90d1551d50276c26476f3007aa973",
+        "input_edits": [],
+        "original_receipt": "experiments/E040-route-fixture-writes/out/T124d/natural-inputs-v1.jsonl",
+        "phase": "quarters",
+        "receipt_sha256": "66e0af4230e9ef05cc4c56b671d84727262ead533ee6db6a15737920ff585adf",
+        "status": "constructed"
+      },
+      "news_count": 0,
+      "output_state_hash": "efb5e82b62c821137af19c1d0466027a162526bebf3c767b930ce636054c6e52",
+      "rng_words": [
+        49528,
+        51154
+      ],
+      "status": "complete",
+      "unicorn_denied": true,
+      "waiting_key": null
+    },
+    {
+      "case": "world-terminal",
+      "direct_deltas_equal": true,
+      "direct_route_state_equal": true,
+      "fixture_count": 0,
+      "input_sha256": "9ef48afa7657be0284ca6cf0142f0488a7046c09972d7cf430ca5cb8523033f1",
+      "input_state_hash": "a5ac5f37441bd1298201e1e0f40e6cb78fc88a33cfe1a508fba45626f2a18aeb",
+      "lineage": {
+        "checkpoint": ".cache/t124d/natural/before-stage-end-6-9ef48afa7657be02.mem",
+        "checkpoint_sha256": "9ef48afa7657be0284ca6cf0142f0488a7046c09972d7cf430ca5cb8523033f1",
+        "input_edits": [],
+        "original_receipt": "experiments/E040-route-fixture-writes/out/T124d/natural-inputs-v1.jsonl",
+        "phase": "qualifying",
+        "receipt_sha256": "66e0af4230e9ef05cc4c56b671d84727262ead533ee6db6a15737920ff585adf",
+        "status": "constructor-entry"
+      },
+      "news_count": 0,
+      "output_state_hash": "a5ac5f37441bd1298201e1e0f40e6cb78fc88a33cfe1a508fba45626f2a18aeb",
+      "rng_words": [
+        39296,
+        51154
+      ],
+      "status": "deferred-rollover",
+      "terminal_repeat_backend_denied": true,
+      "unicorn_denied": true,
+      "waiting_key": null
+    },
+    {
+      "case": "continental-terminal",
+      "direct_deltas_equal": true,
+      "direct_route_state_equal": true,
+      "fixture_count": 0,
+      "input_sha256": "c6d7ea00ccda2e69bb9e92be41157bd3a856592aa6dc447a418df0aec2cf977d",
+      "input_state_hash": "7bf913b1ec485fb77ff44bb5af6116ad02b56a2e6f3a1f5492527ebf2172a521",
+      "lineage": {
+        "checkpoint": ".cache/t123/continental-original-terminal-c6d7ea00ccda2e69.mem",
+        "checkpoint_sha256": "c6d7ea00ccda2e69bb9e92be41157bd3a856592aa6dc447a418df0aec2cf977d",
+        "input_edits": [],
+        "note": "retained original terminal component from T123; source receipt verifies original/sealed state equality",
+        "original_receipt": "experiments/E040-route-fixture-writes/out/T123/natural-continental-v4.jsonl",
+        "receipt_sha256": "86d77083960f924e21f66531dc066fd49312672f048ff003eaa334a7d8e56ea8"
+      },
+      "news_count": 0,
+      "output_state_hash": "7bf913b1ec485fb77ff44bb5af6116ad02b56a2e6f3a1f5492527ebf2172a521",
+      "rng_words": [
+        60026,
+        33632
+      ],
+      "status": "deferred-rollover",
+      "terminal_repeat_backend_denied": true,
+      "unicorn_denied": true,
+      "waiting_key": null
+    }
+  ],
+  "head": "dde2f6eb058e7968ac5099c1b19facb06ae924b0",
+  "inputs_manifest_sha256": "44ae8f009f48c42e31284cdccc2f9db8e3978868e132e2a3428bdc94fd9eff54",
+  "schema": "t170b-boundaries/1",
+  "scope": "actual accepted sealed PyPy dispatcher vs session; original-built private inputs, no full match/season or independent original comparison",
+  "source_sha256": {
+    "goal2/engine/original_match/image.py": "2314ac46e20e4bf11e6f8f739300ddb564565e718b58c543b6b1f9848fbb8c24",
+    "goal2/engine/original_match/match.py": "e949159c9cc77f4d195bc9b150c67dfd913ba447417375122bc58db1bca97f92",
+    "goal2/engine/original_match/port/engine.py": "6439370e3ffcc5977bb066506431a25a0c300ea374faf28ec3f4fbd9718c6f14",
+    "goal2/engine/original_match/route.py": "2d0336fd2c35d1baea20aff974f28b8b51a78434f3a0d84be660fbf6b178e0bb",
+    "goal2/engine/original_match/screens.py": "8ce9b0d6c4c9f75da469c728a9ed03787e413aeb5f98693ba38c914ed36d143e",
+    "goal2/game/season.py": "1b70b3a3012012abdd149130435b258b0046b5fec182e426cb4acf302ad2249e",
+    "goal2/tests/test_season_session_t170b.py": "a7b7713cf5547849908e6cc9b51a7aedb5d06abfaa1b3d032f20901a6e00d1ca",
+    "measurements/T170b/prove.py": "02dc1c76a035209c3e8823197725803c85849ee4aa7598500e8605f35cb2080d",
+    "tools/watched-kit-hashes.json": "a07e32b35ffcc311d7d8753b4a5add53f069c7c614c00eb667d21bc633c47d44"
+  }
+}

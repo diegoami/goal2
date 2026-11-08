@@ -1,0 +1,23 @@
+{
+  "method": "raw producer output retained without rewriting; explicit evidence-only -text exceptions preserve actualWindowsbytes",
+  "files": [
+    {
+      "path": "measurements/641-live-characteristics/prepared-native-v2.json",
+      "sha256": "9d0d206bd20f72035d03d4775d41fa718f27bd54020c22e94ce01c5938d5600b",
+      "raw_bytes_preserved": true,
+      "crlf": 615
+    },
+    {
+      "path": "measurements/641-live-characteristics/ui641-prepared-native-v2.log",
+      "sha256": "463027734f7453bd10130f6a2968dc4952d452062bd961547b3eca80ed5d0d84",
+      "raw_bytes_preserved": true,
+      "crlf": 1
+    },
+    {
+      "path": "measurements/641-live-characteristics/native-interpreter-calibration-v1.log",
+      "sha256": "f2d64c1902febb6579ae410f437accff179bb5acf9f1b9e68b91ccbf00607a57",
+      "raw_bytes_preserved": true,
+      "crlf": 10
+    }
+  ]
+}

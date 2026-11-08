@@ -1,0 +1,150 @@
+{
+  "source_commit": "61f4568944d422cc0425853beb82c9885d7b540b",
+  "normal_text_px": 24,
+  "capture_environment": "Qt offscreen on this computer; native Windows/package checks separate",
+  "dimensions": [
+    [
+      1440,
+      900
+    ],
+    [
+      2110,
+      1213
+    ]
+  ],
+  "captures": 96,
+  "all_geometry_checks_passed": true,
+  "producer": "tools/ui_readability_screenshots.py",
+  "producer_sha256": "7dabd1e38eef4f5a2f1a443a0021f52b16e29e40fdc4d2b9d17262ee0e488907",
+  "selected": [
+    {
+      "screen": "DeskScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s06-hub.png",
+      "sha256": "4a1af82f07ff8ba38c07f9b6189ae6c017e4d27035b8cb0b574f60a906cb3088"
+    },
+    {
+      "screen": "DeskScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s06-hub.png",
+      "sha256": "d89b24e8670374a9b10c5d2f418c399b13d2d935e38ebe29ed9f15a84c60238a"
+    },
+    {
+      "screen": "MenuScreen",
+      "phase": "before",
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s15-match-menu.png",
+      "sha256": "8ae58a679177afee7452354beed411445236a793f14aa3b733a9d7e4567accdc"
+    },
+    {
+      "screen": "MenuScreen",
+      "phase": "before",
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s15-match-menu.png",
+      "sha256": "7d8e1bcb0d3abc6c7169772dfd7e42a9f3768b4f1b3d9d34ad43e542ac1c3254"
+    },
+    {
+      "screen": "BenchScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s19-bench.png",
+      "sha256": "656553c43314bdca01506273d0dafb3e98e86f509da36a7b28c58aaa19eedea3"
+    },
+    {
+      "screen": "BenchScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s19-bench.png",
+      "sha256": "2ee3093383a7664d9bce97d11ed42ded087a34875553c51624e2e553b23d54e4"
+    },
+    {
+      "screen": "BenchScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s19-bench-refused.png",
+      "sha256": "f3cecc2caa7506b6eaa82f9c1a93b46fed33830e5f39357d8830acd954edae19"
+    },
+    {
+      "screen": "BenchScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s19-bench-refused.png",
+      "sha256": "c8108da698254d9436f23b909d75d2952a61ac597a552607c4b5bbc8c2e19246"
+    },
+    {
+      "screen": "PitchScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s17-pitch.png",
+      "sha256": "d1933181e399cef8e1f4100bea57fdfcf7eea80c2564f312b7955cef939002ef"
+    },
+    {
+      "screen": "PitchScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s17-pitch.png",
+      "sha256": "7ca9bdecca88320565780baec20997b1d17610157754ec9f90333438a5884fa9"
+    },
+    {
+      "screen": "BoardScreen",
+      "phase": "full",
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s20-board.png",
+      "sha256": "546580cfc69614c45c2b64d2e2c0946c9d95f6296e126a76d029bd0d35cccf8e"
+    },
+    {
+      "screen": "BoardScreen",
+      "phase": "full",
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s20-board.png",
+      "sha256": "af3055d8ddcb0f5e494e1236c062ac454447a15a5419c304ab9bf71c9f078a0a"
+    },
+    {
+      "screen": "FixturesScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s11-fixtures.png",
+      "sha256": "f68b7b664cbeaab2e91f6c1dfd777e9d2948eb7adf7c7659f5261af0753d02a9"
+    },
+    {
+      "screen": "FixturesScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s11-fixtures.png",
+      "sha256": "82f0903658661049f4e5fcad2e6510535df3f7779ca0f3b44132a6072b23884b"
+    },
+    {
+      "screen": "RoundScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 900,
+      "path": "docs/design/ui-2026-11/images/s14-round.png",
+      "sha256": "f8d6b3e5383868ed142accd8a79c773621651240181c6abc4e3119b770b1e760"
+    },
+    {
+      "screen": "RoundScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s14-round.png",
+      "sha256": "8a8d5229d340b974a3a6b901eb00382a22749bc37afc3c776aa960e81b86a49b"
+    }
+  ],
+  "report_sha256": "7ef46e2e3b25da06da302d35cdefdbcc110a6ef6e97d377cb99a6cae4819d441"
+}

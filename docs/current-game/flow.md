@@ -1,6 +1,6 @@
 # The player's journey through the build
 
-[designed: T176] This is the route a player actually walks, in order, on the route the portable
+[designed: T204] This is the route a player actually walks, in order, on the route the portable
 build gives them (`python3 -m goal2.desktop` with no flags). Every image is a grab of that run.
 The original's own journey, for comparison, is [docs/original-game/flow.md](../original-game/flow.md)
 and the playthrough [T156-R1](../original-game/playthrough.md).

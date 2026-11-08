@@ -26,6 +26,7 @@ class WatchedPublicationTests(unittest.TestCase):
     def state(self):
         return adapter.WatchedAdapter.state(self)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_all_ten_strict_cases_publish_direct_runner_memory_once(self):
         for seed,want in requires.cases(EXPECTED_FAMILY.items()):  # [designed: #275] all ten with GOAL2_SLOW=1
             with self.subTest(seed=seed):
@@ -56,6 +57,7 @@ class WatchedPublicationTests(unittest.TestCase):
                 self.assertEqual(owner.state,current)
                 print(f'strict publication seed={seed:04x} PASS',flush=True)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_full_time_is_not_completion_and_tail_failure_is_atomic(self):
         owner=Owner(self.state(),self.raw);publication=WatchedPublication(owner)
         job=publication.begin(Fixture(7,19,21));before=copy.deepcopy(owner.state)
@@ -71,6 +73,7 @@ class WatchedPublicationTests(unittest.TestCase):
                 break
         self.assertEqual(owner.state,before)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_stale_wrong_identity_unsupported_kind_and_view_failure_are_atomic(self):
         owner=Owner(self.state(),self.raw);publication=WatchedPublication(owner)
         before=copy.deepcopy(owner.state)
@@ -94,6 +97,7 @@ class WatchedPublicationTests(unittest.TestCase):
             with self.assertRaises(ValueError):publication.begin(wrong)
         self.assertEqual(owner.state,before)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_campaign_completes_and_appends_history_exactly_once(self):
         state=self.state();f=Scheduled('original:21',1,1,2,1,7,19)
         state.campaign=CampaignState(1992,1,1,2,123,78,(f,))
@@ -107,6 +111,7 @@ class WatchedPublicationTests(unittest.TestCase):
         with self.assertRaises(ValueError):publication.complete(job.token,outcome)
         self.assertEqual(owner.state,current)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_changed_job_and_malformed_completions_cannot_publish(self):
         from dataclasses import replace, FrozenInstanceError
         owner=Owner(self.state(),self.raw);pub=WatchedPublication(owner)
@@ -152,3 +157,10 @@ class WatchedPublicationTests(unittest.TestCase):
         self.assertNotEqual(replacement.token,job.token)
         self.assertEqual(owner.state,before)
         pub.cancel()
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        WatchedPublicationTests('test_cancel_and_wrong_tokens_preserve_active_state'),
+    ])

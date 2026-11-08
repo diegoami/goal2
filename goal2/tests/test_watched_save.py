@@ -21,6 +21,7 @@ class WatchedSaveTests(unittest.TestCase):
         job=pub.begin(Fixture(7,19,21));outcome=pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,self.raw,job.fixture)
         pub.complete(job.token,outcome)
         return owner
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_watched_roundtrip_and_malformed_saves(self):
         owner=self.completed();raw=session_save.encode(owner.state,self.raw)
         self.assertEqual(json.loads(raw)['version'],3)
@@ -39,6 +40,7 @@ class WatchedSaveTests(unittest.TestCase):
             doc=json.loads(raw);mutate(doc)
             with self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(doc).encode())
         self.assertEqual(owner.state,state)
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_injected_failure_before_swap_preserves_complete_state(self):
         owner=Owner(self.state(),self.raw);pub=WatchedPublication(owner)
         job=pub.begin(Fixture(7,19,21));before=copy.deepcopy(owner.state)
@@ -176,6 +178,7 @@ class WatchedSaveTests(unittest.TestCase):
             self.assertEqual(resumed,expected);self.assertEqual(template,self.raw)
             self.assertNotIn('engine',resumed.last_match)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_watched_save_write_failure_keeps_existing_file_and_active_state(self):
         import tempfile
         from pathlib import Path
@@ -189,3 +192,10 @@ class WatchedSaveTests(unittest.TestCase):
             self.assertEqual(target.read_bytes(),b'previous complete save')
             self.assertEqual(list(Path(directory).iterdir()),[target])
         self.assertEqual(owner.state,before)
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        WatchedSaveTests('test_legacy_friendly_and_campaign_history_retain_v1_v2_meaning'),
+    ])

@@ -28,6 +28,7 @@ def consumer_modules():
             if name == "goal2.engine.original_match" or name.startswith("goal2.engine.original_match.")}
 
 
+@requires.need(slow=True)
 class CompetitiveTests(accepted.CompetitiveTests):
     # [designed: #275] The vendored test stays as accepted; only when it runs is ours: about 63 s
     # alone on 32 CPUs, so it runs with the slow tests (GOAL2_SLOW=1).
@@ -43,8 +44,8 @@ class CompetitiveTests(accepted.CompetitiveTests):
 
 class ConsumerAcceptanceTests(unittest.TestCase):
     def test_exact_source_and_scenario_selector(self):
-        self.assertEqual(SOURCE, "b519d999673c9458211279fd4da8a8325b9f56fe")     # [designed: T150] the re-vendored kit
-        self.assertEqual(verify_vendor(), 41)
+        self.assertEqual(SOURCE, "0f9f87f405282ce2a0461679ac71395d35e76e3a")     # [designed: T170a] exact reviewed source
+        self.assertEqual(verify_vendor(), 50)
         for index in range(3):
             tree = selected_source("def main():\n scenarios = [1,2,3]\n assert True\n", index)
             assignment = next(n for n in ast.walk(tree) if isinstance(n, ast.Assign))

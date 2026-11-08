@@ -1,0 +1,10 @@
+{
+  "tested_commit": "38e8ca2f3614",
+  "actual_method_ast_sha256": "c174f2eeb437c892758cf05c928ff9e787a3b0d6f2525d094bc8c1362e1f7c02",
+  "canonical_actual_method_equals_executed_versioned_method": true,
+  "application_sources_unchanged_from_actual_v4": true,
+  "scope": "half_time all8 flags; actual replies before Play; exact full result/memory/events/career-state headless equality",
+  "seconds": 204.882,
+  "backend_source": "80831d9a1b378d7b4bba78de7a931771f0472669",
+  "ordinary_pause_and_new_pin_proofs_pending": true
+}

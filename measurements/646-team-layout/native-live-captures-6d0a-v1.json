@@ -1,0 +1,30 @@
+{
+  "source": "6d0a8c57d432c5d1ee66788882f06a2e5457f91e",
+  "method": "Actual Windows Qt offscreen/PyPy UI, direct targeted test keys; no owner desktop input",
+  "captures": [
+    {
+      "file": "native-live-team-0.png",
+      "sha256": "b7d10b1bddba609f90ba625c534613ed1cb6415f6ef594d3fc6bbc79bfe3d101",
+      "context": "pause",
+      "minute": 6,
+      "pending": false,
+      "tactics": 71
+    },
+    {
+      "file": "native-live-team-1.png",
+      "sha256": "27aad1d5ccc962c262359dbb106b430d7dfc7b8cc7e4054ed94eb970439dbce3",
+      "context": "pause",
+      "minute": 6,
+      "pending": true,
+      "tactics": 71
+    },
+    {
+      "file": "native-live-team-2.png",
+      "sha256": "63baf58978ff86d5d3d2c89bfc939290464b5f4f5656bbe1a3799d70dc215845",
+      "context": "pause",
+      "minute": 6,
+      "pending": false,
+      "tactics": 87
+    }
+  ]
+}

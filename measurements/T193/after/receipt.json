@@ -1,0 +1,163 @@
+{
+  "fixture": "isolated template career; bench long fields/refusal are explicit UI-only packets, no natural-play or live-record freshness claim",
+  "paint": "normal initial page paint before mutations; no forced stylesheet refresh",
+  "source_sha256": "9c22077d09e12d0f7cbadaeb25cbb9e4efa24ae43f41cd1c6d7f0eb594a97e77",
+  "cases": [
+    {
+      "view": "squad-keeper",
+      "size": [
+        1440,
+        900
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 5'11\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position goalkeeper \u00b7 club position goalkeeper \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "squad-keeper-1440x900.png",
+      "sha256": "68a79be8f86ea7bc38af334a4785c70ea9e1634aff9db55d3a69a1c74501f5ca"
+    },
+    {
+      "view": "squad-keeper",
+      "size": [
+        1800,
+        1125
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 5'11\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position goalkeeper \u00b7 club position goalkeeper \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "squad-keeper-1800x1125.png",
+      "sha256": "82cce2fe994b12b7de40e40f9ae2a8f726104c9f2bb937da6cceb1fa72b00b65"
+    },
+    {
+      "view": "squad-keeper",
+      "size": [
+        2110,
+        1213
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 5'11\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position goalkeeper \u00b7 club position goalkeeper \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "squad-keeper-2110x1213.png",
+      "sha256": "04d1e9e8d1da44d5c70541c48581df28f6c19c328bc9b7793f37054375734c0b"
+    },
+    {
+      "view": "squad-outfield",
+      "size": [
+        1440,
+        900
+      ],
+      "facts": "age 28 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 6' 4\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position centre back \u00b7 club position centre back \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "squad-outfield-1440x900.png",
+      "sha256": "3c23efc1eed6ab15a1a716f9ee2d6eef48f628d2bea85a4c0475a95f7302b093"
+    },
+    {
+      "view": "squad-outfield",
+      "size": [
+        1800,
+        1125
+      ],
+      "facts": "age 28 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 6' 4\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position centre back \u00b7 club position centre back \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "squad-outfield-1800x1125.png",
+      "sha256": "62fa6063fb6bd140ec2c7d743a00d5f591298b7b022f8ae079878a1dd6e3c794"
+    },
+    {
+      "view": "squad-outfield",
+      "size": [
+        2110,
+        1213
+      ],
+      "facts": "age 28 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 6' 4\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position centre back \u00b7 club position centre back \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "squad-outfield-2110x1213.png",
+      "sha256": "027ab00e35486a5edfd2105256afb0446362ea5497044400b67dc49486e055c1"
+    },
+    {
+      "view": "captain",
+      "size": [
+        1440,
+        900
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 5'11\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position goalkeeper \u00b7 club position goalkeeper \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "captain-1440x900.png",
+      "sha256": "e3d44b1bf2f45577e90e0d9dbba38bda02c700c2c972ce309ca8e28064306107"
+    },
+    {
+      "view": "captain",
+      "size": [
+        1800,
+        1125
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 5'11\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position goalkeeper \u00b7 club position goalkeeper \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "captain-1800x1125.png",
+      "sha256": "c3d97966e785e9631f29d8e2e3c4ef71a2a968fa85780c71f9d386e2f2958418"
+    },
+    {
+      "view": "captain",
+      "size": [
+        2110,
+        1213
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 5'11\" \u00b7 foot left foot \u00b7 performance ",
+      "positions": "position goalkeeper \u00b7 club position goalkeeper \u00b7 cards none",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "captain-2110x1213.png",
+      "sha256": "1b91fe03217e21338618ffd421dc0f2214229a830ce51f4d7c983f6d3dec3dd9"
+    },
+    {
+      "view": "bench-long-fields-refusal",
+      "size": [
+        1440,
+        900
+      ],
+      "facts": "age 33 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 6' 1\" \u00b7 foot two footed \u00b7 performance ",
+      "positions": "position defensive midfielder \u00b7 club position defensive midfielder \u00b7 cards carried booking, booked, sent off",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "bench-long-fields-refusal-1440x900.png",
+      "sha256": "77dcf83a94ee9963367630b948483c3dc3bb7e77ca0e2331a593c9d8045bf26a"
+    },
+    {
+      "view": "bench-long-fields-refusal",
+      "size": [
+        1800,
+        1125
+      ],
+      "facts": "age 33 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 6' 1\" \u00b7 foot two footed \u00b7 performance ",
+      "positions": "position defensive midfielder \u00b7 club position defensive midfielder \u00b7 cards carried booking, booked, sent off",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "bench-long-fields-refusal-1800x1125.png",
+      "sha256": "7c12b3550f5bc28621eef3fc0256d52eef0c90093e98e44c9a2fb2523dad56d6"
+    },
+    {
+      "view": "bench-long-fields-refusal",
+      "size": [
+        2110,
+        1213
+      ],
+      "facts": "age 33 \u00b7 caps 0 \u00b7 goals 0 \u00b7 height 6' 1\" \u00b7 foot two footed \u00b7 performance ",
+      "positions": "position defensive midfielder \u00b7 club position defensive midfielder \u00b7 cards carried booking, booked, sent off",
+      "card_border": "#555555",
+      "layout_problems": [],
+      "screenshot": "bench-long-fields-refusal-2110x1213.png",
+      "sha256": "d810a881d1bfda08c4167f85408c603d8045597318d9e9b9ea11521b6251b687"
+    }
+  ]
+}

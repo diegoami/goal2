@@ -1,7 +1,7 @@
-"""[designed: owner, 2026-11-01, #505] A PR's gate plays only the slow tests its changes can reach.
+"""[designed: owner, #505; T189, 2026-11-07] Explicit affected-slow selection retains its reach.
 
 tools/slow_reach.py computes the reach from the import graph (imports, relative imports, tools/ modules by bare
-name, goal2 modules named in strings, package __init__ files); the gate's automatic mode turns slow tests on
+name, goal2 modules named in strings, package __init__ files); the gate's explicit --affected mode turns slow tests on
 for those modules only, --slow for all; the CI plumbing no longer counts as a change the slow tests guard."""
 import importlib
 import io
@@ -117,17 +117,17 @@ class Gate(unittest.TestCase):
             self.assertEqual(self.gate.main(["--expected-head", "0" * 40, *flags]), 0)
         return seen["slow"], out.getvalue()
 
-    def test_automatic_plays_only_the_reached_modules(self):
-        slow, out = self.chosen(["goal2/desktop/jobs.py"])
+    def test_explicit_affected_plays_only_the_reached_modules(self):
+        slow, out = self.chosen(["goal2/desktop/jobs.py"], "--affected")
         self.assertIsInstance(slow, set)
         self.assertIn("test_campaign_substitutions", slow)
         self.assertNotIn("test_core_team_t107", slow)
         self.assertIn(f"RUN slow tests in {len(slow)} modules they can reach", out)
 
-    def test_slow_plays_everything_and_no_guarded_change_nothing(self):
+    def test_full_and_explicit_affected_scopes_keep_their_original_coverage(self):
         self.assertIs(self.chosen(["goal2/desktop/jobs.py"], "--slow")[0], True)
-        self.assertIs(self.chosen([])[0], False)
-        self.assertIs(self.chosen(None)[0], True)                # origin/main unreadable: everything, to be safe
+        self.assertIs(self.chosen([], "--affected")[0], False)
+        self.assertIs(self.chosen(None, "--affected")[0], True)                # origin/main unreadable: everything, to be safe
 
     def test_only_the_chosen_modules_run_their_slow_tests(self):
         calls = []

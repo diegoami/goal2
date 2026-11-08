@@ -35,14 +35,14 @@ class CompletionTests(unittest.TestCase):
         self.jobs._frames_enabled = False
         self.outcome = SimpleNamespace(result={'ticks':1})
         self.jobs._complete = self.outcome
-        self.jobs._buffer = bytearray()
-        self.jobs._folder = tempfile.TemporaryDirectory(prefix='goal2-completion-test-')
-        self.folder = Path(self.jobs._folder.name)
-        for name in ('_journal','_errors','_frames'):
-            setattr(self.jobs,name,(self.folder/name).open('w+b'))
-        self.jobs.process = Mock()
-        self.jobs.process.poll.return_value = 0
-        self.jobs.process.wait.return_value = 0
+        # [designed: T160] The engine's `complete` was received: the match ended, no engine process involved.
+        from goal2.game.watched_jobs import _Match
+        self.jobs._match = _Match()
+        self.jobs._match.ended.set()
+        self.jobs.shared.claim(self.jobs._match)
+        self.jobs._active = True
+        self.jobs._sent = True
+        self.jobs._handle = Mock()
         self.jobs.publication._pending = (self.token,self.owner.state,copy.deepcopy(self.before),
                                          copy.deepcopy(self.before),Fixture(7,19,21),self.owner.template_bytes)
         self.entered = threading.Event()
@@ -90,14 +90,12 @@ class CompletionTests(unittest.TestCase):
             self.assertIs(self.jobs.outcome,self.outcome)
             self.assertIsNone(self.jobs.publication._pending)
             self.assertFalse(self.owner.match_pending)
-            self.assertFalse(self.folder.exists())
             for action in (self.jobs.poll,self.jobs.cancel):
                 with self.assertRaisesRegex(ValueError,'consumed'):action(self.token)
             self.assertEqual(self.views,[self.main_thread])
 
     def test_completion_cannot_start_before_final_frame_ack(self):
         self.jobs._frames_enabled = True
-        self.jobs._frame_buffer = bytearray()
         self.jobs._frame_sequence = 1
         self.jobs._frame_ack = -1
         with patch.object(watched_publication,'completed_candidate',self.build):
@@ -127,13 +125,11 @@ class CompletionTests(unittest.TestCase):
             self.assertLess(time.monotonic()-started,1.5)
             self.assertTrue(self.jobs.busy)
             self.assertIs(self.jobs.process,process)
-            self.assertTrue(self.folder.exists())
             self.assertTrue(self.owner.match_pending)
             self.assertIsNone(self.jobs.publication._pending)
             self.gate.set()
             self.jobs.cancel(self.token)
             self.assertFalse(self.jobs.busy)
-            self.assertFalse(self.folder.exists())
             self.assertFalse(self.owner.match_pending)
             self.assertEqual(self.owner.state,self.before)
             self.assertEqual(self.views,[])
@@ -169,7 +165,6 @@ class CompletionTests(unittest.TestCase):
         with patch.object(watched_publication,'completed_candidate',side_effect=ValueError('candidate invalid')):
             with self.assertRaisesRegex(ValueError,'candidate invalid'):self.finish()
         self.assertFalse(self.jobs.busy)
-        self.assertFalse(self.folder.exists())
         self.assertFalse(self.owner.match_pending)
         self.assertEqual(self.owner.state,self.before)
         self.assertEqual(self.views,[])
@@ -199,7 +194,6 @@ class CompletionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'candidate thread unavailable'):
                 self.jobs.poll(self.token)
         self.assertFalse(self.jobs.busy)
-        self.assertFalse(self.folder.exists())
         self.assertFalse(self.owner.match_pending)
         self.assertEqual(self.owner.state,self.before)
         self.assertEqual(self.views,[])

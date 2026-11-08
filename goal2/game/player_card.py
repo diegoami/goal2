@@ -16,6 +16,23 @@ TACTICS = ('position', 'possession', 'passing', 'tackling')
 UNAVAILABLE = 'unavailable'
 
 
+def performance_stars(word):
+    """[confirmed: original1771:3827; accepted80831d9a performance_text_state]
+    Count1..9 stars, or0 for the blank0x7FFF sentinel. Preserve signed16-bit
+    comparisons, the10000 substitute marker and the original subtraction wrap.
+    This decodes the given record; it does not make a career record live.
+    """
+    if type(word) is not int or not 0 <= word <= 0xFFFF:
+        raise ValueError('performance must be an unsigned16-bit word')
+    if word == 0x7FFF:
+        return 0
+    signed = lambda value: value - 0x10000 if value & 0x8000 else value
+    if signed(word) > 5000:
+        word = (word - 10000) & 0xFFFF
+    score = signed((word - 55) & 0xFFFF)
+    return 1 + sum(score >= edge for edge in (-50, 0, 50, 100, 150, 200, 300, 400))
+
+
 class _Memory:
     """Bounded reads of the original's tables from one state's memory."""
     def __init__(self, state):
@@ -43,7 +60,11 @@ def characteristics(memory, record):
     hardness = (record[5] - (record[3] & 1)) & 255
     out.append(('hardness',) + ((_word(memory, 0x78C4, hardness), hardness * 14 // 16) if hardness <= 16 else (UNAVAILABLE, None)) + (hardness,))
     fitness, energy, morale = record[0x0D], record[0x0E], record[0x0C]
-    out.append(('fitness',) + ((_word(memory, 0x78D5, fitness), fitness * 14 // 32) if fitness <= 32 else (UNAVAILABLE, None)) + (fitness,))
+    # [confirmed: F008, original1771:42BC] Zero energy selects the injury descriptor
+    # and no fitness fill, even if the stored fitness byte is otherwise unavailable.
+    shown_fitness = (_word(memory, 0x78D5, 0), 0) if energy == 0 else (
+        (_word(memory, 0x78D5, fitness), fitness * 14 // 32) if fitness <= 32 else (UNAVAILABLE, None))
+    out.append(('fitness',) + shown_fitness + (fitness,))
     out.append(('energy',) + ((_word(memory, 0x78F6, energy), energy * 14 // 32) if energy <= 32 else (UNAVAILABLE, None)) + (energy,))
     out.append(('morale', _word(memory, 0x78A3, min(morale, 0x20)), morale * 14 // 32 if morale < 0x20 else 0, morale))
     difference = record[3] - record[5]
@@ -71,7 +92,9 @@ def tactics(memory, record, team_tactics):
         rows.append((name, word, personal))
     if record[6] < 2:
         mark = ''
-    elif record[0x10] & 0x80:
+    elif record[0x10] & 0x40:
+        # [confirmed: F027 line 28; goal2-archaeology docs/engine-study/tactics.md line 43] element 7 of +0x10
+        # (0x40) is the player screen's protection flag; 0x80 is suspended (#552).
         mark = 'Protect zone P'
     else:
         mark = memory.pascal(0x0E90 + 11 * (team_tactics >> 7 & 1), 11)
@@ -129,8 +152,9 @@ def card(state, word, goaldat, *, team_tactics=None):
         'age': record[1], 'caps': record[8] | record[9] << 8, 'goals': record[0x0A] | record[0x0B] << 8,
         'height': height, 'foot': foot, 'position': position, 'club_position': club_position,
         'cards': cards, 'readiness': readiness(record),
-        # [designed: T84] The original's bucket glyphs are unresolved (archaeology #346): raw word only.
+        # [confirmed: original1771:3827; T192] Retain raw compatibility and expose the decoded star count.
         'performance': None if performance == 0x7FFF else performance,
+        'performance_bar': performance_stars(performance),
         'skills': list(zip(SKILLS, bars)), 'characteristics': characteristics(memory, record),
         'tactics': tactic_rows, 'mark': mark,
     }

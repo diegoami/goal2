@@ -1,0 +1,113 @@
+{
+  "fixture": "isolated original template career with explicitly controlled performance word; no live-match freshness claim",
+  "cases": [
+    {
+      "fixture": "blank",
+      "raw_word": 32767,
+      "size": [
+        1440,
+        900
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance not recorded",
+      "layout_problems": [],
+      "screenshot": "blank-1440x900.png",
+      "sha256": "f9957dccd69202fd9a2072b13755536633747c0f90b04985edcf327333066048"
+    },
+    {
+      "fixture": "blank",
+      "raw_word": 32767,
+      "size": [
+        1800,
+        1125
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance not recorded",
+      "layout_problems": [],
+      "screenshot": "blank-1800x1125.png",
+      "sha256": "85cb174ab17e70f2900744c6291e3573c375d5dada5a9d7efbb6cc0d5329a281"
+    },
+    {
+      "fixture": "blank",
+      "raw_word": 32767,
+      "size": [
+        2110,
+        1213
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance not recorded",
+      "layout_problems": [],
+      "screenshot": "blank-2110x1213.png",
+      "sha256": "d199bc0db21e5d5b6ba4993be1fc0a94b53e572561e65e51f6c825fd5d85accd"
+    },
+    {
+      "fixture": "six-stars",
+      "raw_word": 205,
+      "size": [
+        1440,
+        900
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance raw 205 (meaning not decoded)",
+      "layout_problems": [],
+      "screenshot": "six-stars-1440x900.png",
+      "sha256": "79b030893ec0aca4b6176f9e4849e3576388503ece1dccb921d6b75fabef7ea9"
+    },
+    {
+      "fixture": "six-stars",
+      "raw_word": 205,
+      "size": [
+        1800,
+        1125
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance raw 205 (meaning not decoded)",
+      "layout_problems": [],
+      "screenshot": "six-stars-1800x1125.png",
+      "sha256": "d5ff8d601150f03e63453fdecd3097e8e3f14d60696545d522ed52a8a5c5af92"
+    },
+    {
+      "fixture": "six-stars",
+      "raw_word": 205,
+      "size": [
+        2110,
+        1213
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance raw 205 (meaning not decoded)",
+      "layout_problems": [],
+      "screenshot": "six-stars-2110x1213.png",
+      "sha256": "51dbd100a96f9ecf48b94caf7f1f06845ffb1bda4e974c27d0671a8bea4c6178"
+    },
+    {
+      "fixture": "substitute-three-stars",
+      "raw_word": 10055,
+      "size": [
+        1440,
+        900
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance raw 10055 (meaning not decoded)",
+      "layout_problems": [],
+      "screenshot": "substitute-three-stars-1440x900.png",
+      "sha256": "1af8582bd9ada9e8334e529fc16e2eebee92fc1f41b1526470d6b5065929b412"
+    },
+    {
+      "fixture": "substitute-three-stars",
+      "raw_word": 10055,
+      "size": [
+        1800,
+        1125
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance raw 10055 (meaning not decoded)",
+      "layout_problems": [],
+      "screenshot": "substitute-three-stars-1800x1125.png",
+      "sha256": "efc6e7d1d80e98c56ccb0d527d9d6644f7b62c087522627dc8ff24c423dce211"
+    },
+    {
+      "fixture": "substitute-three-stars",
+      "raw_word": 10055,
+      "size": [
+        2110,
+        1213
+      ],
+      "facts": "age 34 \u00b7 caps 0 \u00b7 goals 0 \u00b7 5'11\" \u00b7 left foot \u00b7 performance raw 10055 (meaning not decoded)",
+      "layout_problems": [],
+      "screenshot": "substitute-three-stars-2110x1213.png",
+      "sha256": "2303c3fc2b6da335c90dc18d18b967d75dae153341b2fc468f617746e46d191f"
+    }
+  ]
+}

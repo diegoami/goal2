@@ -1,0 +1,20 @@
+[
+  {
+    "context": "pause",
+    "original_menu_used": 1,
+    "key": 27,
+    "highlight": 10,
+    "resumed": true,
+    "ticks_before": 105,
+    "ticks_after": 106
+  },
+  {
+    "context": "half_time",
+    "original_menu_used": 1,
+    "key": 27,
+    "highlight": 10,
+    "resumed": true,
+    "ticks_before": 2022,
+    "ticks_after": 2023
+  }
+]

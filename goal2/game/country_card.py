@@ -2,12 +2,12 @@
 
 Choosing a country shows its card and, with Space, its players (goal2.game.player_card), as the
 original's country selection does (screenshots `country-select`, `m244-team-info-2030`).
-Decoded fields carry their evidence. [designed: T144] This legacy Python route names unavailable
-fields with NOT_DECODED (gap G05). The Core route separately consumes the delivered
-F034..F038 decoders; its display data is never invented from this route's placeholders.
+Decoded fields carry their evidence. [derived: F034–F038; T197] Both career and
+Core routes consume the delivered TEAM readers. [confirmed: original157D; T200]
+This career route also exposes stored top-rank bytes and raw strip attributes;
+monochrome leaves the original template's neutral strip glyphs without a colour overlay.
 """
 from goal2.game import roles
-from goal2.game.player_card import _Memory
 
 NOT_DECODED = 'not decoded yet (G05)'
 CONTINENTS = {1: 'Europe', 2: 'America', 3: 'Africa', 4: 'Asia'}
@@ -26,12 +26,14 @@ def tactic_word(memory, element, bit):
     return memory.pascal(0x6AA0 + 32 * element + 16 * bit, 16)
 
 
-def card(state, country, goaldat):
+def card(state, country, goaldat, *, memory=None, performance_context=...):
     """The country card of `country` in this state."""
     if type(country) is not int or not 1 <= country <= 128:
         raise ValueError('country must be 1..128')
-    record = state.countries[country]
-    memory = _Memory(state)
+    from goal2.game.team_card import TeamMemory
+    memory = TeamMemory(state) if memory is None else memory
+    record = memory.country_record(country)
+    panels = memory.panels(country, performance_context=performance_context)
     words = [int.from_bytes(record[2 * i:2 * i + 2], 'little') for i in range(20)]
     # [confirmed: F008 squad list] the country's 20 player numbers at +0..+0x27; slots 1..11 are
     # the stored eleven (F024). [derived: F028 DS:0D5C line classes; screenshots country-select
@@ -43,15 +45,30 @@ def card(state, country, goaldat):
     tactics = state.country_tactics if country == state.managed_country else record[0x2D]
     def group(rows):
         return [(name, tactic_word(memory, element, tactics >> (element - 1) & 1)) for name, element in rows]
-    initial = goaldat.manager_initials[country] if country < len(goaldat.manager_initials) else ''
+    # [confirmed: original157D→0947, F024/F034] The coach is selected by
+    # country+0x2E, not necessarily by country number. [designed: T92; #653]
+    # The active human's renamed identity lives in the rebuild session, and
+    # must not leak to another country. The existing unnamed-human preview
+    # retains its country's default; imported human-name decoding is not added.
+    manager = record[0x2E]
+    stock_manager = manager if manager <= 128 else country
+    initial = goaldat.manager_initials[stock_manager] if stock_manager < len(goaldat.manager_initials) else ''
+    manager_name = (initial + ' ' if initial else '') + goaldat.manager_names[stock_manager]
+    own_name = getattr(state,'manager_name','')
+    if country == state.managed_country and 129 <= manager <= 134 and own_name:
+        manager_name = own_name
     return {
-        'country': country, 'name': goaldat.country_names[country],
-        # [confirmed: F002 R001 manager names by country; F024 computer managers' names]
-        'manager': (initial + ' ' if initial else '') + goaldat.manager_names[country],
+        'country': country, 'name': goaldat.country_names[country], **panels,
+        'manager': manager_name,
         # [confirmed: F007] world rank +0x2B, continent +0x2C, rank within it +0x2A.
         'world': record[0x2B], 'continent': CONTINENTS.get(record[0x2C], NOT_DECODED), 'continental': record[0x2A],
+        # [confirmed: F008/F002, original1771:157D; T200] Stored top ranks, not new history arithmetic.
+        'top_world': record[0x29], 'top_continental': record[0x28],
+        # Raw attributes are full bytes. None means no coloured overlay, not missing evidence.
+        'strips': None if memory.byte(0xA964) else tuple(memory.read_ds(0x9D80 + 3 * country, 3)),
         'formation': formation, 'eleven': [codes[p] if p < 14 else '?' for p in eleven],
         'team_tactics': group(TEAM_TACTICS), 'player_defaults': group(PLAYER_DEFAULTS),
-        'players': words, 'not_decoded': UNDECODED,
+        'players': words, 'not_decoded': tuple(name for name in UNDECODED
+            if name not in {'status', 'skill', 'team skills', 'performance', 'characteristics', 'ranking top', 'strips'}),
     }
 

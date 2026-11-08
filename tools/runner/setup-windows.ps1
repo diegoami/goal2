@@ -7,11 +7,12 @@
 #   powershell -ExecutionPolicy Bypass -File tools\runner\setup-windows.ps1 -Token <t>   # or Settings > Actions > Runners
 #
 # -Dir (default %USERPROFILE%\ghr-goal2) and -Name (default goal2-<computer>) override the folder and the
-# name. Run again to repair the logon start; an existing registration is kept.
+# name. -GateJobs <n> (or GOAL2_GATE_JOBS) caps each gate's jobs on a shared machine (#567). Run again to repair the logon start; an existing registration is kept.
 param(
     [string]$Token = $env:GOAL2_RUNNER_TOKEN,
     [string]$Dir = "$env:USERPROFILE\ghr-goal2",
-    [string]$Name = "goal2-$($env:COMPUTERNAME.ToLower())"
+    [string]$Name = "goal2-$($env:COMPUTERNAME.ToLower())",
+    [string]$GateJobs = $env:GOAL2_GATE_JOBS
 )
 $ErrorActionPreference = 'Stop'
 $Repo = 'diegoami/goal2'
@@ -43,6 +44,17 @@ if (-not (Test-Path .runner)) {
     & .\config.cmd --unattended --url "https://github.com/$Repo" --token $Token --name $Name `
         --labels $Label --no-default-labels --work w --replace
     if ($LASTEXITCODE -ne 0) { throw "config.cmd failed" }
+}
+
+# [designed: owner, 2026-11-03, #567] A machine shared by several runners, or by a runner and a working session,
+# caps each gate's jobs: the runner reads its .env into every job, and check_premerge.py takes its default from it.
+if ($GateJobs) {
+    if ($GateJobs -notmatch '^[1-9][0-9]*$') { throw "-GateJobs: a whole number of jobs, at least 1" }
+    $envFile = Join-Path $Dir '.env'
+    $lines = @()
+    if (Test-Path $envFile) { $lines = @(Get-Content $envFile | Where-Object { $_ -notmatch '^GOAL2_GATE_JOBS=' }) }
+    Set-Content -Encoding ascii $envFile ($lines + "GOAL2_GATE_JOBS=$GateJobs")
+    Write-Host "GOAL2_GATE_JOBS=$GateJobs in $envFile: restart the runner when it is idle (end Runner.Listener.exe, then run goal2-runner.cmd in shell:startup)"
 }
 
 $startup = [Environment]::GetFolderPath('Startup')

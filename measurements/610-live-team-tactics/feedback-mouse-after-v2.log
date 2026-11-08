@@ -1,0 +1,9 @@
+test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 9.053s
+
+OK

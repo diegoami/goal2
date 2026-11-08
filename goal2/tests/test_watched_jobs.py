@@ -1,8 +1,6 @@
 """[designed: T65] Headless process, live observation and atomic ownership tests."""
 import copy
 import asyncio
-import base64
-import zlib
 from dataclasses import replace
 import hashlib
 import os
@@ -18,8 +16,8 @@ from unittest.mock import patch
 
 from goal2.engine.original_match import Fixture, Image
 from goal2.engine.original_match.match import Event
-from goal2.game.watched_jobs import WatchedJobs, MAX_PACKET, MAX_MEMORY, READ_BUDGET, _write, _memory
-from goal2.game.watched_match import _drive_match
+from goal2.game.watched_jobs import WatchedJobs, REPLY_BUDGET
+from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS, _drive_match
 from goal2.tests import test_watched_adapter as adapter
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests import requires, pypy_engine
@@ -27,11 +25,12 @@ from goal2.tests import requires, pypy_engine
 ROOT = Path(__file__).resolve().parents[2]
 
 # [designed] Children use the real shared driver with a controlled original guest.
+# [designed: T160] The child is the engine process (goal2.game.engine_server), as the window's.
 CONTROLLED = r'''
 import sys,json,time,signal
 from unittest.mock import patch
 from goal2.engine.original_match.match import Event
-from goal2.game import watched_worker
+from goal2.game import engine_server
 mode=sys.argv.pop(1)
 if mode=='ignore':signal.signal(signal.SIGTERM,signal.SIG_IGN)
 class Guest:
@@ -52,8 +51,44 @@ class Guest:
  def answer(self):self.answers+=1
  def result(self):return {'complete':True}
  def memory_component(self):return self.image.memory_component()
-with patch('goal2.game.watched_match.Match',Guest):sys.exit(watched_worker.main())
+with patch('goal2.game.watched_match.Match',Guest):sys.exit(engine_server.main())
 '''
+
+# [designed: T160] A stand-in engine: the protocol's framing and no match. It takes the game and a match request
+# and sends nothing for it; a cancel is answered, `quit` or the end of stdin ends it. The tests deliver the match's
+# replies themselves, as the engine's reader thread does (the job's _Match.put). With a mode in argv[1] it first
+# sends, once the match is asked, the bytes that mode names.
+IDLE = r'''
+import os,struct,sys
+from goal2.game.engine_server import read_packet, encode_packet
+from goal2.game.session_save import _json_value
+mode=sys.argv[1] if len(sys.argv)>1 else None
+out=sys.stdout.buffer
+def send(kind,value=None):out.write(encode_packet({'kind':kind,'value':_json_value(value)}));out.flush()
+def event(**value):return dict(dict(kind='minute',minute=1,score=(0,0),data={}),**value)
+BAD={
+ 'malformed':lambda:struct.pack('!I',1)+b'{',
+ 'unknown fields':lambda:encode_packet({'kind':'event','value':{'wrong':1}}),
+ 'event shape':lambda:encode_packet({'kind':'event','value':_json_value(event(kind=7))}),
+ 'truncated':lambda:b'\x00\x00',
+ 'oversized':lambda:struct.pack('!I',2**31),
+}
+send('ready',{'implementation':'stand-in','version':[0,0],'pid':os.getpid()})
+while True:
+ packet=read_packet(sys.stdin.buffer)
+ if packet is None or packet[0]['op']=='quit':sys.exit(0)
+ op=packet[0]['op']
+ if op=='open':send('opened')
+ elif op=='match' and mode in BAD:
+  out.write(BAD[mode]());out.flush()
+  if mode=='truncated':sys.exit(3)
+ elif op=='match' and mode=='order':
+  frame=dict(version=1,sequence=1,watermark=0,minute=1,score=[0,0],subtick=36,threshold=45,remaining=91,selector=1,
+             attack=[1,-1],sentinel=11,ball=[-8,1,False],players=[[s,int(s<=11),s if s<=11 else s-11,100+s,-9,0,13,False] for s in range(1,23)])
+  send('frame',frame)
+ elif op=='cancel':send('cancelled')
+'''
+IDLE_COMMAND = [sys.executable, '-c', IDLE]
 
 
 # [designed: #307] Setup waits for a job cancelled at once: wait() first joins the thread that
@@ -77,12 +112,14 @@ class WatchedJobsTests(unittest.TestCase):
         if self.jobs is not None:
             self.jobs.close()
 
-    def bridge(self, mode=None, script=None):
+    def bridge(self, mode=None, script=None, idle=None):
         command = None
         if mode is not None:
             command = [sys.executable, '-c', CONTROLLED, mode]
         if script is not None:
             command = [sys.executable, '-c', script]
+        if idle is not None:
+            command = IDLE_COMMAND + ([idle] if idle else [])
         self.jobs = WatchedJobs(self.owner, command=command)
         return self.jobs.start(Fixture(7,19,21),reference_seed=257,delay_byte=0,record_draws=True)
 
@@ -134,38 +171,6 @@ class WatchedJobsTests(unittest.TestCase):
                 self.assertEqual(self.owner.state,self.before)
                 self.jobs.close()
 
-    def test_cancel_outlasts_a_brief_windows_lock_and_raises_a_lasting_one(self):
-        """[designed: #309; #254] Windows can refuse to delete a file for a moment after its
-        process ended (WinError 32, seen on the Windows runner): cancel retries that. A refusal
-        that lasts is raised with the job still owned, and a later cancel finishes it."""
-        import tempfile as _tempfile
-        real = _tempfile.TemporaryDirectory.cleanup
-        for refusals in (2, 10**6):
-            with self.subTest(refusals=refusals):
-                token = self.bridge('blocked')
-                self.until(token, lambda events: bool(events))
-                folder = Path(self.jobs._folder.name);calls = [0]
-                def cleanup(directory):
-                    calls[0] += 1
-                    if calls[0] <= refusals:
-                        raise PermissionError(32, 'The process cannot access the file because it is being used by another process')
-                    return real(directory)
-                with patch.object(_tempfile.TemporaryDirectory, 'cleanup', cleanup):
-                    if refusals == 2:
-                        self.jobs.cancel(token)
-                        self.assertEqual(calls[0], 3)
-                    else:
-                        with self.assertRaises(PermissionError):
-                            self.jobs.cancel(token)
-                        self.assertEqual(calls[0], 40)
-                        self.assertTrue(self.jobs.busy, 'a lasting refusal keeps the job owned (#254)')
-                if refusals != 2:
-                    self.jobs.cancel(token)
-                self.assertFalse(self.jobs.busy);self.assertIsNone(self.jobs._folder)
-                self.assertFalse(folder.exists())
-                self.assertEqual(self.owner.state, self.before)
-                self.jobs.close();self.jobs = None
-
     def test_cancel_and_reap_and_close_outlast_a_slow_input_encoding(self):
         """[designed: #311; #254] One cancel during the input encoding times out and keeps the job
         (#254). cancel_and_reap and close, which must end it, retry until the encoding is done and
@@ -184,7 +189,7 @@ class WatchedJobsTests(unittest.TestCase):
                     self.jobs.cancel_and_reap(token)
                 else:
                     self.jobs.close()
-                self.assertFalse(self.jobs.busy);self.assertIsNone(self.jobs._folder)
+                self.assertFalse(self.jobs.busy)
                 self.assertEqual(self.owner.state, self.before)
                 self.jobs.close();self.jobs = None
 
@@ -198,7 +203,9 @@ class WatchedJobsTests(unittest.TestCase):
         self.assertEqual(self.owner.state,self.before)
         self.jobs.close()
         token=self.bridge('ignore');process=self.jobs.process
-        self.until(token,lambda events:bool(events))
+        # [designed: T160] The cancel is a request on the pipe, not a signal: the guest is waited for where it no
+        # longer reads it (after full time), so close must kill the engine. Before that, the engine answers it.
+        self.until(token,lambda events:any(e.kind=='full_time' for e in events))
         self.jobs.close()
         self.assertIsNotNone(process.poll())
         if os.name == 'posix':self.assertEqual(process.poll(),-signal.SIGKILL)
@@ -226,22 +233,20 @@ class WatchedJobsTests(unittest.TestCase):
         self.assertEqual(self.owner.state,replacement)
 
     def test_partial_oversized_wrong_identity_and_order_ipc(self):
-        scripts=[
-            ("import sys,struct;f=open(sys.argv[2],'wb');f.write(struct.pack('!I',1)+b'{')",'Invalid watched worker IPC'),
-            ("import sys,json;from pathlib import Path;from goal2.game.watched_jobs import _write;j=json.loads((Path(sys.argv[1]).parent/'request.json').read_text());f=open(sys.argv[2],'ab');_write(f,j['token'],0,'event',{'wrong':1})",'Invalid watched worker IPC'),
-            ("import sys,json;from pathlib import Path;from goal2.game.watched_jobs import _write;j=json.loads((Path(sys.argv[1]).parent/'request.json').read_text());f=open(sys.argv[2],'ab');_write(f,j['token'],0,'event',{'kind':7,'minute':1,'score':(0,0),'data':{}})",'invalid watched event shape'),
-            ("import sys;open(sys.argv[2],'wb').write(b'\\x00\\x00')",'truncated'),
-            (f"import sys,struct;open(sys.argv[2],'wb').write(struct.pack('!I',{MAX_PACKET+1}))",'exceeds'),
-            ("import sys;from goal2.game.watched_jobs import _write;f=open(sys.argv[2],'ab');_write(f,'wrong',0,'event',None)",'identity/order'),
-            ("import sys,json;from goal2.game.watched_jobs import _write;from pathlib import Path;j=json.loads((Path(sys.argv[1]).parent/'request.json').read_text());f=open(sys.argv[2],'ab');_write(f,j['token'],2,'event',None)",'identity/order'),
-        ]
-        for script,message in scripts:
+        # [designed: T160] Each a stand-in engine's reply; an unreadable one ends the engine (T159), which the job
+        # reports as the engine's exit with the reason. A packet carries no token: the old "wrong identity" record
+        # has no counterpart (a reply sent before the match request can be read after it, as the match's).
+        for mode,message in [('malformed','Invalid watched worker IPC'),('unknown fields','Invalid watched worker IPC'),
+                             ('event shape','invalid watched event shape'),('truncated','truncated'),('oversized','exceeds'),
+                             ('order','order/watermark')]:
             with self.subTest(message=message):
-                token=self.bridge(script=script)
-                with self.assertRaisesRegex(ValueError,message):
-                    self.until(token,lambda events:False)
-                self.assertEqual(self.owner.state,self.before)
-                self.jobs.close()
+                try:
+                    token=self.bridge(idle=mode)
+                    with self.assertRaisesRegex(ValueError,message):
+                        self.until(token,lambda events:False)
+                    self.assertEqual(self.owner.state,self.before)
+                finally:
+                    self.jobs.close()
 
     def test_bridge_imports_without_ui_or_optional_runtime(self):
         import subprocess
@@ -252,7 +257,7 @@ class NoUI(importlib.abc.MetaPathFinder):
   if fullname.split('.')[0] in ('PySide6','pygame','unicorn','flask','http'):
    raise ImportError('forbidden dependency: '+fullname)
 sys.meta_path.insert(0,NoUI())
-import goal2.game.watched_jobs,goal2.game.watched_worker
+import goal2.game.watched_jobs,goal2.game.engine_server
 """
         result=subprocess.run([sys.executable,'-c',script],cwd=ROOT,capture_output=True,text=True,timeout=30)
         self.assertEqual(result.returncode,0,result.stderr)
@@ -261,9 +266,9 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         self.jobs=WatchedJobs(self.owner)
         # A fixed worker: engine_python() probes interpreters with subprocess, which this test patches.
         self.jobs.command=[sys.executable,'-c',CONTROLLED,'blocked']
-        for target in ('tempfile.TemporaryDirectory','subprocess.Popen'):
+        for target in ('MatchEngine.claim','subprocess.Popen'):
             with patch('goal2.game.watched_jobs.'+target,side_effect=OSError('launch unavailable')):
-                error = OSError if target == 'tempfile.TemporaryDirectory' else ValueError
+                error = OSError if target == 'MatchEngine.claim' else ValueError
                 with self.assertRaisesRegex(error,'launch unavailable'):
                     token = self.jobs.start(Fixture(7,19,21))
                     if target == 'subprocess.Popen':
@@ -275,48 +280,23 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         self.assertTrue(self.jobs.busy)
         self.jobs.cancel_and_reap(token)
 
-    def test_memory_decoder_bounds_truncation_and_trailing_payloads(self):
-        def encoded(raw):return base64.b64encode(raw).decode('ascii')
-        self.assertEqual(_memory(encoded(zlib.compress(b'opaque tail'))),b'opaque tail')
-        self.assertEqual(len(_memory(encoded(zlib.compress(bytes(MAX_MEMORY))))),MAX_MEMORY)
-        for mode,compressed in (
-                ('oversized',zlib.compress(bytes(MAX_MEMORY+1))),
-                ('truncated',zlib.compress(b'tail')[:-1]),
-                ('trailing',zlib.compress(b'tail')+b'trailing')):
-            with self.subTest(mode=mode):
-                with self.assertRaisesRegex(ValueError,'invalid or oversized watched memory'):
-                    _memory(encoded(compressed))
-        self.assertEqual(self.owner.state,self.before)
-
-    def test_large_partial_record_reads_are_bounded(self):
-        token=self.bridge('blocked')
-        process=self.jobs.process
-        process.terminate();process.wait(timeout=SETUP_WAIT)
-        self.jobs._journal.seek(0);self.jobs._journal.truncate()
-        with open(self.jobs._journal.name,'ab') as stream:
-            _write(stream,token,0,'event',Event('commentary',1,(0,0),{'text':'x'*(READ_BUDGET*3)}))
-        with patch.object(process,'poll',return_value=None):
-            self.assertEqual(len(self.jobs.poll(token)),0)
-            self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET)
-            self.assertEqual(len(self.jobs.poll(token)),0)
-            self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET*2)
-        self.assertEqual(self.owner.state,self.before)
+    def launched(self, token):
+        """[designed: T160] Poll until the match is asked of the engine."""
+        deadline = time.monotonic() + SETUP_WAIT
+        while not self.jobs._sent:
+            self.assertEqual(self.jobs.poll(token), [])
+            self.assertLess(time.monotonic(), deadline, 'the match was never asked')
+            time.sleep(.005)
 
     def test_exited_burst_drains_in_bounded_batches_without_buffer_growth(self):
-        token=self.bridge('blocked')
-        process=self.jobs.process
-        process.terminate();process.wait(timeout=SETUP_WAIT)
-        self.jobs._journal.seek(0);self.jobs._journal.truncate()
-        with open(self.jobs._journal.name,'ab') as stream:
-            for number in range(2000):_write(stream,token,number,'event',Event('minute',number,(0,0)))
+        token=self.bridge(idle='')
+        self.launched(token)
+        for number in range(2000):self.jobs._match.put('event',Event('minute',number,(0,0)))
         seen=[]
-        # [designed] Keep the decoder pending while checking the read/record budgets.
-        with patch.object(process,'poll',return_value=None):
-            for _ in range(70):
-                events=self.jobs.poll(token)
-                self.assertLessEqual(len(events),32)
-                self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET)
-                seen.extend(events)
+        for _ in range(70):
+            events=self.jobs.poll(token)
+            self.assertLessEqual(len(events),REPLY_BUDGET)
+            seen.extend(events)
         self.assertEqual([event.minute for event in seen],list(range(2000)))
         self.assertEqual(self.owner.state,self.before)
 
@@ -328,21 +308,18 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         played=pypy_engine.call('goal2.game.watched_match:run_watched_match',self.owner.state,self.raw,Fixture(7,19,21),
                                 reference_seed=257,delay_byte=0)
         for mode in ('mismatch','tail','trailing'):
-            token=self.bridge('blocked')
-            self.jobs.process.terminate();self.jobs.process.wait(timeout=SETUP_WAIT)
-            self.jobs._journal.seek(0);self.jobs._journal.truncate()
+            token=self.bridge(idle='')
+            self.launched(token)
             outcome=played
             events=tuple(e for e in outcome.events if e.kind!='end') if mode=='tail' else outcome.events
             if mode=='tail':outcome=replace(outcome,events=events)
-            with open(self.jobs._journal.name,'ab') as stream:
-                for n,event in enumerate(events):_write(stream,token,n,'event',event)
-                if mode=='mismatch':outcome=replace(outcome,events=(replace(outcome.events[0],data={'tampered':True}),)+outcome.events[1:])
-                _write(stream,token,len(events),'complete',outcome)
-                if mode=='trailing':stream.write(struct.pack('!I',1)+b'{')
-            # [designed] Substitute successful exit only; use the real parent decoder/publication.
-            with patch.object(self.jobs.process,'poll',return_value=0):
-                with self.assertRaisesRegex(ValueError,{'mismatch':'live event stream','tail':'incomplete','trailing':'Invalid watched worker IPC'}[mode]):
-                    self.until(token,lambda events:False)
+            # [designed: T160] The replies as the engine's reader delivers them; the real parent checks/publication.
+            for event in events:self.jobs._match.put('event',event)
+            if mode=='mismatch':outcome=replace(outcome,events=(replace(outcome.events[0],data={'tampered':True}),)+outcome.events[1:])
+            self.jobs._match.put('complete',outcome)
+            if mode=='trailing':self.jobs._match.put('death',{'code':1,'stderr':'','error':'ProtocolError: truncated'})
+            with self.assertRaisesRegex(ValueError,{'mismatch':'live event stream','tail':'incomplete','trailing':'Invalid watched worker IPC'}[mode]):
+                self.until(token,lambda events:False)
             self.assertEqual(self.owner.state,self.before)
             self.jobs.close()
 
@@ -352,8 +329,10 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
             self.owner.state=adapter.WatchedAdapter.state(self)
             self.jobs=WatchedJobs(self.owner)
             # [designed: #500] the synchronous run under engine_python() in a child, beside the job's worker
+            # [T180] the engine server plays a watched friendly with BM-7's budget: the reference is given the same
             pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',self.before,self.raw,Fixture(7,19,21),
-                                      reference_seed=seed,delay_byte=0,record_draws=True)
+                                      reference_seed=seed,delay_byte=0,record_draws=True,
+                                      substitutions=FRIENDLY_SUBSTITUTIONS)
             token=self.jobs.start(Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True)
             start=time.monotonic()
             events=self.until(token,lambda events:not self.jobs.busy,hang_guard=600)

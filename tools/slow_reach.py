@@ -5,7 +5,7 @@
 The map is computed, never kept by hand: the static import graph of goal2/ and tools/. An edge is an `import`
 or `from ... import` (relative ones resolved; `from package import name` also reaches the submodule `name`), a
 tools/ module imported by its bare name (the tests put tools/ on sys.path), and a string constant naming a goal2
-module (`-m goal2.desktop.worker`, worker_command('goal2.game.watched_worker')): a worker started by name runs
+module (`-m goal2.desktop.worker`, worker_command('goal2.game.engine_server')): a worker started by name runs
 that code too. Importing a module also runs its packages' __init__.py. A test module reaches the files of its
 transitive closure; a changed file affects the test modules whose closure holds it. A changed non-Python file
 (a table, a JSON) is read by code that need not sit beside it (goal2/engine/tables/ by goal2/game/engine_tables.py

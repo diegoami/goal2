@@ -1,6 +1,6 @@
 # The match, as the build plays it
 
-[designed: T176] The match is the one part of goal2 that is **not** in the main window. *Kick off
+[designed: T204] The match is the one part of goal2 that is **not** in the main window. *Kick off
 and watch* opens a second window, drawn with pygame (`goal2/desktop/pygame_viewer.py`), while the
 main window waits. The original's match is the same screen as everything else
 ([the original's match chapter](../original-game/match-and-results.md)).

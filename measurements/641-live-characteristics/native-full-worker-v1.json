@@ -1,0 +1,223 @@
+{
+  "method": "main actual nativeQtWindows/bundledPyPy unchanged640accept journey on combined641source; no641Coreobserver in native fullmatch",
+  "source_commit": "8dee0728f682360ae3ab990606164da15e23e797",
+  "status": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "success": true,
+    "source_root": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-source-8dee072",
+    "source_commit": "8dee0728f682360ae3ab990606164da15e23e797",
+    "python": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "windows",
+    "no_activation_window": true,
+    "direct_target_test_keys": true,
+    "owner_game_and_saves_changed": false,
+    "bootstrap_sha256": "8f6e779a5020d3ba81c85bb42365eb892a796138da89dd96a5091ccc8a89ab46",
+    "selector": "goal2.tests.test_substitution_actual_636.ActualRequestJourney.test_natural_request_opportunity_escape_immediate_swap_refusal_tactics_and_play",
+    "engine_python": "C:\\Users\\diego\\Games\\GOAL2-Preview-d56e793\\goal2-0.1.0-win64\\pypy\\pypy.exe"
+  },
+  "elapsed_seconds": 456.464,
+  "journey": {
+    "captures": [
+      {
+        "device_pixel_ratio": 1.0,
+        "path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-evidence-8dee072-accept-v1\\accept\\request-pending.png",
+        "qt_platform": "windows",
+        "screen": "MSI MAG 275QF"
+      },
+      {
+        "device_pixel_ratio": 1.0,
+        "path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-evidence-8dee072-accept-v1\\accept\\request-confirmed.png",
+        "qt_platform": "windows",
+        "screen": "MSI MAG 275QF"
+      },
+      {
+        "device_pixel_ratio": 1.0,
+        "path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-evidence-8dee072-accept-v1\\accept\\request-on-pitch.png",
+        "qt_platform": "windows",
+        "screen": "MSI MAG 275QF"
+      },
+      {
+        "device_pixel_ratio": 1.0,
+        "path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-evidence-8dee072-accept-v1\\accept\\opportunity-blink-first.png",
+        "qt_platform": "windows",
+        "screen": "MSI MAG 275QF"
+      },
+      {
+        "device_pixel_ratio": 1.0,
+        "path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-evidence-8dee072-accept-v1\\accept\\opportunity-blink-second.png",
+        "qt_platform": "windows",
+        "screen": "MSI MAG 275QF"
+      },
+      {
+        "device_pixel_ratio": 1.0,
+        "path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-evidence-8dee072-accept-v1\\accept\\legal-bench-before-swap.png",
+        "qt_platform": "windows",
+        "screen": "MSI MAG 275QF"
+      },
+      {
+        "device_pixel_ratio": 1.0,
+        "path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-evidence-8dee072-accept-v1\\accept\\swap-confirmed-before-play.png",
+        "qt_platform": "windows",
+        "screen": "MSI MAG 275QF"
+      }
+    ],
+    "career_equal": true,
+    "choices": [
+      [
+        "substitution_opportunity",
+        {
+          "opportunity": "accept"
+        }
+      ],
+      [
+        "substitution",
+        {
+          "edit_only": true,
+          "substitutions": [
+            [
+              31,
+              39
+            ]
+          ]
+        }
+      ],
+      [
+        "substitution",
+        []
+      ],
+      [
+        "pause",
+        {
+          "edit_only": true,
+          "request_substitution": true
+        }
+      ],
+      [
+        "pause",
+        {
+          "edit_only": true,
+          "tactics": {
+            "5": true
+          }
+        }
+      ],
+      [
+        "pause",
+        []
+      ],
+      [
+        "substitution_opportunity",
+        {
+          "opportunity": "accept"
+        }
+      ],
+      [
+        "substitution",
+        {
+          "edit_only": true,
+          "substitutions": [
+            [
+              22,
+              33
+            ]
+          ]
+        }
+      ],
+      [
+        "substitution",
+        {
+          "edit_only": true,
+          "substitutions": [
+            [
+              23,
+              22
+            ]
+          ]
+        }
+      ],
+      [
+        "substitution",
+        []
+      ],
+      [
+        "set_piece",
+        {
+          "taker": 29
+        }
+      ],
+      [
+        "half_time",
+        []
+      ],
+      [
+        "set_piece",
+        {
+          "taker": 29
+        }
+      ],
+      [
+        "set_piece",
+        {
+          "taker": 29
+        }
+      ]
+    ],
+    "events_equal": true,
+    "fixture": {
+      "id": "original:1",
+      "kind": 1,
+      "sides": [
+        2,
+        7
+      ]
+    },
+    "flags": {
+      "live_players": true,
+      "substitution_control": true
+    },
+    "input_template_sha256": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "memory_equal": true,
+    "memory_sha256": "8f14d8abe062b9c3747569917dfe5e79be61ed94d29c4c91c8dc7f35d7bf1aa3",
+    "mode": "accept",
+    "published_once": true,
+    "requested": 1,
+    "result_equal": true,
+    "result_sha256": "5e9a1493fa08d4fddb88d7fcfc5fc1f7a870028d46883043d988d031a3fe826d",
+    "seeds": [
+      18968,
+      3084
+    ],
+    "source_commit": "8dee0728f682360ae3ab990606164da15e23e797",
+    "source_hashes": {
+      "PROVENANCE.md": "8b4e07d09305ce9c334786325b4c7263861e10071667574d2d1c6d7b29047b09",
+      "goal2/desktop/competitive.py": "6a9050364b8f0be13658dd443a16193f3ce2448c372c01a1e3e39392c17df9d6",
+      "goal2/engine/original_match/match.py": "e949159c9cc77f4d195bc9b150c67dfd913ba447417375122bc58db1bca97f92",
+      "goal2/engine/original_match/screens.py": "8ce9b0d6c4c9f75da469c728a9ed03787e413aeb5f98693ba38c914ed36d143e",
+      "goal2/game/engine_process.py": "0ffa86b76381e498345e31824aa04a5899b9e6dc43f29ac1549f22efe764ae09",
+      "goal2/game/engine_server.py": "1567bd91bd199df724817f32f28d980d5f28166b79f88b99d3658c99605569aa",
+      "goal2/game/watched_jobs.py": "7ec2c6f153101d72b6bff0d65c3ebf0657346a1faf5771723b4561f8c90f9305",
+      "goal2/game/watched_match.py": "95c32a981069e3acf9ccfa7cb03cacbaa5f9baa93963434bc175ba9b530a1200",
+      "goal2/game/watched_schema.py": "c0fcb60752f338708b683ab3de8b05a127d28f3b3f44bd4cb3de233304db427b",
+      "goal2/tests/match_day_policy.py": "8da842ccfa4833df7ffce1a52e6ad280b1b3f2ae28321688473091a1acd4408b",
+      "goal2/tests/substitution_selectors_636.py": "712202ca957547181521fe60f873c45a693e4be95685912ee61cceb5160bdc93",
+      "goal2/tests/test_substitution_actual_636.py": "9c0aaadeadd0e065c0d36780acd09414dee747511e10b071ec3cdcf7bdae8473",
+      "goal2/ui/live_cards.py": "d3681164dc7da398ea0e3b82df8bf22da34b77860fcbd241d674721bd05b5d53",
+      "goal2/ui/match_day.py": "a399bfcc9083e10b5c6b49ed5a680b1290d5b6678c99bcc41fcc29bfb0d33854",
+      "goal2/ui/s10_team_tactics.py": "ac6b5cd746ee30e7760cfa6e42e56c18b427b0f912fe2ce10575c30235efb0bd",
+      "goal2/ui/s17_pitch.py": "fc997af2bdf00e9fa24d8c43c1690a65f3ca365aae368cbe197b0adc68feca9b",
+      "goal2/ui/s18_stop.py": "1de904bbbc1d775c3cd47388274a4fdd81410eeecb564a4cc7470d0b947ac454",
+      "goal2/ui/s19_bench.py": "76fa80c34fc21ebe38aef8f547df0daafadac61d440bdff8e1033cea488ec360",
+      "goal2/ui/squad_card.py": "f191ef041aa32e1f0ee3ad57a5e4cac05adce7665ceb8a20ebd8aeff70f629e7",
+      "tools/watched-kit-hashes.json": "93a5bcd01b0bafc7273738a697c559950392cd7d9fff531f7f94a67db6d63c16"
+    }
+  },
+  "native_result_sha256": "d50d08d70dd88d7abebdebab97edbad01404ecea93fd6bb06468076d4e725fcd",
+  "log_sha256": "141ee0dda7ad051ed1b67e29d0374f7790b9881057d1ddb565a93616e5991d66",
+  "qt_backend": "windows",
+  "main_verified_source_and_capture_scope": true,
+  "bootstrap_sha256": "8f6e779a5020d3ba81c85bb42365eb892a796138da89dd96a5091ccc8a89ab46",
+  "capture_privacy": "original records/names/captures remain private; filteredstatus/codehashes only"
+}

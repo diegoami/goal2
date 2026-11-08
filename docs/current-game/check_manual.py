@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""[designed: T176] The current-game manual's own check.
+"""[designed: T204] The current-game manual's own check.
 
 It exits 0 only when the manual and its images agree:
 

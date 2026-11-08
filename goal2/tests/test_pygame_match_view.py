@@ -155,15 +155,18 @@ sys.exit(pygame_viewer.main())
                 w.watched.viewer_command=[sys.executable,'-c',script]
                 w.start_watched();viewer=w.watched.process;engine=w.watched.engine.process
                 pump(lambda:w.watched.process is None,app=app)
-                self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll())
+                # [designed: T160] the match has ended; the engine process ends with the window (below)
+                self.assertIsNotNone(viewer.poll());self.assertFalse(w.watched.engine.busy)
                 self.assertEqual(m.state,before);self.assertFalse(m.match_pending)
                 from dataclasses import replace
-                m.state.campaign.fixtures=tuple(replace(f,kind=2) for f in m.state.campaign.fixtures)
+                # [designed: T176] Qualifiers are watched (test_watch_qualifiers_t176); an unsupported kind is not.
+                m.state.campaign.fixtures=tuple(replace(f,kind=255) for f in m.state.campaign.fixtures)
                 w.tactics[0][1].setChecked(not w.tactics[0][1].isChecked())
                 w.start_watched()
-                self.assertIn('qualifiers are unsupported',w.status.text())
+                self.assertIn('scheduled friendlies and supported qualifiers only',w.status.text())
                 self.assertFalse(w.watched.busy);self.assertIsNone(w.watched.process)
             finally:timer.stop();w.close();w.deleteLater();app.processEvents()
+            self.assertIsNotNone(engine.wait(timeout=5))
 
     def test_optional_dependency_and_qualifier_boundary(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -173,12 +176,13 @@ sys.exit(pygame_viewer.main())
                     with self.assertRaisesRegex(ValueError,'pygame-ce.*pip install'):c.start(frames=False,)
                 self.assertEqual(m.state,before);self.assertIsNone(c.process)
                 m.state.campaign=None
-                with self.assertRaisesRegex(ValueError,'scheduled friendlies only'):c.start(frames=False,)
+                with self.assertRaisesRegex(ValueError,'scheduled friendlies and supported qualifiers only'):c.start(frames=False,)
                 m.state=before
                 from dataclasses import replace
                 campaign=m.state.campaign
-                campaign.fixtures=tuple(replace(f,kind=2) for f in campaign.fixtures)
-                with self.assertRaisesRegex(ValueError,'qualifiers are unsupported'):c.start(frames=False,)
+                # [designed: T176] Qualifiers are watched (test_watch_qualifiers_t176); an unsupported kind is not.
+                campaign.fixtures=tuple(replace(f,kind=255) for f in campaign.fixtures)
+                with self.assertRaisesRegex(ValueError,'scheduled friendlies and supported qualifiers only'):c.start(frames=False,)
                 self.assertIsNone(c.process)
             finally:c.close()
 
@@ -202,9 +206,11 @@ sys.exit(pygame_viewer.main())
                 self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
                 started=time.monotonic();c.cancel();c.cancel()
                 self.assertLess(time.monotonic()-started,2)
-                self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll())
+                # [designed: T160] the match has ended; the engine process ends with the controller's close (below)
+                self.assertIsNotNone(viewer.poll());self.assertFalse(c.engine.busy)
                 self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
             finally:c.close()
+            self.assertIsNotNone(engine.wait(timeout=5))
             c=WatchedController(m,viewer_command=['/nonexistent/goal2-viewer'])
             try:
                 with self.assertRaisesRegex(ValueError,'Cannot start original friendly'):c.start(frames=False,)
@@ -264,13 +270,15 @@ sys.exit(pygame_viewer.main())
                     def seen():c.poll();return c.last_status is not None and bool(c.display.events)
                     pump(seen)
                     c.cancel();c.cancel()
-                    self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll())
+                    # [designed: T160] the match has ended; the engine process ends with the controller's close
+                    self.assertIsNotNone(viewer.poll());self.assertFalse(c.engine.busy)
                     self.assertTrue(all(handle.closed for handle in retry_handles))
                     self.assertTrue(m.state==before,'allocation failure changed complete state');self.assertTrue(m.save_path.read_bytes()==saved,'retry changed committed save bytes')
                     close_error=None
                     try:c.close();c.close()
                     except Exception as exc:close_error=exc
                     self.assertIsNone(close_error,'terminal cleanup was not idempotent')
+                    self.assertIsNotNone(engine.wait(timeout=5))
                 finally:
                     # [designed] A failing before/control run must still release its test-owned resources.
                     try:c.close()
@@ -299,7 +307,13 @@ sys.exit(pygame_viewer.main())
                     else:
                         with self.assertRaises(ValueError):pump(lambda:c.poll())
                     self.assertIsNone(c.process);self.assertFalse(c.busy)
-                    self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll());self.assertEqual(m.state,before)
+                    if mode=='guest':
+                        # [designed: T160] the engine reported the match's error and stays up for the next match;
+                        # it ends with the owner's close (#417)
+                        self.assertIsNotNone(viewer.poll());self.assertIsNone(engine.poll());self.assertEqual(m.state,before)
+                        c.close();self.assertIsNotNone(engine.wait(timeout=5))
+                    else:
+                        self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll());self.assertEqual(m.state,before)
                 finally:c.close()
 
 

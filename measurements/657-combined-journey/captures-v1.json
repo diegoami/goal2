@@ -1,0 +1,41 @@
+{
+  "method": "actual isolated Linux offscreen UI snapshots, normal Qt settling before bounds checks; original help screenshot excluded",
+  "images": [
+    {
+      "file": "create-desk-new.png",
+      "sha256": "ad2860af178e7f47ed64a7b894511a317d2a10f5ee4ef3859250d46d7779fe7e"
+    },
+    {
+      "file": "create-pre-match-team.png",
+      "sha256": "7e759f84ac1f2b8761806fa473c03e51cfc29943c0b640d6ae16ed1491056346"
+    },
+    {
+      "file": "create-replay-question.png",
+      "sha256": "bac1d4798cb0820eb9e228474f0f4f909700dfc96a45b352818e82f68758cacb"
+    },
+    {
+      "file": "create-live-team-ack.png",
+      "sha256": "35a6e08a6a6f1c865592be2f8deefb129e9988591cd3d311c62cf33f121eb794"
+    },
+    {
+      "file": "create-half-time.png",
+      "sha256": "a9264e4c4b028a498a1862e3bd2db79061f42b8bfe5c8f2909afdb3ace1674de"
+    },
+    {
+      "file": "create-full-time.png",
+      "sha256": "ce755620d46a43aca14d99f875db814516b2afd008101f7edb9c7c75e7f06602"
+    },
+    {
+      "file": "create-summary-reopened.png",
+      "sha256": "55c4a3d76e23a784be11dd7e50f7a946ab48aec1b794fb0056f5b5ffd31e7d7b"
+    },
+    {
+      "file": "reload3-separate-process-reload.png",
+      "sha256": "1ae2f074545a99c4bb5c2f114b799878922ab7ed3bb088ca66038d8d07f1a712"
+    },
+    {
+      "file": "reload3-saved-goal-played.png",
+      "sha256": "5f4b0df9b91ade5989e13f268593a275acd1552b69c8220bbf78ec759946de24"
+    }
+  ]
+}

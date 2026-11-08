@@ -1,6 +1,6 @@
 # Every screen the build has today
 
-[designed: T176] One row per captured screen: what it shows, the keys **it prints itself**, and the
+[designed: T204] One row per captured screen: what it shows, the keys **it prints itself**, and the
 original screen it stands for ([the original's inventory](../original-game/screen-inventory.md)).
 Keys are quoted from the screen's own hint line, which is the build's own statement of them; where a
 key is in the code but not printed, the row says so. "Differs" records a difference from the

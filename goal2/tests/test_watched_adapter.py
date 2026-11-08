@@ -48,11 +48,13 @@ def direct_image(state, year=None):
     return image
 
 
-def direct(state, fixture, year=None, seed=None, delay=None):
+def direct(state, fixture, year=None, seed=None, delay=None, substitutions=None):
     """[designed: #500] The reference arm: the vendored original engine under Unicorn, in this process (PyPy, which
-    plays goal2's route, cannot load Unicorn)."""
+    plays goal2's route, cannot load Unicorn). `substitutions`: the budget, as the route's (BM-7's 255 for a watched
+    friendly, T180); None is the kit's default."""
     match = Match(direct_image(state, year), fixture, managed=state.managed_country,
-                  captain=state.captain or None, seed=seed, record_draws=True, delay_byte=delay)
+                  captain=state.captain or None, seed=seed, record_draws=True, delay_byte=delay,
+                  substitutions=substitutions)
     events = []
     for ev in match.events():
         events.append(asdict(ev))
@@ -98,6 +100,7 @@ class WatchedAdapter(unittest.TestCase):
               f'decisions={[d["context"] for d in got.result["decisions"]]} PASS', flush=True)
         return got
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_ten_strict_t62_inputs(self):
         for seed, want in requires.cases(EXPECTED_FAMILY.items()):  # [designed: #275] all ten with GOAL2_SLOW=1
             with self.subTest(seed=hex(seed)):
@@ -277,6 +280,18 @@ class WatchedAdapter(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'refused'):
                 run_watched_match(s,self.raw,Fixture(7,19,21))
         self.assertEqual(s,before)
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        WatchedAdapter('test_year_mapping_pinned_to_f025_both_start_calendars_and_wrap'),
+        WatchedAdapter('test_invalid_inputs_do_not_mutate_active_state'),
+        WatchedAdapter('test_each_default_decision_is_explicitly_answered'),
+        WatchedAdapter('test_distinct_same_minute_notices_are_not_a_no_progress_loop'),
+        WatchedAdapter('test_default_decision_policy_and_refusal_fail_closed'),
+    ])
+
 
 
 if __name__ == '__main__':unittest.main()

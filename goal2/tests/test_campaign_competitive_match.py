@@ -164,4 +164,13 @@ class CompetitiveAdapterTests(unittest.TestCase):
             self.assertEqual(bad,before)
 
 
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        CompetitiveAdapterTests('test_competitive_preparation_preserves_public_friendly_gate'),
+        CompetitiveAdapterTests('test_source_context_is_explicit_and_invalid_changes_are_atomic'),
+    ])
+
+
+
 if __name__=='__main__':unittest.main()

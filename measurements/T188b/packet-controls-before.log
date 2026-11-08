@@ -1,0 +1,132 @@
+test_actual_roster_and_budget_refresh_before_play_without_a_second_command (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_actual_roster_and_budget_refresh_before_play_without_a_second_command) ... This plugin does not support propagateSizeHints()
+ERROR
+test_clicked_pair_uses_the_same_consumed_once_path (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_clicked_pair_uses_the_same_consumed_once_path) ... This plugin does not support propagateSizeHints()
+FAIL
+test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play) ... This plugin does not support propagateSizeHints()
+FAIL
+test_injured_withdrawn_player_keeps_the_actual_match_injury_marker (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_injured_withdrawn_player_keeps_the_actual_match_injury_marker) ... This plugin does not support propagateSizeHints()
+FAIL
+test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes) ... This plugin does not support propagateSizeHints()
+FAIL
+test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available) ... This plugin does not support propagateSizeHints()
+ERROR
+test_reopening_and_playing_do_not_resubmit_the_applied_pair (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_reopening_and_playing_do_not_resubmit_the_applied_pair) ... This plugin does not support propagateSizeHints()
+FAIL
+test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note) ... This plugin does not support propagateSizeHints()
+FAIL
+test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+ERROR: test_actual_roster_and_budget_refresh_before_play_without_a_second_command (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_actual_roster_and_budget_refresh_before_play_without_a_second_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 67, in test_actual_roster_and_budget_refresh_before_play_without_a_second_command
+    self.assertFalse(self.bench.pending)
+                     ^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchScreen' object has no attribute 'pending'. Did you mean: 'bindings'?
+
+======================================================================
+ERROR: test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 80, in test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available
+    self.assertFalse(self.bench.pending)
+                     ^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchScreen' object has no attribute 'pending'. Did you mean: 'bindings'?
+
+======================================================================
+FAIL: test_clicked_pair_uses_the_same_consumed_once_path (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_clicked_pair_uses_the_same_consumed_once_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 127, in test_clicked_pair_uses_the_same_consumed_once_path
+    self.assertEqual(self.sent,[([[self.off,self.on]],{'edit_only':True})])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [([[382, 393]], {'edit_only': True})]
+
+Second list contains 1 additional elements.
+First extra element 0:
+([[382, 393]], {'edit_only': True})
+
+- []
++ [([[382, 393]], {'edit_only': True})]
+
+======================================================================
+FAIL: test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 137, in test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play
+    self.assertEqual(self.bench.answer.record(self.off)[15],confirmed)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 17 != 0
+
+======================================================================
+FAIL: test_injured_withdrawn_player_keeps_the_actual_match_injury_marker (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_injured_withdrawn_player_keeps_the_actual_match_injury_marker)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 104, in test_injured_withdrawn_player_keeps_the_actual_match_injury_marker
+    self.assertEqual(len(self.sent),1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 97, in test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes
+    self.assertEqual(self.bench.answer.chosen,[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [[382, 393]] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+[382, 393]
+
+- [[382, 393]]
++ []
+
+======================================================================
+FAIL: test_reopening_and_playing_do_not_resubmit_the_applied_pair (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_reopening_and_playing_do_not_resubmit_the_applied_pair)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 116, in test_reopening_and_playing_do_not_resubmit_the_applied_pair
+    self.assertEqual(self.bench.answer.chosen,[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [[382, 393]] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+[382, 393]
+
+- [[382, 393]]
++ []
+
+======================================================================
+FAIL: test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 110, in test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note
+    self.assertNotEqual(self.controller.note,REQUESTED)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Bench requested: the bench opens when the original stops for it.' == 'Bench requested: the bench opens when the original stops for it.'
+
+======================================================================
+FAIL: test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 56, in test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it
+    self.assertEqual(self.sent,[([[self.off,self.on]],{'edit_only':True})])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [([[382, 393]], {'edit_only': True})]
+
+Second list contains 1 additional elements.
+First extra element 0:
+([[382, 393]], {'edit_only': True})
+
+- []
++ [([[382, 393]], {'edit_only': True})]
+
+----------------------------------------------------------------------
+Ran 9 tests in 12.153s
+
+FAILED (failures=7, errors=2)

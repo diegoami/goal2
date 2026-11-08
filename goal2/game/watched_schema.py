@@ -71,15 +71,21 @@ def validate_result(result, *, competitive=False):
     return PORT_ENGINE_ID if port else {'1':LEGACY_ENGINE_ID,'2':KIT2_ENGINE_ID}.get(kit,ENGINE_ID)
 
 
+# [confirmed: F027 §4, the original's five a side; designed: owner BM-7, T180: goal2/core/patches.py OWNER's 255]
+FRIENDLY_BUDGETS = ([5, 5], [255, 255])
+
+
 def _friendly_kit2(result):
-    """[designed: T51a; confirmed: PR255 _competitive] The public friendly profile accepts original default-budget friendlies only.
+    """[designed: T51a; confirmed: PR255 _competitive] The public friendly profile accepts original default-budget friendlies,
+    and [designed: owner BM-7, #73; T180] BM-7's unlimited budget (watched_match.FRIENDLY_SUBSTITUTIONS a side), which
+    the engine server gives every watched friendly since T180.
     [designed: T51] Competitive jobs select a distinct explicit profile.
     """
     score=result['score'];winner=2 if score[0]==score[1] else int(score[1]>score[0])
     if (type(result['kind']) is not int or result['kind']!=1
             or not integer(result['winner'],0,2) or result['winner']!=winner
             or result['score_90'] is not None or result['extra_time'] is not False
-            or result['shootout'] is not None or result['substitution_budget']!=[5,5]
+            or result['shootout'] is not None or result['substitution_budget'] not in FRIENDLY_BUDGETS
             or any(type(v) is not int for v in result['substitution_budget'])):
         raise ValueError('unsupported watched kit2 friendly resolution or budget')
     _players(result)
@@ -170,6 +176,12 @@ def _details(result,*,competitive=False):
     for row in result['decisions']:
         _object(row,{'context','minute','answer'});_text(row['context']);_number(row['minute'])
         answer=row['answer']
+        if row['context']=='set_piece':
+            # [designed: T167, #541] the watching player's set-piece taker (the kit's Match.answer(taker=...)):
+            # a player word, or None for no key (the original's current pick stands, F030)
+            _object(answer,{'taker'})
+            if answer['taker'] is not None:_number(answer['taker'],1,3060)
+            continue
         if competitive and row['context']=='shootout_order':
             _object(answer,{'shootout_order'})
             words=answer['shootout_order']
@@ -178,7 +190,35 @@ def _details(result,*,competitive=False):
                 raise ValueError('invalid shootout order')
             if result['shootout'] is None:raise ValueError('shootout order without shootout')
             continue
-        _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'})
+        # [designed: #636; required upstream695 API] New kit4 answer profiles
+        # remain disjoint from legacy pair/tactics answers and from each other.
+        if row['context'] == 'substitution_opportunity':
+            _object(answer, {'opportunity'})
+            if (result['kit'] != '4' or type(answer['opportunity']) is not str
+                    or answer['opportunity'] not in ('accept', 'dismiss', 'timeout')):
+                raise ValueError('invalid completed substitution opportunity')
+            continue
+        request = {'request_substitution'} if isinstance(answer,dict) and 'request_substitution' in answer else set()
+        request_tactics = answer.get('tactics') if isinstance(answer,dict) else None
+        valid_request_tactics = (isinstance(request_tactics,list) and len(request_tactics) <= 8
+            and all(isinstance(e,(list,tuple)) and len(e)==2 and integer(e[0],1,8)
+                    and type(e[1]) is bool for e in request_tactics))
+        if request and (not valid_request_tactics or result['kit'] != '4' or row['context'] != 'pause'
+                or type(answer['request_substitution']) is not bool or answer.get('edit_only') is not True
+                or any(answer.get(k) != [] for k in ('substitutions','positions','marking','own_tactics'))
+                or answer.get('quick') is not False or answer.get('speed') is not None):
+            raise ValueError('invalid completed standalone request')
+        edit={'edit_only'} if isinstance(answer,dict) and 'edit_only' in answer else set()
+        paused_tactics = (isinstance(answer,dict) and row['context'] in ('pause','extra_time')
+            and isinstance(answer.get('tactics'),list) and 1 <= len(answer['tactics']) <= 8
+            and all(isinstance(e,(list,tuple)) and len(e)==2 and integer(e[0],1,8)
+                    and type(e[1]) is bool for e in answer['tactics'])
+            and all(answer.get(k)==[] for k in ('substitutions','positions','marking','own_tactics')))
+        if edit and (result['kit']!='4' or not (row['context'] in ('half_time','substitution') or paused_tactics or request)
+                     or answer['edit_only'] is not True or answer.get('quick') is not False
+                     or answer.get('speed') is not None):
+            raise ValueError('invalid stopped-edit decision')
+        _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'}|edit|request)
         if type(answer['quick']) is not bool or (answer['speed'] is not None and not integer(answer['speed'],0,255)):
             raise ValueError('invalid watched decision policy')
         for key in ('substitutions','tactics','positions','marking','own_tactics'):
@@ -378,3 +418,62 @@ def validate_history(row,kind=None):
     elif schema==RESULT_SCHEMA and type(schema) is int:
         if set(row)!=keys or (kind is not None and kind!=1):raise ValueError('invalid friendly history profile')
     else:raise ValueError('invalid watched campaign result schema')
+
+
+def validate_player_records(data, *, required=False):
+    """[designed: T196; accepted upstream682] Bounded immutable record source at a decision.
+    Legacy data omits this field; requested live data must contain every current nonzero squad word.
+    """
+    # [designed: #646; upstream697] Optional on legacy waiting decisions, but
+    # an included current TEAM context must be complete and strictly typed.
+    if 'team_context' in data:
+        context=data['team_context']
+        if ('player_records' not in data or not isinstance(context,dict)
+                or set(context)!={'match_set_up','in_match_menu_used','sides'}
+                or not integer(context['match_set_up'],0,255)
+                or not integer(context['in_match_menu_used'],0,255)
+                or type(context['sides']) is not list or len(context['sides'])!=2
+                or not all(integer(side,1,128) for side in context['sides'])
+                or context['sides'][0]==context['sides'][1]):
+            raise ValueError('invalid live TEAM context')
+    if 'player_records' not in data:
+        if required:raise ValueError('missing live player records snapshot')
+        return
+    rows=data['player_records']
+    eleven,bench=data.get('eleven'),data.get('bench')
+    if (not isinstance(eleven,(list,tuple)) or not isinstance(bench,(list,tuple))
+            or len(eleven)+len(bench)>20):
+        raise ValueError('invalid live player records roster')
+    words=[*eleven,*bench]
+    if (not isinstance(rows,list) or len(rows)>20 or not words or len(words)>20
+            or any(not integer(w,0,3060) for w in words)):
+        raise ValueError('invalid live player records')
+    expected=[w for w in words if w]
+    if len(set(expected))!=len(expected) or len(rows)!=len(expected):
+        raise ValueError('invalid live player records membership')
+    for expected_word,row in zip(expected,rows):
+        if (not isinstance(row,(list,tuple)) or len(row)!=2 or not integer(row[0],1,3060)
+                or row[0]!=expected_word or not isinstance(row[1],str)
+                or re.fullmatch('[0-9a-f]{40}',row[1]) is None):
+            raise ValueError('invalid live player records snapshot')
+
+
+def validate_substitution_decision(data, *, required=False):
+    """[designed: #636] Strict opt-in request latch and timed opportunity envelope."""
+    contexts = ('half_time','substitution','pause','extra_time','shootout_order','set_piece','substitution_opportunity')
+    context = data.get('context')
+    if required and context not in contexts:
+        raise ValueError('unknown substitution-control decision context')
+    if required and 'request_substitution' not in data:
+        raise ValueError('missing authoritative substitution request')
+    if 'request_substitution' in data and type(data['request_substitution']) is not bool:
+        raise ValueError('substitution request must be a boolean')
+    timing = {'keeper_unavailable','timeout_polls','poll_ms'}
+    if context == 'substitution_opportunity':
+        if (not required or not timing <= set(data) or type(data['keeper_unavailable']) is not bool
+                or type(data['timeout_polls']) is not int or type(data['poll_ms']) is not int
+                or data['timeout_polls'] != (1000 if data['keeper_unavailable'] else 400)
+                or data['poll_ms'] != 10 or type(data.get('substitutions_now')) is not bool):
+            raise ValueError('invalid timed substitution opportunity')
+    elif 'timeout_polls' in data or 'poll_ms' in data:
+        raise ValueError('opportunity timing outside its decision context')

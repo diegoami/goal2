@@ -1,0 +1,35 @@
+test_actual_owned_route_match_equals_direct_accepted_events_and_return (goal2.tests.test_owned_match_driver_t170c1.ActualOwnedRoute.test_actual_owned_route_match_equals_direct_accepted_events_and_return) ... FAIL
+test_false_cancellation_opportunity_and_prompt_answers (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_false_cancellation_opportunity_and_prompt_answers) ... ok
+test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail) ... ok
+test_refusal_unknown_context_and_invalid_answers_remain_errors (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_refusal_unknown_context_and_invalid_answers_remain_errors) ... ok
+test_same_object_detached_order_and_single_edit_report (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_same_object_detached_order_and_single_edit_report) ... ok
+test_tick_sequence_pause_drop_and_event_watermarks (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_tick_sequence_pause_drop_and_event_watermarks) ... ok
+
+======================================================================
+FAIL: test_actual_owned_route_match_equals_direct_accepted_events_and_return (goal2.tests.test_owned_match_driver_t170c1.ActualOwnedRoute.test_actual_owned_route_match_equals_direct_accepted_events_and_return)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 125, in actual_owned_route
+    assert parent.m.read(0,MEM_SIZE)==parent_before and parent.record==record_before
+AssertionError
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 161, in test_actual_owned_route_match_equals_direct_accepted_events_and_return
+    receipt=pypy_engine.call(__name__+':actual_owned_route',raw)
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+AssertionError
+
+----------------------------------------------------------------------
+Ran 6 tests in 167.321s
+
+FAILED (failures=1)

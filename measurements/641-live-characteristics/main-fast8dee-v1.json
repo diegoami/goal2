@@ -1,0 +1,12 @@
+{
+  "source_commit": "8dee0728f682360ae3ab990606164da15e23e797",
+  "default_fast_modules_pass": 215,
+  "declared_slow_exclusions": 236,
+  "exit": {
+    "exit_code": 0,
+    "ended_utc": "2026-11-08T11:50:17+00:00"
+  },
+  "raw_log_sha256": "0a1c582b92bf8fea16fc54dfee97b806a142a0f809f93506ce98d5f32386c890",
+  "raw_log_private_path": "/home/diego/projects/m3-trackb/goal2-ci-policy/.cache/jobs/ui641-main-fast-8dee.log",
+  "filter": "test summaries only; no game/event/result comparison altered"
+}

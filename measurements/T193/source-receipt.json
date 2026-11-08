@@ -1,0 +1,62 @@
+{
+  "baseline_application": "c5ad5d820a445690b4dbc066116a8f9b0045af58",
+  "source_sha256": {
+    "goal2/ui/squad_card.py": "9c22077d09e12d0f7cbadaeb25cbb9e4efa24ae43f41cd1c6d7f0eb594a97e77",
+    "goal2/ui/s19_bench.py": "ce2c5213184905a1a23ba82ad3cd2ddb67508cca604df86bd9151483d9ff36e6",
+    "goal2/tests/test_player_card_table_t193.py": "b1bf505a1bc73663368af64453383ad38ba1b608dbed8d37b90e18d9e8c718e7",
+    "measurements/T193/capture.py": "7751c3ac3e6e1a2551ebd9ffa1a28af27bafa498f5fc6570c732fce6d7ce45bb",
+    "pyproject.toml": "7e28f9870aa48a13867f4e272417bcd9b758cef0b5b5487bded2a9fc89038f86",
+    "goal2/game/player_card.py": "b1b4d743631fd35eca35ffa7b1cec4b8fd05a652955ec9f17fc13b100e21924d"
+  },
+  "linux_focused": {
+    "tests": 63,
+    "passed": 62,
+    "skipped": 1,
+    "seconds": 67.184,
+    "skip": "separate declared slow actual-engine immediate-bench test"
+  },
+  "native_windows_offscreen": {
+    "tests": 6,
+    "passed": 6,
+    "seconds": 31.134,
+    "isolated_temporary_data": true,
+    "visible_or_activated_window": false
+  },
+  "display_captures": {
+    "before": 12,
+    "linux_after": 12,
+    "native_windows_after": 12,
+    "sizes": [
+      [
+        1440,
+        900
+      ],
+      [
+        1800,
+        1125
+      ],
+      [
+        2110,
+        1213
+      ]
+    ],
+    "source": "isolated template career; long fields/refusal explicitly synthetic UI packets; no natural-play claim",
+    "paint": "normal initial page paint; no stylesheet reset"
+  },
+  "font_baseline": 24,
+  "game_data_or_engine_changes": false,
+  "live_record_freshness_fixed": false,
+  "performance_parent": "8230e47226da642e7d1b071042534a305ec8edea",
+  "combined_tested_head": "7ef76f88aaec9549e9a4d889ff76dba4e058d61a",
+  "combined_linux": {
+    "tests": 68,
+    "passed": 67,
+    "skipped": 1,
+    "seconds": 78.3
+  },
+  "combined_native_windows_offscreen": {
+    "tests": 6,
+    "passed": 6,
+    "seconds": 40.153
+  }
+}

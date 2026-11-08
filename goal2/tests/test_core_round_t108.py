@@ -644,5 +644,13 @@ class Desktop(unittest.TestCase):
         self.assertEqual(model.core.wait.kind, "manager-menu")
 
 
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        loader.loadTestsFromTestCase(Runner327),
+    ])
+
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,31 @@
+{
+  "cases": [
+    {
+      "name": "first-start",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [
+        "box 615x265 squeezed below 616x249"
+      ],
+      "screenshot": "first-start.png",
+      "sha256": "36985e0112d96824ce0d832538dab599eeba19f6286835d1f215d457d1dd6016"
+    }
+  ],
+  "passed": false,
+  "kind": "native packaged rendering; declared UI packets",
+  "requested_factor": "2",
+  "goal2": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-T186-20261106\\final\\goal2-0.1.0-win64\\python\\Lib\\site-packages\\goal2\\__init__.py",
+  "python": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-T186-20261106\\final\\goal2-0.1.0-win64\\python\\python.exe",
+  "profile_isolated": true,
+  "qpa": "windows",
+  "font_family": "PxPlus IBM VGA 8x16",
+  "font_baseline": 24,
+  "rendered_label_px": 12,
+  "stage": "font_baseline",
+  "error": "AssertionError: ['box 615x265 squeezed below 616x249']"
+}

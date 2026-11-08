@@ -1,0 +1,25 @@
+test_unchanged640request_swap_and_tactic_journey_exposes_current_traits_without_state_writes (goal2.tests.test_live_tactics_worker_641.ActualLiveTraits.test_unchanged640request_swap_and_tactic_journey_exposes_current_traits_without_state_writes) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_unchanged640request_swap_and_tactic_journey_exposes_current_traits_without_state_writes (goal2.tests.test_live_tactics_worker_641.ActualLiveTraits.test_unchanged640request_swap_and_tactic_journey_exposes_current_traits_without_state_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_worker_641.py", line 93, in test_unchanged640request_swap_and_tactic_journey_exposes_current_traits_without_state_writes
+    result=run_journey(self,'accept')
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_actual_636.py", line 201, in run_journey
+    desk.highlight(PLAY_NEXT);key(window,Qt.Key.Key_Return);walk.run()
+                                                            ~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_ui_bench_t180.py", line 77, in pump
+    raise AssertionError(f"{what} within {limit} s")
+AssertionError: the request-accept match day did not return to the desk within 1500 s
+
+----------------------------------------------------------------------
+Ran 1 test in 1513.277s
+
+FAILED (failures=1)

@@ -1,0 +1,18 @@
+test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write (goal2.tests.test_country_header_render_t201.HeaderViews.test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write) ... This plugin does not support propagateSizeHints()
+ok
+test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback (goal2.tests.test_country_header_render_t201.HeaderViews.test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback) ... ok
+test_active_snapshot_uses_original_gate_side_and_full_viewport (goal2.tests.test_team_card_panels_t198.Panels.test_active_snapshot_uses_original_gate_side_and_full_viewport) ... This plugin does not support propagateSizeHints()
+ok
+test_all128_original_snapshot_cards_render_exact_panels_without_state_write (goal2.tests.test_team_card_panels_t198.Panels.test_all128_original_snapshot_cards_render_exact_panels_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers (goal2.tests.test_team_card_panels_t198.Panels.test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 21.169s
+
+OK

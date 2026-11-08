@@ -1,0 +1,15 @@
+test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) ... ok
+test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides (goal2.tests.test_live_team_context_646.LiveTeamContext.test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.793s
+
+OK

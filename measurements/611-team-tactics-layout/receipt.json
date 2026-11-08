@@ -1,0 +1,18 @@
+{
+  "application_head": "8796ef50822ebc24c6eca25814b44ff19a74cbc4",
+  "scope": "Rebuilt pre-match S10; normal Continue then desk T from private UI-created T191 save. Different country/year from retained original, so layout comparison only, not numerical or whole-screen pixel equality. Offscreen Linux Qt, no owner game interaction.",
+  "source_sha256": {
+    "goal2/ui/s10_team_tactics.py": "c662ce2070dbd6c0fb0165af831c15c3c273e711fc08c7d33ee8db4f3e85742c",
+    "goal2/ui/squad_card.py": "f191ef041aa32e1f0ee3ad57a5e4cac05adce7665ceb8a20ebd8aeff70f629e7",
+    "goal2/ui/team_card.py": "cddea4f7878909ba016abf396933cf248a4afaff6697117b8b2f3ede7c257330",
+    "goal2/ui/s04_country.py": "59bf477717fba4085c5daa2d6a8fbd6c5025cb2b2e39d1ca068467b425745088",
+    "docs/original-game/images/t156-033-team-tactics.png": "eec7e2f42db507e55b95278244b89803e2cafc2fd2df67248509383bde58cb29"
+  },
+  "captures_sha256": {
+    "tactics-1440x900.png": "330a0e6822f993802a123bc4f7ac400757a8272281de609774dc40166161b7e5",
+    "tactics-1800x1125.png": "acae97ac5a442cb55c9e6c0542c6e8770c9bd7f48767d030ae5f4ca41b88e3e5",
+    "tactics-2110x1213.png": "195ad4fe228f810e88e5852b2454e42e0c653ae4c76327991fb3653e39ad9b24"
+  },
+  "inputs": "Existing private T191 named-save target; not committed. No match played; no new native Windows proof.",
+  "characteristics": "hardness tough \u00b7 fitness match fit \u00b7 energy vivacious \u00b7 morale not bad"
+}

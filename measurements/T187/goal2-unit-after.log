@@ -1,0 +1,10 @@
+test_initial_explicit_captain_is_still_selected (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_initial_explicit_captain_is_still_selected) ... ok
+test_later_captain_choice_uses_the_guests_eligible_default (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_later_captain_choice_uses_the_guests_eligible_default) ... ok
+test_set_piece_target_selection_is_preserved (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_set_piece_target_selection_is_preserved) ... ok
+test_withdrawn_captain_is_not_forced_from_bench_slot_fourteen (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_withdrawn_captain_is_not_forced_from_bench_slot_fourteen) ... ok
+test_zero_kickoff_seed_and_delay_are_not_reapplied_later (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_zero_kickoff_seed_and_delay_are_not_reapplied_later) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.000s
+
+OK

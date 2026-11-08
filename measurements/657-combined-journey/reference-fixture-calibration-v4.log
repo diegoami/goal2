@@ -1,0 +1,49 @@
+This plugin does not support propagateSizeHints()
+fresh Austria career through S02/S03/S04 UI
+JOURNEY RoundScreen:before
+JOURNEY MenuScreen:before
+JOURNEY PitchScreen
+commentary Space holds and resumes
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+saved goal through S21 keys
+JOURNEY BenchScreen:now
+immediate legal swap substitution
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+immediate legal swap half_time
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+saved summary through S21 keys
+JOURNEY MenuScreen:full
+JOURNEY DeskScreen
+Traceback (most recent call last):
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 163, in <module>
+    outcome=play_through_bridge(reference,controller.choices,pause_after=walk.out['pause_after'])
+  File "/tmp/goal2-combined-journey-a/goal2/tests/match_day_policy.py", line 68, in play_through_bridge
+    token = jobs.start(**options) if competitive else jobs.start(fixture, **options)
+                                                      ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/game/watched_jobs.py", line 389, in start
+    job = self.publication.begin(fixture)
+  File "/tmp/goal2-combined-journey-a/goal2/game/watched_publication.py", line 132, in begin
+    else:prepare_watched(candidate,self.owner.template_bytes,fixture)
+         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/game/watched_match.py", line 50, in prepare_watched
+    return _prepare_match(state,original,fixture,competitive=False)
+  File "/tmp/goal2-combined-journey-a/goal2/game/watched_match.py", line 61, in _prepare_match
+    raise ValueError('a source Fixture is required')
+ValueError: a source Fixture is required

@@ -1,0 +1,18 @@
+test_season_session_t170b (unittest.loader._FailedTest.test_season_session_t170b) ... ERROR
+
+======================================================================
+ERROR: test_season_session_t170b (unittest.loader._FailedTest.test_season_session_t170b)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_season_session_t170b
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_season_session_t170b.py", line 10, in <module>
+    from goal2.game.season import SeasonSession,canonical_hash
+ModuleNotFoundError: No module named 'goal2.game.season'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

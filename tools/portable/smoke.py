@@ -11,6 +11,11 @@ its Wbem (no Python, no Git; checked), no PYTHONPATH, and its working directory 
 3. One watched match (smoke_match.py) played by the bundled CPython with the launcher's environment, its worker under
    the bundled PyPy, equals the same match played from the source tree (--source on PYTHONPATH, --reference-python with
    --reference-engine as its worker); it uses the original files in --cache, outside the build.
+4. [designed: owner, 2026-11-03, T169] `goal2-new.cmd --help` (through cmd.exe) exits 0.
+5. The new window (smoke_window.py), offscreen under the bundled CPython with the launcher's environment, on a fresh
+   per-user folder: S01 first, a stand-in data folder (GOAL.DAT and the template copied from --cache into the work
+   folder, outside the build) imported through S01, then S02; then a new career's first friendly played on S17 to full
+   time, its worker the bundled PyPy.
 Also recorded, not checked: whether a worker started from pythonw.exe (as the desktop starts it) gets a console window,
 under pypy.exe and under pypyw.exe. The result (every check and timing) goes to --out; the exit status is 1 when a
 check fails.
@@ -115,6 +120,22 @@ def main(argv=None) -> int:
     checks["match"] = {"pass": bool(a and b) and all(a[k] == b[k] for k in keys), "packaged": a, "reference": b,
                        "packaged_s": s, "reference_s": fs,
                        "stderr": (r.stderr[-2000:] if a is None else "") + (f.stderr[-2000:] if b is None else "")}
+
+    # 4. the new window's launcher, as goal2.cmd's (T169)
+    r, s = run(f'"{comspec}" /d /s /c ""{root / "goal2-new.cmd"}" --help"', cwd=work, env=env)
+    checks["new_window_help"] = {"pass": r.returncode == 0, "exit": r.returncode, "s": s,
+                                 "help_text_seen": "new window" in r.stdout, "stderr": r.stderr[-2000:]}
+
+    # 5. the new window offscreen: S01's import, S02, and a friendly on S17 under the bundled PyPy (T169)
+    window = work / "smoke_window.py"        # a copy, as smoke_match.py's
+    shutil.copy2(HERE / "smoke_window.py", window)
+    shown = work / "window.json"
+    r, s = run([str(root / "python" / "python.exe"), str(window), "--cache", str(args.cache.resolve()),
+                "--at", str(work / "window"), "--out", str(shown), "--expect-root", str(root)],
+               cwd=work, env=dict(launched, QT_QPA_PLATFORM="offscreen"), timeout=2400)
+    w = json.loads(shown.read_text()) if shown.is_file() else None
+    checks["new_window"] = {"pass": r.returncode == 0 and bool(w and w.get("pass")), "exit": r.returncode, "s": s,
+                            "seen": w, "stderr": r.stderr[-2000:]}
 
     # recorded only: does a worker started from pythonw.exe get a console window?
     probe = work / "console"

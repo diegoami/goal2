@@ -8,7 +8,7 @@
 #   GOAL2_RUNNER_TOKEN=<token> bash tools/runner/setup-linux.sh   # or a token from Settings > Actions > Runners
 #
 # GOAL2_RUNNER_DIR (default ~/actions-runner/goal2) and GOAL2_RUNNER_NAME (default goal2-<host>-linux)
-# override the folder and the name. Run again to repair the service; an existing registration is kept.
+# override the folder and the name. GOAL2_GATE_JOBS=<n> caps each gate's jobs on a shared machine (#567). Run again to repair the service; an existing registration is kept.
 set -euo pipefail
 REPO=diegoami/goal2
 LABEL=goal2-slow-linux
@@ -27,8 +27,11 @@ need tar "apt install tar"
 need uv "curl -LsSf https://astral.sh/uv/install.sh | sh"
 need systemctl "a systemd user session (WSL: systemd=true in /etc/wsl.conf)"
 # offscreen Qt and SDL (the xcb ones ci.yml installs are for Qt's X11 windows, which the runs never open)
+# Read the listing once and match without a pipe: under pipefail `ldconfig -p | grep -q` failed whenever grep
+# matched before ldconfig had written a listing longer than a pipe holds (SIGPIPE), reporting installed ones (#547).
+libs=$(ldconfig -p 2> /dev/null || true)
 for lib in libEGL.so.1 libGL.so.1 libxkbcommon.so.0 libfontconfig.so.1 libdbus-1.so.3; do
-    ldconfig -p 2> /dev/null | grep -q "$lib" || missing+=("$lib (apt install libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3)")
+    [[ $libs == *"$lib"* ]] || missing+=("$lib (apt install libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3)")
 done
 if [ ${#missing[@]} -gt 0 ]; then
     printf 'missing: %s\n' "${missing[@]}" >&2
@@ -53,6 +56,16 @@ if [ ! -f .runner ]; then
     tar xzf "$tgz" && rm "$tgz"
     ./config.sh --unattended --url "https://github.com/$REPO" --token "$token" --name "$NAME" \
         --labels "$LABEL" --no-default-labels --work w --replace
+fi
+
+# [designed: owner, 2026-11-03, #567] A machine shared by several runners, or by a runner and a working session,
+# caps each gate's jobs: the runner reads its .env into every job, and check_premerge.py takes its default from it.
+if [ -n "${GOAL2_GATE_JOBS:-}" ]; then
+    case "$GOAL2_GATE_JOBS" in ''|*[!0-9]*|0*) echo "GOAL2_GATE_JOBS: a whole number of jobs, at least 1" >&2; exit 1 ;; esac
+    touch "$DIR/.env"
+    { grep -v '^GOAL2_GATE_JOBS=' "$DIR/.env" || true; echo "GOAL2_GATE_JOBS=$GOAL2_GATE_JOBS"; } > "$DIR/.env.new"
+    mv "$DIR/.env.new" "$DIR/.env"
+    echo "GOAL2_GATE_JOBS=$GOAL2_GATE_JOBS in $DIR/.env: restart the runner when it is idle (systemctl --user restart $UNIT)"
 fi
 
 mkdir -p "$HOME/.config/systemd/user"

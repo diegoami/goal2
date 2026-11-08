@@ -1,0 +1,11 @@
+test_match_menu_eleven_colours_the_full_names (goal2.tests.test_roster_colours_637.RosterColour.test_match_menu_eleven_colours_the_full_names) ... This plugin does not support propagateSizeHints()
+ok
+test_rendered_names_have_all_four_original_colours (goal2.tests.test_roster_colours_637.RosterColour.test_rendered_names_have_all_four_original_colours) ... This plugin does not support propagateSizeHints()
+ok
+test_selection_injury_and_unknown_role_stay_readable (goal2.tests.test_roster_colours_637.RosterColour.test_selection_injury_and_unknown_role_stay_readable) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.090s
+
+OK

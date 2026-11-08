@@ -1,0 +1,44 @@
+test_real_card_exposes_stars_without_changing_raw_rating_or_career (goal2.tests.test_player_performance_t192.CardData.test_real_card_exposes_stars_without_changing_raw_rating_or_career) ... FAIL
+test_blank_and_rated_players_render_original_stars_at_readable_sizes (goal2.tests.test_player_performance_t192.PerformanceScreen.test_blank_and_rated_players_render_original_stars_at_readable_sizes) ... This plugin does not support propagateSizeHints()
+FAIL
+test_original_thresholds_substitute_encoding_signed_words_and_blank (goal2.tests.test_player_performance_t192.PerformanceWord.test_original_thresholds_substitute_encoding_signed_words_and_blank) ... ERROR
+test_rejects_non_word_inputs_instead_of_inventing_a_rating (goal2.tests.test_player_performance_t192.PerformanceWord.test_rejects_non_word_inputs_instead_of_inventing_a_rating) ... ERROR
+
+======================================================================
+ERROR: test_original_thresholds_substitute_encoding_signed_words_and_blank (goal2.tests.test_player_performance_t192.PerformanceWord.test_original_thresholds_substitute_encoding_signed_words_and_blank)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-player-performance-a/goal2/tests/test_player_performance_t192.py", line 16, in test_original_thresholds_substitute_encoding_signed_words_and_blank
+    from goal2.game.player_card import performance_stars
+ImportError: cannot import name 'performance_stars' from 'goal2.game.player_card' (/tmp/goal2-player-performance-a/goal2/game/player_card.py)
+
+======================================================================
+ERROR: test_rejects_non_word_inputs_instead_of_inventing_a_rating (goal2.tests.test_player_performance_t192.PerformanceWord.test_rejects_non_word_inputs_instead_of_inventing_a_rating)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-player-performance-a/goal2/tests/test_player_performance_t192.py", line 21, in test_rejects_non_word_inputs_instead_of_inventing_a_rating
+    from goal2.game.player_card import performance_stars
+ImportError: cannot import name 'performance_stars' from 'goal2.game.player_card' (/tmp/goal2-player-performance-a/goal2/game/player_card.py)
+
+======================================================================
+FAIL: test_real_card_exposes_stars_without_changing_raw_rating_or_career (goal2.tests.test_player_performance_t192.CardData.test_real_card_exposes_stars_without_changing_raw_rating_or_career)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-player-performance-a/goal2/tests/test_player_performance_t192.py", line 38, in test_real_card_exposes_stars_without_changing_raw_rating_or_career
+    self.assertEqual(value.get('performance_bar'), expected, raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 0 : 32767
+
+======================================================================
+FAIL: test_blank_and_rated_players_render_original_stars_at_readable_sizes (goal2.tests.test_player_performance_t192.PerformanceScreen.test_blank_and_rated_players_render_original_stars_at_readable_sizes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-player-performance-a/goal2/tests/test_player_performance_t192.py", line 75, in test_blank_and_rated_players_render_original_stars_at_readable_sizes
+    self.assertNotIn('not recorded', facts)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not recorded' unexpectedly found in 'age 34 · caps 0 · goals 0 · 5\'11" · left foot · performance not recorded'
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.189s
+
+FAILED (failures=2, errors=2)

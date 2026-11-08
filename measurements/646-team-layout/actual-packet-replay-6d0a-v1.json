@@ -1,0 +1,34 @@
+{
+  "source": "6d0a8c57d432c5d1ee66788882f06a2e5457f91e",
+  "method": "Linux offscreen replay of a real native current packet and captured current UI state; not a second natural match",
+  "native_packet_sha256": "412945af307869dcd52c1cf4cc03b25489d141a754d245631786c53821002342",
+  "original_projection_equal": true,
+  "state_unchanged": true,
+  "images": [
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "file": "actual-native-packet-1440x900.png",
+      "sha256": "e378bbbc9f5d1f8153459a8fa19081d48db3bce66511f63c00683104533f93d1"
+    },
+    {
+      "size": [
+        1800,
+        1125
+      ],
+      "file": "actual-native-packet-1800x1125.png",
+      "sha256": "fbbc20204acf9c45fbf6ced4203ca7481eb4c3891c3a856ee6a1dabc224b444d"
+    },
+    {
+      "size": [
+        2110,
+        1213
+      ],
+      "file": "actual-native-packet-2110x1213.png",
+      "sha256": "80d9b1bc7459f2c54c0f6e2fd9423168af6706d8ab20e6880d6dbec5bd962d38"
+    }
+  ],
+  "score_scope": "S10 has no score display; replay score input is an explicit unused placeholder"
+}

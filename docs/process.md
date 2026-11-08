@@ -10,6 +10,13 @@ kept on the branch `local`.
 2. **A walking skeleton before the fan-out**, then rules behind its seams, best-evidenced first.
 3. **The first playable build**: the UI chain before more rules. Until it ships, only a bug that
    breaks play is scheduled (crash, stall, unwinnable game, save that will not load).
+4. **Parallel tracks on more computers.** [designed: owner, 2026-11-03, #509: "we should do this more often"]
+   When a plan splits into tracks that touch different repositories or different files, the main session
+   offers to run one track on another computer. It writes that session's whole starting prompt into the
+   repository (`docs/handover-<date>-<track>.md`: set-up, the track's steps, its reserved task numbers,
+   the files each track owns, merging by rebase and `--match-head-commit`, status on the plan's issue), and
+   gives the owner a one-line prompt that points at it. The first was m3's Track B
+   ([handover-2026-11-03-track-b.md](handover-2026-11-03-track-b.md)).
 
 ## 2. Task files
 
@@ -20,6 +27,23 @@ one, `git pull` and take the next free number.
 - **Split** a task likely to outlast about an hour of implementation, or one touching more than
   three independently mergeable layers, into tasks that each merge on their own.
 - The main session edits task files directly on `main`, the reason in the commit.
+- **Finding gaps is the main session's job, not the owner's.** [designed: owner, 2026-11-03: "keep finding gaps,
+  it is annoying having to spoonfeed you those"]
+  - **Before writing a task**, the main session checks it against the original's workflow. For a screen, its
+    Done-when tests every action on the design's *Actions* line, or names the action it leaves out with the
+    reason and an issue. It also checks what today's window does for the same step, so nothing working is lost.
+  - **Before merging**, the main session walks the player's journey through the merged screens, as the owner
+    would. It checks the key bar against the design, and asks whether a player can still do what the original
+    lets them do at that step. A gap that breaks play is filed and scheduled before the next task is written.
+  - **At each milestone**, before handing the owner a build, it plays the build's path end to end
+    (offscreen screenshots, or the capture process) and reports the gaps it found itself.
+- **Check the evidence before telling the owner what the original does.** [designed: owner, 2026-11-04: "confidently
+  incorrect anyone ?"; #583] A doc's tag is not proof: the main session told the owner the original draws the home
+  side light red, repeating `docs/design/ui-2026-11` §3, a claim generalised from one capture (Norway at home, in
+  its own red kit). The original computes each country's kit (`0791:1073`). Before answering a question about the
+  original's behaviour, open what the claim cites (the finding, the capture, the port), and say how sure the
+  evidence is. A claim resting on one capture is a guess about the rule until a second case or the code confirms
+  it.
 
 ## 3. The loop
 
@@ -33,53 +57,35 @@ one, `git pull` and take the next free number.
    owner asks for a review of it does the main session write the prompt
    (`tools/review_pr.sh <pr> <cli> <model> --print`); the owner runs it and the reviewer posts one
    comment. Rework goes back to the same branch; non-blocking findings become one `T<nn> follow-up` issue.
-4. **Checks**: every Done-when line on the PR head, and
-   `python3 tools/check_premerge.py --expected-head <sha>` in a clean checkout at that head
-   (it runs every game test module; a test whose optional dependency, original-game file or
-   goal2-archaeology checkout is absent skips with its reason, `goal2/tests/requires.py`).
-   [designed: owner, 2026-10-20] The slow tests (full matches under the emulator) run when it
-   counts: the gate runs them by itself when the commit changes what they guard since
-   `origin/main` (the engine, the core, watched and competitive matches, saves, the match view,
-   the dependencies: `SLOW_PATHS` in the script), and always with `--slow`, which every milestone
-   candidate uses. `--fast` never runs them; `--no-tests` leaves the game tests out.
-   [designed: owner, 2026-11-01, #505] By itself the gate turns the slow tests on only in the test modules
-   the changed files can reach (`tools/slow_reach.py`, from the import graph; `python3 tools/slow_reach.py
-   <file>` lists them); every other module runs its fast tests. The CI plumbing (this gate,
-   `tools/ci_changes.py`, `tools/slow_reach.py`, the slow workflows) is not in `SLOW_PATHS`: its own tests
-   check it. Every slow test runs with `--slow`: a milestone candidate and a dispatch of the slow workflows.
-   [designed: owner, 2026-11-02] No schedule (the owner's PC is not left on for it): when a PR starts a slow
-   run and that workflow's last dispatch is over 7 days old, it also dispatches a full run on `main`.
-   [designed: owner, 2026-10-20, #278] The **Windows** workflow (`.github/workflows/windows.yml`)
-   runs on every PR and on `main`. It runs the same gate on a native Windows runner, with real
-   Windows Qt and SDL, the `spawn` worker and Windows file replacement.
-   [designed: owner, 2026-11-01, #493] The **Windows slow** and **Linux slow** workflows
-   (`.github/workflows/windows-slow.yml`, `linux-slow.yml`) run the gate with `--slow` (every slow test,
-   every case) on the owner's own machines (self-hosted runners). Checks run only when needed: a draft PR
-   runs none; a ready PR's push runs the hosted checks when it changes more than docs, measurements and
-   Markdown, and the slow ones when it changes what the slow tests guard, judged since the PR's previous push
-   (`tools/ci_changes.py`); main runs the hosted ones only; a dispatch runs everything. The runners, adding
-   a machine, merging with these checks and the security rules: [runners.md](runners.md).
-   [designed: owner, 2026-10-29, T146] The **Linux** workflow (`.github/workflows/ci.yml`) runs the
-   same gate on every PR and on `main`, provisioned like a prepared checkout: the extras, the original
-   files from the owner's Drive (a missing secret fails it, except on a fork PR), the
-   goal2-archaeology clone, offscreen Qt and dummy SDL; dispatch it with **slow** for a full run. A
-   PR merges with it green as well. Locally, run the gate after `source .cache/cloud.env`: without
-   it, Qt and SDL use the WSLg display and the focus tests fail (T121, T134, T102, T138). With the original files
-   (the `GOAL2_RCLONE_TOKEN` secret) it also runs the worker, save, page and two-window scenarios.
-   [designed: owner, 2026-10-31, #487] With every match on the sealed port (T151), CPython plays a match in
-   10-20 times Unicorn's CPU, so CI's automatic slow runs play one case per batch test (`GOAL2_CASES=1`,
-   `goal2/tests/requires.py` `cases`); a dispatch with **slow** and the local gate play every case.
-   [designed: owner, 2026-11-01, #500] No test plays the sealed port in its own (CPython) process: a test
-   plays goal2's route the way goal2 does, in a child under `engine_python()` (PyPy 3.11, T152) through
-   `goal2/tests/pypy_engine.py` (`call`/`start`; an exception in the child is raised again as its type), and
-   the guard `goal2/tests/__init__.py` installs fails any test that starts the port in-process. The original
-   engine's reference runs (Unicorn, which PyPy cannot load) stay in CPython.
-   [designed: owner, 2026-11-01] Even so, a PR's CI ran past 90 minutes on the 4-CPU runners, so both
-   workflows' PR and `main` runs pass `--batch-fast`: the layout stage keeps its slow tests, the full
-   batch runs none. The match slow tests are the local gate's (every case, on the owner's machine); a
-   slow test failing only on Windows shows at the milestone's **slow** dispatch.
-   A PR merges with it green as well. Run it with **slow** from the Actions tab for a milestone
-   candidate. It uploads screenshots and logs only.
+4. **Checks** [designed: owner, 2026-11-07]:
+   - **Each PR:** run its task-specific focused tests, including the actual slow/fidelity cases that
+     establish the changed behavior, then `python3 tools/check_premerge.py --expected-head <sha>`
+     in the clean checkout. The default is the fast regression gate: every module's fast tests and
+     the cheap layout/reserve slow checks. Hosted Linux/Windows CI and native scaling checks stay required.
+     `--batch-fast` is the same scope; `--fast` also disables layout slow checks.
+   - **Integrated milestone:** run the complete suite once on Linux and once on Windows, with
+     `python3 tools/check_premerge.py --expected-head <candidate> --slow`, all cases, before the
+     milestone review/publication. The self-hosted Linux slow and Windows slow workflows are manual
+     dispatches for this purpose. PR pushes and weekly-age checks never dispatch full suites.
+     Do not run the same full suite again in the hosted workflow as well as the self-hosted one.
+   - **After a fix:** rerun affected tests. Repeat a full suite when changed behavior, dependencies,
+     fixtures, broad engine/protocol/save changes or a regression invalidate its coverage; record why.
+     `--affected` explicitly enables the import-graph slow scope for a justified investigation.
+     A new commit SHA or resolving an integration conflict does not itself require a full rerun.
+   - **Reuse receipts:** record the original tested SHA, new SHA, platform/runtime, test scope and
+     evidence that the exercised application/test code, dependencies and fixtures are unchanged.
+     Documentation, measurements and commit ancestry alone do not invalidate a result. For CI/test-tool
+     changes, validate that tooling with its focused regressions and retain unaffected game receipts.
+     Run clean-checkout, asset-exclusion and link/JSON checks at the new head. A failure still needs a
+     fix or the owner's explicit scoped exception; never turn a failed suite into a pass by relabelling it.
+   - Optional dependencies/original fixtures may skip with a recorded reason. Prepared milestone runs
+     must retain every available case and original reference, memory, event, RNG and publication assertion.
+     No assertion, case, seed, time limit or fixture guard is weakened by this scheduling policy.
+   - Matches still use the PyPy worker; original Unicorn references stay in CPython. Local Qt/SDL
+     tests use `.cache/cloud.env`. The one-local-gate/per-computer rule in §10 remains in force.
+
+   This owner decision supersedes older per-PR full-gate and automatic slow-workflow requirements,
+   including active task wording. See [validation.md](validation.md) for commands and receipt scope.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
    `git switch main && git pull`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <reviewed-sha>`, then
@@ -162,6 +168,9 @@ another session, model or computer.
   List other checkouts with `--checkout DIR` or `GOAL2_CHECKOUTS`.
 - **Checkpoint** before stopping, after a merge, when a long job starts or ends, and when a blocker
   is found. A checkpoint records state, not decisions: those go into the documents (CLAUDE.md rule 8).
+- **One local gate at a time per computer.** [designed: main session, 2026-11-03] WSL crashed twice on the owner's
+  main computer (21 GB) while two implementers each ran `check_premerge.py`. Each gate plays PyPy matches in
+  parallel. With several implementers running, the main session runs their gates one after another.
 - **Long jobs** (a gate, a slow study, a native probe) start with
   `python3 tools/jobs.py start <name> -- <command>`. They outlive the session; `list` says whether
   each is running, finished with its exit code, or vanished, and `wait <name>` waits by PID

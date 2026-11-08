@@ -1,0 +1,29 @@
+test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard) ... This plugin does not support propagateSizeHints()
+ok
+test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission) ... This plugin does not support propagateSizeHints()
+FAIL
+test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply) ... This plugin does not support propagateSizeHints()
+ok
+
+======================================================================
+FAIL: test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 74, in test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission
+    self.assertEqual(fixed_page.problems(self.window), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['enterHint 264x54 squeezed below 370x54',[71 chars]x28'] != []
+
+First list contains 3 additional elements.
+First extra element 0:
+'enterHint 264x54 squeezed below 370x54'
+
++ []
+- ['enterHint 264x54 squeezed below 370x54',
+-  'enterText 182x28 squeezed below 288x24',
+-  'kbd 26x28 squeezed below 76x28']
+
+----------------------------------------------------------------------
+Ran 3 tests in 30.775s
+
+FAILED (failures=1)

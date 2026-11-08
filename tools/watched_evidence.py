@@ -7,10 +7,11 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = "b519d999673c9458211279fd4da8a8325b9f56fe"
-# [designed: T150] The re-vendored kit (milestone m9-port-sealed-engine, #640, #641) is one source again:
-# the T118 build.py override (a1067ba0, archaeology T85/#396) is contained in it.
-SOURCE_OVERRIDES = {}
+SOURCE = "0f9f87f405282ce2a0461679ac71395d35e76e3a"
+# [designed: T170a] Reviewed m10 route closure, without public assistant wrapper
+# or campaign activation. Keep696screens and accepted698match as overrides;
+# all source/export/hash/ancestry guards remain unchanged.
+SOURCE_OVERRIDES = {'runtime/original_match/match.py': '70f38677edc351579ce59fb8bb2de2fdc9be9624', 'runtime/original_match/screens.py': 'c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4'}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",

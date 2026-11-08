@@ -1,6 +1,7 @@
 """[designed: T80] Real competitive subprocess parity plus explicit synthetic faults."""
 import copy
-from dataclasses import replace
+from contextlib import contextmanager
+from dataclasses import asdict, replace
 from functools import lru_cache
 import hashlib
 import json
@@ -12,11 +13,12 @@ import sys
 import tempfile
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from goal2.desktop.competitive import CompetitiveJobs, pending_fixture
 from goal2.desktop.model import DesktopModel
 from goal2.game.session_save import encode
-from goal2.game.watched_jobs import _write
+from goal2.game.engine_server import encode_packet
+from goal2.game.session_save import _json_value
 from goal2.tests.test_campaign_competitive_publication import campaign
 from goal2.tests.test_campaign_competitive_match import run
 from goal2.data.goaldat import load
@@ -33,42 +35,74 @@ def direct(kind):
 
 # [designed] Synthetic protocol fixtures replay a genuine accepted original outcome;
 # they deliberately do not claim another engine execution or fidelity evidence.
+# [designed: T160] The replay is a stand-in engine process: the protocol's replies (goal2.game.engine_server's
+# packets) to the match request, then it waits for the next request as the engine does. [designed: T161] The fixture
+# file holds those replies as the engine sends them: each event, then `complete` with the memory as its payload.
 REPLAY = r'''
-import copy,json,struct,sys,time,signal
+import json,os,struct,sys,time,signal
 from pathlib import Path
-from goal2.game.watched_jobs import _write
-from goal2.game.session_save import _restore_json_value
-mode,fixture_file=sys.argv[1:3];source=Path(sys.argv[3]);journal=Path(sys.argv[4])
-request=json.loads((source.parent/'request.json').read_text());token=request['token']
+from goal2.game.engine_server import read_packet, encode_packet
+from goal2.game.session_save import _json_value, _restore_json_value
+mode,fixture_file=sys.argv[1:3]
+out=sys.stdout.buffer
 if mode=='ignore':signal.signal(signal.SIGTERM,signal.SIG_IGN)
+def send(kind,value=None,payload=b''):out.write(encode_packet({'kind':kind,'value':_json_value(value)},payload));out.flush()
 packets=[]
 with open(fixture_file,'rb') as stream:
- while header:=stream.read(4):
-  packets.append(_restore_json_value(json.loads(stream.read(struct.unpack('!I',header)[0])),'fixture'))
-if mode=='partial':journal.write_bytes(b'\x00\x00');sys.exit(0)
-if mode=='malformed':journal.write_bytes(struct.pack('!I',1)+b'{');sys.exit(0)
-if mode=='death':sys.exit(4)
-with journal.open('ab') as stream:
+ while (packet:=read_packet(stream)) is not None:
+  packets.append((packet[0]['kind'],_restore_json_value(packet[0]['value'],'fixture'),packet[1]))
+send('ready',{'implementation':'stand-in','version':[0,0],'pid':os.getpid()})
+def requests():
+ while True:
+  packet=read_packet(sys.stdin.buffer)
+  if packet is None or packet[0]['op']=='quit':sys.exit(0)
+  yield packet[0]
+for request in requests():
+ if request['op']=='open':send('opened');continue
+ if request['op']!='match':continue
+ if mode=='partial':out.write(b'\x00\x00');out.flush();sys.exit(0)
+ if mode=='malformed':out.write(struct.pack('!I',1)+b'{');out.flush();sys.exit(0)
+ if mode=='death':sys.exit(4)
  if mode in ('blocked','ignore'):
-  from goal2.engine.original_match.match import Event
-  _write(stream,token,0,'event',Event('full_time',90,(0,0)))
+  send('event',{'kind':'full_time','minute':90,'score':(0,0),'data':{}})
   time.sleep(60);sys.exit(0)
- sequence=0
- for _,_,kind,value in packets:
+ for kind,value,payload in packets:
   if mode=='tail' and kind=='event' and value['kind']=='end':continue
   if kind=='complete':
+   if mode=='hold':
+    while not Path(sys.argv[3]).exists():time.sleep(.005)
    if mode=='tail':value['events']=[e for e in value['events'] if e['kind']!='end']
    if mode=='result':value['result']['first']=19
-   if mode=='memory':value['memory']='eA=='
    if mode=='mismatch':value['events'][0]['minute']+=1
-  _write(stream,'wrong' if mode=='identity' else token,sequence,kind,value);sequence+=1
- if mode=='duplicate':_write(stream,token,sequence,'complete',packets[-1][3])
- if mode=='trailing':stream.write(b'\x00\x00')
- if mode=='waitexit':
-  (source.parent/'ready').write_text('complete')
-  while not (source.parent/'release').exists():time.sleep(.005)
-sys.exit(5 if mode=='nonzero' else 0)
+   memory=b'x' if mode=='memory' else payload
+   send('complete',value,memory)
+  else:send(kind,value)
+ if mode=='duplicate':send('complete',value,memory)
+ if mode=='trailing':out.write(b'\x00\x00');out.flush();sys.exit(0)
+ if mode=='nonzero':sys.exit(5)
+ send('settled')
 '''
+
+
+@contextmanager
+def _precise_heartbeat_clock():
+    """[designed: #642] Scope Windows sleep precision to this timing fixture only."""
+    if sys.platform != 'win32':
+        yield
+        return
+    import ctypes
+    winmm = ctypes.WinDLL('winmm')
+    for name in ('timeBeginPeriod', 'timeEndPeriod'):
+        function = getattr(winmm, name)
+        function.argtypes = [ctypes.c_uint]
+        function.restype = ctypes.c_uint
+    if winmm.timeBeginPeriod(1) != 0:
+        raise OSError('timeBeginPeriod(1) failed for heartbeat fixture')
+    try:
+        yield
+    finally:
+        if winmm.timeEndPeriod(1) != 0:
+            raise OSError('timeEndPeriod(1) failed for heartbeat fixture')
 
 
 class CompetitiveJobsTests(unittest.TestCase):
@@ -78,11 +112,13 @@ class CompetitiveJobsTests(unittest.TestCase):
         requires.require(files=("GOAL.DAT",))
         cls.data = load((ROOT/'.cache/GOAL.DAT').read_bytes())
         cls.fixture_dir = tempfile.TemporaryDirectory(prefix='goal2-T80-fixtures-')
-        cls.fixture_file = Path(cls.fixture_dir.name)/'knockout.json-journal'
+        cls.fixture_file = Path(cls.fixture_dir.name)/'knockout.packets'
         out = direct(200)
         with cls.fixture_file.open('wb') as stream:
-            for n, event in enumerate(out.events):_write(stream,'fixture',n,'event',event)
-            _write(stream,'fixture',len(out.events),'complete',out)
+            for event in out.events:stream.write(encode_packet({'kind':'event','value':_json_value(asdict(event))}))
+            stream.write(encode_packet({'kind':'complete','value':_json_value(
+                {'result':out.result,'events':[asdict(e) for e in out.events],'seeds':list(out.seeds),
+                 'engine_year':out.engine_year})},bytes(out.memory)))
 
     @classmethod
     def tearDownClass(cls):cls.fixture_dir.cleanup()
@@ -98,8 +134,8 @@ class CompetitiveJobsTests(unittest.TestCase):
         self.before = copy.deepcopy(s)
         self.jobs = None
 
-    def bridge(self, mode=None):
-        command = None if mode is None else [sys.executable,'-c',REPLAY,mode,str(self.fixture_file)]
+    def bridge(self, mode=None, *extra):
+        command = None if mode is None else [sys.executable,'-c',REPLAY,mode,str(self.fixture_file),*extra]
         self.jobs = CompetitiveJobs(self.owner, command=command)
         self.addCleanup(self.jobs.close)
         return self.jobs.start(record_draws=True)
@@ -152,20 +188,26 @@ class CompetitiveJobsTests(unittest.TestCase):
                 self.owner.match_pending=False
 
     def test_complete_packet_waits_for_successful_exit_and_full_tail(self):
-        token=self.bridge('waitexit')
-        self.until(token,lambda seen:self.jobs._complete is not None)
+        # [designed: T160] The engine's `complete`, after the full tail, ends the match; the engine stays up.
+        release=Path(self.folder.name)/'release'
+        token=self.bridge('hold',str(release))
+        self.until(token,lambda seen:bool(seen) and seen[-1].kind=='end')
+        self.assertIsNone(self.jobs._complete)
         self.assertTrue(self.jobs.busy);self.assertIsNone(self.jobs.outcome)
         self.unchanged()
-        (Path(self.jobs._folder.name)/'release').write_text('release')
+        process=self.jobs.process
+        release.write_text('release')
         self.until(token,lambda seen:not self.jobs.busy)
         self.assertEqual(self.owner.state.mem,direct(200).memory)
         self.assertEqual(self.owner.state.match_count,self.before.match_count+1)
+        self.assertIsNone(process.poll(),'the engine stays up for the next match')
 
     def test_fault_outputs_never_publish_or_change_prior_save(self):
-        for mode,message in (('identity','identity/order'),('result','invalid watched result identity'),('memory','invalid'),
-                             ('tail','incomplete'),('mismatch','live event stream'),('duplicate','identity/order'),
+        # [designed: T160] A packet carries no token: the old `identity` mode has no counterpart on the pipe.
+        for mode,message in (('result','invalid watched result identity'),('memory','not a Memory component'),
+                             ('tail','incomplete'),('mismatch','differs from the events streamed'),('duplicate','no match running'),
                              ('partial','truncated'),('malformed','Invalid watched worker IPC'),
-                             ('trailing','truncated'),('nonzero','without completion'),('death','without completion')):
+                             ('trailing','truncated'),('nonzero',r'exited \(5\) after its completion'),('death','without completion')):
             with self.subTest(mode=mode):
                 token=self.bridge(mode)
                 try:
@@ -178,7 +220,7 @@ class CompetitiveJobsTests(unittest.TestCase):
 
     def test_duplicate_completion_packet_is_rejected(self):
         token=self.bridge('duplicate')
-        with self.assertRaisesRegex(ValueError,'identity/order'):
+        with self.assertRaisesRegex(ValueError,'no match running'):
             self.until(token,lambda seen:not self.jobs.busy)
         self.unchanged()
 
@@ -228,8 +270,14 @@ class CompetitiveJobsTests(unittest.TestCase):
         def without_unicorn(name,*args,**kwargs):
             if name=='unicorn':raise ImportError('synthetic missing optional runtime')
             return original_import(name,*args,**kwargs)
+        # [designed: T160, #509] Play no longer needs Unicorn: it starts without it.
+        self.jobs.command=[sys.executable,'-c',REPLAY,'blocked',str(self.fixture_file)]
         with patch('builtins.__import__',side_effect=without_unicorn):
-            with self.assertRaisesRegex(ValueError,"pip install.*desktop,watched"):self.jobs.start()
+            token=self.jobs.start()
+            self.assertTrue(self.jobs.busy)
+            self.until(token,lambda seen:bool(seen))
+        self.jobs.cancel_and_reap(token);self.assertFalse(self.owner.match_pending)
+        self.jobs.command=None
         raw=self.owner.template_bytes;self.owner.template_bytes=b'broken'
         with self.assertRaisesRegex(ValueError,'Check the local game resources'):self.jobs.start()
         self.owner.template_bytes=raw;self.unchanged()
@@ -268,14 +316,40 @@ class CompetitiveJobsTests(unittest.TestCase):
             unrelated.terminate();unrelated.wait(timeout=2)
 
     def test_qt_heartbeat_while_worker_full_time_tail_is_blocked(self):
-        from PySide6.QtCore import QCoreApplication,QTimer
+        from PySide6.QtCore import QCoreApplication,QTimer,Qt
         app=QCoreApplication.instance() or QCoreApplication([])
         token=self.bridge('blocked');self.until(token,lambda seen:bool(seen))
-        beats=[];timer=QTimer();timer.setInterval(1);timer.timeout.connect(lambda:beats.append(1));timer.start()
-        deadline=time.monotonic()+.12
-        while time.monotonic()<deadline:
-            self.jobs.poll(token);app.processEvents();time.sleep(.001)
-        timer.stop()
+        # [derived: T176, measured on the Windows host of the windows-slow runner] A CoarseTimer's 1 ms ticks follow
+        # the process's Windows timer resolution, not the window thread: after the earlier replay tests of this class
+        # it ticked about every 10 ms (11-12 beats on main, 3 and 8 on CI) while each poll took under 0.1 ms and each
+        # processEvents under 1 ms; timeBeginPeriod(1) or a PreciseTimer gave 62-76. The heartbeat is precise, so
+        # [designed: T161 diagnosis] Keep the heartbeat threshold unchanged. The timing receipt
+        # distinguishes time inside poll/processEvents from sleep and between-lap scheduling.
+        # [derived: #642, failed hosted receipts635/638] sleep(.001) took32ms despite cheap poll/events.
+        # Scope timeBeginPeriod(1) so the unchanged120ms/>10 guard measures event-loop responsiveness.
+        with _precise_heartbeat_clock():
+            beats=[];timer=QTimer();timer.setTimerType(Qt.TimerType.PreciseTimer);timer.setInterval(1)
+            timer.timeout.connect(lambda:beats.append(1));timer.start()
+            started=time.monotonic();deadline=started+.12
+            laps=[];previous=time.perf_counter()
+            while time.monotonic()<deadline:
+                t0=time.perf_counter();self.jobs.poll(token);t1=time.perf_counter()
+                app.processEvents();t2=time.perf_counter();time.sleep(.001);t3=time.perf_counter()
+                laps.append(dict(poll_ms=(t1-t0)*1000,events_ms=(t2-t1)*1000,
+                                 sleep_ms=(t3-t2)*1000,gap_ms=(t0-previous)*1000))
+                previous=t3
+            timer.stop()
+            elapsed=time.monotonic()-started
+        report=dict(head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+                    test_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                    platform=sys.platform,python=sys.version,cpus=os.cpu_count(),
+                    timer_type=timer.timerType().name,interval_ms=timer.interval(),
+                    beats=len(beats),elapsed_ms=elapsed*1000,laps_ms=laps)
+        # The existing Windows workflow uploads this directory even when its gate fails.
+        directory='windows-evidence' if os.environ.get('GITHUB_ACTIONS')=='true' and sys.platform=='win32' else '.cache'
+        receipt=ROOT/directory/'T161-heartbeat.json';receipt.parent.mkdir(parents=True,exist_ok=True)
+        receipt.write_text(json.dumps(report,indent=2)+'\n')
+        print('T161 heartbeat receipt:',json.dumps(report),flush=True)
         self.assertGreater(len(beats),10,'Qt heartbeat blocked by competitive worker')
         self.assertTrue(self.jobs.busy);self.assertIsNone(self.jobs.outcome);self.unchanged()
 
@@ -296,6 +370,53 @@ class CompetitiveJobsTests(unittest.TestCase):
             bad=copy.deepcopy(self.owner.state)
             bad.campaign.fixtures=(dc_replace(bad.campaign.fixtures[0],fixture_id=fid,kind=kind),)
             with self.assertRaises(ValueError):pending_fixture(bad)
+
+
+@requires.need(modules=('PySide6',))
+class HeartbeatClockTests(unittest.TestCase):
+    """[designed: #642] Controlled clock inputs; no real match or replay fixture setup."""
+    def test_windows_period_is_balanced_even_when_observation_raises(self):
+        winmm = Mock()
+        winmm.timeBeginPeriod.return_value = winmm.timeEndPeriod.return_value = 0
+        with patch.object(sys, 'platform', 'win32'), patch('ctypes.WinDLL', return_value=winmm, create=True):
+            with self.assertRaisesRegex(RuntimeError, 'observation failed'):
+                with _precise_heartbeat_clock():
+                    raise RuntimeError('observation failed')
+        winmm.timeBeginPeriod.assert_called_once_with(1)
+        winmm.timeEndPeriod.assert_called_once_with(1)
+
+    def test_windows_period_failure_is_not_silently_accepted(self):
+        winmm = Mock()
+        winmm.timeBeginPeriod.return_value = 1
+        with patch.object(sys, 'platform', 'win32'), patch('ctypes.WinDLL', return_value=winmm, create=True):
+            with self.assertRaisesRegex(OSError, 'timeBeginPeriod'):
+                with _precise_heartbeat_clock():
+                    self.fail('failed clock setup reached observation')
+        winmm.timeEndPeriod.assert_not_called()
+
+    def exercise_guard(self, blocked):
+        case = CompetitiveJobsTests('test_qt_heartbeat_while_worker_full_time_tail_is_blocked')
+        case.jobs = Mock(busy=True, outcome=None)
+        if blocked:
+            case.jobs.poll.side_effect = lambda token: time.sleep(.14)
+        case.bridge = Mock(return_value='controlled-token')
+        case.until = Mock()
+        case.unchanged = Mock()
+        with tempfile.TemporaryDirectory() as folder, patch(__name__ + '.ROOT', Path(folder)), \
+                patch.object(subprocess, 'check_output', return_value='controlled-clock-fixture\n'):
+            try:
+                case.test_qt_heartbeat_while_worker_full_time_tail_is_blocked()
+            finally:
+                case.doCleanups()
+        case.jobs.poll.assert_called()
+        case.unchanged.assert_called_once_with()
+
+    def test_original_guard_accepts_a_responsive_controlled_poll(self):
+        self.exercise_guard(False)
+
+    def test_original_guard_rejects_a_deliberately_blocked_poll(self):
+        with self.assertRaisesRegex(AssertionError, 'Qt heartbeat blocked by competitive worker'):
+            self.exercise_guard(True)
 
 
 if __name__=='__main__':unittest.main()

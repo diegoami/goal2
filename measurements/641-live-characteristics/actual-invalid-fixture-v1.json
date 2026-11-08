@@ -1,0 +1,44 @@
+{
+  "source_commit": "df5703e2d021b5d4a8ae6482ff7a80a48d98457c",
+  "case": "unchanged640accept-mode with641readonly observer",
+  "outcome": "FAIL at original unchanged1500s Walk deadline; not acceptance",
+  "signal_or_stop_used": false,
+  "elapsed_seconds": 1513.277,
+  "exit": {
+    "exit_code": 1,
+    "ended_utc": "2026-11-08T11:11:02+00:00"
+  },
+  "diagnosis": "main/t121 readonly diagnostic: original EA09 correctly refuses four played C roles introduced by outfield-only test selector; repeated legalbench/menu/play attempts",
+  "runtime_or_trait_mutation_bug_claimed": false,
+  "log_sha256": "ad9dea2931705b60da63dbbcab7cc4bf239c380397ce799f475b121384a3d1c6",
+  "private_captures": [
+    {
+      "path": ".cache/641-actual-accepted-v1/captures/accept/legal-bench-before-swap.png",
+      "sha256": "fc36deabb242dd5573289d26f0412a77d064018ef85d8d06db20fa48e812df59"
+    },
+    {
+      "path": ".cache/641-actual-accepted-v1/captures/accept/opportunity-blink-first.png",
+      "sha256": "afc65dd018847e60dd3a1d422cb2a2207e5aeae257b3160e577d2dcf2fa358b2"
+    },
+    {
+      "path": ".cache/641-actual-accepted-v1/captures/accept/opportunity-blink-second.png",
+      "sha256": "7c3bb0f69e78b26103976a9e32263ce9d59b696d92b7b421430d5178ccab1314"
+    },
+    {
+      "path": ".cache/641-actual-accepted-v1/captures/accept/request-confirmed.png",
+      "sha256": "bd84446e21f014135a97f00bea922e71481815da690bfca2ad956ef4d7771707"
+    },
+    {
+      "path": ".cache/641-actual-accepted-v1/captures/accept/request-on-pitch.png",
+      "sha256": "e3bce4056f75c250f78c95cecf866059198b0bebc10f9629b02372480c9a9753"
+    },
+    {
+      "path": ".cache/641-actual-accepted-v1/captures/accept/request-pending.png",
+      "sha256": "beb0a02139f2369776e1bb6168b8ce9ffd3851b4e48840c4a5128fb8061719fd"
+    },
+    {
+      "path": ".cache/641-actual-accepted-v1/captures/accept/swap-confirmed-before-play.png",
+      "sha256": "1da01cc95e87b951769df00a53820a0ed188c170aa2bf5f0a244d12dc49fafcb"
+    }
+  ]
+}

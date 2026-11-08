@@ -33,6 +33,32 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
      state;
    - GOAL.DAT is read from the player's own install first, and replaced by goal2's own data later;
    - the Rust engine (diegoami/goal2rust) goes on in parallel and does not change this order.
+   - [designed: owner, 2026-11-03, #509] **A key wait that draws counts as answered at its first key poll.** After a
+     win of kind 0x67 or 0xCB, the original's post-match news plays a crowd animation until a key is pressed, each
+     loop 1,000 to 1,500 draws on the RNG word 7B62 [confirmed: goal2-archaeology `seg_000E_01.asm:469-640`]. goal2
+     counts it as a key queued before the wait: the tune makes no draws and exactly one animation call runs. The
+     Core oracle is driven the same way, so the full-cycle equivalence (T174) holds; neither skipping the draws
+     nor counting real time was chosen.
+   - [designed: owner, 2026-11-04, #509] **The route harness picks a legal eleven.** When the original's team menu
+     refuses the managed side's first team (an ineligible player, `0791:EA09`; goal2-archaeology `match.py:787`), the
+     harness answers the original's own team menu as a player would: it replaces each ineligible player with a
+     legal one and records every choice. So every stage of a season is reached from published states, through
+     the original's own code (upstream T124t). Proving later stages on edited states and capturing new states were
+     not chosen.
+   - [designed: owner, 2026-11-04, #509] **In-season ageing is required before the sealed route.**
+     Add upstream T124f before T123 for the ageing, retirement and replacement subtree the original calls
+     at stage 2→3 and 6→7, before its year changes (1771:80DA calls 7FDF for all countries first;
+     goal2-archaeology F016/F017, `code/seg_1771_12.asm` 80EA–811B). T170 includes those effects and
+     proves them against the Core. Year rollover remains deferred; stop before its unsupported boundary.
+     [derived: original 000E:70E6; 1771:821B–826A] Retain the final fixtures/post-match effects, then
+     return the explicit boundary before stage_end for stage4/8 with rounds=1 and cursor=count.
+     Compare Core at that same pause; refusal inside 80DA would leave a partially advanced stage.
+   - [designed: owner, 2026-11-05, #509/#594] **The assistant’s recommended twenty is required for m3.**
+     The previous S08 deferral is superseded. Upstream T125 ports DC7E and its complete finals/tour
+     refusal closure, with original-backed and sealed proofs; T124e reuses its shared predicates.
+     Include T125 in T123’s upstream owner-run milestone before vendoring. T183 then restores the
+     working Ins action through the PyPy engine process on the native career, with atomic publication
+     and no Unicorn fallback. T124t’s legal-eleven harness does not implement this player-facing feature.
    [designed: owner, 2026-11-03, #524-#527] **The rebuilt UI.** The design phase is done:
    - the screens follow the original's flow, in its palette with a blocky VGA font (docs/design/ui-2026-11);
    - the window is PySide6, trimmed to Essentials, with the pitch as a widget in it (docs/design/technology-2026-11);

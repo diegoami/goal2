@@ -1,0 +1,14 @@
+test_completed_stopped_edit_record_roundtrips_without_mutation (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_completed_stopped_edit_record_roundtrips_without_mutation) ... ok
+test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected) ... ok
+test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation) ... ok
+test_edit_flag_round_trips_and_rejects_ambiguous_values (goal2.tests.test_stopped_bench_t188.EditProtocol.test_edit_flag_round_trips_and_rejects_ambiguous_values) ... ok
+test_lower_level_answer_cannot_bypass_stop_requirement (goal2.tests.test_stopped_bench_t188.EditProtocol.test_lower_level_answer_cannot_bypass_stop_requirement) ... ok
+test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it (goal2.tests.test_stopped_bench_t188.EditProtocol.test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it) ... ok
+test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing (goal2.tests.test_stopped_bench_t188.EditProtocol.test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing) ... ok
+test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes (goal2.tests.test_live_team_tactics_610.TacticTransport.test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes) ... ok
+test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops (goal2.tests.test_live_team_tactics_610.TacticTransport.test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.032s
+
+OK

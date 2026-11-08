@@ -1,0 +1,21 @@
+test_backend_rejection_keeps_session_and_queue_unchanged (goal2.tests.test_season_session_t170b.Session.test_backend_rejection_keeps_session_and_queue_unchanged) ... ok
+test_malformed_state_and_modified_tables_refuse (goal2.tests.test_season_session_t170b.Session.test_malformed_state_and_modified_tables_refuse) ... ok
+test_order_keys_deltas_detachment_and_call_reset (goal2.tests.test_season_session_t170b.Session.test_order_keys_deltas_detachment_and_call_reset) ... FAIL
+test_terminal_repeat_and_observation_never_construct_backend (goal2.tests.test_season_session_t170b.Session.test_terminal_repeat_and_observation_never_construct_backend) ... ok
+
+======================================================================
+FAIL: test_order_keys_deltas_detachment_and_call_reset (goal2.tests.test_season_session_t170b.Session.test_order_keys_deltas_detachment_and_call_reset)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_season_session_t170b.py", line 55, in test_order_keys_deltas_detachment_and_call_reset
+    self.assertEqual(c.input_hash,canonical_hash(original))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'cd98ac79193ba34481fd3650c90806cf958d8f38a2e33599e52d526211c97704' != 'aa1cf1a2fa019c2b198b62e21b6d99cb3bb9227ae3cdd20fca13259f99a67bb5'
+- cd98ac79193ba34481fd3650c90806cf958d8f38a2e33599e52d526211c97704
++ aa1cf1a2fa019c2b198b62e21b6d99cb3bb9227ae3cdd20fca13259f99a67bb5
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.079s
+
+FAILED (failures=1)

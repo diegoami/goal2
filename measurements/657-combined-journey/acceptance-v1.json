@@ -1,0 +1,30 @@
+{
+  "application_base": "e51ee2abb899036267130272baefe40714955cf2",
+  "create_source": "86ba14dc1c454bfcf59d878581e59cc2adc4b0d0",
+  "reload_source": "b002371b70ec3f6aa31400db2ac6ed4b01199511",
+  "result_sha256": "66d217234561d667011f1662a24844b3105c20095d27dcdae3f8c8dcd59271f1",
+  "events": 1200,
+  "events_sha256": "540ebcbc32d3441a68e0d03d9ddbe598e3e9b72bd280cb4e5b3b7c43467ed3f3",
+  "full_memory_sha256": "a0db3d1ee512602a8e747726d88c5759f48219e41df13233e31fd070edb781ab",
+  "seeds": [
+    23039,
+    60878
+  ],
+  "exact_result_including_port_diagnostics": true,
+  "exact_events_memory_seeds_career": true,
+  "separate_process_career_reload": true,
+  "saved_goal_exact_samples_and_data": true,
+  "saved_summary_whole_data": true,
+  "saved_goal_playback_and_return": true,
+  "recording_view_career_unchanged": true,
+  "presentation_fixture": "Accepted636/T190 stable-LEAD ack hold then actual UI Esc, recorded boundary; never a career/engine byte edit",
+  "unvisited": [
+    "GUI import chooser",
+    "all22screens",
+    "extra_time",
+    "shootout",
+    "season_continuation",
+    "native Windows combined journey"
+  ],
+  "raw_original_records_published": false
+}

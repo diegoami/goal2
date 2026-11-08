@@ -1,0 +1,10 @@
+[
+  {
+    "path": "goal2/tests/test_watched_bench_t102.py",
+    "all_bodies_assertions_seeds_limits_unchanged": true
+  },
+  {
+    "path": "goal2/tests/test_watched_competitive_runtime.py",
+    "all_bodies_assertions_seeds_limits_unchanged": true
+  }
+]

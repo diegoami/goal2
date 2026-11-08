@@ -1,0 +1,6 @@
+test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

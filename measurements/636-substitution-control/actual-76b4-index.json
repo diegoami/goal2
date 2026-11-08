@@ -1,0 +1,33 @@
+{
+  "source_commit": "76b4db404ec970773576bca9910edb6b31bd88f5",
+  "proofs": {
+    "accept": {
+      "exit": {
+        "exit_code": 0,
+        "ended_utc": "2026-11-08T11:36:31+00:00"
+      },
+      "receipt_sha256": "57408c51365b0effe7c7718269deec07e27d37daf7b72d6f4fd83d0d5dd80abe"
+    },
+    "cancel": {
+      "exit": {
+        "exit_code": 0,
+        "ended_utc": "2026-11-08T11:36:31+00:00"
+      },
+      "receipt_sha256": "cbcd592442d8927d3d08c4ea5cf9baa687de18daf59329ba112a6ff11a2174d2"
+    },
+    "timeout": {
+      "exit": {
+        "exit_code": 0,
+        "ended_utc": "2026-11-08T11:36:34+00:00"
+      },
+      "receipt_sha256": "46b805da46129dc8151e202e98b6fc007bf7ae3105b8a41837002c6b61d3ef84"
+    },
+    "zero": {
+      "exit": {
+        "exit_code": 0,
+        "ended_utc": "2026-11-08T11:40:50+00:00"
+      },
+      "receipt_sha256": "a4af1e3d5ec371dd42a10c2972a05f0b86b5bc37071c0e5888d2182c81a6791f"
+    }
+  }
+}

@@ -361,7 +361,7 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 - **Shows**: the score, the minute, the kind of match and the last two events; the pitch with each player's
   role code (home red, away white, as the original draws them) and the ball; the commentary beside it.
 - **Actions**: **↑↓** display (marks), **←→** speed, **R** result (quick result; it still stops at half time,
-  injuries, extra time and the shoot-out), **Space** commentary (enlarges it), **F9** sound, **Esc** / **Enter**
+  injuries, extra time and the shoot-out), **Space** pauses and enlarges commentary; Space/Enter resumes [designed: owner #597], **F9** sound, **Esc** / **Enter**
   bench. A replay shows *REPLAY* where *R result* is.
 - **Replaces**: `match-live`, `match-commentary`, `injury-event`, `t156-045-kick-off`,
   `t156-058-taker-timed-out`, `t156-066-injury-and-booking`, `t156-178-replay-playing`, `t156-247-goal-replay`,
@@ -390,16 +390,15 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 ### S19 Bench
 
-- **Purpose**: substitutions, during a match and at its breaks.
-- **Shows**: the card of the highlighted player; the mode, as the original names it ("make substitutions
-  now", or "substitution requested" during play); substitutions left; the eleven and the bench.
-- **Actions**: **↑↓** player, **Enter** take off / put on (in either order; the hint names which), or
-  request / cancel a substitution in request mode; **R**, **C** positions; **T** his tactics (S09); **Esc**
-  match menu. A refused substitution says why and waits for a key.
-- **Replaces**: `squad-substitution-take-off`, `squad-substitution-put-on`, `squad-substitution-illegal`,
-  `t156-074-bench-requested`, `t156-080-bench-request-cancelled`, `t156-124-halftime-bench`,
-  `t156-132-substitution-made`, `t156-279-quick-bench`, `t156-301-quick-substitution-made`.
-  [confirmed: T156-R1 steps 74–81, 124–133, 279–301; E031 C41–C41k; E015-r0007 states 76, 82, 176]
+- **Purpose**: substitutions at legal stops, with the live squad and its player cards.
+- **Shows**: the engine's eleven/bench and remaining budget, live red injury labels, and prominent on/off feedback.
+- **Actions**: **↑↓** player; **Enter** marks the first and completes the pair with the second selection. At a legal
+  stop that sends one edit, waits for the engine, and shows the confirmed exchange immediately. Esc returns to
+  the match menu; Play only continues. **R**, **C**, **T** retain supported tactical edits.
+- [designed: owner playtest2026-11-05, #599] Ordinary in-play pauses cannot queue substitution pairs. This
+  supersedes the earlier new-window request/cancel flow. Refusals stay usable at the stopped squad; reopening
+  or continuing does not repeat a completed operation. Earlier engine queue behavior remains a reference API.
+- [confirmed: original T156-R1 steps124–137] A half-time swap is visible in SELECT TEAM before Play.
 
 ![S19 Bench](images/s19-bench.png)
 
@@ -509,21 +508,27 @@ we can keep the rest"]
   | bar, empty | `#aa00aa` | t156-014-squad.png (120, 241, 270, 254) | the marking bar's empty part |
   | pitch lines | `#aaaaaa` | t156-045-kick-off.png (18, 100, 22, 350) | the left touchline |
   | pitch surround | `#00aa00` | t156-045-kick-off.png (0, 80, 640, 100) | the band above the pitch |
-  | home side | `#ff5555` | t156-045-kick-off.png (362, 222, 380, 240) | a Norway player's letter at kick-off |
-  | away side | `#ffffff` | t156-045-kick-off.png (170, 222, 188, 240) | a Holland player's letter at kick-off |
 
   [confirmed: `python3 docs/design/ui-2026-11/palette.py` on the captures named in the table]
-- Role codes are coloured by line, as in the original: green goalkeeper, red defence, cyan midfield, yellow
-  attack. [confirmed: goal2-archaeology F002 R011; docs/vision-266/role-codes; the table above]
-- On the pitch, the home side is light red and the away side white, as in the original. [confirmed: T156-R1
-  step 45]
+- Role codes and full roster names are coloured by line, as in the original: green goalkeeper, red defence,
+  cyan midfield, yellow attack. This applies to squad, pool, bench and match-menu elevens, not only the role
+  letter. [confirmed: goal2-archaeology F002 R011; t156-014-squad.png; the name-initial samples above]
+  [designed: owner #637] Keep readable selected-row contrast and explicit injury feedback.
+- [designed: owner, 2026-11-08, #611] Original screenshots are the visual acceptance baseline: compare rendered
+  layout, colours, typography, table alignment, bars and prompts alongside the exercised keyboard flow.
+  Readability polish preserves the original visual structure and the explicitly accepted scalable24px text;
+  palette constants alone do not establish screen fidelity.
+- On the pitch, and in the names of the scoreboard, S15 and S20, each side wears its kit as the original computes
+  it at kick-off from the country's three colour bytes, the keepers in the second colour (`goal2/ui/kits.py`).
+  [confirmed: 0791:1073; t156-045-kick-off.png, where Norway at home and Holland both have light red first, so
+  Holland plays in white; #583: an earlier line here read that capture as "home light red, away white"]
 - **Font**: "PxPlus IBM VGA 8x16" by VileR (The Ultimate Oldschool PC Font Pack v2.2, int10h.org), a blocky
   VGA-style font under CC BY-SA 4.0. It is vendored in [mockups/fonts/](mockups/fonts/PROVENANCE.md) with its
   licence and provenance. It is not the original game's font, and no byte of it comes from GOAL.EXE (CLAUDE.md
   rule 14).
-- **Text size**: designed at 1440×900. Text is 16 px, the font's own 8×16 cell, and headings and names are
-  32 px, twice the cell; larger titles are 48 or 64 px. Only whole multiples are used, so the blocks stay
-  sharp. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
+- **Text size**: designed at 1440×900. [designed: owner playtest #598, 2026-11-05] Normal text is 24 px and headings/names
+  are 32 px. Keyboard actions wrap as complete items, with full-size text. Squad rows and card columns
+  reserve room for the larger lettering. This supersedes the earlier 16 px/whole-cell-multiple choice. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
   (T101).
 - Names, numbers and role codes are never abbreviated beyond the original's own forms.
 - Every colour pairs with text or a symbol, so nothing depends on colour alone.
@@ -532,7 +537,8 @@ we can keep the rest"]
 - Every original key works where the original has it: arrows, Enter, Esc, Space, Ins, Y/N, C, R, T, F1–F4,
   F7, F9, F10, Shift+R (#423).
 - goal2 adds only Enter on *Continue* (S02, owner decision 4) and Tab to the optional starting year (S03, owner
-  decision 9). No added key changes an original key's meaning.
+  decision 9), and for the extras of decision 18, **F** on S02 (the standalone friendly) and **/** and **P** on S08
+  (the pool's search and position filter) [designed: T177]. No added key changes an original key's meaning.
 - Every key of a screen is on its bottom bar, as the original's bottom line lists them.
 - The mouse does what the keys do: every option, row and button can be clicked. [designed: owner, 2026-11-03,
   #526]
@@ -624,3 +630,47 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
 12. **The look:** the original's colour scheme and a retro feel. The mockups use the original's palette, read from
     the captures, and a blocky VGA-style font (PxPlus IBM VGA 8x16, CC BY-SA 4.0). The layout and everything else
     stay ([the look](#3-rules-for-the-whole-ui)).
+
+**Owner decisions, 2026-11-03** (on T162's questions, #536: "do as proposed"):
+
+13. **S22's text box** fills most of the screen, not the mockup's nine lines: the original's help is a long text.
+    Made in T163.
+14. **Adding GOAL.HLP later**: the desk (S06) gets a *re-import data* entry, which opens S01 over the imported
+    folder. Made in T164. Until then, F1's message names the re-import command.
+
+**Owner decisions, 2026-11-03** (on gaps that T163 and T165 found):
+
+15. **S05 waits for the original's news.** Until Track B ports it (U2, #509), a new career goes from S04 to the
+    home screen. goal2 writes no bulletin of its own.
+16. **Ins (the assistant's 20) says *coming later*** until the original's assistant (`0791:DC7E`) is ported.
+    [designed: owner, 2026-11-05, #509/#594] This is required within m3: upstream T125 ports the assistant
+    and its refusal closure; T183 restores the native S08 action after T170. The placeholder is an
+    implementation gap, not a deferral from m3. There is no Unicorn fallback or stand-in rule.
+
+**Owner decisions, 2026-11-03** (on the main session's gap audit, #509):
+
+17. **The ZIP keeps today's window as its default until the Python route plays a whole season (T170).** T169
+    adds the new window beside it, for the playtest. No build plays less than the one before it.
+18. **Four of today's extras stay**, though the original lacks them. Each is marked `[designed]` where it departs:
+    - **Pool search and filter on S08:** by name, accent-insensitive, and by position.
+    - **A standalone friendly** between any two countries, outside a career, from S02.
+    - **Renaming the manager** after the career started, from the desk.
+    - **A new career from inside a game**, from the desk, with the unsaved-progress question first.
+
+**Owner decision, 2026-11-03** (on T166's pitch, #573): "it should look like the original but one thing that can
+change is using overlapping characters in a small resolution pitch. I am ok on having circles with a letter inside
+which do no overlap, a championship manager look, but otherwise try to mimic the original as much as possible,
+with some modification for the sake of the UX."
+
+19. **S17's players are discs with the role letter inside**, in the side's colour, sized so that neighbouring
+    players never overlap (a Championship Manager look). Everything else on the pitch mimics the original:
+    proportions, goal and penalty areas, surround, the officials, the keepers, the header. A departure is made
+    only for the UX, and is marked `[designed]` with its reason.
+    **Scheduled after the first playable version** (owner, 2026-11-03: "the look of the players is fine, an
+    improvment with disk is post playable"). T179 (#573) is `post-playable`.
+
+[designed: owner playtest #598, 2026-11-05] At the 24px baseline the fixture window shows fourteen
+rows; arrows still reach the complete list. Recent commentary keeps whole wrapped entries within its
+panel, with more room in the reading view. No engine event is removed from the transcript or recording.
+
+The owner-requested [manual-to-build fidelity audit](manual-fidelity.md) maps each manual section and S01–S22 action to source, exercised evidence, explicit differences and outstanding acceptance.

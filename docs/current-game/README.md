@@ -1,6 +1,6 @@
 # goal2 as it is today: the build's own manual
 
-[designed: owner, 2026-11-08; T176] The original has a manual with its screens
+[designed: owner, 2026-11-08; T204] The original has a manual with its screens
 ([docs/original-game](../original-game/README.md)). This is the rebuild's half of that pair: what
 goal2 shows **today**, screen by screen, grabbed from the real windows. It exists so that the look
 of the rebuild can be compared with the original by reading, instead of by running the game again

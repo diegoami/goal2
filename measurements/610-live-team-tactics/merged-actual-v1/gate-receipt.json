@@ -1,0 +1,44 @@
+{
+  "head": "ab8484b4daa1af3ea0150641c71dac4d311cff55",
+  "job": "ui614-merged-actual-v1",
+  "exit": {
+    "exit_code": 0,
+    "ended_utc": "2026-11-07T14:34:43+00:00"
+  },
+  "tests": 3,
+  "seconds": 516.745,
+  "assertions": [
+    "pause and half-time all8flags confirmed while clock/score/XI/bench/budget/frames held",
+    "actual UI fullresult/fullphysicalmemory/orderedevents/career equality with headless commands for BOTH tactics journeys",
+    "T190 natural injury/half-time/pause navigation and original full outcome/memory/events/career assertions retained"
+  ],
+  "source_sha256": {
+    "goal2/ui/s17_pitch.py": "63eb632ff128ffb6dc1ba438a0873cb9a2e8c46bfdb636667ebda4ef8078459e",
+    "goal2/ui/s15_match_menu.py": "2bfff8832777311a5c689276f47d8fca2a5f880e6ddcdd36537157c82a5c5625",
+    "goal2/ui/window.py": "e195aded571d9a994e109f112e6e146c0e1a599a9c658f9093482fe38f084839",
+    "goal2/ui/match_day.py": "5f03ab22b6daa815ffce1064336d0fcc7742797f5e6a12456e39540c13db9bb6",
+    "goal2/ui/s10_team_tactics.py": "a31e71e076b6e6abd0a273620b2abadf96c2b354fed0a0073ae26e2467ef070d",
+    "goal2/ui/s19_bench.py": "67afd69b8a8539cc37623f5eceab56734157670d6fb44e9a3a9db55ef494d079",
+    "goal2/game/watched_match.py": "3eb918d586f512f79efd993dd899cb251891a0aff685afe7ab10a9e7f499f52d",
+    "goal2/game/watched_jobs.py": "1f3b1711adc71fec6145ff030818c81b1703b5dfc28d701d6c2f387c8c8b9881",
+    "goal2/game/watched_schema.py": "dbf26bf926e41afa9a0f254311749c0f2d2557aa98812a6983a4e1746777e214",
+    "goal2/engine/original_match/match.py": "10c2f76f071193b471c21666938223ad3a71d142498f4d79e662d335ce872921",
+    "goal2/tests/test_live_team_tactics_610.py": "73a0ab9d39d9e33be89d4f572b928281bfe5553749a5579b4e90d87df1ce4584",
+    "goal2/tests/test_stop_return_t190.py": "b717d49ea9b3744a8cdefd5f07ff5a493914768527d54fa8b11b6bd439d6a64d",
+    "goal2/tests/match_day_policy.py": "373a6b7e64cee4ae542053163e8ebd25a0b5baecb07d45314fb8a4a6ae3e6633"
+  },
+  "artifacts": {
+    "half_time-pending.png": "3e40081c72fedc1ef90cb74af30131237679480260d702d484b6423527bc95fd",
+    "actual.log": "3d71e58b32762fb5e68d5d97077e37e181b1910da017e473d85e9ec337c3132d",
+    "half_time-confirmed.png": "a645677c43ae31a8e5c83a9c7625a04b6838517b6c47127554226dfc3c56128c",
+    "pause-menu.png": "febd512408c15da6665521c8b921a54d3b173956c74046986ef2605014cfb1b2",
+    "half_time-menu.png": "412f2a7f1f53db3c16eff70648ba7b4a9ce10603bbff432f9a81a2f795e95323",
+    "pause-pending.png": "3e40081c72fedc1ef90cb74af30131237679480260d702d484b6423527bc95fd",
+    "pause-confirmed.png": "a645677c43ae31a8e5c83a9c7625a04b6838517b6c47127554226dfc3c56128c"
+  },
+  "gate": {
+    "exit_code": 0,
+    "ended_utc": "2026-11-07T15:06:39+00:00"
+  },
+  "gate_modules": 194
+}

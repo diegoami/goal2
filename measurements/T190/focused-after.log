@@ -1,0 +1,71 @@
+test_cancel_and_poll_failure_clear_requested_without_publication (goal2.tests.test_stop_return_t190.StopReturn.test_cancel_and_poll_failure_clear_requested_without_publication) ... This plugin does not support propagateSizeHints()
+ok
+test_dropped_request_clears_status (goal2.tests.test_stop_return_t190.StopReturn.test_dropped_request_clears_status) ... This plugin does not support propagateSizeHints()
+ok
+test_failed_request_reports_failure_and_allows_a_later_request (goal2.tests.test_stop_return_t190.StopReturn.test_failed_request_reports_failure_and_allows_a_later_request) ... This plugin does not support propagateSizeHints()
+ok
+test_half_and_injury_returns_explain_play_without_advancing (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_explain_play_without_advancing) ... This plugin does not support propagateSizeHints()
+ok
+test_held_stop_cannot_request_another_stop (goal2.tests.test_stop_return_t190.StopReturn.test_held_stop_cannot_request_another_stop) ... This plugin does not support propagateSizeHints()
+ok
+test_mouse_back_and_play_use_the_same_explicit_return (goal2.tests.test_stop_return_t190.StopReturn.test_mouse_back_and_play_use_the_same_explicit_return) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_confirmed_and_refused_edits_keep_single_submission (goal2.tests.test_stop_return_t190.StopReturn.test_pending_confirmed_and_refused_edits_keep_single_submission) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_plain_pause_returns_once_and_repeat_cannot_request_again (goal2.tests.test_stop_return_t190.StopReturn.test_plain_pause_returns_once_and_repeat_cannot_request_again) ... This plugin does not support propagateSizeHints()
+ok
+test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) ... This plugin does not support propagateSizeHints()
+ok
+test_hide_close_and_non_actionable_contexts_have_no_cue_timer (goal2.tests.test_bench_cue.BenchCue.test_hide_close_and_non_actionable_contexts_have_no_cue_timer) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_swap_stops_cue_and_confirmed_reply_restores_it (goal2.tests.test_bench_cue.BenchCue.test_pending_swap_stops_cue_and_confirmed_reply_restores_it) ... This plugin does not support propagateSizeHints()
+ok
+test_real_timer_blinks_green_without_losing_text_or_moving_roster (goal2.tests.test_bench_cue.BenchCue.test_real_timer_blinks_green_without_losing_text_or_moving_roster) ... This plugin does not support propagateSizeHints()
+ok
+test_refused_swap_restores_the_cue_at_the_still_legal_stop (goal2.tests.test_bench_cue.BenchCue.test_refused_swap_restores_the_cue_at_the_still_legal_stop) ... This plugin does not support propagateSizeHints()
+ok
+test_injury_and_captain_swaps_are_visible_before_play_and_publish_once (goal2.tests.test_immediate_bench_t188.ActualImmediateBench.test_injury_and_captain_swaps_are_visible_before_play_and_publish_once) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_a_dropped_bench_opening_clears_its_stale_requested_note (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_a_dropped_bench_opening_clears_its_stale_requested_note) ... This plugin does not support propagateSizeHints()
+ok
+test_actual_roster_and_budget_refresh_before_play_without_a_second_command (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_actual_roster_and_budget_refresh_before_play_without_a_second_command) ... This plugin does not support propagateSizeHints()
+ok
+test_clicked_pair_uses_the_same_consumed_once_path (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_clicked_pair_uses_the_same_consumed_once_path) ... This plugin does not support propagateSizeHints()
+ok
+test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play) ... This plugin does not support propagateSizeHints()
+ok
+test_injured_withdrawn_player_keeps_the_actual_match_injury_marker (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_injured_withdrawn_player_keeps_the_actual_match_injury_marker) ... This plugin does not support propagateSizeHints()
+ok
+test_long_refusal_keeps_all_twenty_players_details_and_controls_visible (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_long_refusal_keeps_all_twenty_players_details_and_controls_visible) ... This plugin does not support propagateSizeHints()
+ok
+test_match_menu_uses_the_confirmed_eleven_and_live_injury_label (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_match_menu_uses_the_confirmed_eleven_and_live_injury_label) ... This plugin does not support propagateSizeHints()
+ok
+test_new_accepted_tactics_override_an_earlier_confirmed_cache (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_new_accepted_tactics_override_an_earlier_confirmed_cache) ... This plugin does not support propagateSizeHints()
+ok
+test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes) ... This plugin does not support propagateSizeHints()
+ok
+test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available) ... This plugin does not support propagateSizeHints()
+ok
+test_reopening_and_playing_do_not_resubmit_the_applied_pair (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_reopening_and_playing_do_not_resubmit_the_applied_pair) ... This plugin does not support propagateSizeHints()
+ok
+test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note) ... This plugin does not support propagateSizeHints()
+ok
+test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it) ... This plugin does not support propagateSizeHints()
+ok
+test_enter_resumes_and_live_game_actions_do_not_bypass_reading_pause (goal2.tests.test_commentary_pause_t185.CommentaryPause.test_enter_resumes_and_live_game_actions_do_not_bypass_reading_pause) ... This plugin does not support propagateSizeHints()
+ok
+test_mouse_resume_rebases_clock_and_restores_controls (goal2.tests.test_commentary_pause_t185.CommentaryPause.test_mouse_resume_rebases_clock_and_restores_controls) ... This plugin does not support propagateSizeHints()
+ok
+test_quick_result_reading_pause_also_holds_publication_polling (goal2.tests.test_commentary_pause_t185.CommentaryPause.test_quick_result_reading_pause_also_holds_publication_polling) ... This plugin does not support propagateSizeHints()
+ok
+test_replay_pause_holds_the_sample_and_resumes_in_order (goal2.tests.test_commentary_pause_t185.CommentaryPause.test_replay_pause_holds_the_sample_and_resumes_in_order) ... This plugin does not support propagateSizeHints()
+ok
+test_space_holds_bridge_poll_events_and_acknowledgements (goal2.tests.test_commentary_pause_t185.CommentaryPause.test_space_holds_bridge_poll_events_and_acknowledgements) ... This plugin does not support propagateSizeHints()
+ok
+test_space_mouse_cannot_bypass_a_goal_question (goal2.tests.test_commentary_pause_t185.CommentaryPause.test_space_mouse_cannot_bypass_a_goal_question) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 20.838s
+
+OK (skipped=1)

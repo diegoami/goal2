@@ -33,9 +33,12 @@ def expected(owner):
     import unittest
     from goal2.tests import pypy_engine
     from goal2.tests.port_parity import assert_same_match
+    # [designed: owner BM-7, #73; T180] today's window plays a watched friendly with BM-7's budget (the engine
+    # server's FRIENDLY_SUBSTITUTIONS): both arms take it, so the comparison still holds seed for seed
+    from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
     pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',job.state,owner.template_bytes,fixture,
-                              delay_byte=0,record_draws=True)
-    result,memory,events=direct(job.state,fixture,seed=None,delay=0)
+                              delay_byte=0,record_draws=True,substitutions=FRIENDLY_SUBSTITUTIONS)
+    result,memory,events=direct(job.state,fixture,seed=None,delay=0,substitutions=FRIENDLY_SUBSTITUTIONS)
     outcome=pending.result()
     assert_same_match(unittest.TestCase(),outcome.result,outcome.memory,outcome.events,result,memory,events)
     publication.complete(job.token,outcome)
@@ -116,11 +119,14 @@ def main():
                     'image_sha256':outcome.result['image_sha256'],'engine_year':outcome.engine_year,
                     'captain':before.captain,'tactics':before.country_tactics,'eleven':before.starting_eleven,
                     'seeds':list(outcome.seeds),'state_memory_rng_history_equal':True})
-            # [designed] Actually visit the pending qualifier boundary, then active-owner shutdown.
+            # [designed] Actually visit the pending qualifier, then active-owner shutdown.
+            # [designed: T176] A qualifier is watched on the competitive bridge; its cancel keeps game and save.
             snapshot=copy.deepcopy(m.state);saved=save.read_bytes()
             assert m.state.campaign.next_fixture.kind!=1
             w.start_watched();app.processEvents()
-            assert not w.watched.busy and 'qualifiers are unsupported' in w.status.text(),w.status.text()
+            assert w.watched.busy and w.watched.engine.KIND=='competitive',w.status.text()
+            w.cancel_match();app.processEvents()
+            assert not w.watched.busy and not w.competitive.busy,w.status.text()
             assert m.state==snapshot and save.read_bytes()==saved
             reveal(w.new);QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
             reveal(w.confirm);QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()

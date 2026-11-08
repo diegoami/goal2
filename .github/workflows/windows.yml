@@ -109,7 +109,7 @@ jobs:
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
           # [designed: owner, 2026-10-31, #487] the automatic slow runs play one case per batch test; a slow dispatch, all
           [ -z "$slow" ] && export GOAL2_CASES=1
-          # [designed: owner, 2026-11-01] PR and main runs leave the match slow tests to the local gate,
+          # [designed: owner, 2026-11-07] PR and main runs use fast regression; task-focused checks and milestones
           # which plays every case; the layout stage keeps its slow tests
           [ -z "$slow" ] && slow=--batch-fast
           python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee windows-premerge.log
@@ -155,5 +155,78 @@ jobs:
         if: always()
         with:
           name: windows-evidence
+          path: upload
+          if-no-files-found: ignore
+
+  # [designed: T148] Real native windows, each scale in a fresh isolated hosted job.
+  native-scaling:
+    needs: changes
+    if: >-
+      needs.changes.outputs.run == 'true' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    strategy:
+      fail-fast: false
+      matrix:
+        factor: [1, 2]
+    concurrency:
+      group: native-windows-${{ matrix.factor }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONUTF8: '1'
+      QT_QPA_PLATFORM: windows
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Request hosted desktop resolution (measured geometry is in receipts)
+        shell: pwsh
+        run: Set-DisplayResolution -Width 3840 -Height 2160 -Force
+      - name: Install goal2
+        run: python -m pip install -q -e '.[desktop,watched,match-view]'
+      - name: Original fixtures for the native probe (never uploaded)
+        env:
+          GOAL2_RCLONE_TOKEN: ${{ secrets.GOAL2_RCLONE_TOKEN }}
+          RCLONE_CONFIG: ${{ runner.temp }}/goal2-native-rclone.conf
+        run: |
+          test -n "$GOAL2_RCLONE_TOKEN" || { echo "Missing owner's Drive token: native proof cannot run"; exit 1; }
+          version=v1.75.2; zip=rclone-$version-windows-amd64.zip
+          curl -sSfL "https://downloads.rclone.org/$version/$zip" -o "$RUNNER_TEMP/$zip"
+          curl -sSfL "https://downloads.rclone.org/$version/SHA256SUMS" -o "$RUNNER_TEMP/SHA256SUMS"
+          (cd "$RUNNER_TEMP" && grep " $zip\$" SHA256SUMS | sha256sum -c -)
+          unzip -q "$RUNNER_TEMP/$zip" -d "$RUNNER_TEMP"
+          export PATH="$RUNNER_TEMP/rclone-$version-windows-amd64:$PATH"
+          folder=$(python -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")
+          rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" --non-interactive > /dev/null
+          mkdir -p .cache
+          for name in GOAL.DAT e006-r0001-main.sav T144-E015-snap-0003.sav T144-E015-snap-0120.sav; do
+            rclone copyto "goal2drive:$name" ".cache/$name"
+          done
+          python tools/check_goaldat.py .cache/GOAL.DAT
+      - name: Native focus, bounds, pixels and save equality
+        run: |
+          mkdir -p native-evidence
+          python measurements/T148/run_native.py --factor "${{ matrix.factor }}" --out native-evidence/probe 2>&1 | tee native-evidence/probe.log
+      - name: Keep only rebuilt-window screenshots and receipts
+        if: always()
+        run: |
+          mkdir -p upload
+          if [ -d native-evidence ]; then
+            (cd native-evidence && find . -type f \( -name '*.png' -o -name '*.log' -o -name '*.json' \) -print0 | xargs -0 -I{} cp --parents {} ../upload/)
+          fi
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+            echo "an original-game file reached the native upload; refusing" && exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-windows-factor-${{ matrix.factor }}
           path: upload
           if-no-files-found: ignore

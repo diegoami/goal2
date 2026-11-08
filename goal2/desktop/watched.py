@@ -89,7 +89,11 @@ CLOSE_DEADLINE = 30
 class WatchedController:
     def __init__(self, model, *, engine_command=None, viewer_command=None):
         self.model = model
-        self.engine = WatchedJobs(model, command=engine_command)
+        # [designed: T176] `engine` is the bridge of the current (or last) match: the friendly bridge, or, for a
+        # qualifier, the owner's competitive bridge (CompetitiveJobs), the one competitive Play uses.
+        self.engine = self.friendly_engine = WatchedJobs(model, command=engine_command)
+        self.engine_command = engine_command
+        self._own_competitive = self._qualifier_engine = None
         self.viewer_command = viewer_command
         self.process = None
         self.folder = None
@@ -105,12 +109,29 @@ class WatchedController:
         return self.engine.busy
 
     def fixture(self):
-        """[designed] Unsupported watching is explicit even with an unconfirmed draft."""
+        """[designed] Unsupported watching is explicit even with an unconfirmed draft.
+        [designed: owner decision 1, #526; T176] Own matches are watched: a scheduled friendly, or a qualifier
+        that competitive Play supports (goal2.desktop.competitive.pending_fixture)."""
         campaign = self.model.state.campaign
         pending = campaign.next_fixture if campaign else None
-        if pending is None or pending.kind != 1:
-            raise ValueError('Watch supports scheduled friendlies only; pending qualifiers are unsupported')
+        if pending is not None and pending.kind != 1:
+            from goal2.desktop.competitive import pending_fixture
+            try:
+                pending_fixture(self.model.state)
+            except ValueError:
+                pending = None
+        if pending is None:
+            raise ValueError('Watch supports scheduled friendlies and supported qualifiers only')
         return pending
+
+    def competitive_engine(self):
+        """[designed: T176] The owner's competitive bridge (the window's, which competitive Play uses), or one of
+        this controller's own when the owner has none. One per owner (CompetitiveJobs)."""
+        bridge = getattr(self.model, '_competitive_jobs', None)
+        if bridge is None:
+            from goal2.desktop.competitive import CompetitiveJobs
+            bridge = self._own_competitive = CompetitiveJobs(self.model, command=self.engine_command)
+        return bridge
 
     def start(self, *, frames=True, playback_rate=PLAYBACK_RATE, **options):
         # [designed] No wall-clock delay; record the accepted original RNG transcript.
@@ -124,9 +145,10 @@ class WatchedController:
             raise ValueError('A match is already running')
         if importlib.util.find_spec('pygame') is None:
             raise ValueError("Watch requires pygame-ce: python3 -m pip install '.[desktop,watched,match-view]'")
-        if importlib.util.find_spec('unicorn') is None:
-            raise ValueError("Watch requires Unicorn: python3 -m pip install '.[watched]'")
         pending = self.fixture()
+        # [designed: T176] Kind 1 is a friendly; any other kind fixture() accepted is a qualifier. A fixture with no
+        # kind (a test's stand-in for a scheduled friendly) stays on the friendly route, as before T176.
+        qualifier = getattr(pending, 'kind', 1) != 1
         self.close_viewer()
         try:
             self.frames_enabled = frames
@@ -154,13 +176,22 @@ class WatchedController:
             self.process = subprocess.Popen(list(command) + [str(self.directory), self.token],
                 cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL, stderr=self.errors)
-            self.engine_token = self.engine.start(Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1])), frames=frames, **options)
+            if not qualifier:
+                if self.engine is self._qualifier_engine:
+                    self.engine = self.friendly_engine
+                self.engine_token = self.engine.start(Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1])), frames=frames, **options)
+            else:
+                # [designed: T176] A qualifier is the `competitive` match on the engine process, as competitive
+                # Play's, with the pitch samples and the bench; CompetitivePublication publishes it, once.
+                self.engine = self._qualifier_engine = self.competitive_engine()
+                self.engine_token = self.engine.start(frames=frames, **options)
             self.model.match_pending = True
             self._pending_owned = True
         except Exception as exc:
             self.close_viewer()
             if isinstance(exc, (OSError, ValueError, QuickEngineError)):
-                raise ValueError(f'Cannot start original friendly: {exc}') from exc
+                what = 'competitive match' if qualifier else 'friendly'
+                raise ValueError(f'Cannot start original {what}: {exc}') from exc
             raise
 
     def send(self, kind, value):
@@ -349,4 +380,9 @@ class WatchedController:
             except subprocess.TimeoutExpired:
                 if time.monotonic() >= deadline:
                     raise
-        self.engine.close()
+        self.friendly_engine.close()
+        # [designed: T176] The owner's competitive bridge (the window's) is its owner's to close; only one this
+        # controller made is closed here.
+        if self._own_competitive is not None:
+            self._own_competitive.close()
+            self._own_competitive = None

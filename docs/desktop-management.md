@@ -1,6 +1,6 @@
 # Desktop country management
 
-[designed: owner, 2026-11-08; T176] Every screen this guide describes is pictured in [docs/current-game](current-game/README.md), the build's own manual.
+[designed: owner, 2026-11-08; T204] Every screen this guide describes is pictured in [docs/current-game](current-game/README.md), the build's own manual.
 
 [designed: owner #148, T69] The primary desktop interface uses PySide6. Install
 its optional dependency in a virtual environment (tested Python3.12/PySide6 6.12.0):
@@ -124,7 +124,7 @@ docs/core.md "Booting at the DOS date call"); GOAL.DAT is read at run time from 
 python3 -m goal2.desktop --core-boot .cache/e039-r0005-date-call.sav --data .cache/GOAL.DAT --save .cache/desktop.g2core
 ```
 
-**New career** offers the start year as the Python route does (1990 or 1992). The core answers the DOS date
+**New career** offers the start year as Launch offers it on the Python route (1990 or 1992, `START_YEARS`). The core answers the DOS date
 `start − 1`/10/04, which the original turns into that start year [confirmed: NG-9], and presses N while the title's
 tune plays (`Core.boot`'s `title_key`), then Enter on the player count (one manager). The country list is the
 original's browser in its own order and the card is read from the core's memory (`views.country_select`,
@@ -308,7 +308,7 @@ cell the last drawn in the original's order shows, and the ball hides under a pl
 full commentary open, Up/Down scroll it.
 
 [designed: T102, #305; confirmed: goal2-archaeology E031 C39–C41k, 53d7ef5; F027 E544] **The bench**
-in a watched friendly. At half time, and at a stoppage the original offers (a substitution
+in a watched friendly (and, T176, a watched qualifier). At half time, and at a stoppage the original offers (a substitution
 opportunity), the pitch view freezes on the decision and shows the original's board (HALF TIME,
 SUBSTITUTION OPPORTUNITY), and the goal2 window raises the bench in front: a view of **Fixtures &
 match** that copies the original's in-match players screen. The eleven and the bench are in the
@@ -322,8 +322,8 @@ original's default answer there is what was asked for, so they are still made, t
 ("Esc: the requested substitutions are still made") and reports them as any answered swap
 [confirmed: the vendored kit's `Match._on_notice`; #316]. The window
 never decides whether a pair is legal: the original makes it or refuses it, and the bench then
-shows the original's reason and its counter (a sixth substitution in a friendly: no more
-substitutes). **Enter** on the pitch asks for the bench mid-play, as the original's Enter does
+shows the original's reason and its counter (a sixth substitution in a qualifier: no more
+substitutes; a friendly's budget is BM-7's 255, T180). **Enter** on the pitch asks for the bench mid-play, as the original's Enter does
 (the hint says `[Enter] Bench`; Space stays the commentary): the original pauses at its next key
 poll, pairs chosen there are requests the original makes at the next stoppage, and the
 substitution opportunity that follows offers them again. After the match the substitute stays in
@@ -335,13 +335,13 @@ without the pitch samples, where the original takes the Enter [designed: #316]. 
 original cannot take (after the final whistle, in the shoot-out) is dropped, and the next Enter
 asks again [designed: #316].
 
-[designed: T102] **Pacing.** The engine runs ahead of the pitch view, so it is paced: the worker
-writes pitch sample k only after the view has acknowledged sample k − 64, and is never more than
+[designed: T102] **Pacing.** The engine runs ahead of the pitch view, so it is paced: the engine
+sends pitch sample k only after the view has acknowledged sample k − 64, and is never more than
 64 samples ahead of what the player sees. 64 is the view's own bounded queue: the engine never
 runs further ahead than the view can hold, and an Enter in play reaches the original within 64
 samples of the frame on screen (about a second at Normal, 6.4 s at Slowest, a quarter of a second
-at Fastest). Answers and acknowledgements reach the worker through a second private journal
-written only by the parent, with the events journal's rules (`docs/watched-jobs.md`).
+at Fastest). Answers and acknowledgements reach the engine as requests on its pipe
+[designed: T160] (`docs/engine-process.md`, `docs/watched-jobs.md`).
 
 [designed: T97; accepted vision #266 screen 08] When a match ends, **Fixtures & match** opens its
 result: FULL TIME and the score, the kind, half time and engine, each side's scorers, the
@@ -516,7 +516,7 @@ continues uninterrupted. Substituted XI/captain choices persist for later
 fixtures and through full-time save/resume.
 
 
-[designed: T66] To watch the next scheduled **friendly**, install the optional
+[designed: T66; T204] To watch the next scheduled **friendly** or **qualifier**, install the optional
 presentation and original runtime dependencies in the same environment as Qt:
 
 ```sh
@@ -524,7 +524,8 @@ python3 -m pip install '.[desktop,watched,match-view]'
 python3 -m goal2.desktop --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --save .cache/desktop.g2save
 ```
 
-[designed] Confirm XI, captain and tactics, then choose **Watch original friendly**.
+[designed] Confirm XI, captain and tactics, then choose **Watch original friendly** (**Watch original
+competitive match** when the next fixture is a qualifier, below).
 A separate Pygame window shows a numbered animated pitch, original ordered commentary, minute and score;
 after the original post-match tail, scroll with the mouse wheel or arrow keys to
 see the original full-time board, man of the match and **Raw rating**. Countries,
@@ -537,7 +538,8 @@ keeps the published result. Save/Resume remain Qt actions; saving during a match
 is unavailable. A second match requires an explicit new Play/Watch action.
 Pending qualifiers, standalone watching, in-play tactics changes, mid-match saves and
 competitive watching are unsupported; substitutions are made on the bench (above). Quick management/play remains available without
-pygame-ce, Unicorn or watched resources; Watch reports the missing dependency.
+pygame-ce or watched resources; Watch reports the missing dependency. [designed: T160] Watch and competitive Play
+need no Unicorn: the match plays in the engine process under PyPy 3.11 (`docs/engine-process.md`).
 
 [designed: T83] The field is a modern schematic. Team colors identify the fixture
 countries; numbers 1–11 are current local pitch slots, not persistent shirt
@@ -550,8 +552,8 @@ event watermark. The last tick stays on screen through full-time. Save and all
 management mutations stay locked until every sample has been displayed and the
 original result validated. Closing while playback is pending discards the pending
 result even if the engine has finished. The bounded queue holds at most 64
-unacknowledged samples; the worker's finite journal remains lossless within T82's
-8192-frame/16MiB budget. `WatchedController.start(playback_rate=...)` accepts an
+unacknowledged samples; the engine's samples remain lossless within T82's
+8192-frame count [designed: T160, the pipe's packets are bounded instead of the journal's 16 MiB]. `WatchedController.start(playback_rate=...)` accepts an
 explicit 1–240 samples/s target; `frames=False` retains the text presentation for
 compatibility checks. See [T83 evidence](evidence/T83/README.md).
 
@@ -565,11 +567,11 @@ no original text resources or images are bundled here.
 [designed] Tested optional dependencies are pygame-ce2.5.8 (SDL2.32.10),
 Unicorn 2.1.4 and PySide6 6.12.0 on Linux/WSL. The viewer receives bounded private
 JSON presentation records, never game state/Memory or engine input. Qt polls the
-T65 worker and owns the single validated result publication. Viewer startup has
+T65 bridge [designed: T160, on the window's engine process] and owns the single validated result publication. Viewer startup has
 a10-second bound. Failed folder/stream allocation releases partial resources and
 reports the original cause; the same controller can retry. Cancellation terminates
-then kills/reaps only its owned engine
-and viewer, each with half-second waits. Native Windows packaging is untested.
+then kills/reaps only its owned viewer, with half-second waits, and ends the match in the
+engine process [designed: T160: a cancel answered within 1 s, else the engine is killed]. Native Windows packaging is untested.
 
 [designed: #236] The watched viewer retries Windows status replacement denial
 (WinError5) for up to250ms. Qt defers status-read access denial to later polls,
@@ -615,7 +617,19 @@ or local resources show install/resource guidance while management remains usabl
 Competitive Play, friendly Quick and friendly Watch share one match lock. Save,
 Resume and management edits wait until completion or cancellation. Cancel/close
 reaps only the owned child and preserves the active state and previous save.
-**Watch original friendly** continues to support scheduled friendlies only.
+
+[designed: owner decision 1, #526; T204] A qualifier is watched too. When the next fixture is a qualifier that
+competitive Play supports, the page offers both routes: **Play** (the original competitive match, quick, as above)
+and **Watch original competitive match**. Watch plays the same `competitive` match on the engine process with the pitch
+samples and the bench (`WatchedController` starts it on the owner's `CompetitiveJobs`, the bridge Play uses), and the
+competitive publication publishes it once, with the campaign state Play would publish for the same match and answers.
+The bench offers five substitutions a side, the rebuild's competition budget [designed: owner BM-7, #73], where the
+original gives two [confirmed: F027 §4, A4A1; E031 C41, GOAL.HLP]; a sixth is refused (no more substitutes). An
+unsupported kind refuses both routes.
+
+```bash
+python3 -m unittest goal2.tests.test_watch_qualifiers_t176 -v
+```
 
 ```bash
 python3 -m unittest goal2.tests.test_desktop_competitive_jobs -v

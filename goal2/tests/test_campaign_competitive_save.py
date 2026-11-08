@@ -162,6 +162,7 @@ class CompetitiveSaveTests(unittest.TestCase):
             with self.subTest(damage=damage),self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(bad).encode())
             self.assertEqual(owner.state,before)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_quick_setup_is_private_and_preserves_strict_template_refusals(self):
         from goal2.engine.savestate import Savestate
         from goal2.engine.quick_engine import ExtraTimeNotModelled
@@ -223,6 +224,15 @@ print('PASS ordinary quick campaign with optional runtime unavailable')
             with self.subTest(damage=damage),self.assertRaises((ValueError,ExtraTimeNotModelled)):
                 resolve_full_matchup(input_bad,state_bad)
             self.assertEqual(owner.state,before)
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        CompetitiveSaveTests('test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage'),
+        CompetitiveSaveTests('test_quick_setup_is_private_and_preserves_strict_template_refusals'),
+    ])
+
 
 
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,527 @@
+{
+  "tested_head": "25a62682135ea3f61f0ae2ac704a6f6cf4597cd1",
+  "aggregate": "FAILED: one packet key-focus case",
+  "passing_actual_cases": 3,
+  "actual_records": [
+    {
+      "target": "half_time",
+      "edits": 8,
+      "published_once": true,
+      "commands": [
+        [
+          "substitution",
+          {
+            "substitutions": [
+              [
+                31,
+                33
+              ]
+            ],
+            "edit_only": true
+          }
+        ],
+        [
+          "substitution",
+          []
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "5": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "6": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "7": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "1": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "2": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "3": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "4": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "8": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          []
+        ]
+      ],
+      "actual": {
+        "initial": 71,
+        "confirmed": 184,
+        "edits": 8,
+        "stop": "half_time",
+        "unchanged": {
+          "minute": 46,
+          "score": [
+            1,
+            0
+          ],
+          "eleven": [
+            21,
+            22,
+            23,
+            24,
+            33,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "bench": [
+            32,
+            34,
+            35,
+            36,
+            37,
+            38,
+            31,
+            39,
+            40
+          ],
+          "left": 254,
+          "frames": 2098
+        }
+      },
+      "headless_full_memory_events_result_state_equal": true
+    },
+    {
+      "target": "pause",
+      "edits": 8,
+      "published_once": true,
+      "commands": [
+        [
+          "substitution",
+          {
+            "substitutions": [
+              [
+                31,
+                33
+              ]
+            ],
+            "edit_only": true
+          }
+        ],
+        [
+          "substitution",
+          []
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "5": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "6": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "7": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "1": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "2": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "3": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "4": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "8": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          []
+        ],
+        [
+          "set_piece",
+          {
+            "taker": 23
+          }
+        ],
+        [
+          "half_time",
+          []
+        ],
+        [
+          "set_piece",
+          {
+            "taker": 23
+          }
+        ]
+      ],
+      "actual": {
+        "initial": 71,
+        "confirmed": 184,
+        "edits": 8,
+        "stop": "pause",
+        "unchanged": {
+          "minute": 6,
+          "score": [
+            0,
+            0
+          ],
+          "eleven": [
+            21,
+            22,
+            23,
+            24,
+            33,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "bench": [
+            32,
+            34,
+            35,
+            36,
+            37,
+            38,
+            31,
+            39,
+            40
+          ],
+          "left": 254,
+          "frames": 320
+        }
+      },
+      "headless_full_memory_events_result_state_equal": true
+    }
+  ],
+  "source_sha256": {
+    "PROVENANCE.md": "5a19a3a47d288ec9d4d49087e4ffa1f01802e29683f417c5b659f824dbf8fd70",
+    "goal2/engine/confidence.py": "f2578339f486818584243d810d24b4c886c456fdb1d2518d6e605e678ef16f32",
+    "goal2/engine/energy.py": "ec791e63878eee3b9cad202b07997cc29294783017bc6fb445cdf630578fd467",
+    "goal2/engine/morale.py": "1ed6ab346d153606fd3408b00fe004ce18efc885aa274136b9cb57c6b217ecb8",
+    "goal2/engine/original_match/README.md": "b62f5af3d1759d581df611af35b267310411da8fe7306135d4ad04117ccf953d",
+    "goal2/engine/original_match/__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
+    "goal2/engine/original_match/assets.py": "35d9ac4aaa2532706191ab2c3ee2d2dc1de9a559de08f7c212050cbb583bf594",
+    "goal2/engine/original_match/build.py": "e3b7c45b7442115361a6bfbded6f954749eea4e31e4f45714684bc2b071a6b41",
+    "goal2/engine/original_match/check.py": "afb09418c918c7500e4c00bde886fa449d8775b85e24d98028af207eef783fa3",
+    "goal2/engine/original_match/example.py": "dc520c940112e2d91a0c3ed57a265cfc1c7b8635d1674e492378aed35ee2e428",
+    "goal2/engine/original_match/fileopts.py": "fe8e7207795398b3e2aae9fcb5f1b0d0388bfe4df9a89d77bd77f7d4399f6291",
+    "goal2/engine/original_match/image.py": "2314ac46e20e4bf11e6f8f739300ddb564565e718b58c543b6b1f9848fbb8c24",
+    "goal2/engine/original_match/machine.py": "c01aa890626ac0235f6e1a40dec93475624a5f09d426bdb6f701b37ceb6c2db1",
+    "goal2/engine/original_match/match.py": "10c2f76f071193b471c21666938223ad3a71d142498f4d79e662d335ce872921",
+    "goal2/engine/original_match/port/__init__.py": "7352fa45b65f353b5626f0c86407bddff3564f4508d5ee4ec5dd498a54e2bdbc",
+    "goal2/engine/original_match/port/_display_finals.py": "32ad22c55be46cd6ce22ac105070f5938f94d013f3ea41d26df967d8bcf02325",
+    "goal2/engine/original_match/port/attributes.py": "187df60ae923ab002c40939bf4eb7bacae63ac2b1a932fb1f1ba269d12503cc0",
+    "goal2/engine/original_match/port/ball.py": "6b5f17ee9af3bf7dbb2bae4bd5ae00e1a012f6d6cf6e6e3c2cdd8464a7e2c72a",
+    "goal2/engine/original_match/port/contests.py": "b4db099959a09a1dcb78f031e9a44dc64624a5ffd8ea7b0be3441298bb0ec40e",
+    "goal2/engine/original_match/port/discipline.py": "a8ee74a7336ebd3d8c85ee71cbb6a089fca45fc0c05ee3efec866d798649fdcd",
+    "goal2/engine/original_match/port/display.py": "33b298ead7c58815b9463a39f14e0ba862c81a3af02d53cd5f6184b0f4d8da5e",
+    "goal2/engine/original_match/port/duels.py": "37fe8ea7dec6c3aff8c80d26367d3225460af037a839912e98b4e6217dd739b6",
+    "goal2/engine/original_match/port/engine.py": "6439370e3ffcc5977bb066506431a25a0c300ea374faf28ec3f4fbd9718c6f14",
+    "goal2/engine/original_match/port/entrypoints.py": "a55d378798ed5ec2c33404739b0961b8fec1e6167d1d301f5512cced4063b5b7",
+    "goal2/engine/original_match/port/frame.py": "d4c0cd4753038d6058f8359818164ce8cd0be775191fc8338f9a7ec9849b3a6a",
+    "goal2/engine/original_match/port/geometry.py": "a665d830ed16c00833a27216393a3b6f406251f44cef1f7fc9e80f7eb6bd3e81",
+    "goal2/engine/original_match/port/guest.py": "1062b5ea7d72114b5f404485768f6aeca69a5d94ffb0285a31158b266c46de7f",
+    "goal2/engine/original_match/port/mem.py": "0105113f8102a3e8c3544942a445e156fecc0196f7911089e7f789a7775fe45c",
+    "goal2/engine/original_match/port/menus.py": "ea87406a9f0300d0d54c3f71d664a8ed2925505fb133b59a481e8fc5f098f053",
+    "goal2/engine/original_match/port/motion.py": "4e7bab13c1e196464ecb41fd2ddb3a41878c217885c238fd2e80cd8329746eb2",
+    "goal2/engine/original_match/port/pilot.py": "700a8bf56db7adcccd6d011b0e26d0a06599c24fbc451e44fee033b8e56e0863",
+    "goal2/engine/original_match/port/positioning.py": "6a8feb436f745149a010db472a1aed04569d897875cd966eb434a6170b7f839e",
+    "goal2/engine/original_match/port/postmatch.py": "32035e9d055055cc29ba6dedbb38ceda3ac18ea6cc5d2a40605450086f41f86e",
+    "goal2/engine/original_match/port/prove.py": "74e7724eaf93206e4070b9bc41d2f04cf546e177b6a9718451da6476a313e8d7",
+    "goal2/engine/original_match/port/quick.py": "28836a578a2937b72a4fff05ab315bb0a9f665f24cf79e5a14bd4da710432590",
+    "goal2/engine/original_match/port/rare.py": "588b6fc3430a0e674664d9bf8f165bdf31779f240ac783f0490e5f4c5be1d66e",
+    "goal2/engine/original_match/port/real.py": "dbd3e488d8959924ffedeb58f8afec62ffa4c71a35116d7dd72c307a30dcd1f9",
+    "goal2/engine/original_match/port/restarts.py": "c378834575a59d89f31fea8f9ee5ffca7daaf98754a36e848164bb819ad87977",
+    "goal2/engine/original_match/port/runtime.py": "2e94867069cd6e35c28af96426bfade7dcb381e370eb12af106627cbeeced0eb",
+    "goal2/engine/original_match/port/selection.py": "4a2ac1e0868d44f0e58dfcf31b1df1c3f1171edf4a511d4695e73fb7ee9ef382",
+    "goal2/engine/original_match/port/setup.py": "0f703063621cd8a96d9ac0acde56da89754aa885a3d94d9333991a115e8185e2",
+    "goal2/engine/original_match/port/tables.py": "b5296fd3cdef46228b3f616dc0e34dbf31ca3ef0de73e2737cfa3798c64022b4",
+    "goal2/engine/original_match/port/takers.py": "fcd182d4543af18a0def9e16773cd317939fd0ca37559f941b499bf9ab40d7b8",
+    "goal2/engine/original_match/port/update.py": "0a4b3f58a48aec4fc69a229410e566af2144cc9e7153cbfd604da1557deb36b2",
+    "goal2/engine/original_match/screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304",
+    "goal2/engine/players.py": "1e0d671ef4c2e107ac064b54b80c98117f73ef6f8562e8c122cefe487fc82c24",
+    "goal2/engine/quick_engine.py": "d79c6376f5c14f9055ad3d25dab64eafc18d9a2bef72c5e4f51ee04ccfcc2d7c",
+    "goal2/engine/savestate.py": "ed0e1ce0483b7c00ec10da4824f02395908c65c45b00cdf4c191af17b1cf86a8",
+    "goal2/engine/tables/code_data.hex": "e62742c496f9dd5b80d832c9df99a4fcc343e7ae4fe46aee2d68345ccfac37ea",
+    "goal2/engine/tables/ds.hex": "6610d3e7a17e867c26e385796c9ed8776608094a8b5d204a8c7f9b2573f5378b",
+    "goal2/engine/tables/manifest.json": "8beaca4724b04038b2b5bfc835a103c45d385f06250ac0c3f7e5ec861119a78e",
+    "goal2/engine/team_card/country.py": "d2ab97927ecd7ae269f9351f7244dde9eee56af41ffa774a34f520428c4c7b3a",
+    "goal2/engine/team_card/manager.py": "1d4340eb8ab57c65c7d4186390842d769eaaf954ed7f205ca9ad83a3f1bba5bf",
+    "goal2/engine/team_card/team_bars.py": "4631ccf2c135a151800d0cddd6a84819aaf7ef0ce7b1c646fc746a2bb94582cf",
+    "goal2/engine/team_card/team_characteristics.py": "29ce61b550537fa0e98c31144124b7e1cd07a1bd2767fc8ff3d9c5b1a465efe0",
+    "goal2/engine/team_card/team_performance.py": "cd65009941455e7a0c1bd98a7d920ad3e57782f47e4940ccfe949c1a3e17200a",
+    "goal2/engine/team_card/team_skills.py": "1f530c1f7a9bad85af350343f222f8b702f508244ab7c7abd776da0dac858c6a",
+    "goal2/game/__init__.py": "e1ed097c1434936c324b55808b46e31e67e41ab2c8bc17ff783bb8a45b7e7d0f",
+    "goal2/game/campaign.py": "5867bab3cb793dc65e5c8bd76c38c3c8f949260104bb5dde1109faa5b5e4ee45",
+    "goal2/game/campaign_confidence.py": "a0dc1f79422b3c42365829e65d3db7275c4b11c7e181a54cb0ef91e1b9148a2a",
+    "goal2/game/campaign_energy.py": "96f82b96edaa9f5a9c6c0fbc3804789c4055076aad3d16c647fd990ac0bfdaea",
+    "goal2/game/campaign_pool.py": "b1d6de6aae1e155a26e6789346824f4d47df40162ac3371debf502d7d092fc82",
+    "goal2/game/campaign_rounds.py": "a9ce460c92a2f3a90aba7d52c2e86f152456a9275e7aa5908cf28349aaa274a3",
+    "goal2/game/campaign_schedule.py": "6d570508ccdf32ce982df0a4c65278ebc2820dfd1aff77ff679fe42ad94622f8",
+    "goal2/game/competitive_match.py": "2782010ff4d18c24b15d434be97f3aa8f59592996ecd045280c0d03641c94a3a",
+    "goal2/game/computer.py": "475ad01caf82b937866cc3cf142d86d3c5c8dd53495f9fe63f1d5185e04333a7",
+    "goal2/game/continental_qualifying.py": "352741845e6b0444014248a051efe795e81a789688add46279189167fa3249ae",
+    "goal2/game/country_card.py": "f1d340c2670c846f7882b06bcee14e8caef8f069ef7be04856451c1673e9bfd8",
+    "goal2/game/eligibility.py": "e2d711aa7fdc443828770cba4d4e60b5a24f49b3a1f851bccc8a1335d3a37cbc",
+    "goal2/game/engine_process.py": "8a599b4b0f16f394acf73a19fb72028254b707c5a5c3603251a0a943b8f30b84",
+    "goal2/game/engine_python.py": "6fc6cf1e3de5d55275adcfb4042b5596be39850ce6bc62bb96cbfd90df6073c6",
+    "goal2/game/engine_server.py": "a86b0177b49aa85205c9d5e99f2ec4779165bdedd79a1eacedbccfeb0f5f8f25",
+    "goal2/game/engine_tables.py": "e6ff9146dddcfce4f05a5c3457c02975b0efa330eded89129a52f3291f5908d9",
+    "goal2/game/identities.py": "c0338eeecf7c6d4784b505e2f0cb3993d4760a4f23c59aefdaa8e223e7a0a022",
+    "goal2/game/match_report.py": "115124efbc1a13a53abf8a35ab315707ad62f2fc0157dca9134b3d490e49f9b9",
+    "goal2/game/new_game.py": "8c3bf7e382819e185a6ce859af16e238d48b69961bed983438d949fc6fa7e2c3",
+    "goal2/game/player_card.py": "b1b4d743631fd35eca35ffa7b1cec4b8fd05a652955ec9f17fc13b100e21924d",
+    "goal2/game/pool_names.py": "d697b160db8e22760f6d2f6d1b0acf2212a24d02c9276cee95943ce624643c0b",
+    "goal2/game/quick_match.py": "59f82bc6c80d5619165f3d67484990251e955c3576bb7bcb02a5b30bcc550268",
+    "goal2/game/roles.py": "1820139001a4ed7e6ad08579c78610831f14c04230ba4147c1fd122f84eba04b",
+    "goal2/game/session_save.py": "8622d563ef113f8b8f7a2c6069096057bc85eb763dc292dd970d9ed0f800ea7a",
+    "goal2/game/silent_results.py": "9d200056640a3e7b94fc3e956ab696f146534b9e084849127d53e3db75093bb2",
+    "goal2/game/skills.py": "b9366196b5a8a7b4f8ab7e18e5b3f7d75469ac4fd77fdb917b3f9dc4c7ac592c",
+    "goal2/game/standings.py": "0131c574f63e8399d7a23276f55ef70600aad69d57e6f87a54d400d24030ca31",
+    "goal2/game/state.py": "257aa00fc744785932224bd1602377899caf49bf0a58f940003cc419b9cd184c",
+    "goal2/game/substitutions.py": "f18a4805cab28bef91c7e332953b5a956168ae2bf4946874d735814652fd78a1",
+    "goal2/game/watched_jobs.py": "1f3b1711adc71fec6145ff030818c81b1703b5dfc28d701d6c2f387c8c8b9881",
+    "goal2/game/watched_match.py": "3eb918d586f512f79efd993dd899cb251891a0aff685afe7ab10a9e7f499f52d",
+    "goal2/game/watched_pitch.py": "87083eb690594554f26acd0bd2a13a56efebee0b0f2ec2e1bddb1fec3bdf2d52",
+    "goal2/game/watched_publication.py": "076853ba7cb42212be2f335adb6f65a42e755cf425c49d41a9dc69ee071ea6b9",
+    "goal2/game/watched_schema.py": "dbf26bf926e41afa9a0f254311749c0f2d2557aa98812a6983a4e1746777e214",
+    "goal2/ui/__init__.py": "bf991f0ef4d482f7d850c2edffbb202f3888484e9fda4d7b6dcb6e3a6899318c",
+    "goal2/ui/__main__.py": "ff3b4f80d5acddd1b079bfb9dcbd1721faa6dffcae97aab0a4e1e4bca327402b",
+    "goal2/ui/country_select.py": "20b89811c8f46b24c4431f46595f7aef0cee8754c1c4f6c403acaa1521f9ced2",
+    "goal2/ui/fonts/LICENSE.TXT": "9348ddfd44da5a127c59141981954746a860ec8e03e0412cf3af7134af0f97e2",
+    "goal2/ui/fonts/PROVENANCE.md": "3f3f2d33d56e98b086f441e9366507f5bc9dfa87c33ec6eff2e57190d496104c",
+    "goal2/ui/fonts/PxPlus_IBM_VGA_8x16.ttf": "c99fb740581471c2bd239a200c9f7a6c12f60a7099b0f0af795e405281bc2c5f",
+    "goal2/ui/friendly.py": "8a9d296b4ef135d01eb8a5cf0ad5d22ef3e84dec4a74c10231bf2eaf9706b10c",
+    "goal2/ui/grid.py": "2e51fcc59281b10ae873ad5ffd05b092c9c0039aba81eb4ae988d79c089c1cd9",
+    "goal2/ui/home.py": "3072d3ddb51cbb0f74b37d8af3a9db7359d75109a472ad34f7485429ac97b87f",
+    "goal2/ui/input.py": "a9f2685f1187e5e11cd95bc4e461d4b098ee78c19afd5cf0ad77d2633c3bcf64",
+    "goal2/ui/key_flow.py": "4cb61075fe30c426ddeb04303b85d0604449c2e7179e3bedaaf700184d7ecebb",
+    "goal2/ui/kits.py": "c5b4b4b30a6220fdc10d49a887f8ad6c5395562d93fdd98ce1c77fa6d28756cf",
+    "goal2/ui/match_day.py": "5f03ab22b6daa815ffce1064336d0fcc7742797f5e6a12456e39540c13db9bb6",
+    "goal2/ui/next_action.py": "4d2128ed4a8ee516d4ef849ff36efa6e1ae0f8b3da393ddff66696865f3e4231",
+    "goal2/ui/pitch.py": "0935e3e920a58bc208623379b8096f065f067d35fae77c868265af892151371f",
+    "goal2/ui/plain_renderer.py": "788e68adb3ac35cfd862a16daa2a25d93aabb65f599ed32a34430eecd9f51bfe",
+    "goal2/ui/preview.py": "5d0d84d3e452d286d410db4a1b2db897d01054f08377471dde5a4d3f66a66221",
+    "goal2/ui/readable_text.py": "4245a38057394a397529ccf6e9dfb611517cd8f6254020f959cd8f5518e78e07",
+    "goal2/ui/replays.py": "e151a79b861070a95c5de1b4a7bd685b3deb04da0b2fe5e8530cfb5838871f35",
+    "goal2/ui/result.py": "83f208d72b730a0c04b48e05e0f2b0f6113b550cf53bc0aec6b2ed51159445b0",
+    "goal2/ui/s01_import.py": "0d2966781728f6ac7bd97202d580a97938350b043e0d5edd2722b509b571555e",
+    "goal2/ui/s02_start.py": "503ade6f2e8e9b96a57f12fbc80bb05056a5857e84f9b18a38df93ebe14f8c80",
+    "goal2/ui/s03_new_game.py": "306e6b587931c96a32c97dd809d98e7854c231a19f908a2db8c05ab8d874bdf3",
+    "goal2/ui/s04_country.py": "bd46fc0255f47a7756689be69d3f1fb333960ebe41b7353ccd63eab56d272b00",
+    "goal2/ui/s05_bulletin.py": "f21d05629791f1f96a7d0735ff16715737175ad544c1390cc19e8ed7e638836f",
+    "goal2/ui/s06_desk.py": "01e93f45da53983bfd2a5b83de2e677ca3c0ca3e2a2aae962b0bcbb8f9d31d14",
+    "goal2/ui/s07_team_info.py": "5229325e521b234744af92a90508af4ef260c2c4df03c4519d5182ffb14f26b9",
+    "goal2/ui/s08_squad.py": "c6674360bcdd4e833ebfd00fa761c979ebc13db17c1f4c49f28235fe55113291",
+    "goal2/ui/s09_player_tactics.py": "0ba2f608fa17f2fcb4229734cdf1184a7bbfd65fd86ec500235134d85fc7a8a3",
+    "goal2/ui/s10_team_tactics.py": "a31e71e076b6e6abd0a273620b2abadf96c2b354fed0a0073ae26e2467ef070d",
+    "goal2/ui/s11_fixtures.py": "c1badeedda0a8b171702e3306b12bf2e315839ef4d2cd59a5e56c3751a1ddce4",
+    "goal2/ui/s12_tournament.py": "6016fb06e0cbb8bc0768687edd3e7d1355ac501be4882b7720229b30d3745064",
+    "goal2/ui/s13_history.py": "1069fcba8564d3ee86b820870c9783fbe6b31b9ae31ba02ba06476a06810370b",
+    "goal2/ui/s14_round.py": "468db8e59156746085c68cdc7e73ad66d44fab888474db6668e48d0c083e70b7",
+    "goal2/ui/s15_match_menu.py": "2bfff8832777311a5c689276f47d8fca2a5f880e6ddcdd36537157c82a5c5625",
+    "goal2/ui/s16_choose.py": "6ca1b70361794cf4fad068e4d96f661de9869292b2d2ab70875254bd5ab7cec7",
+    "goal2/ui/s17_pitch.py": "63eb632ff128ffb6dc1ba438a0873cb9a2e8c46bfdb636667ebda4ef8078459e",
+    "goal2/ui/s18_stop.py": "23014d15601746cdf3da98e5c74b46bd48e19c5d62789efe016df1ffe86969de",
+    "goal2/ui/s19_bench.py": "e976efd45b0b30d58e7757b32d8af943be41684e36635b61f9e66fb20e9f4ca7",
+    "goal2/ui/s20_board.py": "798de9add1e189f68dd9a3c17a0fc3a88e7e27d243b78b7cab42d08653569ae1",
+    "goal2/ui/s21_save.py": "81ae8ed601a520dff49f05d69289c9fe04c28cc3e66bcee82ce30d78c93f8e82",
+    "goal2/ui/s22_help.py": "72776bdf1d2bd40dcebf35a23305864e30eab0079ef8f112c0c884ebfed7e768",
+    "goal2/ui/saves.py": "347054edcc1886d4e523785f8cb901fd87b6dd035b50de2bbb3b35e4dfb8e958",
+    "goal2/ui/screen.py": "186d45a4cb4419fb4127a216b080de20dea9ec5513bb7eed1e22222342c752d5",
+    "goal2/ui/squad.py": "f608397a4ed6c1632a52d10b525a9356b57616aeea2e1f84465b4ffb73a65f36",
+    "goal2/ui/squad_card.py": "9c22077d09e12d0f7cbadaeb25cbb9e4efa24ae43f41cd1c6d7f0eb594a97e77",
+    "goal2/ui/start_look.py": "ed71978d4c760dd2d906aefae688df5daed2086164c112f3e82762c946561e96",
+    "goal2/ui/tactics.py": "d699753aab08d04434b3ad90d5d63d7e5928534232df4b12e9c70c9f5f099d28",
+    "goal2/ui/theme.py": "e8b2da1af1ab81201b75f258bee320be67df49fd5318c782ff32bca98252c51c",
+    "goal2/ui/window.py": "e195aded571d9a994e109f112e6e146c0e1a599a9c658f9093482fe38f084839",
+    "tools/artifacts.py": "5ed91bda3772d472e7e973213929f5e068ebafdc92a4b340985617174497f613",
+    "tools/benchmark_core_watch.py": "2259056dd6fbe8457a910fe96d490e9a7e1815a93cb88f897f35bccf84f94ea6",
+    "tools/browser-ui/README.md": "22074cb5530613f7a154e286b43cc15d1a210d6f028695cc97d8b6fc49ff494e",
+    "tools/browser-ui/acceptance.mjs": "472c29c62d571b8809d6f80382e5a8b27b44421c303f496f46325fbf1154d70e",
+    "tools/browser-ui/prove-campaign-confidence.py": "3965139e3dfe2c414fd2da48e696ecedcba341022417213d9335396c7c6585ec",
+    "tools/browser-ui/prove-campaign-eligibility.py": "3c9a0dfbd8afe601bc754ece46d33736b260fdde4032e82693e86b576ea2803b",
+    "tools/browser-ui/prove-campaign-energy.py": "809b1bd4bbf4b47b7427e1a8477e6f13507dabbc99086b714fd3768ff58543e9",
+    "tools/browser-ui/prove-campaign.py": "7a2d7f116e5bdf70878b0bbf338b5438a758c76ba72c97762b68584c180979e0",
+    "tools/build_portable.py": "47b33a3c1ef6b7b5e9180ec48422fbd4bbea22b8ab78a66a53ea304fdcebabe6",
+    "tools/check_goaldat.py": "787a630b3476db5ad38bd9d407219b711dd824b86b0a802c4cbae834b266de1b",
+    "tools/check_links.py": "4867325747c19a6f7beee6b8f1a3be22575a6396fc89a915a5ee8ed88ffab4cd",
+    "tools/check_premerge.py": "ed01d0cf5532f63121c452ca71d1fd3b8543e0f9524c727b68b78622d9bc28fd",
+    "tools/check_provenance.py": "00cd677d04579f65df03de759639c8e8aee7110cff13ceead6e23e0d042793f5",
+    "tools/check_watched_records.py": "4b2b5db48654526370121ad52fb86975d6902b24070d3bdcd0aa6a973f1eaf3b",
+    "tools/check_watched_upstream.py": "af45948727450d198277b5dd667944ff62948eba63ec5f4cca7f0acf5f1c0e4a",
+    "tools/checkpoint.py": "44940f3f03ee978c1a8e4f4d9131dcfefbe74b249903ef01fa9a407bc94538df",
+    "tools/ci_changes.py": "677b95523297afa2ff1232f6b7ef258266e8882f35f49271d21aa06dfc581da1",
+    "tools/cloud_setup.sh": "28f4bdaef303ebdd22cf4ccda0eedb53b01a9a46761f083e01fd7db29cd20652",
+    "tools/desktop-ui/acceptance.py": "7e5e0134da9ef502ca28db512b3e9ae0b7e22b1631fba8b25f7d52abe5f5db4c",
+    "tools/desktop-ui/animated-pitch.py": "38c575734cd322ef1732161a29a806df1113c22c316026d551e0d4c55922e7c0",
+    "tools/desktop-ui/check-design-plan.py": "30c67cc42281e8a02d758122309a05cc2f11be2e9e42ea33d26619cea54bc21b",
+    "tools/desktop-ui/competitive.py": "03dd94fac8aeb8304f945fb21152de98d7af2241edcd69b89f0bb1b458670e18",
+    "tools/desktop-ui/competitive_play.py": "f452792fd4b92241328d3ce9066530051ca2755adcce74d8ad6542fa5e11bc9f",
+    "tools/desktop-ui/country-selection.py": "727b98f8ad6b53ca0c297be38a65e3beac7d9c606657b6e8949d5eed1dc289b0",
+    "tools/desktop-ui/inspect-design-plan.mjs": "a753a3eb9a392f8cedf47ff21ac3cbe51c6f621ac437446dd270c42cbadea05a",
+    "tools/desktop-ui/launch.py": "ae09cf402627433d012ee33f816e0b985d3e9df5623d8403c1b9ff18b1037575",
+    "tools/desktop-ui/native-status-sharing.py": "bc0a142baa1a596cdb86c229eaea89470e949e8ad84430676322cdcff4aa122d",
+    "tools/desktop-ui/navigation.py": "4d9c6efdf49d7a5b33f333fc21f101d6cd8028c3378946d6d0396ec91d7a76ee",
+    "tools/desktop-ui/player-browsing.py": "654b0e92b644549713db7b7ab8e68421f1d12de8f8debfedf5c1dd38ef41a4e6",
+    "tools/desktop-ui/pool_scenario.py": "1bd9f5b9e4b908400642d3682f6c984b92f6f5cc01b37c8ea95bd8279d3e8c59",
+    "tools/desktop-ui/prove-friendlies.py": "cc2f7b2ec51ea4cc105cedfe541e51983593ba0039a835e360e33c2612e7582f",
+    "tools/desktop-ui/prove-halftime.py": "40d84c0399296009846c1a22ceb0b92786e1a6997ef79804bde27eb8421d5599",
+    "tools/desktop-ui/prove-management.py": "8abdddae83f98870990939b3a05eb7583b38a099cc0ffb5b0986939b7b3f05d7",
+    "tools/desktop-ui/prove-pool.py": "b7298a606b0c37e559467bb39804fa81de038cdb67b2c1d5d36949c7a3da2c4e",
+    "tools/desktop-ui/redesign.py": "7bd88ff8f647769f52d71e20d588dd8c6dc41169b300a87f7276239cabd6415b",
+    "tools/desktop-ui/results_scenario.py": "95a605379929c3537f41eb3033ebb5d919548dc2451a185553bfc428ff896c35",
+    "tools/desktop-ui/save-decisions.py": "85f37600b128bbf76288833857d58052adb2e49947da7f145a5d0f047102e209",
+    "tools/desktop-ui/squad_scenario.py": "a89660d6a05dc64f0bc4f1c9811058f1710f21d4813545d4521113cc3b48c444",
+    "tools/desktop-ui/standings.py": "aa9a246cac82f904abed7f622544ebb57a2df68b1f1f3ba30567bb5323c37438",
+    "tools/desktop-ui/tactics-labels.py": "360235fe550592678b084135a43d8e80a7872027f0c8195dc0de524e4a95f0cb",
+    "tools/desktop-ui/watched.py": "a7383d4b84bd6ece494bbd5b733809c978b227026861efba87637cdee757ee65",
+    "tools/desktop-ui/watched_bench.py": "87dba197ee674fc94c61dc1e9b528dc2b32e92108580a5eced76bb11650688ff",
+    "tools/export_watched_legacy.py": "556f7f3d17022d748bf2620932c7e07ee3ec7b4dd3c2602bbeb831dd8bed4a91",
+    "tools/jobs.py": "69c10cee18695f41967f7d162a2d81615742e5883e49d558fee4aafa278507c7",
+    "tools/measure_p1.py": "f41abf626fb3ce594c0a1f41eabc16f70efb82077c55207baf507b2f4ab2afbe",
+    "tools/milestone_review.sh": "acadf1f1eb79c84ad46e6b2d5165d87d2537e565bf466a717e312df36535e5dd",
+    "tools/portable/goal2-new.cmd": "6bf0af52490ff7b41dea3cae280d19770d0e10c4c059e2a04d400b33980aec13",
+    "tools/portable/goal2.cmd": "27eb2d9303e555fc022c56adc0fcf58187537f8adaf461b7ff1eda24119b1e1f",
+    "tools/portable/goal2_launch.py": "c9770dc5a5f24c61f1e9dd9d1b50188f0283a077eeb2944939bb22517f5c066d",
+    "tools/portable/manifest.json": "601de502b8049f7f367ac6b0c1f9056ca6bfeb926db37ba0884feab56aadefa3",
+    "tools/portable/requirements-win64.txt": "02aebc8af49e15d707307956f03f66c61dfe057782fd687db9b01745a6ead2eb",
+    "tools/portable/smoke.py": "1da50814e124a972600331636b92c03169229f209a83bfb31cd5de939cd8e84b",
+    "tools/portable/smoke_match.py": "d2c3fd44bf5008c168b92327356d8ceea099f778721a1c03d01387b945399b92",
+    "tools/portable/smoke_window.py": "4c685995590f655435eb22eae2a463ef2fcf915a2410f8dee12be2647e967538",
+    "tools/probe_watched_pitch.py": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+    "tools/prove_campaign_competitive.py": "c57dda7a36036e2b49daa250b7d9c186f63c4625c66a3ab49a676ed0a469a555",
+    "tools/prove_campaign_cpu.py": "c2a99d744bbc9b49ba54069773d86b467382a6f1326d9e1c8e1dc09b0257c74e",
+    "tools/prove_campaign_pool.py": "39e294dee92303e90db2a36604498256159d41984ce5818a45378717d497bb1c",
+    "tools/prove_campaign_silent_results.py": "f22ed76cdf3ff71591af227eef8fe6262e436f269ba08c4f778de04ee0d231cd",
+    "tools/prove_core_cycle.py": "5d364dda3772b773e4525f139aff09f7533fd19bd6bc39c7514e1d59df4e1cc9",
+    "tools/prove_desktop_competitive.py": "9a5568e35e97c0baff06fb704f2bf523a66a21466cdf7cb88b3eeb7ffc876098",
+    "tools/prove_desktop_competitive_ui.py": "7a3161aa359e21b9120191c8d83b925a6300007cdedaa5f51f37d8dfb00817e7",
+    "tools/prove_desktop_standings_teardown.py": "f5278978990f8bc431f713f58fafae72514de2b1705dbeccd766120d84119be0",
+    "tools/prove_watched_acceptance.py": "cf73d6fa61160afb5e8385224705c750b6553d4deac57aadb857f793a8d8cf9f",
+    "tools/prove_watched_competitive.py": "def4b4c74b66241ef89af55cfa76e0dcd1c41a1932679cc6ed0db605e5d79b21",
+    "tools/prove_watched_identity.py": "b127ac399210e08b6b26848f73e49911358903118f87c4576e4b7b6a8f1f50d3",
+    "tools/prove_watched_old_kit.py": "edcbfdfc32e80b52ac33c9952d08ad34466e4786162cc89a7dd0357f49c24d5b",
+    "tools/prove_watched_pitch_jobs.py": "e39c7ac0a16fe54d1ea4a3c4e9ea4422d25863345fcced3c1e1f2621cd955335",
+    "tools/prove_watched_publication.py": "3d055600da45c109a3406a31f6301bbc0c8f59f7181d1f515d32a0f1b91b54d7",
+    "tools/prove_watched_records.py": "910647f6ec3e8809375bb1d9f7a6ca016d72480c238ad67409694ca803b71b95",
+    "tools/prove_watched_serialized_result.py": "f4599e13e83e9bd2c7eb3425b358b2fb48032f440bae2b0e249408a2025f8997",
+    "tools/review_pr.sh": "e30251a0c57c0c1d1251cba09c39e25911361e1ea9a1ca5389566617535ef742",
+    "tools/run_watched_scenario.py": "446584629a44f917007a7f622e84be27d766cf991febc93e244454e359e74766",
+    "tools/runner/setup-linux.sh": "0f55e6bbb5a9b2cfcbb9963557f15cc83d7b185f48944e841ea96940294bf25f",
+    "tools/runner/setup-windows.ps1": "e51fa5d9e1e65fe13646b03c4c1e5020b66ff08b9d847accbbedc3034c65a274",
+    "tools/slow_reach.py": "459487bbea365f80e0d5a473f9e372a8efac4fc9f2d4d4b89973a2600caf1885",
+    "tools/ui_readability_screenshots.py": "7dabd1e38eef4f5a2f1a443a0021f52b16e29e40fdc4d2b9d17262ee0e488907",
+    "tools/ui_squad_screenshots.py": "f35db354208b2fe990e0a4f20d6f2ddc97b88b6b772dab672c969ddd757fd582",
+    "tools/verify_core_cycle.py": "b1d06fd75b2f554c99b218051c80d1990dbf4768a043d3c90e24aacb0bef6739",
+    "tools/watched-kit-hashes.json": "02377b768d22b7b1343efadf435f95438c0932d4ec1bc08e0907c4bd14b8828a",
+    "tools/watched_evidence.py": "5b345ce6b08660912180e001deacc531a91bf5fb9a804eb7477a5d7a3a85a4f3"
+  },
+  "raw_log_sha256": "2edebc2653b8e24ec539c6dc7ea58a6baf88aa784f260cc1c0ab8fedce3c2890",
+  "reuse_binding": "../focus-ownership-v1/unchanged-actual-inputs.json"
+}

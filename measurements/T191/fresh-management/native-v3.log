@@ -1,0 +1,15 @@
+Isolated native target: C:\Users\diego\AppData\Local\Temp\goal2-track-a-management-audit-tv6bjcj8
+create fresh UI-created career; no template-state injection
+create all80pool players reached with arrows
+create two-Enter pool/squad exchange updates membership
+create position/club position, four personal and eight team tactics via keys
+create named save reload equals complete changed career state
+create quit-cancel and saved quit succeed
+PASS create
+resume separate process Start/Continue reload equals complete saved career
+resume unsaved quit asks before discard; saved file remains untouched
+PASS resume
+verify separate process Start/Continue reload equals complete saved career
+verify third-process reload proves discarded edit was not saved
+PASS verify
+PASS native fresh-management audit; original-derived saves/comparison state remain private in Windows Temp

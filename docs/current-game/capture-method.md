@@ -1,6 +1,6 @@
 # How these screens were made
 
-[designed: T176] The original's screens are rendered from DOSBox-X savestates
+[designed: T204] The original's screens are rendered from DOSBox-X savestates
 ([the original's method](../original-game/capture-method.md)). The rebuild's are **grabs of its own
 windows**: the real `QMainWindow`, built by the real model over the real game, drawn offscreen at
 the fixed page's own 1440×900 and saved with `QWidget.grab()`. The pitch is the real pygame viewer,

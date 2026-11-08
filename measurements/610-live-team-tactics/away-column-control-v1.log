@@ -1,0 +1,21 @@
+test_managed_tactics_work_from_both_home_and_away_menu_columns (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_managed_tactics_work_from_both_home_and_away_menu_columns) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_managed_tactics_work_from_both_home_and_away_menu_columns (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_managed_tactics_work_from_both_home_and_away_menu_columns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 124, in test_managed_tactics_work_from_both_home_and_away_menu_columns
+    for current in (fixture, replace(fixture, side_a=fixture.side_b, side_b=fixture.side_a)):
+                             ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/dataclasses.py", line 1770, in replace
+    return _replace(obj, **changes)
+  File "/usr/lib/python3.14/dataclasses.py", line 1804, in _replace
+    return self.__class__(**changes)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^
+TypeError: Fixture.__init__() got an unexpected keyword argument 'side_a'
+
+----------------------------------------------------------------------
+Ran 1 test in 1.459s
+
+FAILED (errors=1)

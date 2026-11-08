@@ -181,23 +181,30 @@ class WatchedOutcome:
 
 def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
                       reference_seed: int | None = None, delay_byte: int | None = None,
-                      record_draws: bool = False) -> WatchedOutcome:
+                      record_draws: bool = False, substitutions=None) -> WatchedOutcome:
     """[designed: T63/T65] Complete the original with default play-on answers.
 
     Reference overrides are explicit diagnostics; normal play keeps setup's
     fixture-index * (engine-year + 1) reseed. No live-state mutation or Python
     energy/form update occurs. Events here are a completed diagnostic transcript;
     a future worker must stream directly from Match.events(), never replay this.
+    [designed: T180] `substitutions` is the kit's budget (None: the original's); the engine server gives a
+    watched friendly FRIENDLY_SUBSTITUTIONS, and a reference of it the same.
     """
     image=prepare_watched(state,original,fixture)
     return _drive_match(state,image,fixture,reference_seed=reference_seed,delay_byte=delay_byte,
-                        record_draws=record_draws)
+                        record_draws=record_draws,substitutions=substitutions)
 
 
 # [confirmed: vendored kit goal2/engine/original_match/match.py MENU_CONTEXT/DECIDED_AT_MENU] The
 # decisions where the original offers the managed side its bench: the half-time menu (0791:9AE3),
 # Enter in play (0791:945B) and the stoppage notice (0791:8103).
 BENCH_CONTEXTS = ('half_time', 'pause', 'substitution')
+# [designed: owner BM-7, #73; docs/assumptions.md BM-7; T180] A watched friendly plays with the rebuild's unlimited
+# budget, as the Core's new careers do: the kit's `substitutions` is a byte (0..255), so "unlimited" is the Core's
+# 255 (goal2/core/patches.py OWNER, owner-substitutions-v1), for both sides. [confirmed: the kit's Match docstring]
+# A player taken off cannot come back, so 9 or more is no limit for a bench of nine.
+FRIENDLY_SUBSTITUTIONS = 255
 # [confirmed: goal2-archaeology F027 C-DISC-24 (E544), E015-r0013 state 790] With no substitutions
 # left the original's players screen shows this panel and makes no swap.
 NO_MORE_SUBSTITUTES = 'no more substitutes'
@@ -207,10 +214,17 @@ MENU_OUTCOMES = ('substitution', 'refused', 'substitution_requested', 'tactics',
 # [designed: T102] The reason of an inferred refusal (_report) with substitutions still left: the
 # original showed nothing goal2 can quote.
 NOT_MADE = 'not made by the original'
+# [confirmed: the kit's Match._on_wait, _order_key and _decide (goal2/engine/original_match/match.py); F030] The
+# decisions where the original waits for one of the managed side's players or for the next period, which a watching
+# player answers when the match is asked with `prompts` (T167, #541): the set-piece taker prompt (0791:CC7B, roles
+# 2-5; the kit asks it only with its `set_piece` opt-in), the shoot-out order (9B93) and the menu before extra time.
+# Without `prompts` the engine keeps its defaults, as before.
+PROMPT_CONTEXTS = ('set_piece', 'shootout_order', 'extra_time')
 
 
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
-                 substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None,policy=None):
+                 substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None,policy=None,
+                 prompts=False,live_players=False,substitution_control=False):
     """[designed: T51] Shared completed-original driver; no publication or Python tail.
 
     [designed: T102] `policy` answers the bench decisions (BENCH_CONTEXTS) for a watching player;
@@ -224,7 +238,18 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     [confirmed: the kit's Match._on_notice] An empty answer at a `substitution` stoppage that carries
     `requested` pairs still makes them (the default is what was asked for); its report has those
     pairs as `asked`, as if they had been answered (#316).
+    [designed: T167, #541] With `prompts` (which needs a policy) the match is played with the kit's set-piece prompt
+    (`Match(set_piece=True)`) and the policy also answers PROMPT_CONTEXTS: `decide(event)` returns
+    {'taker': word or None} at a `set_piece` decision (None: no key, the original's current pick stands after its
+    wait, F030), {'shootout_order': [words]} at `shootout_order` (empty: the original's Enter for every pick) and
+    nothing at `extra_time` (play on). Each answer is passed to `Match.answer` as it is.
     """
+    if type(live_players) is not bool:raise ValueError('live_players must be boolean')
+    if type(substitution_control) is not bool:raise ValueError('substitution_control must be boolean')
+    if substitution_control and (policy is None or _observe_pitch is None):
+        raise ValueError('substitution control needs an interactive pitch/bench policy')
+    if prompts and policy is None:
+        raise ValueError('the player prompts need a policy to answer them')
     if reference_seed is not None:
         _integer(reference_seed,0,65535,'reference seed')
     if delay_byte is not None:
@@ -232,9 +257,32 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     # [designed: owner, 2026-10-31; T151] Every match plays on the sealed port; there is no Unicorn fallback.
     match = Match(sealed(image),fixture,managed=state.managed_country,captain=state.captain or None,
                   seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions,
-                  engine="port")
-    if _observe_pitch is not None:
-        match.opts['ticks'] = True
+                  engine="port",ticks=_observe_pitch is not None,set_piece=bool(prompts),**({'live_players':True} if live_players else {}),
+                  **({'substitution_control':True} if substitution_control else {}))
+    events = consume_match(match,quick_at_half_time=quick_at_half_time,_observe=_observe,
+                           _observe_pitch=_observe_pitch,policy=policy,prompts=prompts,
+                           substitution_control=substitution_control)
+    # [confirmed: E033] result() requires completion after the B7FA player-update tail.
+    result = copy.deepcopy(match.result())
+    memory = _complete_memory(match.memory_component(), image)
+    after = Image(memory)
+    return WatchedOutcome(result,memory,tuple(events),(after.rd(0x7B62),after.rd(0x8336)),image.year())
+
+
+def consume_match(match,*,quick_at_half_time=False,_observe=None,_observe_pitch=None,
+                  policy=None,prompts=False,substitution_control=False):
+    """[designed: T170c1/#655] Consume events on the caller's configured Match.
+
+    The caller owns setup, tick/prompt options and the tail choice. This helper
+    only observes and answers the same object; it returns detached canonical
+    events, never a result projection or published state. In particular a
+    tail=False route Match remains at its actual return for the route owner.
+    """
+    if type(substitution_control) is not bool:raise ValueError('substitution_control must be boolean')
+    if substitution_control and (policy is None or _observe_pitch is None):
+        raise ValueError('substitution control needs an interactive pitch/bench policy')
+    if prompts and policy is None:
+        raise ValueError('the player prompts need a policy to answer them')
     frame_sequence = 0
     events = []
     previous_decision = None
@@ -262,18 +310,60 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
                 report['requested'] = [list(pair) for pair in ev.data['pending']]
         if ev.kind == 'decision':
             # [designed: T65] Unknown contexts cannot be silently defaulted.
-            if ev.data.get('context') not in ('half_time','substitution','pause','extra_time','shootout_order'):
+            contexts = ('half_time','substitution','pause','extra_time','shootout_order','set_piece')
+            if substitution_control: contexts += ('substitution_opportunity',)
+            if ev.data.get('context') not in contexts:
                 raise RuntimeError('unsupported original decision under default play-on policy')
+            if ev.data['context'] == 'substitution_opportunity':
+                value = policy.decide(copy.deepcopy(ev))
+                if (not isinstance(value, dict) or set(value) != {'opportunity'}
+                        or value['opportunity'] not in ('accept', 'dismiss', 'timeout')):
+                    raise ValueError('a substitution opportunity needs accept/dismiss/timeout only')
+                match.answer(opportunity=value['opportunity'])
+                previous_decision = None
+                continue
+            if prompts and ev.data['context'] in PROMPT_CONTEXTS:
+                # [designed: T167] The watching player's answer, passed on as it is; whether it is legal is the kit's.
+                value = policy.decide(copy.deepcopy(ev))
+                context = ev.data['context']
+                if context == 'set_piece':
+                    if not isinstance(value, dict) or set(value) != {'taker'}:
+                        raise ValueError('a set-piece answer names a taker or none')
+                    match.answer(taker=value['taker'])
+                elif context == 'shootout_order':
+                    if not isinstance(value, dict) or set(value) != {'shootout_order'}:
+                        raise ValueError('a shoot-out answer names an order')
+                    match.answer(shootout_order=list(value['shootout_order']))
+                else:
+                    if value:
+                        if (not isinstance(value, dict) or set(value) - {'tactics', 'edit_only'}
+                                or not value.get('tactics')):
+                            raise ValueError('the extra-time menu takes team tactics or play on')
+                        match.answer(**value)
+                    else:
+                        match.answer()
+                previous_decision = None
+                continue
             if policy is not None and ev.data['context'] in BENCH_CONTEXTS:
                 # [designed: T102] The watching player answers; a refused eleven is offered again.
-                pairs = [[int(off), int(on)] for off, on in policy.decide(copy.deepcopy(ev))]
-                if pairs:
-                    match.answer(substitutions=pairs)
+                # [designed: T180] An answer may also be {'substitutions': pairs, 'positions', 'marking',
+                # 'own_tactics'}: the bench's other changes, passed to the kit in the same answer.
+                value = policy.decide(copy.deepcopy(ev))
+                changes = {}
+                if isinstance(value, dict):
+                    # [designed: #636] False is an explicit cancellation, not an empty edit.
+                    changes = {k: v for k, v in value.items() if k != 'substitutions' and (v or k == 'request_substitution')}
+                    value = value.get('substitutions') or []
+                pairs = [[int(off), int(on)] for off, on in value]
+                if substitution_control and pairs and ev.data['context'] not in ('half_time', 'substitution'):
+                    raise ValueError('player pairs need a legal substitution stop')
+                if pairs or changes:
+                    match.answer(substitutions=pairs, **changes)
                 else:
                     match.answer()
-                    if ev.data['context'] == 'substitution':
-                        # The engine's default makes the requested pairs; they are reported as asked.
-                        pairs = [[int(off), int(on)] for off, on in ev.data.get('requested') or []]
+                if not pairs and not changes and ev.data['context'] == 'substitution':
+                    # The engine's default makes the requested pairs; they are reported as asked.
+                    pairs = [[int(off), int(on)] for off, on in ev.data.get('requested') or []]
                 if pairs:
                     report = {'context': ev.data['context'], 'asked': pairs, 'made': [], 'reasons': {},
                               'requested': []}
@@ -288,11 +378,7 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
             previous_decision = None
     if report is not None:
         policy.answered(_report(match, report))
-    # [confirmed: E033] result() requires completion after the B7FA player-update tail.
-    result = copy.deepcopy(match.result())
-    memory = _complete_memory(match.memory_component(), image)
-    after = Image(memory)
-    return WatchedOutcome(result,memory,tuple(events),(after.rd(0x7B62),after.rd(0x8336)),image.year())
+    return tuple(events)
 
 
 def _pause(match):

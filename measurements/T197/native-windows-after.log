@@ -1,0 +1,13 @@
+test_bounded_adapter_rejects_wrong_width_indices_and_memory_ranges (goal2.tests.test_country_panels_t197.TeamPanels.test_bounded_adapter_rejects_wrong_width_indices_and_memory_ranges) ... ok
+test_genuine_panels_match_delivered_original_backed_projection_for_all_countries (goal2.tests.test_country_panels_t197.TeamPanels.test_genuine_panels_match_delivered_original_backed_projection_for_all_countries) ... ok
+test_managed_current_twenty_tactics_and_player_records_override_stale_raw_copies (goal2.tests.test_country_panels_t197.TeamPanels.test_managed_current_twenty_tactics_and_player_records_override_stale_raw_copies) ... ok
+test_performance_visibility_retains_both_original_gates_and_actual_selected_side (goal2.tests.test_country_panels_t197.TeamPanels.test_performance_visibility_retains_both_original_gates_and_actual_selected_side) ... ok
+test_denmark_prints_what_the_original_card_printed (goal2.tests.test_country_card.CountryCard.test_denmark_prints_what_the_original_card_printed) ... ok
+test_every_country_has_a_card_and_undecoded_fields_are_named (goal2.tests.test_country_card.CountryCard.test_every_country_has_a_card_and_undecoded_fields_are_named) ... ok
+test_the_card_draws_every_value_and_names_what_is_not_decoded (goal2.tests.test_country_card.CountryCard.test_the_card_draws_every_value_and_names_what_is_not_decoded) ... ok
+test_the_managed_countrys_live_tactics_are_shown (goal2.tests.test_country_card.CountryCard.test_the_managed_countrys_live_tactics_are_shown) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 41.384s
+
+OK

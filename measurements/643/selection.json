@@ -1,0 +1,123 @@
+{
+  "baseline": "a93b4e3fda3edcfbc845ac0f6ed7f126e46363a6",
+  "definitions": [
+    {
+      "module": "test_engine_pipe_t159",
+      "symbol": "SameMatch"
+    },
+    {
+      "module": "test_matches_on_pipe_t160",
+      "symbol": "Session"
+    },
+    {
+      "module": "test_match_result_t97",
+      "symbol": "Report"
+    },
+    {
+      "module": "test_match_result_t97",
+      "symbol": "Window"
+    },
+    {
+      "module": "test_ui_pitch_t166",
+      "symbol": "SameMatch"
+    },
+    {
+      "module": "test_ui_extras_t177",
+      "symbol": "StandaloneFriendly"
+    },
+    {
+      "module": "test_port_route_t151",
+      "symbol": "PortRoute.test_a_watched_friendly_with_bench_answers_and_a_pause"
+    },
+    {
+      "module": "test_port_route_t151",
+      "symbol": "PortRoute.test_the_route_needs_no_unicorn"
+    },
+    {
+      "module": "test_watched_adapter",
+      "symbol": "WatchedAdapter.test_ten_strict_t62_inputs"
+    },
+    {
+      "module": "test_watched_publication",
+      "symbol": "WatchedPublicationTests.test_all_ten_strict_cases_publish_direct_runner_memory_once"
+    },
+    {
+      "module": "test_watched_publication",
+      "symbol": "WatchedPublicationTests.test_stale_wrong_identity_unsupported_kind_and_view_failure_are_atomic"
+    },
+    {
+      "module": "test_watched_publication",
+      "symbol": "WatchedPublicationTests.test_campaign_completes_and_appends_history_exactly_once"
+    },
+    {
+      "module": "test_watched_publication",
+      "symbol": "WatchedPublicationTests.test_changed_job_and_malformed_completions_cannot_publish"
+    },
+    {
+      "module": "test_watched_publication",
+      "symbol": "WatchedPublicationTests.test_full_time_is_not_completion_and_tail_failure_is_atomic"
+    },
+    {
+      "module": "test_watched_save",
+      "symbol": "WatchedSaveTests.test_watched_roundtrip_and_malformed_saves"
+    },
+    {
+      "module": "test_watched_save",
+      "symbol": "WatchedSaveTests.test_injected_failure_before_swap_preserves_complete_state"
+    },
+    {
+      "module": "test_watched_save",
+      "symbol": "WatchedSaveTests.test_watched_save_write_failure_keeps_existing_file_and_active_state"
+    },
+    {
+      "module": "test_watched_legacy_compatibility",
+      "symbol": "LegacyCompatibilityTests.test_legacy_campaign_continues_with_current_kit_then_mixed_quick_history"
+    },
+    {
+      "module": "test_campaign_competitive_publication",
+      "symbol": "CompetitivePublicationTests.test_original_winner_and_full_tail_publish_once_without_quick_effects"
+    },
+    {
+      "module": "test_campaign_competitive_publication",
+      "symbol": "CompetitivePublicationTests.test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic"
+    },
+    {
+      "module": "test_campaign_competitive_publication",
+      "symbol": "CompetitivePublicationTests.test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job"
+    },
+    {
+      "module": "test_campaign_competitive_save",
+      "symbol": "CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals"
+    },
+    {
+      "module": "test_watched_runtime",
+      "symbol": "RuntimeTests.test_disallowed_goal_save_preserves_complete_match_and_closes_coverage"
+    }
+  ],
+  "wrappers": [
+    "test_watched_adapter_strict",
+    "test_watched_publication_campaign",
+    "test_watched_publication_malformed",
+    "test_watched_publication_stale",
+    "test_watched_publication_strict",
+    "test_watched_publication_tail",
+    "test_watched_save_atomic",
+    "test_watched_save_roundtrip",
+    "test_watched_save_write_failure"
+  ],
+  "source_ast": {
+    "goal2/tests/test_campaign_competitive_publication.py": "a268d24ab7a828b054a93353217608d5e0662289947c6ac352a5a371772b19f0",
+    "goal2/tests/test_campaign_competitive_save.py": "d0cb0cd96c827c17c49dcb1962cff47f34e522254bef3e3d7ff8f2c7f0d6b777",
+    "goal2/tests/test_engine_pipe_t159.py": "29ed44b34d142d08f06067d7c099d26bbd7a7f0c0d1e1b874fe52fc32498e092",
+    "goal2/tests/test_match_result_t97.py": "67acc9be2025c9b5c81a71beb890f8a65719e1573e1219153650ff50949e2f40",
+    "goal2/tests/test_matches_on_pipe_t160.py": "c7ad4f9b45c127492fb790d6117d8d31c6f1c4d369a5949330cf6685331ed37c",
+    "goal2/tests/test_port_route_t151.py": "dfa3d5a97bca545b6f84ade88226e1a7ee3d25803959fae1d70c25819eab31d6",
+    "goal2/tests/test_ui_extras_t177.py": "e676dc430e0d003cbb0b5697e7b86240afbbee6be8065638ddeb716385261c0d",
+    "goal2/tests/test_ui_pitch_t166.py": "8eb0fc052f699236b02e41c8c3b5faa17439412b0e25a3b6594d6fb1f7610c0f",
+    "goal2/tests/test_watched_adapter.py": "4c43dba93dc5594a7afc372e545ca8be010fe2536d88071bd60ba40a1b9cc311",
+    "goal2/tests/test_watched_legacy_compatibility.py": "571decc30468afc90fa0622f11cb9dd3af8144fde534cc599dfc64c773cbe49c",
+    "goal2/tests/test_watched_publication.py": "9e4d8e3c59d7f04db43d6f150f3d6c7fc4d281d5c6566f72c153052c0d029262",
+    "goal2/tests/test_watched_runtime.py": "17dba9d86d7ba7c38cb33f2866fe0a3640cefeb4791ff103369e777525695922",
+    "goal2/tests/test_watched_save.py": "53f1a551dedf410651930b3896b212730e39dbfadf9617647fe28b4b1c061565"
+  }
+}

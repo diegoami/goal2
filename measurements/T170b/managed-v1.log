@@ -1,0 +1,11 @@
+test_real_pypy_managed_entry_observation_preserves_full_memory_and_all16 (goal2.tests.test_season_session_t170b.ActualManagedEntry.test_real_pypy_managed_entry_observation_preserves_full_memory_and_all16) ... T170B_MANAGED {"all16_registers": {"CS": 4020, "DS": 11684, "EAX": 8, "EBP": 16094, "EBX": 0, "ECX": 3, "EDI": 6, "EDX": 0, "EFLAGS": 23, "EIP": 61942, "ES": 23988, "ESI": 0, "ESP": 16064, "FS": 0, "GS": 0, "SS": 14453}, "direct_deltas_equal": true, "direct_entry_all16_equal": true, "direct_entry_full_memory_equal": true, "direct_route_state_equal": true, "fixture_count": 0, "full_memory_sha256": "1aadb2f2e20c4fcdb3cc3e66d73dfd66933d7b7794c2ff98381337a850f6823f", "input_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d", "input_state_hash": "0e4af380c2d0b835eb0802bb8f7c24990f3fd6fa961a1e0a6dcb708e4834f952", "news_count": 0, "observation_all16_unchanged": true, "observation_full_memory_unchanged": true, "output_state_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a", "rng_words": [60994, 78], "status": "match", "unicorn_denied": true, "waiting_key": null}
+ok
+test_backend_rejection_keeps_session_and_queue_unchanged (goal2.tests.test_season_session_t170b.Session.test_backend_rejection_keeps_session_and_queue_unchanged) ... ok
+test_malformed_state_and_modified_tables_refuse (goal2.tests.test_season_session_t170b.Session.test_malformed_state_and_modified_tables_refuse) ... ok
+test_order_keys_deltas_detachment_and_call_reset (goal2.tests.test_season_session_t170b.Session.test_order_keys_deltas_detachment_and_call_reset) ... ok
+test_terminal_repeat_and_observation_never_construct_backend (goal2.tests.test_season_session_t170b.Session.test_terminal_repeat_and_observation_never_construct_backend) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.923s
+
+OK

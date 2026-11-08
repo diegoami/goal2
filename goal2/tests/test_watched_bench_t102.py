@@ -5,6 +5,12 @@ Each engine case plays the next scheduled friendly of a new campaign from the E0
 samples), and with the vendored Match called directly on an independently written image
 (test_watched_adapter.direct_image), the same seed and the same answers. The engine cases run in
 parallel processes; the bench view is checked on the window with a stub controller.
+
+[designed: owner BM-7, #73; T180] The budget is an input of both sides: a watched friendly plays with BM-7's 255
+(watched_match.FRIENDLY_SUBSTITUTIONS, which the engine server passes), and the direct reference is given the same
+(the kit's `Match(substitutions=...)`), so the comparison still holds seed for seed. In a friendly the sixth pair is
+made; "no more substitutes" is kept on a qualifier (case `q6`: test_matches_on_pipe_t160.other_game's qualifier on
+CompetitiveJobs, five a side, against the kit on `prepare_competitive` with `substitutions=(5, 5)`).
 """
 from concurrent.futures import ProcessPoolExecutor
 import copy
@@ -41,7 +47,7 @@ def choose(mode, data):
     positions = dict(map(tuple, data['positions']))
     starters = [w for w in data['eleven'] if positions[w] != 0]
     bench = [w for w in data['bench'] if positions[w] != 0]
-    count = {'half1': 1, 'half6': 6}.get(mode)
+    count = {'half1': 1, 'half6': 6, 'q6': 6}.get(mode)
     if count and data['context'] == 'half_time':
         return [[a, b] for a, b in zip(starters[1:], bench)][:count]
     if mode == 'pause' and data['context'] == 'pause':
@@ -49,14 +55,22 @@ def choose(mode, data):
     return []
 
 
-def reference(mode, state, fixture, pause_after=None):
-    """The vendored Match called directly: the same seed (none), delay byte and answers; `answer()`
-    with nothing given when the answer is empty; `pause()` after sample `pause_after`.
+def reference(mode, state, fixture, pause_after=None, original=None):
+    """The vendored Match called directly: the same seed (none), delay byte, budget and answers; `answer()`
+    with nothing given when the answer is empty; `pause()` after sample `pause_after`. A friendly is given BM-7's
+    budget, as the engine server gives it [T180]; a qualifier (`original`: the template) plays on
+    `prepare_competitive` with five a side, as the engine server's competitive match.
     [designed: #500] The original engine under Unicorn, in a pool process: PyPy cannot load Unicorn."""
     from goal2.engine.original_match import Match, screens
+    from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
     from goal2.tests.test_watched_adapter import direct_image
-    match = Match(direct_image(state), fixture, managed=state.managed_country, captain=state.captain or None,
-                  record_draws=True, delay_byte=0)
+    if original is not None:
+        from goal2.game.competitive_match import prepare_competitive
+        image, budget = prepare_competitive(state, original, fixture), (5, 5)
+    else:
+        image, budget = direct_image(state), FRIENDLY_SUBSTITUTIONS
+    match = Match(image, fixture, managed=state.managed_country, captain=state.captain or None,
+                  record_draws=True, delay_byte=0, substitutions=budget)
     match.opts['ticks'] = True
     events, ticks, decisions = [], 0, 0
     for ev in match.events():
@@ -85,10 +99,12 @@ def _memory_digest(memory):
 
 
 def default(state, original, fixture):
-    """Today's play-on default: run_watched_match, under engine_python() in a child (#500)."""
+    """Today's play-on default: run_watched_match, under engine_python() in a child (#500), with the watched
+    friendly's budget (BM-7, T180)."""
+    from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
     from goal2.tests import pypy_engine
     outcome = pypy_engine.call('goal2.game.watched_match:run_watched_match', state, original, fixture,
-                               delay_byte=0, record_draws=True)
+                               delay_byte=0, record_draws=True, substitutions=FRIENDLY_SUBSTITUTIONS)
     return {'result': outcome.result, 'memory': _memory_digest(outcome.memory),
             'events': [asdict(e) for e in outcome.events]}
 
@@ -101,10 +117,21 @@ class Job:
         from goal2.game.watched_jobs import WatchedJobs
         self.mode = mode
         self.model = model(Path(folder) / f'{mode}.g2save')
-        self.before = copy.deepcopy(self.model.state)
-        self.fixture = fixture_of(self.model.state)
-        self.jobs = WatchedJobs(self.model)
-        self.token = self.jobs.start(self.fixture, delay_byte=0, record_draws=True, frames=True, bench=True)
+        if mode == 'q6':
+            # [T180] a qualifier on CompetitiveJobs (the watched qualifier's bridge, T176)
+            from goal2.desktop.competitive import CompetitiveJobs, pending_fixture
+            from goal2.tests.test_matches_on_pipe_t160 import other_game
+            game = other_game()
+            self.model.state, self.model.template_bytes = copy.deepcopy(game[0]), bytes(game[1])
+            self.before = copy.deepcopy(self.model.state)
+            self.fixture = pending_fixture(self.model.state)
+            self.jobs = CompetitiveJobs(self.model)
+            self.token = self.jobs.start(delay_byte=0, record_draws=True, frames=True, bench=True)
+        else:
+            self.before = copy.deepcopy(self.model.state)
+            self.fixture = fixture_of(self.model.state)
+            self.jobs = WatchedJobs(self.model)
+            self.token = self.jobs.start(self.fixture, delay_byte=0, record_draws=True, frames=True, bench=True)
         self.events, self.decisions = [], []
         self.ack = -1
         self.offset, self.written = 0, 0
@@ -113,18 +140,8 @@ class Job:
         self.held = None
 
     def count_written(self):
-        """Samples the worker has written, read from its frames journal."""
-        path = Path(self.jobs._frames.name)
-        with path.open('rb') as stream:
-            stream.seek(self.offset)
-            data = stream.read()
-        position = 0
-        while len(data) - position >= 4:
-            size = struct.unpack('!I', data[position:position + 4])[0]
-            if len(data) - position < size + 4:
-                break
-            position += size + 4;self.written += 1
-        self.offset += position
+        """Samples the engine has sent, as its reader thread has received them [designed: T160]."""
+        self.written = self.jobs._match.received_frames
 
     def step(self):
         from goal2.game.watched_jobs import LEAD
@@ -156,6 +173,7 @@ class Job:
 
 
 @requires.need(modules=('unicorn',), files=(*requires.WATCHED['files'], 'GOAL.DAT', 'e010-r0008-halftime.sav'))
+@requires.need(slow=True)
 class EngineCases(unittest.TestCase):
     """The engine cases, played once for the class: half1, half6 and pause through the worker and
     directly, none through the worker and run_watched_match."""
@@ -165,14 +183,16 @@ class EngineCases(unittest.TestCase):
         from goal2.game import campaign_rounds
         from goal2.game.watched_jobs import LEAD
         cls.folder = tempfile.TemporaryDirectory()
-        modes = ('half1', 'half6', 'pause', 'none')
+        modes = ('half1', 'half6', 'pause', 'none', 'q6')
         jobs = {mode: Job(mode, cls.folder.name) for mode in modes}
-        with ProcessPoolExecutor(4) as pool:
+        with ProcessPoolExecutor(len(modes)) as pool:
             futures = {}
             for mode, job in jobs.items():
                 # The state the worker plays: the round prepared as WatchedPublication.begin does.
-                state = campaign_rounds.prepare(job.before, job.model.template_bytes, competitive=False)
-                if mode == 'none':
+                state = campaign_rounds.prepare(job.before, job.model.template_bytes, competitive=mode == 'q6')
+                if mode == 'q6':
+                    futures[mode] = pool.submit(reference, mode, state, job.fixture, None, job.model.template_bytes)
+                elif mode == 'none':
                     futures[mode] = pool.submit(default, state, job.model.template_bytes, job.fixture)
                 else:
                     futures[mode] = pool.submit(reference, mode, state, job.fixture,
@@ -244,8 +264,10 @@ class EngineCases(unittest.TestCase):
         self.assertEqual(made.minute, stoppage.minute)
 
     def test_five_substitutions_then_no_more_substitutes(self):
-        job, outcome = self.same('half6')
-        asked = choose('half6', [d for d in job.decisions if d.data['context'] == 'half_time'][0].data)
+        """[T180] On a qualifier (five a side, BM-7); a friendly's sixth is made (the next test)."""
+        job, outcome = self.same('q6')
+        self.assertEqual(job.fixture.kind, 2)
+        asked = choose('q6', [d for d in job.decisions if d.data['context'] == 'half_time'][0].data)
         self.assertEqual(len(asked), 6)
         self.assertEqual(self.managed(job, outcome), asked[:5])
         report = job.jobs.reports[0]
@@ -253,7 +275,21 @@ class EngineCases(unittest.TestCase):
         from goal2.game.watched_match import NO_MORE_SUBSTITUTES
         self.assertEqual(report['refused'], [asked[5] + [NO_MORE_SUBSTITUTES]])
         self.assertEqual(report['substitutions_left'], 0)
-        self.assertEqual(self.references['half6']['substitutions_left'], 0)
+        self.assertEqual(self.references['q6']['substitutions_left'], 0)
+
+    def test_a_friendly_s_sixth_substitution_is_made(self):
+        """[designed: owner BM-7; T180] A watched friendly's budget is 255: six pairs at half time are all made."""
+        from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
+        job, outcome = self.same('half6')
+        half = [d for d in job.decisions if d.data['context'] == 'half_time'][0]
+        self.assertEqual(half.data['substitutions_left'], FRIENDLY_SUBSTITUTIONS)
+        asked = choose('half6', half.data)
+        self.assertEqual(len(asked), 6)
+        self.assertEqual(self.managed(job, outcome), asked)
+        report = job.jobs.reports[0]
+        self.assertEqual((report['made'], report['refused']), (asked, []))
+        self.assertEqual(report['substitutions_left'], FRIENDLY_SUBSTITUTIONS - 6)
+        self.assertEqual(self.references['half6']['substitutions_left'], FRIENDLY_SUBSTITUTIONS - 6)
 
     def test_play_on_equals_the_default_byte_for_byte(self):
         job, outcome = self.same('none')
@@ -305,7 +341,8 @@ class CancelWhileWaiting(unittest.TestCase):
             self.assertIsNone(process.poll(), 'the worker should be waiting for the answer')
             started = time.monotonic();jobs.cancel_and_reap(token)
             self.assertLess(time.monotonic() - started, 2)
-            self.assertIsNotNone(process.poll());self.assertFalse(jobs.busy)
+            # [designed: T160] the engine answers the cancel where it waits, and stays up for the next match
+            self.assertIsNone(process.poll());self.assertFalse(jobs.busy)
             self.assertEqual(owner.state, before)
         finally:
             jobs.close()
@@ -318,7 +355,8 @@ DROPPING = r'''
 import sys,time
 from unittest.mock import patch
 from goal2.engine.original_match.match import Event, MatchError
-from goal2.game import watched_worker
+from goal2.game import engine_server
+from goal2.tests.test_watched_pitch_jobs import sample
 class Guest:
  def __init__(self,*args,**kwargs):self.image=args[0];self.opts={};self.pauses=0;self.paused=False
  def pause(self):
@@ -333,8 +371,8 @@ class Guest:
   if self.paused:yield Event('decision',1,(0,0),{'context':'pause','refused':None})
   time.sleep(60)
  def answer(self,**kwargs):pass
-with patch('goal2.game.watched_pitch.snapshot',lambda match,ev,sequence,watermark:{'sequence':sequence}):
- with patch('goal2.game.watched_match.Match',Guest):sys.exit(watched_worker.main())
+with patch('goal2.game.watched_pitch.snapshot',lambda match,ev,sequence,watermark:sample(sequence,watermark)):
+ with patch('goal2.game.watched_match.Match',Guest):sys.exit(engine_server.main())
 '''
 
 

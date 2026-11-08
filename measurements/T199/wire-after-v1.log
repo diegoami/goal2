@@ -1,0 +1,14 @@
+test_cancellation_discards_a_held_completion (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_cancellation_discards_a_held_completion) ... ok
+test_delayed_duplicate_is_rejected_before_any_completion (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_delayed_duplicate_is_rejected_before_any_completion) ... ok
+test_duplicate_after_confirmation_cannot_complete_again (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_duplicate_after_confirmation_cannot_complete_again) ... ok
+test_malformed_confirmation_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_malformed_confirmation_never_exposes_a_result) ... ok
+test_missing_confirmation_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_missing_confirmation_never_exposes_a_result) ... ok
+test_nonzero_exit_retains_its_failure_before_publication (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_nonzero_exit_retains_its_failure_before_publication) ... ok
+test_truncated_trailer_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_truncated_trailer_never_exposes_a_result) ... ok
+test_unconfirmed_live_worker_is_bounded_by_existing_deadline (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_unconfirmed_live_worker_is_bounded_by_existing_deadline) ... ok
+test_valid_completion_waits_for_confirmation (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_valid_completion_waits_for_confirmation) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.559s
+
+OK

@@ -27,7 +27,7 @@ Each candidate has a prototype of the same screens of the approved design, in it
 the design's table, the vendored PxPlus IBM VGA 8x16 font): **S06 the manager's desk**, *play next game*, **S16
 choose your captain**, and the **kick-off** of S17 with the pitch in the window and the commentary beside it (the ball
 circles the centre to show the frame rate). Keys and mouse work as the design says; the commands are in
-[tools/tech_probe/README.md](../../../tools/tech_probe/README.md). [designed: T158]
+[tools/tech_probe/README.md](https://github.com/diegoami/goal2/blob/595ae3173703fd07d0ed701cf55d70555e1043b7/tools/tech_probe/README.md) (deleted by T161; its last version). [designed: T158]
 
 | Candidate | What it is | Prototype |
 | --- | --- | --- |
@@ -328,7 +328,8 @@ hybrid) and the design's stylesheet reused as it is.
    release the interpreter lock in its native parts, or confirm it is meant to run only in an engine process.
 
 After the decision, `tools/tech_probe/` is deleted (the task's hazard); `measurements/T158/` and this document
-stay.
+stay. [designed: T161] T161 deleted it; every `tools/tech_probe/` path in this document is at commit `05d842cc`
+(`git show 05d842cc:tools/tech_probe/README.md`).
 
 ## 7. Measurements
 
@@ -339,7 +340,7 @@ python3 tools/tech_probe/summarize.py
 ```
 
 run on `measurements/T158/*.json` (the raw records: every run with its load). How each was taken is in
-[tools/tech_probe/README.md](../../../tools/tech_probe/README.md); the Linux and Windows commands that produced them
+[tools/tech_probe/README.md](https://github.com/diegoami/goal2/blob/595ae3173703fd07d0ed701cf55d70555e1043b7/tools/tech_probe/README.md) (deleted by T161; its last version); the Linux and Windows commands that produced them
 are `engine_probe.py` and `measure.py` with the arguments recorded in each file's records (`command`) and section 3.3.
 Medians over the runs, the range in brackets; "Windows CPU %" and "WSL load" are the range of the load recorded
 before each run.
