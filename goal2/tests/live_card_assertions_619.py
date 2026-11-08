@@ -77,7 +77,7 @@ def verify_bench(test, screen, controller, receipts, phase):
         screen.row = row
         screen.refresh()
         _visible(test, screen.card, expected)
-        personal = PlayerTacticsScreen(screen.window, answer.model, word, answer)
+        personal = PlayerTacticsScreen(screen.window_, answer.model, word, answer)
         try:
             test.assertEqual(personal.card(), expected)
             test.assertIn(expected['readiness'], personal.facts.text())
@@ -105,7 +105,7 @@ def verify_bench(test, screen, controller, receipts, phase):
 def verify_choose(test, screen, model, data, receipts):
     pairs = data['player_records']
     test.assertEqual(len(pairs), 20)
-    test.assertEqual([c['id'] for c in screen.cards], list(screen.words))
+    test.assertEqual([c['id'] for c in screen.cards], list(screen.eleven))
     for actual in screen.cards:
         test.assertEqual(actual, _expected(test, model, data, actual['id']))
     receipts.append(dict(phase='S16-' + screen.mode, records=20,
