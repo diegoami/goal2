@@ -1,0 +1,10 @@
+test_false_cancellation_opportunity_and_prompt_answers (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_false_cancellation_opportunity_and_prompt_answers) ... ok
+test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail) ... ok
+test_refusal_unknown_context_and_invalid_answers_remain_errors (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_refusal_unknown_context_and_invalid_answers_remain_errors) ... ok
+test_same_object_detached_order_and_single_edit_report (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_same_object_detached_order_and_single_edit_report) ... ok
+test_tick_sequence_pause_drop_and_event_watermarks (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_tick_sequence_pause_drop_and_event_watermarks) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.002s
+
+OK
