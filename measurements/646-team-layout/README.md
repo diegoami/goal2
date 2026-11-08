@@ -37,3 +37,9 @@ header/bar/XI fonts (24px scaled), all20rows and no clipping at all three sizes;
 4own controlsPASS2.867s. The only subsequent UI edit updates the current-value
 docstring and names the unchanged row-width tuple. Final native source check is
 still required; earlier native receipt remains exact-d8f4 only.
+
+Final prepared native source d68bbf8c:21PASS52.201s,0failures/errors/skips, including
+combined header/bar/XI24px-scaled fonts/all20rows/no-clipping at all three sizes.
+Native receipt native-d68b-v2.json binds all nine changed runtime/test files.
+This remains prepared-data/offscreen native Qt proof, not a fresh native worker
+match or acceptance of unmerged upstream context. All earlier receipts retained.
