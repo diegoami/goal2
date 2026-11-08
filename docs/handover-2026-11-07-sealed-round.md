@@ -14,6 +14,19 @@ Merged upstream [T123/681](https://github.com/diegoami/goal2-archaeology/pull/68
 
 [confirmed: full CI42401572888] The manual upstream milestone run passed all12test groups on95a54045. Its general job ran2510tests with158skipped, plus115static tests with6skipped; the other11groups each ran1test with0skipped. The164skips include original-backed T124stage/ageing and T122news comparisons, so this receipt does not demonstrate their fidelity. The independent review at the candidate separately ran59stage tests and55ageing/match tests successfully; its106route/news tests had105passes and1timeout, which passed alone (upstream687/688). Keep that failure and its isolated pass distinct. Evidence merge684 at0f9f87f4 adds36metadata files only; runtime/tests/tools/workflow/dependency/fixture declarations remain unchanged. The full receipt remains95a54045's receipt, reused for those identical exercised inputs; no fresh full pass is claimed at the metadata SHA. This follows the owner's T189 validation policy in goal2, avoiding a complete rerun solely for evidence/ancestry. The owner-run milestone review still precedesT170 adoption.
 
+## Accepted evidence limits
+
+[designed: owner, 2026-11-08, acceptance of milestone686 review limits]
+The owner accepts the disclosed164CI skips and the historical AA06 private-input terminal/ageing
+receipts, whose match.py differs after683, as the evidence limits for this delivery. The review's
+separate candidate-source local results remain separate from CI. V4's12distinct inputs do not
+cover terminal, ageing or multi-match behavior. Seven SHOULD findings687–693 remain tracked;
+acceptance does not turn skipped, failed or unverified cases into passes. Extra-time edit_only
+extension685 stays outside this milestone. Together with the existing T189 unchanged-input reuse
+policy, this acceptance clears the review's stated conditions for tagging the exact reviewed
+0f9f87f405282ce2a0461679ac71395d35e76e3a and proceeding to T170 adoption, followed by T183.
+It does not waive T170's actual consumer comparisons or the integrated goal2 milestone checks.
+
 ## Technical interface and owner design
 
 [designed: accepted upstreamT123 technical interface, within goal2#509 scope] `original_match.route.play_round(state,tables,keys)` returns immutable `RoundStep` with status `match`, `complete` or `deferred-rollover`, state/2, ordered completed fixtures and ordered original05F6 news snapshots. A match step supplies an ordinary port `Match(tail=False)` at the actual F1F6 frame. Drive its existing event/answer/result interface, then call `resume_round` with its own completed object and continuation. The actual16 returned registers/memory are transferred before route-owned updates. Foreign, incomplete or consumed resumes refuse before route mutation. Continuations remain in the same engine process; active-round serialization is unsupported. Production has no harness legal-eleven auto-selection policy, and unsupported pool-list edits refuse.
