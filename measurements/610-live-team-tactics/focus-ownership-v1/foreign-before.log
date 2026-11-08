@@ -1,0 +1,19 @@
+test_explicit_window_keys_do_not_type_into_another_window (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_explicit_window_keys_do_not_type_into_another_window) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_explicit_window_keys_do_not_type_into_another_window (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_explicit_window_keys_do_not_type_into_another_window)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 180, in test_explicit_window_keys_do_not_type_into_another_window
+    self.open_tactics()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s15_match_menu.MenuScreen(0x1f6c4920, name="screen") at 0x70e16801c940> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+----------------------------------------------------------------------
+Ran 1 test in 1.865s
+
+FAILED (failures=1)

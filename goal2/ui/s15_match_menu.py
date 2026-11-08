@@ -17,8 +17,9 @@ C36, C37]
 - **Your side** before kick-off: team tactics opens S10 (also **T**), players opens S08 (also **Space**), and what they
   change is the model's, before the engine is asked. At a break of the match (half time, before extra time, a
   substitution opportunity: phase "stop", after S18's key, T156-R1 step 68) *players* opens the bench, S19, in *make
-  substitutions now* mode, and *play* sends the bench's answer [designed: T180, #574]. Team tactics during the match,
-  and players after the final whistle, open read only: the bridge plays the state it was given [designed: T167]. The
+  substitutions now* mode, and *play* sends the bench's answer [designed: T180, #574].
+  [designed: owner #610] Managed team tactics remain editable during pauses and breaks, with the original
+  confirming each change while stopped. After the final whistle, players and tactics are read only. The
   other side's are read only (E031 C36: "view only").
 - **Ins** turns the automatic action replay on or off; the label names the state, as the original's (E031 C37). The
   flag is stored in the data folder (`settings.json`, `automatic_action_replay`) [designed: T167]; the replay itself
@@ -39,10 +40,10 @@ from goal2.ui.kits import for_fixture
 from goal2.ui.squad_card import Row, box, colour
 
 TIMES = {"before": "before kick-off", "half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME",
-         "stop": "SUBSTITUTION OPPORTUNITY"}
+         "stop": "SUBSTITUTION OPPORTUNITY", "pause": "PAUSED"}
 NEXT = {"before": "next: choose your captain, then kick-off", "half": "next: second half", "extra": "next: extra time",
-        "stop": "next: play on"}
-DURING = "During the match your team tactics are shown read only; players opens the bench at a break."
+        "stop": "next: play on", "pause": "resume the match"}
+DURING = "These tactics and players are view only."
 WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do you want to watch this match ?"]
 
 
@@ -50,6 +51,7 @@ class MenuScreen(Screen):
     escape_text = "select Play / Exit"
 
     def __init__(self, window, day, phase, score=(0, 0)):
+        self.escape_text = "resume match" if phase in ("pause", "half", "stop", "extra") else "select Play / Exit"
         super().__init__(window)
         self.day, self.phase = day, phase
         model, fixture = day.model, day.fixture
@@ -228,8 +230,10 @@ class MenuScreen(Screen):
         self.say("You watch this match." if watch else "A quick result: the pitch shows HANG ON A TICK.")
 
     def escape(self):
-        # [designed: owner #612; confirmed: T156-R1 steps134–137] Returning from
-        # the squad reaches this menu. Play explicitly continues the held match.
+        # [confirmed: original 0791:ED8A; measurements/610-live-team-tactics/original-esc-v1]
+        # Active-menu Esc resumes through the same XI validation as Play.
+        if self.phase in ("pause", "half", "stop", "extra"):
+            return self.press_play()
         self.highlight(self.options.index(self.play))
         action = "Exit" if self.phase == "full" else "Play"
         self.say(f"Choose {action} or press Enter to " +
@@ -251,6 +255,8 @@ class MenuScreen(Screen):
         if country == model.state.managed_country and not self.during():
             from goal2.ui.s10_team_tactics import open_team_tactics
             return open_team_tactics(window, model)
+        if country == model.state.managed_country and self.day.bench is not None:
+            return self.day.open_team_tactics()
         from goal2.ui.s07_team_info import CountryTacticsScreen
         if country == model.state.managed_country:
             self.say(DURING)

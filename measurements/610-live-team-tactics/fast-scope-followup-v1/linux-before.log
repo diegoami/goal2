@@ -1,0 +1,292 @@
+linux	Game tests and pre-merge checks	﻿2026-11-07T22:53:45.2263373Z ##[group]Run slow=
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2263671Z ^[[36;1mslow=^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2264303Z ^[[36;1m[ "pull_request" = workflow_dispatch ] && [ "" = true ] && slow=--slow^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2264940Z ^[[36;1m# [designed: owner, 2026-10-31, #487] the automatic slow runs play one case per batch test; a slow dispatch, all^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2265464Z ^[[36;1m[ -z "$slow" ] && export GOAL2_CASES=1^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2265955Z ^[[36;1m# [designed: owner, 2026-11-07] PR and main runs use fast regression; task-focused checks and milestones^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2266493Z ^[[36;1m# which plays every case; the layout stage keeps its slow tests^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2266888Z ^[[36;1m[ -z "$slow" ] && slow=--batch-fast^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2267190Z ^[[36;1mstart=$(date +%s)^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2267620Z ^[[36;1m# The wall time is printed whether the gate passes or fails, then the gate's status is the step's.^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2268067Z ^[[36;1mstatus=0^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2268553Z ^[[36;1mpython tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee linux-premerge.log || status=$?^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2269238Z ^[[36;1mecho "gate wall time: $(( $(date +%s) - start )) s" | tee -a linux-premerge.log^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2269613Z ^[[36;1mexit $status^[[0m
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2291401Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2291732Z env:
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2291940Z   PYTHONUTF8: 1
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2292163Z   QT_QPA_PLATFORM: offscreen
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2292412Z   SDL_VIDEODRIVER: dummy
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2292649Z   SDL_AUDIODRIVER: dummy
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2292972Z   GOAL2_ARCHAEOLOGY: /home/runner/work/goal2/goal2/../goal2-archaeology
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2293422Z   GOAL2_ENGINE_PYTHON: /opt/hostedtoolcache/PyPy/3.11.17/x64/bin/python
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2293942Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2294349Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2294750Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2295115Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2295477Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2295842Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.2296168Z ##[endgroup]
+linux	Game tests and pre-merge checks	2026-11-07T22:53:45.6353977Z PASS original-asset exclusion
+linux	Game tests and pre-merge checks	2026-11-07T22:53:46.0494853Z links and JSON ok (2032 files)
+linux	Game tests and pre-merge checks	2026-11-07T22:53:46.0557068Z PR regression scope: cheap layout slow checks; full batch fast (--batch-fast)
+linux	Game tests and pre-merge checks	2026-11-07T22:53:49.7575373Z game tests: 4 jobs (min(8, cores))
+linux	Game tests and pre-merge checks	2026-11-07T22:53:49.7576073Z PASS goal2.tests.test_core_bulletin_t110 (4 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:53:50.3405115Z PASS goal2.tests.test_core_team_back_t141 (4 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:53:51.5415108Z PASS goal2.tests.test_core_pool_compare_t134 (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:53:53.2881969Z PASS goal2.tests.test_core_world_t113 (7 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:00.4425044Z PASS goal2.tests.test_core_best_place_395 (11 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:01.0925061Z PASS goal2.tests.test_core_extra_t119 (11 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:08.1205477Z PASS goal2.tests.test_core_team_t107 (15 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:08.9045384Z PASS goal2.tests.test_core_lineup_t114 (17 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:20.9161750Z PASS goal2.tests.test_core_desktop_t105 (20 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:21.1728721Z PASS goal2.tests.test_core_continuation_t111 (21 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:30.6959705Z PASS goal2.tests.test_core_takers_t120 (23 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:31.2115162Z PASS goal2.tests.test_bundled_font (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:31.3986034Z PASS goal2.tests.test_campaign_competitive_match_budgets (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:32.0255336Z PASS goal2.tests.test_campaign_competitive_match (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:32.5795458Z PASS goal2.tests.test_both_halves (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:32.7645359Z PASS goal2.tests.test_campaign_competitive_save_opening (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:39.3026371Z PASS goal2.tests.test_bench_cue (9 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:41.1725492Z PASS goal2.tests.test_campaign_confidence (8 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:48.8897237Z PASS goal2.tests.test_campaign_cpu (8 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:54:49.1285940Z PASS goal2.tests.test_campaign_continental_qualifying (10 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:00.6105610Z PASS goal2.tests.test_campaign_eligibility (12 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:00.6395875Z PASS goal2.tests.test_campaign_energy (12 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:05.3309953Z PASS goal2.tests.test_campaign_pool (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:09.7855405Z PASS goal2.tests.test_campaign_pool_flow (4 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:11.6715911Z PASS goal2.tests.test_campaign_schedule (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:15.6695169Z PASS goal2.tests.test_campaign_friendlies (15 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:17.0686438Z PASS goal2.tests.test_campaign_standings (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:18.7225550Z PASS goal2.tests.test_campaign_state (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:30.3215143Z PASS goal2.tests.test_campaign_silent_results (19 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:30.5857402Z PASS goal2.tests.test_captain_replacement_t187 (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:39.7275322Z PASS goal2.tests.test_checkpoints_t149 (9 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:40.5385840Z PASS goal2.tests.test_campaign_substitutions (22 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:40.7046722Z PASS goal2.tests.test_ci_workflows_t146 (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:40.8904147Z PASS goal2.tests.test_ci_workflows_t148 (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:41.1391686Z PASS goal2.tests.test_clear_results (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:41.4365492Z PASS goal2.tests.test_cli (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:41.6115507Z PASS goal2.tests.test_ci_slow_runners_493 (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:42.9293739Z PASS goal2.tests.test_completion_boundary_t199 (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:48.3755366Z PASS goal2.tests.test_commentary_pause_t185 (7 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:49.2625589Z PASS goal2.tests.test_core_captain_t143 (6 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:55:57.7585239Z PASS goal2.tests.test_core_cycle_t123 (8 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:03.0885495Z PASS goal2.tests.test_core_kit_colours_t142 (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:03.8505246Z PASS goal2.tests.test_core_new_game_t106 (1 s, 9 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:05.0155546Z PASS goal2.tests.test_core_nice_try_371 (1 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:09.2185982Z PASS goal2.tests.test_core_patches_t122 (4 s, 4 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:09.6665478Z PASS goal2.tests.test_core_pause_t115 (0 s, 5 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:10.7995529Z PASS goal2.tests.test_core_playback_t116 (1 s, 6 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:23.0395973Z PASS goal2.tests.test_core_pool_names_t136 (12 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:42.5885541Z PASS goal2.tests.test_core_congratulations_409 (54 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:44.5953137Z PASS goal2.tests.test_core_role_display_424 (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:44.9450523Z PASS goal2.tests.test_core_round_t108 (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:45.1286803Z PASS goal2.tests.test_core_round_t108_captain (0 s, 2 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:45.2920143Z PASS goal2.tests.test_core_round_t108_desktop (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:45.4565990Z PASS goal2.tests.test_core_round_t108_halftime (0 s, 2 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:45.6405571Z PASS goal2.tests.test_core_round_t108_round (0 s, 5 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:45.8075525Z PASS goal2.tests.test_core_round_t108_severalrounds (0 s, 2 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:46.2600136Z PASS goal2.tests.test_core_runner_t100 (0 s, 4 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:50.7275555Z PASS goal2.tests.test_core_save_t121 (4 s, 4 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:51.2125276Z PASS goal2.tests.test_core_screens_t103 (0 s, 7 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:51.5955442Z PASS goal2.tests.test_core_shootout_t118 (0 s, 4 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:56:56.7755577Z PASS goal2.tests.test_core_team_card_t137 (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:01.5505529Z PASS goal2.tests.test_core_team_panels_t144 (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:02.7405617Z PASS goal2.tests.test_core_walkoff_363 (1 s, 3 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:03.5175346Z PASS goal2.tests.test_core_watch_t109 (1 s, 5 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:13.6485380Z PASS goal2.tests.test_country_card (10 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:17.6587941Z PASS goal2.tests.test_core_pool_suggest_t135 (55 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:17.8675576Z PASS goal2.tests.test_country_select (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:18.0095374Z PASS goal2.tests.test_cpu (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:18.1745301Z PASS goal2.tests.test_cpu_tactics_change (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:42.3315644Z PASS goal2.tests.test_country_panels_t197 (29 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:42.7075268Z PASS goal2.tests.test_desktop_entry (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:57:59.6440145Z PASS goal2.tests.test_campaign_competitive_save (208 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T22:58:06.9635314Z PASS goal2.tests.test_desktop_model (7 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:58:11.0642666Z PASS goal2.tests.test_desktop_launch (28 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:58:18.7185273Z PASS goal2.tests.test_desktop_pool (8 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:58:45.8785180Z PASS goal2.tests.test_desktop_pages_t91 (39 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:58:50.5360589Z PASS goal2.tests.test_desktop_roles (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:59:10.6815434Z PASS goal2.tests.test_desktop_quick_jobs (52 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:59:28.1082602Z PASS goal2.tests.test_desktop_shell (17 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:59:28.4035349Z PASS goal2.tests.test_desktop_watched_sharing (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:59:28.7001462Z PASS goal2.tests.test_eleven_selection (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:59:34.0195382Z PASS goal2.tests.test_engine_on_adapted_state (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T22:59:58.7755323Z PASS goal2.tests.test_desktop_save_decisions (68 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:09.8175674Z PASS goal2.tests.test_engine_tables_t150 (11 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:10.5906972Z PASS goal2.tests.test_fidelity (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:11.4765607Z PASS goal2.tests.test_first_run_t153 (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:42.8792443Z PASS goal2.tests.test_campaign_competitive_publication (371 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:47.7595334Z PASS goal2.tests.test_friendly_vs_archaeology (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:48.5735220Z PASS goal2.tests.test_full_match (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:49.5465034Z PASS goal2.tests.test_goaldat (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:00:50.0285199Z PASS goal2.tests.test_grid (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:15.8456489Z PASS goal2.tests.test_fixed_page_t101 (124 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:16.4095271Z PASS goal2.tests.test_identities (86 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:16.9286927Z PASS goal2.tests.test_import_help_hlp (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:17.3056933Z PASS goal2.tests.test_imports (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:30.0925331Z PASS goal2.tests.test_injury_fitness_t195 (13 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:30.9375208Z PASS goal2.tests.test_input (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:34.3953139Z PASS goal2.tests.test_launch_core_save_518 (3 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:02:37.9225498Z PASS goal2.tests.test_live_record_wire_t196 (4 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:03:47.8315230Z PASS goal2.tests.test_immediate_bench_t188 (92 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:03:48.2855025Z PASS goal2.tests.test_main_loop (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:03:52.7445486Z PASS goal2.tests.test_match_menu_arrows_t184 (4 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:05:10.9915396Z PASS goal2.tests.test_desktop_competitive_jobs (473 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:05:50.5989850Z PASS goal2.tests.test_match_prep_t95 (40 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:05:50.9625236Z PASS goal2.tests.test_match_preview (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:07:33.9245472Z PASS goal2.tests.test_match_pitch_t94 (221 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:09:40.8485659Z PASS goal2.tests.test_engine_pipe_t159 (607 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:09:41.7195284Z PASS goal2.tests.test_new_game (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:09:42.2924772Z PASS goal2.tests.test_p1_fidelity (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:09:43.6415267Z PASS goal2.tests.test_package_t147 (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:10:28.8675546Z PASS goal2.tests.test_pitch_marks_t96 (45 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:10:29.0455311Z PASS goal2.tests.test_plain_renderer (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:10:47.8725401Z PASS goal2.tests.test_live_team_tactics_610 (490 s, 2 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:11:02.3365421Z PASS goal2.tests.test_player_card (14 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:11:02.5015539Z PASS goal2.tests.test_player_card_552 (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:11:18.8755137Z PASS goal2.tests.test_play_next_t155 (50 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:11:34.6725242Z PASS goal2.tests.test_player_performance_t192 (16 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:11:35.6550512Z PASS goal2.tests.test_pool_caps_436 (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:11:40.6135318Z PASS goal2.tests.test_pool_names (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:06.6687284Z PASS goal2.tests.test_match_result_t97 (376 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:06.9985451Z PASS goal2.tests.test_premerge_jobs_567 (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:08.0605469Z PASS goal2.tests.test_premerge_layout_t145 (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:08.9285043Z PASS goal2.tests.test_provenance (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:31.8715491Z PASS goal2.tests.test_player_card_table_t193 (89 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:34.4955298Z PASS goal2.tests.test_pypy_engine_500 (3 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:34.9150337Z PASS goal2.tests.test_pypy_worker_t152 (0 s, 2 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:54.7894181Z PASS goal2.tests.test_readable_ui_t186 (20 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:56.4195263Z PASS goal2.tests.test_pygame_match_view (47 s, 3 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:57.3925450Z PASS goal2.tests.test_repeat_friendlies (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:57.7406046Z PASS goal2.tests.test_requires (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:59.4250072Z PASS goal2.tests.test_result (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:59.5941388Z PASS goal2.tests.test_savestate (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:12:59.8295088Z PASS goal2.tests.test_screen_output (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:00.1986155Z PASS goal2.tests.test_session_save (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:01.8997986Z PASS goal2.tests.test_session_save_integration (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:02.2828048Z PASS goal2.tests.test_skills (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:04.0056883Z PASS goal2.tests.test_matches_on_pipe_t160 (330 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:04.2349579Z PASS goal2.tests.test_squad_select (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:07.7625261Z PASS goal2.tests.test_reordered_squad_280 (13 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:10.3265097Z PASS goal2.tests.test_state (6 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:10.5645256Z PASS goal2.tests.test_stopped_bench_t188 (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:10.7935040Z PASS goal2.tests.test_tactics (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:11.5225361Z PASS goal2.tests.test_slow_reach_505 (9 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:11.7465171Z PASS goal2.tests.test_terminal_display (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:12.6212272Z PASS goal2.tests.test_terminal_input (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:12.9555356Z PASS goal2.tests.test_ui_bench_t180 (0 s, 13 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:37.1755491Z PASS goal2.tests.test_stop_return_t190 (29 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:13:41.5245267Z PASS goal2.tests.test_ui_boards_t178 (29 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:14:16.0845588Z PASS goal2.tests.test_team_tactics_t99 (65 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:14:17.4202771Z PASS goal2.tests.test_ui_foundation_t162 (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:14:17.6650268Z PASS goal2.tests.test_ui_kits_583 (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:14:19.0315456Z PASS goal2.tests.test_ui_match_day_t167 (1 s, 15 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:15:19.5545093Z PASS goal2.tests.test_ui_desk_t164 (102 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:15:35.1581033Z PASS goal2.tests.test_ui_replay_t181 (16 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:16:41.0235331Z PASS goal2.tests.test_ui_save_t168 (66 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:17:13.1695446Z PASS goal2.tests.test_port_route_t151 (333 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:17:59.9625458Z PASS goal2.tests.test_ui_start_t163 (47 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:00.2795342Z PASS goal2.tests.test_validation_policy (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:00.6515783Z PASS goal2.tests.test_visible_navigation (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:00.9256163Z PASS goal2.tests.test_watch_qualifiers_t176 (0 s, 5 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:01.1135484Z PASS goal2.tests.test_watch_qualifiers_t176_friendly (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:05.9545556Z PASS goal2.tests.test_watched_adapter (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:06.2405632Z PASS goal2.tests.test_watched_adapter_fresh_campaigns (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:06.5055557Z PASS goal2.tests.test_watched_adapter_reseed (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:18:06.9635558Z PASS goal2.tests.test_watched_adapter_squad (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:19:42.9485639Z PASS goal2.tests.test_ui_extras_t177 (361 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:20:07.6075629Z PASS goal2.tests.test_ui_squad_t165 (207 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:25:07.6086003Z running 4: test_ui_pitch_t166 (11 min), test_watched_adapter_strict (7 min), test_watched_bench_t102 (5 min), test_watched_competitive_runtime (5 min); 167/200 modules done
+linux	Game tests and pre-merge checks	2026-11-07T23:26:27.0208915Z PASS goal2.tests.test_watched_adapter_strict (500 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:26:29.3377473Z PASS goal2.tests.test_watched_completion (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:27:59.7885380Z PASS goal2.tests.test_watched_jobs (90 s, 2 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:28:00.4605227Z PASS goal2.tests.test_watched_kit_identity (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:33:00.4565772Z running 4: test_ui_pitch_t166 (19 min), test_watched_bench_t102 (13 min), test_watched_competitive_runtime (13 min), test_watched_legacy_compatibility (5 min); 171/200 modules done
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1545075Z FAIL goal2.tests.test_watched_bench_t102 (950 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1575020Z This plugin does not support propagateSizeHints()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1576236Z This plugin does not support raise()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1604701Z .This plugin does not support propagateSizeHints()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1634608Z This plugin does not support raise()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1664561Z .This plugin does not support propagateSizeHints()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1665533Z This plugin does not support raise()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1694633Z .This plugin does not support propagateSizeHints()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1719725Z This plugin does not support raise()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1754774Z .This plugin does not support propagateSizeHints()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1755652Z This plugin does not support raise()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1784786Z .This plugin does not support propagateSizeHints()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1814562Z This plugin does not support raise()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1846493Z ..../opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=9531) is multi-threaded, use of fork() may lead to deadlocks in the child.
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1848623Z   self.pid = os.fork()
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1874586Z E..
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1904444Z ======================================================================
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1905518Z ERROR: setUpClass (goal2.tests.test_watched_bench_t102.EngineCases)
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1906396Z ----------------------------------------------------------------------
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1986821Z Traceback (most recent call last):
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.1996478Z   File "/home/runner/work/goal2/goal2/goal2/tests/test_watched_bench_t102.py", line 203, in setUpClass
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2051718Z ##[error]    raise AssertionError('watched bench jobs did not finish')
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2080441Z AssertionError: watched bench jobs did not finish
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2080857Z 
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2081108Z ----------------------------------------------------------------------
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2081678Z Ran 11 tests in 948.872s
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2081924Z 
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2082051Z FAILED (errors=1)
+linux	Game tests and pre-merge checks	2026-11-07T23:35:33.2082248Z 
+linux	Game tests and pre-merge checks	2026-11-07T23:35:38.2884671Z PASS goal2.tests.test_ui_pitch_t166 (1279 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:35:38.5035205Z PASS goal2.tests.test_watched_pitch_jobs_cancel (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:35:38.7024231Z PASS goal2.tests.test_watched_pitch_jobs_parity (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:35:39.7995028Z PASS goal2.tests.test_watched_publication (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:35:49.5574048Z PASS goal2.tests.test_watched_pitch_jobs (16 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:36:49.7632332Z PASS goal2.tests.test_watched_legacy_compatibility (529 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.3939628Z FAIL goal2.tests.test_watched_competitive_runtime (1017 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.3958396Z .....s.E....
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.3984881Z ======================================================================
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4015764Z ERROR: test_selection_port_substitution_budget_per_side (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_selection_port_substitution_budget_per_side)
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4034792Z ----------------------------------------------------------------------
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4064577Z Traceback (most recent call last):
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4087051Z   File "/home/runner/work/goal2/goal2/.cache/watched-evidence-b519d999673c-f4fb5d85fe18/tests/test_original_match.py", line 698, in test_selection_port_substitution_budget_per_side
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4105018Z     m, events = knockout_events(self.image, 30, policy, substitutions=(5, 0), ports=["menus", "selection"])
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4124523Z                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4155442Z   File "/home/runner/work/goal2/goal2/.cache/watched-evidence-b519d999673c-f4fb5d85fe18/tests/test_original_match.py", line 540, in knockout_events
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4164597Z     for ev in m.events():
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4225052Z               ^^^^^^^^^^
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4245404Z   File "/home/runner/work/goal2/goal2/goal2/engine/original_match/match.py", line 460, in events
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4254821Z     self._advance()
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4275203Z   File "/home/runner/work/goal2/goal2/goal2/engine/original_match/match.py", line 622, in _advance
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4284675Z     stopped = self.m.run(self.end_lin, self.timeout_s, fresh=fresh)
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4314571Z               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4335383Z   File "/home/runner/work/goal2/goal2/goal2/engine/original_match/machine.py", line 416, in run
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4344929Z     raise GuestError(f"the run ended at {self.where(self.reg('cs'), self.reg('ip'))} without reaching its end "
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4374864Z goal2.engine.original_match.machine.GuestError: the run ended at 0791:96EA without reaching its end (time limit 60 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4394270Z 
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4424772Z ----------------------------------------------------------------------
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4434417Z Ran 12 tests in 1015.432s
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4464152Z 
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4484775Z FAILED (errors=1, skipped=1)
+linux	Game tests and pre-merge checks	2026-11-07T23:37:04.4514279Z 
+linux	Game tests and pre-merge checks	2026-11-07T23:38:38.1425200Z PASS goal2.tests.test_watched_publication_campaign (178 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:39:07.5915308Z PASS goal2.tests.test_watched_publication_tail (29 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:39:14.9915159Z PASS goal2.tests.test_watched_publication_malformed (205 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:39:16.7921622Z PASS goal2.tests.test_watched_save (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:00.9795446Z PASS goal2.tests.test_watched_publication_stale (191 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:01.2525108Z PASS goal2.tests.test_watched_save_campaign (0 s, 1 skipped)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:09.3715190Z PASS goal2.tests.test_watched_publication_strict (185 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:14.1659069Z PASS goal2.tests.test_watched_runtime (67 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:16.0198216Z PASS goal2.tests.test_watched_startup (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:16.8785691Z PASS goal2.tests.test_web_countries (1 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:18.9729405Z PASS goal2.tests.test_web_matches (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:23.9785340Z PASS goal2.tests.test_web_session_save (5 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:40:24.3271714Z PASS goal2.tests.test_web_team_management (0 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:41:33.8846302Z PASS goal2.tests.test_watched_save_roundtrip (93 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:41:47.7415527Z PASS goal2.tests.test_watched_save_atomic (151 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:42:07.4789331Z PASS goal2.tests.test_watched_save_write_failure (118 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:42:10.7114710Z PASS goal2.tests.test_pitch_observation (3 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:42:54.4829165Z PASS goal2.tests.test_pygame_pitch_view (44 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:42:58.1468112Z PASS goal2.tests.test_core_match_window_t138 (4 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:43:00.4081341Z PASS goal2.tests.test_core_halftime_t139 (2 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:43:39.9895605Z PASS goal2.tests.test_core_replay_t140 (40 s)
+linux	Game tests and pre-merge checks	2026-11-07T23:43:39.9905361Z game tests: 198/200 modules pass, 127 tests skipped (slow tests not run)
+linux	Game tests and pre-merge checks	2026-11-07T23:43:39.9906287Z FAIL pre-merge validation: failing test modules: test_watched_bench_t102, test_watched_competitive_runtime
+linux	Game tests and pre-merge checks	2026-11-07T23:43:40.0014436Z gate wall time: 2995 s
+linux	Game tests and pre-merge checks	2026-11-07T23:43:40.0031229Z ##[error]Process completed with exit code 1.

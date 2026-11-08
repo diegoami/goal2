@@ -1,0 +1,47 @@
+{
+  "third_rerun": {
+    "exit_code": 0,
+    "ended_utc": "2026-11-07T23:16:36+00:00"
+  },
+  "affected_rerun_exclusions": 1,
+  "head": "737613462634d4ea2ffbce78c29650a00cda7f1b",
+  "aggregate_status": "passed",
+  "broad": {
+    "exit_code": 1,
+    "ended_utc": "2026-11-07T23:09:59+00:00"
+  },
+  "broad_passed": 197,
+  "broad_total": 200,
+  "explicit_exclusions": 126,
+  "failed_modules": [
+    "test_engine_tables_t150",
+    "test_watched_competitive_runtime",
+    "test_watched_runtime"
+  ],
+  "affected_rerun": {
+    "exit_code": 0,
+    "ended_utc": "2026-11-07T23:11:25+00:00"
+  },
+  "focused": {
+    "exit_code": 0,
+    "ended_utc": "2026-11-07T22:48:04+00:00"
+  },
+  "provision": "Fetched accepted b0c Git objects and current origin/main tracking ref; reference46e HEAD/working files unchanged. First rerun ancestry-provision failure retained.",
+  "guard": {
+    "command": [
+      "/home/diego/projects/m3-trackb/goal2/.cache/venv/bin/python",
+      "tools/check_premerge.py",
+      "--expected-head",
+      "737613462634d4ea2ffbce78c29650a00cda7f1b",
+      "--no-tests"
+    ],
+    "status": "passed",
+    "sha256": "b86f4655357835675f2ee1b33047345482fa9fa1f5011c7c0138c1461a65baf5"
+  },
+  "raw_logs": {
+    ".cache/jobs/ui614-pins-fast-73761346.log": "889017c6e4781c90d037e491513a5813c9257b454f509dcdaa50f18f89ffd27e",
+    ".cache/jobs/ui614-pin-provision-rerun-v2.log": "0fbdc301cf3bda2a4214f8bea5aeea29734105b83bb4cefa0ab9c29942062750",
+    ".cache/jobs/ui614-runtime-ancestry-rerun.log": "5ffa8636a27ccbc0a56171457b69205d3b9e11747f9617ee915e8f4eac24a563"
+  },
+  "scope": "Original broad run remains FAILED2provision errors; all unaffected module passes plus all affected module reruns cover the unchanged source. No single all-green broad rerun is claimed."
+}

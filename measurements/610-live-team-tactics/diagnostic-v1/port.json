@@ -1,0 +1,1608 @@
+{
+  "engine": "port",
+  "applied": true,
+  "wanted": 87,
+  "got": 87,
+  "readonly": 0,
+  "side": 0,
+  "managed": 2,
+  "decisions": [
+    {
+      "keeper_unavailable": false,
+      "requested": [],
+      "substitutions_now": true,
+      "context": "substitution",
+      "eleven": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "bench": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "injured": [
+        31
+      ],
+      "positions": [
+        [
+          21,
+          0
+        ],
+        [
+          22,
+          1
+        ],
+        [
+          23,
+          2
+        ],
+        [
+          24,
+          2
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          26,
+          6
+        ],
+        [
+          27,
+          7
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          29,
+          9
+        ],
+        [
+          30,
+          13
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          33,
+          2
+        ],
+        [
+          34,
+          2
+        ],
+        [
+          35,
+          4
+        ],
+        [
+          36,
+          5
+        ],
+        [
+          37,
+          7
+        ],
+        [
+          38,
+          9
+        ],
+        [
+          39,
+          13
+        ],
+        [
+          40,
+          13
+        ]
+      ],
+      "substitutions_left": 255,
+      "tactics": 71
+    },
+    {
+      "substitutions_now": true,
+      "edited": true,
+      "context": "substitution",
+      "eleven": [
+        21,
+        22,
+        23,
+        24,
+        33,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "bench": [
+        32,
+        34,
+        35,
+        36,
+        37,
+        38,
+        31,
+        39,
+        40
+      ],
+      "injured": [],
+      "positions": [
+        [
+          21,
+          0
+        ],
+        [
+          22,
+          1
+        ],
+        [
+          23,
+          2
+        ],
+        [
+          24,
+          2
+        ],
+        [
+          33,
+          2
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          26,
+          6
+        ],
+        [
+          27,
+          7
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          29,
+          9
+        ],
+        [
+          30,
+          13
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          34,
+          2
+        ],
+        [
+          35,
+          4
+        ],
+        [
+          36,
+          5
+        ],
+        [
+          37,
+          7
+        ],
+        [
+          38,
+          9
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          39,
+          13
+        ],
+        [
+          40,
+          13
+        ]
+      ],
+      "substitutions_left": 254,
+      "tactics": 71
+    },
+    {
+      "substitutions_now": false,
+      "refused": null,
+      "context": "pause",
+      "eleven": [
+        21,
+        22,
+        23,
+        24,
+        33,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "bench": [
+        32,
+        34,
+        35,
+        36,
+        37,
+        38,
+        31,
+        39,
+        40
+      ],
+      "injured": [],
+      "positions": [
+        [
+          21,
+          0
+        ],
+        [
+          22,
+          1
+        ],
+        [
+          23,
+          2
+        ],
+        [
+          24,
+          2
+        ],
+        [
+          33,
+          2
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          26,
+          6
+        ],
+        [
+          27,
+          7
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          29,
+          9
+        ],
+        [
+          30,
+          13
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          34,
+          2
+        ],
+        [
+          35,
+          4
+        ],
+        [
+          36,
+          5
+        ],
+        [
+          37,
+          7
+        ],
+        [
+          38,
+          9
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          39,
+          13
+        ],
+        [
+          40,
+          13
+        ]
+      ],
+      "substitutions_left": 254,
+      "tactics": 71
+    },
+    {
+      "substitutions_now": false,
+      "requested": [],
+      "edited": true,
+      "context": "pause",
+      "eleven": [
+        21,
+        22,
+        23,
+        24,
+        33,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "bench": [
+        32,
+        34,
+        35,
+        36,
+        37,
+        38,
+        31,
+        39,
+        40
+      ],
+      "injured": [],
+      "positions": [
+        [
+          21,
+          0
+        ],
+        [
+          22,
+          1
+        ],
+        [
+          23,
+          2
+        ],
+        [
+          24,
+          2
+        ],
+        [
+          33,
+          2
+        ],
+        [
+          25,
+          5
+        ],
+        [
+          26,
+          6
+        ],
+        [
+          27,
+          7
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          29,
+          9
+        ],
+        [
+          30,
+          13
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          34,
+          2
+        ],
+        [
+          35,
+          4
+        ],
+        [
+          36,
+          5
+        ],
+        [
+          37,
+          7
+        ],
+        [
+          38,
+          9
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          39,
+          13
+        ],
+        [
+          40,
+          13
+        ]
+      ],
+      "substitutions_left": 254,
+      "tactics": 87
+    }
+  ],
+  "tactics_events": [
+    {
+      "byte": 87
+    }
+  ],
+  "keys": [
+    {
+      "site": "214B:157C",
+      "key": 13,
+      "context": "pre_match",
+      "before": null,
+      "after": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 0,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 172,
+      "context": "substitution",
+      "before": null,
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 172,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 172,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 13,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 13,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 13,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": null,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": null,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": true,
+        "presses": 0
+      },
+      "after": null,
+      "editing_select": true,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "0791:E61F",
+      "key": 27,
+      "context": "substitution",
+      "before": null,
+      "after": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "select",
+          "play"
+        ],
+        "screen": "select",
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 177,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 13,
+      "context": "substitution",
+      "before": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "play"
+        ],
+        "screen": null,
+        "tactics": {},
+        "edit": false,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": null,
+      "context": "pause",
+      "before": null,
+      "after": null,
+      "editing_select": false,
+      "editing_menu": null,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 172,
+      "context": "pause",
+      "before": null,
+      "after": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": false,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 172,
+      "context": "pause",
+      "before": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": false,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 172,
+      "context": "pause",
+      "before": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": false,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 172,
+      "context": "pause",
+      "before": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": false,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 13,
+      "context": "pause",
+      "before": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": null,
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": "tactics",
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "editing_select": false,
+      "editing_menu": false,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 13,
+      "context": "pause",
+      "before": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": "tactics",
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 0
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": "tactics",
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 1
+      },
+      "editing_select": false,
+      "editing_menu": false,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": 27,
+      "context": "pause",
+      "before": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": "tactics",
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 1
+      },
+      "after": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": "tactics",
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 1
+      },
+      "editing_select": false,
+      "editing_menu": false,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    },
+    {
+      "site": "214B:157C",
+      "key": null,
+      "context": "pause",
+      "before": {
+        "side": 0,
+        "steps": [
+          "tactics",
+          "play"
+        ],
+        "screen": "tactics",
+        "tactics": {
+          "5": true
+        },
+        "edit": true,
+        "presses": 1
+      },
+      "after": null,
+      "editing_select": false,
+      "editing_menu": true,
+      "readonly": 0,
+      "match_menu": 1,
+      "countries": [
+        2,
+        7
+      ]
+    }
+  ]
+}

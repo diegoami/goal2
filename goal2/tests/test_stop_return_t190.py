@@ -79,7 +79,7 @@ class StopReturn(unittest.TestCase):
         self.assertIsNone(self.controller.outcome)
         self.assertFalse(self.bridge.busy)
 
-    def test_half_and_injury_returns_explain_play_without_advancing(self):
+    def test_half_and_injury_returns_resume_once_after_leaving_bench(self):
         from PySide6.QtCore import Qt
         for context in ('half_time', 'substitution'):
             with self.subTest(context=context):
@@ -93,12 +93,11 @@ class StopReturn(unittest.TestCase):
                 self.assertIs(self.window.current(), self.menu)
                 self.menu.highlight(0)
                 self.key(Qt.Key.Key_Escape)
-                self.assertIs(self.menu.highlighted(), self.menu.play)
-                self.assertIn('Play', self.menu.note.text())
-                self.assertEqual(self.sent, [], 'Esc alone must not advance a half or discard a choice')
-                self.key(Qt.Key.Key_Return)
                 self.assertIs(self.window.current(), self.pitch)
                 self.assertEqual(self.sent, [([], None)])
+                self.key(Qt.Key.Key_Escape, repeat=True)
+                self.assertEqual(self.sent, [([], None)])
+                self.assertEqual(self.bridge.pauses, 0)
                 self.sent.clear()
 
     def test_plain_pause_returns_once_and_repeat_cannot_request_again(self):
@@ -208,6 +207,8 @@ class ActualReturn(unittest.TestCase):
                     key(self.window, Qt.Key.Key_Escape)
                     test.assertIs(self.window.current(), screen)
                     key(self.window, Qt.Key.Key_Escape)
+                    test.assertEqual(type(self.window.current()).__name__, 'MenuScreen')
+                    key(self.window, Qt.Key.Key_Escape)
                     test.assertEqual(type(self.window.current()).__name__, 'PitchScreen')
                     test.assertEqual(len(controller.choices), choices+1)
                     requests = controller.requests
@@ -218,6 +219,14 @@ class ActualReturn(unittest.TestCase):
                     return
                 return super().on_bench(screen)
             def on_menu(self, screen):
+                if screen.phase == 'pause':
+                    key(self.window, Qt.Key.Key_Space)
+                    return
+                if screen.phase == 'half' and 'half' not in self.out:
+                    key(self.window, Qt.Key.Key_Space)
+                    return
+                if screen.phase == 'stop' and 'first_stop' not in self.out:
+                    return super().on_menu(screen)
                 if screen.phase in ('half', 'stop') and screen.phase not in self.out.setdefault('returns', []):
                     self.out['returns'].append(screen.phase)
                     controller = self.out['controller']
@@ -232,11 +241,12 @@ class ActualReturn(unittest.TestCase):
                     test.assertIs(self.window.current(), screen)
                     screen.highlight(0)
                     QTest.keyClick(self.window, Qt.Key.Key_Escape)
-                    test.assertIs(screen.highlighted(), screen.play)
-                    test.assertIn('Play', screen.note.text())
-                    test.assertIs(controller.stop, held)
-                    test.assertEqual(controller.choices, choices)
+                    test.assertEqual(type(self.window.current()).__name__, 'PitchScreen')
+                    test.assertIsNone(controller.stop)
+                    test.assertEqual(controller.choices[:-1], choices)
+                    test.assertEqual(len(controller.choices), len(choices)+1)
                     test.assertNotEqual(controller.note, REQUESTED)
+                    return
                 return super().on_menu(screen)
         with tempfile.TemporaryDirectory() as folder:
             model = career()

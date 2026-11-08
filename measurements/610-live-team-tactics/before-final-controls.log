@@ -1,0 +1,168 @@
+test_half_time_all_flags_confirm_before_play_and_match_headless_publication (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_half_time_all_flags_confirm_before_play_and_match_headless_publication) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_extra_time_tactics_are_editable_without_creating_substitution_pairs (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_extra_time_tactics_are_editable_without_creating_substitution_pairs) ... This plugin does not support propagateSizeHints()
+FAIL
+test_failed_submission_and_unaccepted_reply_never_claim_a_change (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_failed_submission_and_unaccepted_reply_never_claim_a_change) ... This plugin does not support propagateSizeHints()
+FAIL
+test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply) ... This plugin does not support propagateSizeHints()
+FAIL
+test_held_escape_cannot_fall_through_screens_and_request_another_pause (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_held_escape_cannot_fall_through_screens_and_request_another_pause) ... This plugin does not support propagateSizeHints()
+FAIL
+test_managed_tactics_work_from_both_home_and_away_menu_columns (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_managed_tactics_work_from_both_home_and_away_menu_columns) ... This plugin does not support propagateSizeHints()
+FAIL
+test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission) ... This plugin does not support propagateSizeHints()
+FAIL
+test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard) ... This plugin does not support propagateSizeHints()
+FAIL
+test_request_note_clears_when_the_engine_stop_arrives (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_request_note_clears_when_the_engine_stop_arrives) ... This plugin does not support propagateSizeHints()
+FAIL
+test_team_reply_preserves_pending_personal_changes_and_live_roster (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_team_reply_preserves_pending_personal_changes_and_live_roster) ... This plugin does not support propagateSizeHints()
+FAIL
+test_worker_failure_while_pending_returns_to_the_desk_without_publishing (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_worker_failure_while_pending_returns_to_the_desk_without_publishing) ... This plugin does not support propagateSizeHints()
+FAIL
+test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes (goal2.tests.test_live_team_tactics_610.TacticTransport.test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes) ... ERROR
+test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops (goal2.tests.test_live_team_tactics_610.TacticTransport.test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops) ... ERROR
+
+======================================================================
+ERROR: test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes (goal2.tests.test_live_team_tactics_610.TacticTransport.test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 11, in test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes
+    self.assertEqual(_changes({'tactics': {'1': True, '8': False}}), {'tactics': {1: True, 8: False}})
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_jobs.py", line 60, in _changes
+    raise ValueError('invalid bench changes')
+ValueError: invalid bench changes
+
+======================================================================
+ERROR: test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops (goal2.tests.test_live_team_tactics_610.TacticTransport.test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 31, in test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops
+    jobs.answer('token', [], changes)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_jobs.py", line 646, in answer
+    changes = _changes(changes or {})
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_jobs.py", line 60, in _changes
+    raise ValueError('invalid bench changes')
+ValueError: invalid bench changes
+
+======================================================================
+FAIL: test_extra_time_tactics_are_editable_without_creating_substitution_pairs (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_extra_time_tactics_are_editable_without_creating_substitution_pairs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 172, in test_extra_time_tactics_are_editable_without_creating_substitution_pairs
+    screen = self.open_tactics()
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s07_team_info.CountryTacticsScreen(0x20facd10, name="screen") at 0x730ed1e00d00> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+======================================================================
+FAIL: test_failed_submission_and_unaccepted_reply_never_claim_a_change (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_failed_submission_and_unaccepted_reply_never_claim_a_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 197, in test_failed_submission_and_unaccepted_reply_never_claim_a_change
+    screen = self.open_tactics()
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s07_team_info.CountryTacticsScreen(0x2317a8a0, name="screen") at 0x730ed1ec9040> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+======================================================================
+FAIL: test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 126, in test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply
+    screen = self.open_tactics()
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s07_team_info.CountryTacticsScreen(0x2711df40, name="screen") at 0x730ed1ce1040> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+======================================================================
+FAIL: test_held_escape_cannot_fall_through_screens_and_request_another_pause (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_held_escape_cannot_fall_through_screens_and_request_another_pause)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 216, in test_held_escape_cannot_fall_through_screens_and_request_another_pause
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 77, in prepare
+    self.assertIsInstance(self.window.current(), MenuScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s19_bench.BenchScreen(0x29bd93c0, name="screen") at 0x730ed1c26900> is not an instance of <class 'goal2.ui.s15_match_menu.MenuScreen'>
+
+======================================================================
+FAIL: test_managed_tactics_work_from_both_home_and_away_menu_columns (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_managed_tactics_work_from_both_home_and_away_menu_columns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 160, in test_managed_tactics_work_from_both_home_and_away_menu_columns
+    screen = self.open_tactics()
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s07_team_info.CountryTacticsScreen(0x2cd05b80, name="screen") at 0x730ed1bf9040> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+======================================================================
+FAIL: test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 97, in test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 77, in prepare
+    self.assertIsInstance(self.window.current(), MenuScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s19_bench.BenchScreen(0x319700d0, name="screen") at 0x730ed185b640> is not an instance of <class 'goal2.ui.s15_match_menu.MenuScreen'>
+
+======================================================================
+FAIL: test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 237, in test_pending_mouse_back_obeys_the_same_wait_as_keyboard
+    screen = self.open_tactics()
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s07_team_info.CountryTacticsScreen(0x325c9720, name="screen") at 0x730ed17c9cc0> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+======================================================================
+FAIL: test_request_note_clears_when_the_engine_stop_arrives (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_request_note_clears_when_the_engine_stop_arrives)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 267, in test_request_note_clears_when_the_engine_stop_arrives
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 77, in prepare
+    self.assertIsInstance(self.window.current(), MenuScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s19_bench.BenchScreen(0x35218e70, name="screen") at 0x730ed163c300> is not an instance of <class 'goal2.ui.s15_match_menu.MenuScreen'>
+
+======================================================================
+FAIL: test_team_reply_preserves_pending_personal_changes_and_live_roster (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_team_reply_preserves_pending_personal_changes_and_live_roster)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 185, in test_team_reply_preserves_pending_personal_changes_and_live_roster
+    screen = self.open_tactics()
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s07_team_info.CountryTacticsScreen(0x37be0420, name="screen") at 0x730ed1811040> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+======================================================================
+FAIL: test_worker_failure_while_pending_returns_to_the_desk_without_publishing (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_worker_failure_while_pending_returns_to_the_desk_without_publishing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 252, in test_worker_failure_while_pending_returns_to_the_desk_without_publishing
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 77, in prepare
+    self.assertIsInstance(self.window.current(), MenuScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s19_bench.BenchScreen(0x3cb50540, name="screen") at 0x730ed143c300> is not an instance of <class 'goal2.ui.s15_match_menu.MenuScreen'>
+
+----------------------------------------------------------------------
+Ran 14 tests in 12.768s
+
+FAILED (failures=10, errors=2, skipped=2)
+EXPECTED: all12focused regressions fail with parent stop/tactics handlers/schema; actualslow cases excluded

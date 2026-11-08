@@ -15,8 +15,9 @@ on them is the answer the engine receives, sent once, through the bridge, in the
   extra time go S20 → S15 (S20's Esc: the bench S19, then S15), and *play* answers them with the bench's answer; a
   set-piece taker goes to S16, whose choice is the answer; the shoot-out order to S18's notice, then S16. A
   substitution opportunity goes to S18 (*SUBSTITUTION OPPORTUNITY*), any key to S15 (phase "stop", whose *players*
-  opens S19 in *make substitutions now* mode) and *play* answers it. The pause Esc or Enter asks for on S17 opens S19
-  in request mode; its Esc answers and returns to the pitch. One bench answer (`s19_bench.BenchAnswer`) is built per
+  opens S19 in *make substitutions now* mode) and *play* answers it. [designed: owner #610/#612]
+  A pause requested from S17 opens S15 with team tactics and players; original-style Esc on that menu resumes.
+  Team tactics confirm through a stopped edit, retaining personal drafts and accepted swaps. One bench answer (`s19_bench.BenchAnswer`) is built per
   bench decision and sent once; S09's mark and own tactics from S19 go in it. No stop keeps a default answer.
 - **The engine's report** of a bench answer that refuses a pair shows S19 with the reason until a key (`refused`).
 - **One bridge for the window's life** (D3): `MatchDay` keeps the owner's `WatchedJobs` (friendlies) and
@@ -265,7 +266,8 @@ class MatchDay:
                                    f"match menu, where players opens the bench.",
                                    lambda key: self._stop_menu())
         if context == "pause":
-            return self.open_bench(back=lambda: self._bench_played(pitch))
+            from goal2.ui.s15_match_menu import MenuScreen
+            return self.window.push(MenuScreen(self.window, self, "pause", decision.score))
         if context == "shootout_order":
             # [confirmed: e031-shootout-start.png] the shoot-out's notice before its order
             return pitch.show_stop(s18_stop.NOTICE_SHOOTOUT, s18_stop.SHOOTOUT,
@@ -334,7 +336,7 @@ class MatchDay:
         return self.controller.display.countries if self.controller is not None else ("", "")
 
     def open_bench(self, back=None):
-        """S19 for the bench decision held: from S15's *players* or S20's Esc (Esc back to S15), or at a pause
+        """S19 for the bench decision held: from S15's *players* or S20's Esc (Esc back to S15), including a pause
         (Esc answers and returns to the pitch)."""
         from goal2.ui.s19_bench import BenchScreen
         if self.bench is None:
@@ -342,6 +344,22 @@ class MatchDay:
         screen = BenchScreen(self.window, self.model, self.bench, names=self._names(), back=back, apply=self.edit_bench)
         screen.feedback_report = getattr(self, "_bench_feedback", None)
         return self.window.push(screen)
+
+    def open_team_tactics(self):
+        from goal2.ui.s10_team_tactics import TeamTacticsScreen
+        if self.bench is None:
+            return None
+        return self.window.push(TeamTacticsScreen(self.window, self.model, answer=self.bench, apply=self.edit_tactics))
+
+    def edit_tactics(self, screen, element, value):
+        self._editing_screen = screen
+        try:
+            self.controller.edit_tactics({element: value})
+        except Exception as exc:
+            self._editing_screen = None
+            screen.pending = False
+            screen.message = f"Team tactic not submitted: {exc}"
+            screen.refresh()
 
     def live_bench(self, pitch, decision):
         """[derived: original injury/player_tactics events] Display live accepted data without mutating a career."""
@@ -373,6 +391,11 @@ class MatchDay:
         answer = self.live_bench(pitch, decision)
         if previous is not None:
             answer.injured.update(previous.injured)
+            if getattr(getattr(self, "_editing_screen", None), "preserve_player_edits", False):
+                answer.positions = dict(previous.positions)
+                answer.marking = dict(previous.marking)
+                answer.own = dict(previous.own)
+                answer.first = previous.first
             answer.live_own = {**previous.live_own, **answer.live_own}
             answer.live_marking = {**previous.live_marking, **answer.live_marking}
         self.bench = answer

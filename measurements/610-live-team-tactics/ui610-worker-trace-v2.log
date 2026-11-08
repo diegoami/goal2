@@ -1,0 +1,37 @@
+Read-only tracing under actual worker: ['/home/diego/.local/bin/pypy3.11', '/home/diego/projects/m3-trackb/goal2/measurements/610-live-team-tactics/diagnostic-ui-v2/engine.py']
+test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 392, in test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch
+    self.run_journey('pause')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 366, in run_journey
+    walk.run()
+    ~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 182, in react
+    self.on_menu(screen)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 308, in on_menu
+    test.assertEqual(editor.answer.team_tactics, byte)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 71 != 87
+
+----------------------------------------------------------------------
+Ran 1 test in 17.589s
+
+FAILED (failures=1)

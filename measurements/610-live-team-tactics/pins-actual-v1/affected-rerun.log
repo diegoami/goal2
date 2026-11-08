@@ -1,0 +1,21 @@
+test_a_built_wheel_carries_the_tables (goal2.tests.test_engine_tables_t150.Tables.test_a_built_wheel_carries_the_tables) ... ok
+test_a_changed_byte_is_refused (goal2.tests.test_engine_tables_t150.Tables.test_a_changed_byte_is_refused) ... ok
+test_the_vendored_tables_seal_the_reference_image (goal2.tests.test_engine_tables_t150.Tables.test_the_vendored_tables_seal_the_reference_image) ... ok
+test_vendored_files_equal_upstream_at_their_pin (goal2.tests.test_engine_tables_t150.Vendored.test_vendored_files_equal_upstream_at_their_pin) ... ok
+test_competitive_stream_is_in_the_originals_write_order (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_competitive_stream_is_in_the_originals_write_order) ... ok
+test_consequences_of_a_sending_off (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_consequences_of_a_sending_off) ... ok
+test_extra_time_goal_marked (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_extra_time_goal_marked) ... ok
+test_goal2s_shootout_order (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_goal2s_shootout_order) ... ok
+test_kinds_and_budget_arguments (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_kinds_and_budget_arguments) ... ok
+test_penalties_after_extra_time (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_penalties_after_extra_time) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_qualifier (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_qualifier) ... ok
+test_selection_port_substitution_budget_per_side (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_selection_port_substitution_budget_per_side) ... ok
+test_substitution_budget_is_settable_per_side (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_substitution_budget_is_settable_per_side) ... ok
+test_all_builder_kinds_accept_and_impossible_kinds_refuse (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_all_builder_kinds_accept_and_impossible_kinds_refuse) ... ok
+test_exact_source_and_scenario_selector (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_exact_source_and_scenario_selector) ... ok
+test_result_shape_matches_independent_guest_execution (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_result_shape_matches_independent_guest_execution) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 146.778s
+
+OK (skipped=1)

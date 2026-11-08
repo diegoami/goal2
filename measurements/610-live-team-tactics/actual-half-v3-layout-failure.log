@@ -1,0 +1,41 @@
+UI app/test source ba03b39bdcf4f626bae50e255073a9aaed18ed6e6945c53cf85841d8d5bc915a
+Versioned driver source 47b153d031b1bc80a7b153a5278284e78e9d8172de919351e0fafce53f939914
+test_half_time_all_flags_confirm_before_play_and_match_headless_publication (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_half_time_all_flags_confirm_before_play_and_match_headless_publication) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_half_time_all_flags_confirm_before_play_and_match_headless_publication (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_half_time_all_flags_confirm_before_play_and_match_headless_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 343, in test_half_time_all_flags_confirm_before_play_and_match_headless_publication
+    self.run_journey('half_time')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/610-live-team-tactics/actual-driver-v3/run.py", line 113, in run_journey
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 182, in react
+    self.on_menu(screen)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/610-live-team-tactics/actual-driver-v3/run.py", line 60, in on_menu
+AssertionError: Lists differ: ['sub text needs 130 px, has 65'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'sub text needs 130 px, has 65'
+
+- ['sub text needs 130 px, has 65']
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 52.227s
+
+FAILED (failures=1)

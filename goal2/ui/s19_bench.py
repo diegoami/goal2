@@ -56,6 +56,7 @@ class BenchAnswer:
         self.eleven = list(data.get("eleven") or [])
         self.bench = list(data.get("bench") or [])
         self.left = data.get("substitutions_left", 0)
+        self.team_tactics = data.get("tactics", model.state.country_tactics)
         self.now = bool(data.get("substitutions_now", self.context != "pause"))
         self.injured = set(data.get("injured") or [])
         self.at_kick = {int(w): int(code) for w, code in data.get("positions") or []}
@@ -95,6 +96,7 @@ class BenchAnswer:
     def state(self, word):
         """The model's state with his record as the bench shows it (a shallow copy; nothing is written back)."""
         state = copy.copy(self.model.state)
+        state.country_tactics = self.team_tactics
         players = list(state.players)
         players[word] = self.record(word)
         state.players = players

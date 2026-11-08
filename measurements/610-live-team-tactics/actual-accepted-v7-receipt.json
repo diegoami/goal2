@@ -1,0 +1,318 @@
+{
+  "actual_tested_commit": "4d4efcb25fcdf195ad0eeeaf01360690769b6079",
+  "actual_case_count": 2,
+  "actual_seconds": 284.69,
+  "cases": [
+    {
+      "target": "half_time",
+      "edits": 8,
+      "published_once": true,
+      "commands": [
+        [
+          "substitution",
+          {
+            "substitutions": [
+              [
+                31,
+                33
+              ]
+            ],
+            "edit_only": true
+          }
+        ],
+        [
+          "substitution",
+          []
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "5": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "6": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "7": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "1": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "2": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "3": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "4": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          {
+            "tactics": {
+              "8": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "half_time",
+          []
+        ]
+      ],
+      "actual": {
+        "initial": 71,
+        "confirmed": 184,
+        "edits": 8,
+        "stop": "half_time",
+        "unchanged": {
+          "minute": 46,
+          "score": [
+            1,
+            0
+          ],
+          "eleven": [
+            21,
+            22,
+            23,
+            24,
+            33,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "bench": [
+            32,
+            34,
+            35,
+            36,
+            37,
+            38,
+            31,
+            39,
+            40
+          ],
+          "left": 254,
+          "frames": 2098
+        }
+      },
+      "headless_full_memory_events_result_state_equal": true
+    },
+    {
+      "target": "pause",
+      "edits": 8,
+      "published_once": true,
+      "commands": [
+        [
+          "substitution",
+          {
+            "substitutions": [
+              [
+                31,
+                33
+              ]
+            ],
+            "edit_only": true
+          }
+        ],
+        [
+          "substitution",
+          []
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "5": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "6": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "7": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "1": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "2": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "3": false
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "4": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          {
+            "tactics": {
+              "8": true
+            },
+            "edit_only": true
+          }
+        ],
+        [
+          "pause",
+          []
+        ],
+        [
+          "set_piece",
+          {
+            "taker": 23
+          }
+        ],
+        [
+          "half_time",
+          []
+        ]
+      ],
+      "actual": {
+        "initial": 71,
+        "confirmed": 184,
+        "edits": 8,
+        "stop": "pause",
+        "unchanged": {
+          "minute": 5,
+          "score": [
+            0,
+            0
+          ],
+          "eleven": [
+            21,
+            22,
+            23,
+            24,
+            33,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "bench": [
+            32,
+            34,
+            35,
+            36,
+            37,
+            38,
+            31,
+            39,
+            40
+          ],
+          "left": 254,
+          "frames": 257
+        }
+      },
+      "headless_full_memory_events_result_state_equal": false
+    }
+  ],
+  "implementation": "cpython",
+  "ui_python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "qt": "6.12.0",
+  "engine": "Python 3.11.16 (78565394c9b5, Sep 18 2026, 08:00:14)\n[PyPy 8.0.0 with GCC 14.2.1 20250110 (Red Hat 14.2.1-11)]",
+  "accepted_upstream": "f3719a310411cb851839be38f0dbfaa1c3a51369",
+  "source_guard_files": 41,
+  "source_controls": "10PASS20.089s",
+  "publication_schema_controls": "9PASS0.032s",
+  "source_hashes": {
+    "goal2/game/watched_jobs.py": "1f3b1711adc71fec6145ff030818c81b1703b5dfc28d701d6c2f387c8c8b9881",
+    "goal2/game/watched_schema.py": "dbf26bf926e41afa9a0f254311749c0f2d2557aa98812a6983a4e1746777e214",
+    "goal2/game/watched_match.py": "3eb918d586f512f79efd993dd899cb251891a0aff685afe7ab10a9e7f499f52d",
+    "goal2/ui/match_day.py": "5f03ab22b6daa815ffce1064336d0fcc7742797f5e6a12456e39540c13db9bb6",
+    "goal2/ui/s10_team_tactics.py": "a31e71e076b6e6abd0a273620b2abadf96c2b354fed0a0073ae26e2467ef070d",
+    "goal2/ui/s15_match_menu.py": "8730e4f9e23c108437b9e7849fd2f2505b2052c56308446859c8bca9b3f5b701",
+    "goal2/ui/s17_pitch.py": "f2793982c16df0ade94bab806ecadbf72da1a5c3d1a7aebb276521444813f223",
+    "goal2/ui/s19_bench.py": "67afd69b8a8539cc37623f5eceab56734157670d6fb44e9a3a9db55ef494d079",
+    "goal2/ui/window.py": "dcfa1535a7a7a1a044d01f02f1d0b9eb59a8819d2bba2f8f60845b88ce069fb9",
+    "goal2/engine/original_match/match.py": "10c2f76f071193b471c21666938223ad3a71d142498f4d79e662d335ce872921",
+    "tools/watched_evidence.py": "5b345ce6b08660912180e001deacc531a91bf5fb9a804eb7477a5d7a3a85a4f3",
+    "tools/watched-kit-hashes.json": "02377b768d22b7b1343efadf435f95438c0932d4ec1bc08e0907c4bd14b8828a",
+    "PROVENANCE.md": "5a19a3a47d288ec9d4d49087e4ffa1f01802e29683f417c5b659f824dbf8fd70"
+  }
+}

@@ -1,0 +1,15 @@
+test_all_files_are_exact_accepted_source (goal2.tests.test_watched_runtime.RuntimeTests.test_all_files_are_exact_accepted_source) ... ok
+test_build_refuses_meaningful_code_and_data_changes (goal2.tests.test_watched_runtime.RuntimeTests.test_build_refuses_meaningful_code_and_data_changes) ... ok
+test_changed_vendor_bytes_and_added_files_are_rejected (goal2.tests.test_watched_runtime.RuntimeTests.test_changed_vendor_bytes_and_added_files_are_rejected) ... ok
+test_disallowed_goal_save_preserves_complete_match_and_closes_coverage (goal2.tests.test_watched_runtime.RuntimeTests.test_disallowed_goal_save_preserves_complete_match_and_closes_coverage) ... ok
+test_entry_probe_false_or_incomplete_evidence_is_rejected (goal2.tests.test_watched_runtime.RuntimeTests.test_entry_probe_false_or_incomplete_evidence_is_rejected) ... ok
+test_missing_asset_and_wrong_hash_are_actionable (goal2.tests.test_watched_runtime.RuntimeTests.test_missing_asset_and_wrong_hash_are_actionable) ... ok
+test_optional_dependency_failure_and_actual_quick_play (goal2.tests.test_watched_runtime.RuntimeTests.test_optional_dependency_failure_and_actual_quick_play) ... ok
+test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned (goal2.tests.test_watched_runtime.RuntimeTests.test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned) ... ok
+test_supported_adapted_records_pass_guard_without_mutating_original (goal2.tests.test_watched_runtime.RuntimeTests.test_supported_adapted_records_pass_guard_without_mutating_original) ... ok
+test_unsupported_fixtures_refuse_without_changing_image (goal2.tests.test_watched_runtime.RuntimeTests.test_unsupported_fixtures_refuse_without_changing_image) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 21.118s
+
+OK

@@ -1,0 +1,10 @@
+{
+  "tested_head": "25a62682135ea3f61f0ae2ac704a6f6cf4597cd1",
+  "actual_class_AST_unchanged": true,
+  "application_engine_tools_unchanged": true,
+  "fixture_sha256": {
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949"
+  },
+  "scope": "Only packet-test key helper and new cross-window regression change; three passing real journeys in combined-before.log are unchanged exercised inputs. The full35-test result remains FAILED(one packet case), not relabelled passed."
+}

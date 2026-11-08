@@ -1,0 +1,7 @@
+test_worker_failure_while_pending_returns_to_the_desk_without_publishing (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_worker_failure_while_pending_returns_to_the_desk_without_publishing) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 3.898s
+
+OK
