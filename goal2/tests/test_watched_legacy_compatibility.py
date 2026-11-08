@@ -61,6 +61,7 @@ class LegacyCompatibilityTests(unittest.TestCase):
                     with self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(damaged).encode())
                     self.assertEqual(state,before)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_legacy_campaign_continues_with_current_kit_then_mixed_quick_history(self):
         from goal2.desktop.worker import play
         raw,state,template=self.saved('campaign')

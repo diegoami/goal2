@@ -1,0 +1,23 @@
+{
+  "contract": "Main-approved #643 fixture amendment for #639/#642",
+  "before_failures": [
+    {
+      "source_log": "/tmp/ui619-windows-42449781350-failed.log",
+      "sha256": "53f6a7a2554ef89f9aa4f7769ae689489a4517bb8ca234117d10d2727388228b"
+    },
+    {
+      "source_log": "/tmp/ui637-windows-42452488366-failed.log",
+      "sha256": "24d7c6746661c343a905d69544c69f741468743a08180c9c31542b48b9a95d1b"
+    },
+    {
+      "source_log": "/tmp/ui619-linux-42449781341-failed.log",
+      "sha256": "e0a6b99c64444175084a765da49036cbc87b3cf7cb0276084f03916fec809d02"
+    }
+  ],
+  "forced_old_job_race": "Original test failed after its unchanged20s wait: finished exit -9, expected vanished. Child-only death allowed wrapper to finish recording before wrapper kill.",
+  "new_job_behavior": "Wrapper-first vanished fixture and child-only finished -9 control both pass. All45 existing job/checkpoint assertions unchanged. tools/jobs.py byte-identical.",
+  "windows_clock": "Scoped ctypes WinDLL winmm timeBeginPeriod(1)/timeEndPeriod(1), balanced even on observation failure; setup failure fails loudly. All60 existing competitive assertions and original poll/processEvents/sleep calls unchanged. PreciseTimer1ms,120ms,>10beats unchanged.",
+  "native_evidence": "Bundled Windows3.13.17/Qt:4 controlsPASS0.402s; original heartbeat method gives73beats for controlled responsive poll,1beat for deliberate140ms blocked poll. Native baseline currently72beats, so current native host did not reproduce hosted32ms sleep granularity; retained hosted failures remain before evidence.",
+  "scope_limit": "Native controls model poll input; no genuine competitive worker or match execution. Actual worker/game acceptance remains main exact-head default gate and hosted CI.",
+  "focused_final": "76 testsPASS15.817s; no full suite, game, or gate started."
+}

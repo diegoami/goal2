@@ -37,7 +37,8 @@ class Jobs(unittest.TestCase):
 
     def stop(self, name):
         job = self.jobs.read(self.root, name)
-        for pid in (job.get("command_pid"), job.get("wrapper_pid")):
+        # [designed: #639] Stop this fixture's recorder before its child can publish a valid exit.
+        for pid in (job.get("wrapper_pid"), job.get("command_pid")):
             if pid and self.jobs.alive(pid):
                 os.kill(pid, signal.SIGKILL)
 
@@ -77,12 +78,19 @@ class Jobs(unittest.TestCase):
         job = self.until("killed", "running")
         while "command_pid" not in job:
             time.sleep(0.05);job = self.jobs.read(self.root, "killed")
+        # [designed: #639] A vanished job has no recorder left to publish the child's exit.
+        os.kill(job["wrapper_pid"], signal.SIGKILL)
         os.kill(job["command_pid"], signal.SIGKILL)
-        try:                # the wrapper waits on the command and may already have exited (#485)
-            os.kill(job["wrapper_pid"], signal.SIGKILL)
-        except ProcessLookupError:
-            pass
         self.assertEqual(self.until("killed", "vanished")["state"], "vanished")
+
+    def test_child_only_death_is_a_recorded_finished_negative_exit(self):
+        self.started("child-killed", "import time;time.sleep(60)")
+        job = self.until("child-killed", "running")
+        while "command_pid" not in job:
+            time.sleep(0.05);job = self.jobs.read(self.root, "child-killed")
+        os.kill(job["command_pid"], signal.SIGKILL)
+        done = self.until("child-killed", "finished")
+        self.assertEqual((done["state"], done["exit_code"]), ("finished", -9))
 
     def test_a_running_name_is_refused_and_a_finished_one_is_kept_then_replaced(self):
         self.started("twice", "import time;time.sleep(60)")

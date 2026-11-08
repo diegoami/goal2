@@ -162,6 +162,7 @@ class CompetitiveSaveTests(unittest.TestCase):
             with self.subTest(damage=damage),self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(bad).encode())
             self.assertEqual(owner.state,before)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_quick_setup_is_private_and_preserves_strict_template_refusals(self):
         from goal2.engine.savestate import Savestate
         from goal2.engine.quick_engine import ExtraTimeNotModelled
