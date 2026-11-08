@@ -1,0 +1,14 @@
+{
+  "source_commit": "6aff3d6671457bc94bfdd5cbf8cd27d61f3738d1",
+  "outcome": "FAIL current640actual request cue clipping assertion; geometry/settling diagnosis required",
+  "elapsed_seconds": 20.087,
+  "exit": {
+    "exit_code": 1,
+    "ended_utc": "2026-11-08T11:21:29+00:00"
+  },
+  "signal_or_stop_used": false,
+  "full_worker_equality_claimed": false,
+  "trait_reader_failure_observed": false,
+  "log_sha256": "0349e519c341f172c95fe8e0acc64df1cbe1f6f25691a16ae9a715975ee41be7",
+  "private_capture_root": ".cache/641-actual-accepted-v2/captures"
+}
