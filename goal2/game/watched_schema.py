@@ -424,6 +424,18 @@ def validate_player_records(data, *, required=False):
     """[designed: T196; accepted upstream682] Bounded immutable record source at a decision.
     Legacy data omits this field; requested live data must contain every current nonzero squad word.
     """
+    # [designed: #646; upstream697] Optional on legacy waiting decisions, but
+    # an included current TEAM context must be complete and strictly typed.
+    if 'team_context' in data:
+        context=data['team_context']
+        if ('player_records' not in data or not isinstance(context,dict)
+                or set(context)!={'match_set_up','in_match_menu_used','sides'}
+                or not integer(context['match_set_up'],0,255)
+                or not integer(context['in_match_menu_used'],0,255)
+                or type(context['sides']) is not list or len(context['sides'])!=2
+                or not all(integer(side,1,128) for side in context['sides'])
+                or context['sides'][0]==context['sides'][1]):
+            raise ValueError('invalid live TEAM context')
     if 'player_records' not in data:
         if required:raise ValueError('missing live player records snapshot')
         return

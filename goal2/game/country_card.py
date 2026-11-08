@@ -26,14 +26,14 @@ def tactic_word(memory, element, bit):
     return memory.pascal(0x6AA0 + 32 * element + 16 * bit, 16)
 
 
-def card(state, country, goaldat):
+def card(state, country, goaldat, *, memory=None, performance_context=...):
     """The country card of `country` in this state."""
     if type(country) is not int or not 1 <= country <= 128:
         raise ValueError('country must be 1..128')
     from goal2.game.team_card import TeamMemory
-    memory = TeamMemory(state)
+    memory = TeamMemory(state) if memory is None else memory
     record = memory.country_record(country)
-    panels = memory.panels(country)
+    panels = memory.panels(country, performance_context=performance_context)
     words = [int.from_bytes(record[2 * i:2 * i + 2], 'little') for i in range(20)]
     # [confirmed: F008 squad list] the country's 20 player numbers at +0..+0x27; slots 1..11 are
     # the stored eleven (F024). [derived: F028 DS:0D5C line classes; screenshots country-select
