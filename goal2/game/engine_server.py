@@ -138,8 +138,16 @@ class Commands:
                 self.answers.append((header["decision"], _choice(header)))
             elif header.get("changes"):
                 # [designed: T180] the bench's pairs with its positions, marks and own tactics, in one answer
-                self.answers.append((header["decision"], dict(_changes(header["changes"]),
-                                                              substitutions=_pairs(header.get("substitutions", [])))))
+                changes = _changes(header["changes"])
+                pairs = _pairs(header.get("substitutions", []))
+                if "opportunity" in changes:
+                    if pairs:
+                        raise ValueError("an opportunity cannot select a player pair")
+                    # [designed: #636] Keep the notice's enum-only policy value;
+                    # even an injected empty substitutions field is not its API.
+                    self.answers.append((header["decision"], changes))
+                else:
+                    self.answers.append((header["decision"], dict(changes, substitutions=pairs)))
             else:
                 self.answers.append((header["decision"], _pairs(header.get("substitutions", []))))
         else:

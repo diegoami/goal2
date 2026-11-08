@@ -96,7 +96,7 @@ def request_from_bench(window, screen, desired, *, expected=None, capture=None):
     key(window, Qt.Key.Key_Return)
     if capture: capture(window, 'request-pending' if desired else 'cancel-pending')
     pump(lambda: not screen.pending or controller.error, 120, 'request edit was not acknowledged')
-    assert controller.error is None
+    assert controller.error is None, controller.error
     assert window.current() is screen and controller.stop is not None
     assert controller.stop.data['edited'] is True
     assert controller.stop.data['request_substitution'] is expected
@@ -130,7 +130,7 @@ def accept_opportunity_with_escape(window, pitch, *, capture=None):
                   and controller.stop is not None
                   and controller.stop.data['context'] == 'substitution') or controller.error,
          120, 'accepted opportunity did not open the legal bench')
-    assert controller.error is None
+    assert controller.error is None, controller.error
     screen = window.current()
     assert screen.answer.context == 'substitution' and screen.answer.takes_substitutions
     assert screen.answer.chosen == []
