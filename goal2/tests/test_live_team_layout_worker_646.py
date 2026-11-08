@@ -42,6 +42,8 @@ class ActualTeamLayout(unittest.TestCase):
             self.assertEqual({key:label.text() for key,label in screen.averages.values.items()},
                              {row['field']:row['text'] for row in expected['characteristics']['numbers']})
             record=screen.model.state.countries[screen.model.state.managed_country]
+            if 129 <= record[0x2E] <= 134 and screen.model.state.manager_name:
+                self.assertEqual(screen.team_header.team['manager'].text(),screen.model.state.manager_name)
             for field,offset in (('world',0x2B),('continental',0x2A),('top_world',0x29),('top_continental',0x28)):
                 self.assertEqual(screen.team_header.ranks[field].text(),str(record[offset]))
             self.assertEqual(len(screen.strip.shown_texts()),20)

@@ -54,3 +54,21 @@ inputs, seeds, field projections or assertions changed; callback failures are
 collected until the normal journey completes to avoid swallowed Qt assertions.
 After accepted698adoption the SAME test/inputs must pass. Raw original records
 are not printed in this log.
+
+Accepted69870f38677adoption3a5a1d9f:56provenance/41strictkitfilesPASS.
+FreshLinux full currentTEAMobserverPASS165.769s; nativeWindows actual Qt/bundled
+PyPy/fullsamechoice casePASS with3pending/ackcaptures. All13fullTEAMrefresh
+projections and existing22trait observations retain the entire640/641 equality
+oracles. Source3a5a defaultFAST218/218modulesPASS,237declared slow exclusions.
+These receipts remain source3a5a; they do not accept later edits.
+
+Inspecting the actual native capture found inherited653: TEAM shows the stock
+country coach despite selected manager129 and current session name K Ees. The
+3own data/widget/contrasting-index controls fail before correction. The bounded
+host fix reads the selected computer manager and active named human identity,
+without writing records/skills. Existing unnamed-human preview default remains;
+this does not add old-career/imported-human identity decoding. Focused old21+new3
+PASS24/24 (34.473s); final4identity controlsPASS after adding unnamed/own-computer
+boundaries. The actual fullTEAMobserver now asserts the named human header too.
+Final-source natural/native/default/platform checks remain required; no earlier
+receipt is silently relabelled final.

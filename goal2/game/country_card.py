@@ -45,11 +45,21 @@ def card(state, country, goaldat, *, memory=None, performance_context=...):
     tactics = state.country_tactics if country == state.managed_country else record[0x2D]
     def group(rows):
         return [(name, tactic_word(memory, element, tactics >> (element - 1) & 1)) for name, element in rows]
-    initial = goaldat.manager_initials[country] if country < len(goaldat.manager_initials) else ''
+    # [confirmed: original157D→0947, F024/F034] The coach is selected by
+    # country+0x2E, not necessarily by country number. [designed: T92; #653]
+    # The active human's renamed identity lives in the rebuild session, and
+    # must not leak to another country. The existing unnamed-human preview
+    # retains its country's default; imported human-name decoding is not added.
+    manager = record[0x2E]
+    stock_manager = manager if manager <= 128 else country
+    initial = goaldat.manager_initials[stock_manager] if stock_manager < len(goaldat.manager_initials) else ''
+    manager_name = (initial + ' ' if initial else '') + goaldat.manager_names[stock_manager]
+    own_name = getattr(state,'manager_name','')
+    if country == state.managed_country and 129 <= manager <= 134 and own_name:
+        manager_name = own_name
     return {
         'country': country, 'name': goaldat.country_names[country], **panels,
-        # [confirmed: F002 R001 manager names by country; F024 computer managers' names]
-        'manager': (initial + ' ' if initial else '') + goaldat.manager_names[country],
+        'manager': manager_name,
         # [confirmed: F007] world rank +0x2B, continent +0x2C, rank within it +0x2A.
         'world': record[0x2B], 'continent': CONTINENTS.get(record[0x2C], NOT_DECODED), 'continental': record[0x2A],
         # [confirmed: F008/F002, original1771:157D; T200] Stored top ranks, not new history arithmetic.

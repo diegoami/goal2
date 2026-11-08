@@ -178,6 +178,9 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
   a changed match tactic waits for authoritative confirmation. Current stopped-match records supply
   the live panels; performance appears only with its observed original visibility flags. Legacy decisions
   without those observations retain an explicit fallback. Red roster names marked * are injured.
+  [derived: F024/F034; designed: T92, #653] The TEAM manager follows the country's selected
+  manager; the active named human uses the session identity. The unnamed country preview retains
+  its existing default name. Decoding additional imported human identities is outside this overlay.
 - **The mouse**: a click on a row (a player, a tactic line) moves the cursor there, and a click on the highlighted row
   is Enter. *Squad* and *Pool* above the card are ← and →.
 - **Colours** are set on each part by itself, as colour only, from `theme`'s roles; the window's style sheet is
