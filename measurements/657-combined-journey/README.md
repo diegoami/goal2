@@ -35,3 +35,10 @@ the reference. Not a product failure or equality result. Corrected call passes
 the actual pre-match campaign fixture through the accepted engine_fixture adapter.
 The completed UI state/outcome/choices are now privately checkpointed before
 comparison. No app/helper/oracle/deadline/fixture values changed. v4 stays FAIL.
+
+v5 reaches the complete match/result/recordings and invokes the reference, but
+its before-state predates UI captain confirmation (0versus actual21). The input
+comparison is invalid, not a game regression. Reference preparation now uses
+the exact controller.given._snapshot as the accepted636test does; every full
+result/event/memory/seed/career assertion remains unchanged. Both complete UI
+and reference arms are checkpointed privately before comparison. v5 stays FAIL.

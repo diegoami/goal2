@@ -1,0 +1,38 @@
+This plugin does not support propagateSizeHints()
+fresh Austria career through S02/S03/S04 UI
+JOURNEY RoundScreen:before
+JOURNEY MenuScreen:before
+JOURNEY PitchScreen
+commentary Space holds and resumes
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+saved goal through S21 keys
+JOURNEY BenchScreen:now
+immediate legal swap substitution
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+immediate legal swap half_time
+JOURNEY MenuScreen:half
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+saved summary through S21 keys
+JOURNEY DeskScreen
+Traceback (most recent call last):
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 169, in <module>
+    assert outcome.result==controller.outcome.result and outcome.events==controller.outcome.events
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
