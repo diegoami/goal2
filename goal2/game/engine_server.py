@@ -283,9 +283,11 @@ class Server:
         kind, frames, bench = header.get("kind"), header.get("frames", False), header.get("bench", False)
         prompts = header.get("prompts", False)
         live_players = header.get("live_players",False)
+        substitution_control = header.get("substitution_control",False)
         options = header.get("options") or {}
         if (kind not in KINDS or type(frames) is not bool or type(bench) is not bool or (bench and not frames)
-                or type(prompts) is not bool or (prompts and not bench) or type(live_players) is not bool):
+                or type(prompts) is not bool or (prompts and not bench) or type(live_players) is not bool
+                or type(substitution_control) is not bool or (substitution_control and not (bench and frames))):
             raise ValueError("invalid engine match request")
         if not isinstance(options, dict) or set(options) - set(OPTIONS):
             raise ValueError("invalid engine match options")
@@ -317,7 +319,8 @@ class Server:
             commands.poll()
             outcome = _drive_match(state, image, fixture, _observe=observe, _observe_pitch=pitch if frames else None,
                                    policy=policy, prompts=prompts, **extra, **options,
-                                   **({'live_players':True} if live_players else {}))
+                                   **({'live_players':True} if live_players else {}),
+                                   **({'substitution_control':True} if substitution_control else {}))
         except Cancelled:
             self.send("cancelled")
             return

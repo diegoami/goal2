@@ -4,7 +4,8 @@
 original substitution opportunity, two player selections submit one edit-only answer. Until its reply input is
 held; the original's new decision alone updates the eleven, bench and counter. Play later continues. Refusals
 stay at the usable stopped squad with one correctly directed on/off message. Ordinary in-play pauses permit
-supported tactical edits and explain that substitutions require a legal stoppage.
+supported tactical edits and, with the explicit #636 capability, independent request/cancel through the
+original menu. No pair is chosen until a legal stop; the stopped acknowledgement supplies actual request state.
 
 [confirmed: original T156-R1 steps124–137, t156-132-substitution-made.png] The half-time squad changes before Play.
 [derived: accepted original injury/player_tactics events] Known match injuries and accepted personal settings
@@ -57,6 +58,7 @@ class BenchAnswer:
         self.bench = list(data.get("bench") or [])
         self.left = data.get("substitutions_left", 0)
         self.team_tactics = data.get("tactics", model.state.country_tactics)
+        self.substitution_requested = data.get("request_substitution")
         self.now = bool(data.get("substitutions_now", self.context != "pause"))
         self.injured = set(data.get("injured") or [])
         self.injured.difference_update(self.live_records)
@@ -80,6 +82,10 @@ class BenchAnswer:
     @property
     def takes_substitutions(self):
         return self.context in ("half_time", "substitution") and self.now
+
+    @property
+    def can_request_substitution(self):
+        return self.context == "pause" and not self.now and type(self.substitution_requested) is bool
 
     def words(self):
         return self.eleven + self.bench
@@ -238,7 +244,7 @@ class BenchAnswer:
 class BenchScreen(Screen):
     """S19. `mode`: "now", "request", "view", or "refused" (the engine's report, shown until a key)."""
 
-    def __init__(self, window, model, answer, *, mode=None, names=("", ""), back=None, report=None, apply=None):
+    def __init__(self, window, model, answer, *, mode=None, names=("", ""), back=None, report=None, apply=None, request=None):
         self.mode = mode or ("refused" if report is not None else "view" if answer.context not in ("half_time", "substitution", "pause")
                              else "now" if answer.now else "request")
         self.escape_text = {"now": "match menu", "request": "back to the match", "view": "match menu",
@@ -249,6 +255,8 @@ class BenchScreen(Screen):
         self.row = 0
         self.message = ""
         self.apply = apply
+        self.request = request
+        self._request_desired = None
         self.pending = False
         self.feedback_report = None
         self.cue_timer = QTimer(self)
@@ -334,6 +342,8 @@ class BenchScreen(Screen):
             self.mode_label.setText(VIEW)
         elif self.mode == "now":
             self.mode_label.setText(MAKE_NOW)
+        elif answer.can_request_substitution:
+            self.mode_label.setText("SUBSTITUTION REQUESTED" if answer.substitution_requested else "REQUEST SUBSTITUTION")
         else:
             self.mode_label.setText("SUBSTITUTIONS ONLY AT STOPPAGES")
         left = self.report["substitutions_left"] if self.report is not None else None
@@ -395,6 +405,8 @@ class BenchScreen(Screen):
     def line(self):
         """The line under the mode: the refusal's reason, the pairs chosen, or what the screen waits for."""
         answer = self.answer
+        if self.pending and self._request_desired is not None:
+            return "Confirming substitution request. The match remains paused; no player is selected."
         if self.pending:
             return "Applying substitution. Waiting for the game to confirm the changed squad."
         if self.mode == "refused":
@@ -414,7 +426,10 @@ class BenchScreen(Screen):
                     + ("change not confirmed" if why == "not made by the original" else why)
                     for a,b,why in report["refused"]) + ".")
         if self.mode == "request":
-            parts.append("Substitutions require half-time or an offered stoppage. Tactical changes are available here.")
+            parts.append("Enter cancels the pending request." if answer.can_request_substitution and answer.substitution_requested
+                         else "Enter requests the next substitution opportunity; choose players only at that stop."
+                         if answer.can_request_substitution else
+                         "Substitutions require half-time or an offered stoppage. Tactical changes are available here.")
         if answer.refused:
             parts.append(f"The original refused the eleven: {answer.refused}.")
         if answer.chosen:
@@ -434,8 +449,10 @@ class BenchScreen(Screen):
     def enter_hint_text(self):
         if getattr(self, "answer", None) is None:
             return ""             # Screen.__init__ draws the bar before the bench is set
+        if self.pending and self._request_desired is not None:
+            return "Confirming substitution request. The match remains paused; no player is selected."
         if self.pending:
-            return "Applying substitution..."
+            return "Confirming request..." if self._request_desired is not None else "Applying substitution..."
         if self.mode == "refused":
             return "Back to the match"
         if self.mode == "view":
@@ -449,6 +466,8 @@ class BenchScreen(Screen):
         if answer.first == word:
             return "Unmark this player"
         if self.mode == "request":
+            if answer.can_request_substitution:
+                return "Cancel substitution request" if answer.substitution_requested else "Request substitution"
             return "Substitutions only at a stoppage"
         # [confirmed: squad-substitution-take-off.png, -put-on.png] the original's prompt
         return "Take off this player" if word in answer.eleven else "Put on this player"
@@ -482,6 +501,12 @@ class BenchScreen(Screen):
         if word is None or self.mode == "view":
             return
         self.message = ""
+        if self.answer.can_request_substitution and self.request is not None:
+            self._request_desired = not self.answer.substitution_requested
+            self.pending = True
+            self.refresh()
+            self.request(self, self._request_desired)
+            return
         if not self.answer.takes_substitutions:
             self.message = "Substitutions are available only at a legal stoppage."
             self.refresh()
@@ -528,7 +553,10 @@ class BenchScreen(Screen):
         self.answer = answer
         self.pending = False
         self.feedback_report = report
+        desired, self._request_desired = self._request_desired, None
         self.message = ""
+        if desired is not None:
+            self.message = ("SUBSTITUTION REQUESTED" if desired else "Substitution request cancelled.") if answer.substitution_requested is desired else (NO_MORE if answer.left == 0 else "The game did not accept that request; the actual state is shown.")
         self.refresh()
 
     def shown(self):

@@ -224,7 +224,7 @@ PROMPT_CONTEXTS = ('set_piece', 'shootout_order', 'extra_time')
 
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
                  substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None,policy=None,
-                 prompts=False,live_players=False):
+                 prompts=False,live_players=False,substitution_control=False):
     """[designed: T51] Shared completed-original driver; no publication or Python tail.
 
     [designed: T102] `policy` answers the bench decisions (BENCH_CONTEXTS) for a watching player;
@@ -245,6 +245,9 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     nothing at `extra_time` (play on). Each answer is passed to `Match.answer` as it is.
     """
     if type(live_players) is not bool:raise ValueError('live_players must be boolean')
+    if type(substitution_control) is not bool:raise ValueError('substitution_control must be boolean')
+    if substitution_control and (policy is None or _observe_pitch is None):
+        raise ValueError('substitution control needs an interactive pitch/bench policy')
     if prompts and policy is None:
         raise ValueError('the player prompts need a policy to answer them')
     if reference_seed is not None:
@@ -254,7 +257,8 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     # [designed: owner, 2026-10-31; T151] Every match plays on the sealed port; there is no Unicorn fallback.
     match = Match(sealed(image),fixture,managed=state.managed_country,captain=state.captain or None,
                   seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions,
-                  engine="port",set_piece=bool(prompts),**({'live_players':True} if live_players else {}))
+                  engine="port",set_piece=bool(prompts),**({'live_players':True} if live_players else {}),
+                  **({'substitution_control':True} if substitution_control else {}))
     if _observe_pitch is not None:
         match.opts['ticks'] = True
     frame_sequence = 0
@@ -284,9 +288,18 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
                 report['requested'] = [list(pair) for pair in ev.data['pending']]
         if ev.kind == 'decision':
             # [designed: T65] Unknown contexts cannot be silently defaulted.
-            if ev.data.get('context') not in ('half_time','substitution','pause','extra_time','shootout_order',
-                                              'set_piece'):
+            contexts = ('half_time','substitution','pause','extra_time','shootout_order','set_piece')
+            if substitution_control: contexts += ('substitution_opportunity',)
+            if ev.data.get('context') not in contexts:
                 raise RuntimeError('unsupported original decision under default play-on policy')
+            if ev.data['context'] == 'substitution_opportunity':
+                value = policy.decide(copy.deepcopy(ev))
+                if (not isinstance(value, dict) or set(value) != {'opportunity'}
+                        or value['opportunity'] not in ('accept', 'dismiss', 'timeout')):
+                    raise ValueError('a substitution opportunity needs accept/dismiss/timeout only')
+                match.answer(opportunity=value['opportunity'])
+                previous_decision = None
+                continue
             if prompts and ev.data['context'] in PROMPT_CONTEXTS:
                 # [designed: T167] The watching player's answer, passed on as it is; whether it is legal is the kit's.
                 value = policy.decide(copy.deepcopy(ev))
@@ -316,9 +329,12 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
                 value = policy.decide(copy.deepcopy(ev))
                 changes = {}
                 if isinstance(value, dict):
-                    changes = {k: v for k, v in value.items() if k != 'substitutions' and v}
+                    # [designed: #636] False is an explicit cancellation, not an empty edit.
+                    changes = {k: v for k, v in value.items() if k != 'substitutions' and (v or k == 'request_substitution')}
                     value = value.get('substitutions') or []
                 pairs = [[int(off), int(on)] for off, on in value]
+                if substitution_control and pairs and ev.data['context'] not in ('half_time', 'substitution'):
+                    raise ValueError('player pairs need a legal substitution stop')
                 if pairs or changes:
                     match.answer(substitutions=pairs, **changes)
                 else:

@@ -32,6 +32,10 @@ player watched is the match the engine published. It drives nothing: `MatchContr
 - **Full time** publishes through the bridge, then the match day shows S20 and S15. Closing the window during a match
   cancels it through the bridge (`Window.closeEvent` calls `closing`): nothing is published.
 
+[designed: owner #636] Standalone requests have their own authoritative pending badge. Timed opportunity
+notices are distinct from legal substitution menus; UI Esc accepts, and deadline expiry sends no key.
+No player pair is chosen or queued by a request or notice. Only a returned legal stop enables S19.
+
 The bridge is the match day's, one for the window's life (D3, #527): the controller starts its match on it and never
 closes it [designed: T167, replacing T166's bridge per match].
 """
@@ -58,7 +62,7 @@ NO_SOUND = "F9: goal2 has no sound, so the key does nothing."
 REQUESTED = "Bench requested: the bench opens when the original stops for it."
 # The stops' words. [confirmed: E031 C40-C41, C44-C46b; goal2/desktop/match_view.py `Display.board`]
 STOPS = {"half_time": "HALF TIME", "substitution": "SUBSTITUTION OPPORTUNITY", "pause": "PAUSE",
-         "extra_time": "EXTRA TIME", "shootout_order": "PENALTY SHOOT-OUT"}
+         "substitution_opportunity": "SUBSTITUTION OPPORTUNITY", "extra_time": "EXTRA TIME", "shootout_order": "PENALTY SHOOT-OUT"}
 # Every decision the match day answers is held for its screens [designed: T167; T180]: S20/S15, S16, S18 and S19.
 STOPS_SHOWN = ("half_time", "extra_time", "set_piece", "shootout_order", "substitution", "pause")
 BENCH = ("half_time", "pause", "substitution")   # [confirmed: watched_match.BENCH_CONTEXTS]
@@ -105,10 +109,13 @@ class MatchController:
     every sample before it has been shown (`stop`, answered by `answer_stop`), and selects the next sample when it is
     due. It never blocks: every call is the bridge's bounded poll."""
 
-    def __init__(self, model, pending, bridge, *, quick=False, live_players=False):
+    def __init__(self, model, pending, bridge, *, quick=False, live_players=False, substitution_control=False):
         if type(live_players) is not bool:
             raise ValueError("live_players must be boolean")
         self.live_players = live_players
+        if type(substitution_control) is not bool: raise ValueError("substitution_control must be boolean")
+        self.substitution_control = substitution_control
+        self.substitution_requested = False
         self.model = model
         self.pending = pending
         self.display = Display("s17")
@@ -156,6 +163,8 @@ class MatchController:
         options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True)
         if self.live_players:
             options["live_players"] = True
+        if self.substitution_control:
+            options["substitution_control"] = True
         if self.pending.kind == 1:
             self.token = self.given.start(engine_fixture(self.pending), **options)
         else:
@@ -230,6 +239,8 @@ class MatchController:
             else:
                 self.released = len(self.events)
                 self.stop = waiting
+                if "request_substitution" in waiting.data:
+                    self.substitution_requested = waiting.data["request_substitution"]
                 # [designed: owner #612] Arrival consumes the outstanding request.
                 if context in BENCH or context == "extra_time":
                     self._bench_requested = False
@@ -303,11 +314,16 @@ class MatchController:
             raise ValueError("the match ended without its publication")
         self.released = len(self.events)
         self.finished = True
+        self.substitution_requested = False
         self.bridge = None
         return False
 
     def _answer(self, context, value, requested=()):
-        if context in ("set_piece", "shootout_order"):
+        if context == "substitution_opportunity":
+            if not isinstance(value, dict) or set(value) != {"opportunity"}:
+                raise ValueError("an opportunity needs its own accept/dismiss/timeout answer")
+            self.bridge.answer(self.token, [], value)
+        elif context in ("set_piece", "shootout_order"):
             self.bridge.choose(self.token, value)
         elif context in BENCH or context == "extra_time":
             # [designed: T180] the bench's answer: the pairs, with its other changes when there are any
@@ -346,6 +362,13 @@ class MatchController:
         if len(changes.get("substitutions") or []) != 1:
             raise ValueError("select one substitution pair")
         return self._edit_stopped(changes)
+
+    def request_substitution(self, desired):
+        """[designed: #636] Desired request state, never a queued player pair."""
+        if type(desired) is not bool: raise ValueError("request state must be boolean")
+        if self.stop is None or self.stop.data.get("context") != "pause":
+            raise ValueError("request needs the ordinary paused bench")
+        return self._edit_stopped({"request_substitution": desired})
 
     def edit_tactics(self, elements):
         """Apply team flags through the original menu and keep its decision stopped."""
@@ -420,6 +443,7 @@ class MatchController:
         """End the match through the bridge, publishing nothing; the bridge stays the match day's."""
         bridge, self.bridge = self.bridge, None
         self.finished = True
+        self.substitution_requested = False
         self._bench_requested = False
         if self.note == REQUESTED:
             self.note = ""
@@ -480,6 +504,10 @@ class PitchScreen(Screen):
         self.set_enter("Bench", self.request_bench)
         from goal2.ui.s18_stop import StopBox
         self.stop_box = StopBox(self)   # S18, over the pitch [designed: T180]
+        self.request_badge = QLabel("SUBSTITUTION REQUESTED", self.pitch)
+        self.request_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.request_badge.setStyleSheet("color:#000000;background:#aaaaaa;font-size:24px;font-weight:700;padding:6px;")
+        self.request_badge.hide()
         self.timer = QTimer(self)
         self.timer.setInterval(TICK_MS)
         self.timer.timeout.connect(self.tick)
@@ -647,10 +675,25 @@ class PitchScreen(Screen):
                        lambda: self.answer_stop_box(Qt.Key.Key_Return))
         self.refresh()
 
+    def show_opportunity(self, decision):
+        """[designed: owner #636] UI Esc accepts with the original Enter key."""
+        self._enter_before = self.enter_action
+        def respond(key):
+            self.set_enter(*self._enter_before)
+            if self.controller.stop is not decision or not self.controller.running:
+                return
+            # A deadline is no key. UI Esc is the owner's accepting-key alias;
+            # literal original Esc remains the upstream 'dismiss' operation.
+            self.resume({"opportunity": "timeout" if key is None else "accept"})
+        self.stop_box.show_opportunity(decision.data, respond)
+        self.set_enter("Open the bench", lambda: self.answer_stop_box(Qt.Key.Key_Return))
+        self.refresh()
+
     def answer_stop_box(self, key):
         if self.stop_box.answers and key not in self.stop_box.answers:
             return False
-        self.set_enter(*self._enter_before)
+        if not self.stop_box.timed:
+            self.set_enter(*self._enter_before)
         return self.stop_box.answer(key)
 
     def handle_key(self, key):
@@ -698,6 +741,11 @@ class PitchScreen(Screen):
         _set(self.status, f"Speed {controller.display.speed_markers()} · {controller.display.speed_name().lower()}"
                           f" · marks: {MARKS[self.pitch.marks].lower()}")
         _set(self.note, controller.note)
+        requested = bool(getattr(controller, "substitution_requested", False)) and not controller.finished
+        self.request_badge.setVisible(requested and not self.stop_box.open)
+        if requested:
+            self.request_badge.setGeometry(12, 12, max(1,self.pitch.width()-24), 48)
+            self.request_badge.raise_()
         if self.pitch.enlarged:
             self.pitch.commentary = self.lines
 
@@ -760,7 +808,7 @@ class PitchScreen(Screen):
         # [designed: T181] Mouse key-bar callbacks do not pass through handle_key. They must hold the same live
         # controls during replay and the goal questions; a click cannot clear a goal or bypass its pacing.
         if (getattr(self.controller, 'commentary_paused', False) or self.replay is not None
-                or self.stop_box.kind in ('replay', 'save-goal')):
+                or self.stop_box.kind in ('replay', 'save-goal') or self.stop_box.timed):
             return
         self.controller.quick_result()
         if self.controller.quick:
@@ -772,6 +820,8 @@ class PitchScreen(Screen):
         self.refresh()
 
     def request_bench(self):
+        if self.stop_box.open and self.stop_box.timed:
+            return self.answer_stop_box(Qt.Key.Key_Escape)
         if (getattr(self.controller, 'commentary_paused', False) or self.replay is not None
                 or self.stop_box.kind in ('replay', 'save-goal')):
             return
@@ -786,6 +836,8 @@ class PitchScreen(Screen):
         """Full time: the match day shows the board (S20) and the menu (S15). A failure or a cancel: back to the desk
         with what happened in its status line."""
         self.ended = True
+        self.stop_box.cancel()
+        self.request_badge.hide()
         self.timer.stop()
         controller = self.controller
         if controller.outcome is not None and self.day is not None:
@@ -805,6 +857,8 @@ class PitchScreen(Screen):
     def closing(self):
         """The window closes during the match: cancel it through the bridge; nothing is published."""
         self.timer.stop()
+        self.stop_box.cancel()
+        self.request_badge.hide()
         self.ended = True
         self.controller.cancel()
 

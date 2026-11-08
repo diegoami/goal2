@@ -6,6 +6,12 @@ and "The match"; T167, #541] [confirmed: T156-R1 steps 36-45, 118-119, 191-198, 
     desk → S14 round → S15 menu → S16 captain → S17 pitch → S20 half time → S15 (play: second half) → S17
          → S20 full time → S15 exit → S14 the rest of the round → desk
 
+[designed: owner #636] The running match opts into both current player records and substitution control.
+A standalone pause request/cancel remains stopped and preserves unrelated player drafts. The timed
+on-pitch opportunity takes UI Esc as an accepting-key alias; only the guest's following legal decision
+opens S19 over a usable S15 menu. A pair applies immediately; Play is a separate operation. The pending
+badge follows the authoritative latch, so timeout never fabricates cancellation.
+
 The claim it keeps: the match day the player goes through is the original's order of screens, and every answer given
 on them is the answer the engine receives, sent once, through the bridge, in the order the engine asked:
 
@@ -224,7 +230,7 @@ class MatchDay:
             except ValueError as exc:
                 return self._back_to_desk(f"The match cannot start: {exc}")
         controller = MatchController(model, self.fixture, self.bridge(self.fixture.kind != 1),
-                                     quick=self.watch is False, live_players=True)
+                                     quick=self.watch is False, live_players=True, substitution_control=True)
         try:
             controller.start()
         except (OSError, ValueError) as exc:
@@ -251,6 +257,8 @@ class MatchDay:
     def stop(self, pitch, decision):
         from goal2.ui import s18_stop
         context = decision.data.get("context")
+        if context == "substitution_opportunity":
+            return pitch.show_opportunity(decision)
         if context in ("half_time", "extra_time", "substitution", "pause"):
             from goal2.ui.s19_bench import BenchAnswer
             self.bench = self.live_bench(pitch, decision)
@@ -259,6 +267,11 @@ class MatchDay:
             return self.show_board(pitch, "half" if context == "half_time" else "extra")
         names = pitch.controller.display.countries
         where = s18_stop.score_line(names, decision.score, decision.minute)
+        if context == "substitution" and "request_substitution" in decision.data:
+            # [designed: owner #636] The notice has already been accepted by
+            # the guest. S15 remains under S19 so Esc leaves a usable Play menu.
+            self._stop_menu()
+            return self.open_bench()
         if context == "substitution":
             # [confirmed: T156-R1 steps 67-68] the notice, then any key: the match menu
             return pitch.show_stop(s18_stop.NOTICE_SUBSTITUTION, s18_stop.SUBSTITUTION_OPPORTUNITY,
@@ -342,7 +355,7 @@ class MatchDay:
         from goal2.ui.s19_bench import BenchScreen
         if self.bench is None:
             return None
-        screen = BenchScreen(self.window, self.model, self.bench, names=self._names(), back=back, apply=self.edit_bench)
+        screen = BenchScreen(self.window, self.model, self.bench, names=self._names(), back=back, apply=self.edit_bench, request=self.request_substitution)
         screen.feedback_report = getattr(self, "_bench_feedback", None)
         return self.window.push(screen)
 
@@ -354,6 +367,7 @@ class MatchDay:
 
     def edit_tactics(self, screen, element, value):
         self._editing_screen = screen
+        self._editing_operation = "tactics"
         try:
             self.controller.edit_tactics({element: value})
         except Exception as exc:
@@ -379,6 +393,7 @@ class MatchDay:
     def edit_bench(self, screen):
         """[designed: T188b] A completed pair is one operation, without continuing Play."""
         self._editing_screen = screen
+        self._editing_operation = "swap"
         try:
             self.controller.edit_bench(screen.answer.value())
         except Exception as exc:
@@ -387,13 +402,27 @@ class MatchDay:
             screen.message = f"Substitution not submitted: {exc}"
             screen.refresh()
 
+    def request_substitution(self, screen, desired):
+        """[designed: #636] Submit only the desired latch; preserve unrelated drafts."""
+        self._editing_screen = screen
+        self._editing_operation = "request"
+        try:
+            self.controller.request_substitution(desired)
+        except Exception as exc:
+            self._editing_screen = None
+            screen.pending = False
+            screen._request_desired = None
+            screen.message = f"Substitution request not submitted: {exc}"
+            screen.refresh()
+
     def edited(self, pitch, decision, report):
         from goal2.ui.s19_bench import BenchAnswer
         previous = self.bench
         answer = self.live_bench(pitch, decision)
         if previous is not None:
             answer.injured.update(w for w in previous.injured if w not in answer.live_records)
-            if getattr(getattr(self, "_editing_screen", None), "preserve_player_edits", False):
+            if (getattr(self, "_editing_operation", None) == "request"
+                    or getattr(getattr(self, "_editing_screen", None), "preserve_player_edits", False)):
                 answer.positions = dict(previous.positions)
                 answer.marking = dict(previous.marking)
                 answer.own = dict(previous.own)
@@ -404,6 +433,7 @@ class MatchDay:
         self._bench_feedback = report
         screen = getattr(self, "_editing_screen", None)
         self._editing_screen = None
+        self._editing_operation = None
         if screen is not None:
             screen.applied(answer, report)
 
