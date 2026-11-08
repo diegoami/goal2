@@ -83,4 +83,87 @@ class OwnedConsumer(unittest.TestCase):
         self.assertIs(consumer.call_args.args[0],match);self.assertIs(factory.call_args.kwargs['ticks'],True)
         self.assertEqual((result.memory,result.seeds,result.engine_year),(b'complete',(12,34),3))
 
+def actual_owned_route(raw):
+    """[designed: T170c1] Two accepted held Matches; no host XI/fixture edits."""
+    import builtins,hashlib,json,sys
+    assert sys.implementation.name=='pypy' and sys.version_info[:2]==(3,11)
+    previous=builtins.__import__
+    def denied(name,*args,**kwargs):
+        if name=='unicorn' or name.startswith('unicorn.'):raise ImportError('Unicorn denied')
+        return previous(name,*args,**kwargs)
+    builtins.__import__=denied
+    try:__import__('unicorn')
+    except ImportError:pass
+    else:raise AssertionError('Unicorn guard inactive')
+    from goal2.engine.original_match import route,Image,Match
+    from goal2.engine.original_match.machine import MEM_SIZE,REGS,Uc
+    from goal2.engine.original_match.match import RUN_MATCH_RETURN
+    from goal2.game import engine_tables
+    assert Uc is None
+    image=Image.from_bytes(raw);tables=engine_tables.load();state=image.state(tables)
+    digest=lambda value:hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),default=lambda x:x.__dict__).encode()).hexdigest()
+    sha=lambda value:hashlib.sha256(value).hexdigest()
+    keys=[route.Keys(route.DEFAULT_KEYS),route.Keys(route.DEFAULT_KEYS)]
+    steps=[route.play_round(state,tables,key) for key in keys]
+    assert all(v.status=='match' and type(v.match) is Match and not v.match.opts['tail'] for v in steps)
+    assert steps[0].match.m.read(0,MEM_SIZE)==steps[1].match.m.read(0,MEM_SIZE)
+    outputs=[];returned=[];input_matches=[]
+    for index,step in enumerate(steps):
+        match=step.match;parent=step.continuation
+        parent_before=parent.m.read(0,MEM_SIZE);parent_regs={n:parent.m.reg(n) for n in REGS}
+        record_before=copy.deepcopy(parent.record)
+        input_matches.append(sha(match.m.read(0,MEM_SIZE)))
+        if index==0:
+            events=W.consume_match(match)
+        else:
+            observed=[]
+            for ev in match.events():
+                observed.append(copy.deepcopy(ev))
+                if ev.kind=='decision':match.answer()
+            events=tuple(observed)
+        assert match.over and parent.pending is match and not parent.finished
+        assert parent.m.read(0,MEM_SIZE)==parent_before and parent.record==record_before
+        assert {n:parent.m.reg(n) for n in REGS}==parent_regs
+        regs={n:match.m.reg(n) for n in REGS};returned.append(regs)
+        assert match.m.pc()==match.m.lin(RUN_MATCH_RETURN) and match.m.reg('sp')==0x3EC8
+        outputs.append((match.result(),events,match.m.read(0,MEM_SIZE),tuple(match.m.rd(off) for off in route.SEEDS.values())))
+    assert outputs[0]==outputs[1] and returned[0]==returned[1]
+    resumed=[];transferred=[]
+    for step in steps:
+        seen=[];parent=step.continuation
+        parent.m.at('000E:6F1D',lambda replay,parent=parent,seen=seen:None if replay else seen.append({n:parent.m.reg(n) for n in REGS}))
+        resumed.append(route.resume_round(parent,step.match));transferred.append(seen)
+    assert transferred==[[returned[0]],[returned[1]]]
+    assert resumed[0].state==resumed[1].state and resumed[0].played_fixtures==resumed[1].played_fixtures
+    assert resumed[0].news_pages==resumed[1].news_pages and resumed[0].record==resumed[1].record
+    assert keys[0].waiting==keys[1].waiting
+    return {'input_sha256':sha(raw),'input_match_memory_sha256':input_matches,'fixture_edits':[],
+            'host_xi_edits':[],'answers':'original default empty answer at every actual decision',
+            'result_equal':True,'result_sha256':digest(outputs[0][0]),'events_equal':True,
+            'event_count':len(outputs[0][1]),'events_sha256':digest(outputs[0][1]),
+            'full_memory_equal':True,'full_memory_sha256':sha(outputs[0][2]),
+            'both_pre_tail_seeds_equal':True,'pre_tail_seeds':outputs[0][3],
+            'all16_return_equal':True,'returned_registers':returned[0],
+            'actual6F1D_all16_transfer_equal':True,'parent_unchanged_before_explicit_resume':True,
+            'post_resume_state_equal':True,'post_resume_state_sha256':digest(resumed[0].state),
+            'post_resume_status':resumed[0].status,'unicorn_denied':True}
+
+
+from goal2.tests import requires,pypy_engine
+from goal2.engine.original_match.assets import REFERENCE
+@requires.need(slow=True,files=(REFERENCE['asset'],))
+class ActualOwnedRoute(unittest.TestCase):
+    def test_actual_owned_route_match_equals_direct_accepted_events_and_return(self):
+        import json
+        from pathlib import Path
+        from goal2.engine.original_match.assets import reference_image
+        raw=reference_image(Path(__file__).resolve().parents[2]/'.cache')
+        receipt=pypy_engine.call(__name__+':actual_owned_route',raw)
+        self.assertTrue(receipt['result_equal'] and receipt['events_equal'] and receipt['full_memory_equal'])
+        self.assertTrue(receipt['both_pre_tail_seeds_equal'] and receipt['all16_return_equal'])
+        self.assertTrue(receipt['actual6F1D_all16_transfer_equal'])
+        self.assertTrue(receipt['parent_unchanged_before_explicit_resume'])
+        print('T170C1_OWNED '+json.dumps(receipt,sort_keys=True),flush=True)
+
+
 if __name__=='__main__':unittest.main()
