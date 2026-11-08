@@ -12,7 +12,7 @@ from PySide6.QtWidgets import QApplication
 from goal2.desktop import data_setup,fixed_page
 from goal2.ui.window import Window
 from goal2.ui import saves,replays
-from goal2.tests.test_ui_bench_t180 import Walk,key as send,play_on,pump,PLAY_NEXT
+from goal2.tests.test_ui_bench_t180 import Walk,key as send,play_on,pump,PLAY_NEXT,enter_on
 from goal2.tests.substitution_selectors_636 import compatible_pair,swap_immediately,request_from_bench,accept_opportunity_with_escape
 from goal2.tests.match_day_policy import play_through_bridge
 from goal2.desktop.model import DesktopModel
@@ -101,7 +101,15 @@ class AuditWalk(Walk):
   if screen.mode=='refused':raise AssertionError('positive audit input refused: '+screen.message)
   if answer.takes_substitutions and answer.left and (answer.context=='half_time' or not self.out.get('first_swap')):
    pair=compatible_pair(answer,taken_off=self.out.get('taken_off',()),injured_first=True)
-   before=list(answer.eleven);swap_immediately(w,screen,pair)
+   before=list(answer.eleven)
+   if answer.context=='substitution':swap_immediately(w,screen,pair)
+   else:
+    count=len(w.match_day.controller.choices)
+    enter_on(w,screen,pair[0]);enter_on(w,screen,pair[1])
+    pump(lambda:not screen.pending,120,'657 half-time immediate swap acknowledgement')
+    assert w.match_day.controller.stop.data['context']=='half_time'
+    assert len(w.match_day.controller.choices)==count+1
+    assert pair[1] in screen.answer.eleven and pair[0] in screen.answer.bench
    assert screen.answer.eleven!=before and not screen.pending
    self.out.setdefault('taken_off',[]).append(pair[0]);self.out['first_swap']=True
    note('immediate legal swap '+answer.context);snap('swap-'+str(len(self.out['taken_off'])))

@@ -20,3 +20,10 @@ early. Tentative659 is disproved as a persistent defect: unchanged main settles
 cleanly after20ms and its painted question fits, with focused three-size controls
 passing before any patch. No production patch retained. v2 stays FAIL; v3 waits
 50ms normal Qt layout before the same unchanged bounds assertion.
+
+v3 passes the natural goal replay's exact samples and S21goal save, then a legal
+immediate opportunity swap. At half-time the audit incorrectly calls636's
+substitution-only helper; its context precondition rejects BEFORE half-time
+input. This is not a product refusal. Corrected audit uses existing generic
+two-Enter UI action with immediate-ack/context/choice-count checks for half-time.
+No production/helper/assertion/deadline/fixture changed; v3 retained FAIL.
