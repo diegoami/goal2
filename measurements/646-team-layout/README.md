@@ -28,3 +28,12 @@ pixel/font controls, nativeWindows and actualworker equality still required.
 No defaultfast/hosted/fullmilestone/whole611acceptance claim yet. Earlier passing
 logs bind the stated source step; later injury-marker/legend addition needs its
 own updated focused run. No owner game, save or installed preview touched.
+
+Source d8f4fcc9: full focused21PASS30.876s on Linux; nativeWindows Qt/CPython3.13
+21PASS45.893s with0skips. native-d8f4-v1.json binds nine changed source/test files;
+fixtures are byte-verified physical copies in private WindowsTemp, Qt offscreen,
+no owner input. A subsequent test extension asserts the combined live panel's
+header/bar/XI fonts (24px scaled), all20rows and no clipping at all three sizes;
+4own controlsPASS2.867s. The only subsequent UI edit updates the current-value
+docstring and names the unchanged row-width tuple. Final native source check is
+still required; earlier native receipt remains exact-d8f4 only.

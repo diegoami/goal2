@@ -1,7 +1,7 @@
 """S10 Team tactics: the team's eight lines.
 
 [designed: owner, 2026-11-03, #526; docs/design/ui-2026-11, S10 and its mockup s10-team-tactics.html; T165] Each
-line with its value now and the other option, in the original's order: defence system, protection, offside, then
+line with its current value, in the original's order: defence system, protection, offside, then
 the player defaults positioning, possession, passing, tackling and marking [confirmed: F010, the team tactics
 screen 1771:1981 lists element DS:6BBF[row]: 5, 6, 7, 1, 2, 3, 4, 8; the words from goal2.game.country_card,
 F008]. ↑↓ choose a line; before a match Enter uses `DesktopModel.set_team_tactic`.
@@ -29,7 +29,7 @@ LINES = (("defence system", 5), ("protection", 6), ("offside", 7), ("positioning
          ("passing", 3), ("tackling", 4), ("marking", 8))
 CHARACTERISTICS = ("hardness", "fitness", "energy", "morale")
 DEFAULTS = "The last five lines are the defaults every player follows unless his own tactics say otherwise (P)."
-WIDTHS = (200, 176, 0)
+WIDTHS = (200, 0, 0)
 
 
 def words(state, element, *, memory=None):
@@ -98,7 +98,7 @@ class TeamTacticsScreen(Screen):
             if i == 3:
                 table_layout.addSpacing(8)
                 table_layout.addWidget(self.defaults_heading)
-            line = Row(i, (200, 0, 0), margins=(8, 4, 8, 4), underline=True)
+            line = Row(i, WIDTHS, margins=(8, 4, 8, 4), underline=True)
             line.chosen.connect(self.click)
             for cell in line.cells: cell.setWordWrap(True)
             # Original1981 shows label/current value. Retain the alternative in

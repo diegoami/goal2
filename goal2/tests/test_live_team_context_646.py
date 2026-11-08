@@ -73,6 +73,17 @@ class LiveTeamContext(App):
                 self.assertEqual(screen.characteristics.panel,expected['characteristics'])
                 self.assertEqual({key:value.text() for key,value in screen.averages.values.items()},
                     {row['field']:row['text'] for row in expected['characteristics']['numbers']})
+                if flags==(1,255) and sides[0]==country:
+                    from goal2.desktop import fixed_page
+                    for width,height in ((1440,900),(1800,1125),(2110,1213)):
+                        window.resize(width,height);self.app.processEvents();window.grab()
+                        self.assertEqual(fixed_page.problems(window),[],(width,height))
+                        self.assertEqual(len(screen.strip.shown_texts()),20)
+                        for widget in (*screen.team_header.team.values(),*screen.team_header.ranks.values(),
+                                       *screen.team_header.shape.values(),*screen.skills.labels.values(),
+                                       *screen.performance.labels.values(),*screen.averages.values.values()):
+                            self.assertGreaterEqual(widget.font().pixelSize(),round(24*window.frame.scale))
+                        self.assertFalse(screen.performance.isHidden())
                 self.assertEqual(data,packet);self.assertEqual(model.state,before)
                 self.assertTrue(screen.injury_hint.isVisible())
                 injured=screen.answer.injured
