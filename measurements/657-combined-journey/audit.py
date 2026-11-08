@@ -48,6 +48,10 @@ class AuditWalk(Walk):
    self._last_note=time.monotonic();print('JOURNEY '+self.label(w.current()),flush=True)
   if type(w.current()).__name__=='RecordingNameScreen':
    box=w.current();kind=box.record_kind;name_box('Audit goal' if kind=='goal' else 'Audit summary');note('saved '+kind+' through S21 keys');return
+  if type(w.current()).__name__=='MenuScreen' and w.current().phase=='pause' and self.out.get('pause_done'):
+   # This audit synchronously visits T/bench/ack inside on_menu, then returns
+   # to the same label. The base walker intentionally reacts to label changes.
+   play_on(w,w.current());return
   return super().each()
  def playing(self,pitch):
   super().playing(pitch)
