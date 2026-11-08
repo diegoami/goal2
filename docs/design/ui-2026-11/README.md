@@ -530,7 +530,8 @@ we can keep the rest"]
   are 32 px. Keyboard actions wrap as complete items, with full-size text. Squad rows and card columns
   reserve room for the larger lettering. This supersedes the earlier 16 px/whole-cell-multiple choice. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
   (T101).
-- [designed: owner, 2026-11-08; #666] A **drawn proposal** for the whole look — the cell, one
+- [designed: owner, 2026-11-08; #666] Why the built window does not yet read as GOAL2, with
+  measurements taken from it, is [fidelity-review.md](fidelity-review.md). A **drawn proposal** for the whole look — the cell, one
   text size, the rule-and-label frame, dash leaders, bars of cells, line-art titles and the
   4:3 presentation — is in [proposal/](proposal/README.md), six screens beside their captures
   and the window as built. It changes how the screens are drawn, never what they show.
