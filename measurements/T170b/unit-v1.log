@@ -1,0 +1,9 @@
+test_backend_rejection_keeps_session_and_queue_unchanged (goal2.tests.test_season_session_t170b.Session.test_backend_rejection_keeps_session_and_queue_unchanged) ... ok
+test_malformed_state_and_modified_tables_refuse (goal2.tests.test_season_session_t170b.Session.test_malformed_state_and_modified_tables_refuse) ... ok
+test_order_keys_deltas_detachment_and_call_reset (goal2.tests.test_season_session_t170b.Session.test_order_keys_deltas_detachment_and_call_reset) ... ok
+test_terminal_repeat_and_observation_never_construct_backend (goal2.tests.test_season_session_t170b.Session.test_terminal_repeat_and_observation_never_construct_backend) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.080s
+
+OK
