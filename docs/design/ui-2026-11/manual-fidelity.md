@@ -163,3 +163,17 @@ including native Windows and fractional scales. A CSS constant or a screenshot o
 not establish integrated fidelity. The separate timed substitution request/opportunity path (#636), live
 paused team-characteristic projection and measured tactics-refresh delay remain required checks; this
 colour comparison establishes none of those behaviors or whole-game completion.
+
+## Whole TEAM editor layout comparison
+
+[confirmed: original1771:1981→157D; T156 step33; application8796ef50]
+The [source-bound layout comparison](../../../measurements/611-team-tactics-layout/README.md)
+records a fresh rebuilt pre-match S10 at three sizes against the retained original editor.
+The original keeps the complete TEAM header, skill/performance bars and XI caps/age beside
+its three team tactics/five player defaults and roster. Those sections remain absent from
+this S10 baseline even though their accepted renderers/readers exist in S04/S07. The
+original and rebuilt careers differ; no same-state pixel/value equality or new live/native
+acceptance is claimed. [Issue646](https://github.com/diegoami/goal2/issues/646) scopes the
+required complete layout correction after the independent request/current-trait fixes.
+It preserves readable24px text, accepted roster colours, current-record semantics and the
+pending/confirmation/return lifecycle. Trait-only acceptance does not close this layout gap.
