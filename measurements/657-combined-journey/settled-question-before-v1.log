@@ -1,0 +1,9 @@
+test_replay_save_and_commentary_hints_resize_at_each_native_fractional_size (goal2.tests.test_dynamic_hint_659.DynamicHint.test_replay_save_and_commentary_hints_resize_at_each_native_fractional_size) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.369s
+
+OK

@@ -192,3 +192,22 @@ packet replays are separately labelled as replays. The active named human identi
 is checked independently of other countries (#653); the existing unnamed preview
 default remains, without an imported-human-name migration claim. These bounded
 receipts do not certify every other manual row or the complete milestone.
+
+## Connected fresh player journey
+
+[derived: accepted656applicatione51ee2ab; audit657create86ba14dc/reloadb002371b]
+The [connected audit](../../../measurements/657-combined-journey/README.md) starts
+through actual S02/S03/S04 keys, manages squad/pool/positions/personal/team
+tactics and help, watches one natural friendly through commentary/pause/current
+panels/immediate opportunity and half-time swaps/goal replay/recordings/result,
+then saves/quits and reloads the COMPLETE career in another process. The
+independent same-choice bridge agrees on complete result INCLUDING diagnostics,
+events, full memory, seeds and career. Saved goal samples/data and summary data
+are exact; replay/reopening leave the career unchanged. Stable-LEAD pause
+selection is a declared presentation fixture, not an engine/career byte edit.
+
+The receipts identify harness calibration failures separately from product
+behavior. Tentative659bounds disappear with ordinary Qt layout settling on the
+unmodified app, so no production fix is shipped. This connected LinuxOFFSCREEN
+friendly journey does not establish nativeWindows full journey, all22screens,
+extra time/shootout, originalDOSUI parity, best20 or native season continuation.

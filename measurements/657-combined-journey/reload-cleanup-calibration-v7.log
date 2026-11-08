@@ -1,0 +1,7 @@
+This plugin does not support propagateSizeHints()
+PASS reload
+Traceback (most recent call last):
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 195, in <module>
+    if w.match_day is not None:w.match_day.close()
+       ^^^^^^^^^^^
+AttributeError: 'Window' object has no attribute 'match_day'

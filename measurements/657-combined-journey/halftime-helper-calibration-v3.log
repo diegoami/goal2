@@ -1,0 +1,48 @@
+This plugin does not support propagateSizeHints()
+fresh Austria career through S02/S03/S04 UI
+JOURNEY RoundScreen:before
+JOURNEY MenuScreen:before
+JOURNEY PitchScreen
+commentary Space holds and resumes
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+saved goal through S21 keys
+JOURNEY BenchScreen:now
+immediate legal swap substitution
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+Traceback (most recent call last):
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 150, in <module>
+    before=copy.deepcopy(model.state);walk=AuditWalk();w.current().highlight(PLAY_NEXT);key(Qt.Key.Key_Return);walk.run()
+                                                                                                               ~~~~~~~~^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 55, in each
+    return super().each()
+           ~~~~~~~~~~~~^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 186, in react
+    self.on_bench(screen)
+    ~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 104, in on_bench
+    before=list(answer.eleven);swap_immediately(w,screen,pair)
+                               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/substitution_selectors_636.py", line 173, in swap_immediately
+    assert controller.stop.data['context'] == 'substitution'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

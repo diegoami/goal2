@@ -1,0 +1,36 @@
+This plugin does not support propagateSizeHints()
+fresh Austria career through S02/S03/S04 UI
+JOURNEY RoundScreen:before
+JOURNEY MenuScreen:before
+JOURNEY PitchScreen
+commentary Space holds and resumes
+JOURNEY PitchScreen
+JOURNEY MenuScreen:pause
+Traceback (most recent call last):
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 150, in <module>
+    before=copy.deepcopy(model.state);walk=AuditWalk();w.current().highlight(PLAY_NEXT);key(Qt.Key.Key_Return);walk.run()
+                                                                                                               ~~~~~~~~^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 55, in each
+    return super().each()
+           ~~~~~~~~~~~~^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/tests/test_ui_bench_t180.py", line 176, in react
+    self.on_box(screen, box)
+    ~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 88, in on_box
+    snap('replay-question');key(Qt.Key.Key_Y);return
+    ~~~~^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/measurements/657-combined-journey/audit.py", line 31, in snap
+    app.processEvents();assert not fixed_page.problems(w),(name,fixed_page.problems(w))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('replay-question', ['enterHint 192x54 squeezed below 238x54', 'enterText 110x28 squeezed below 156x24', 'kbd 26x28 squeezed below 76x28'])
