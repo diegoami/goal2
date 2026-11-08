@@ -1,0 +1,31 @@
+{
+  "groups": [
+    {
+      "name": "goal2.tests.test_watched_bench_t102.EngineCases",
+      "count": 7,
+      "class_active": true
+    },
+    {
+      "name": "goal2.tests.test_watched_competitive_runtime.CompetitiveTests",
+      "count": 9,
+      "class_active": true
+    }
+  ],
+  "fast_helpers": [
+    {
+      "name": "BenchView",
+      "count": 6,
+      "active": true
+    },
+    {
+      "name": "ConsumerAcceptanceTests",
+      "count": 3,
+      "active": true
+    }
+  ]
+}
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/measurements/610-live-team-tactics/fast-scope-followup-v1/scope.py", line 16, in <module>
+    assert all(r['class_active']==(args.expect=='active') for r in rows),rows
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [{'name': 'goal2.tests.test_watched_bench_t102.EngineCases', 'count': 7, 'class_active': True}, {'name': 'goal2.tests.test_watched_competitive_runtime.CompetitiveTests', 'count': 9, 'class_active': True}]

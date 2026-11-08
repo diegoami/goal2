@@ -173,6 +173,7 @@ class Job:
 
 
 @requires.need(modules=('unicorn',), files=(*requires.WATCHED['files'], 'GOAL.DAT', 'e010-r0008-halftime.sav'))
+@requires.need(slow=True)
 class EngineCases(unittest.TestCase):
     """The engine cases, played once for the class: half1, half6 and pause through the worker and
     directly, none through the worker and run_watched_match."""

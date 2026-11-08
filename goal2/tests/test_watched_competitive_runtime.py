@@ -28,6 +28,7 @@ def consumer_modules():
             if name == "goal2.engine.original_match" or name.startswith("goal2.engine.original_match.")}
 
 
+@requires.need(slow=True)
 class CompetitiveTests(accepted.CompetitiveTests):
     # [designed: #275] The vendored test stays as accepted; only when it runs is ours: about 63 s
     # alone on 32 CPUs, so it runs with the slow tests (GOAL2_SLOW=1).

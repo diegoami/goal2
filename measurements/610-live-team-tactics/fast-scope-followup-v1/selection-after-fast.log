@@ -1,0 +1,26 @@
+{
+  "groups": [
+    {
+      "name": "goal2.tests.test_watched_bench_t102.EngineCases",
+      "count": 7,
+      "class_active": false
+    },
+    {
+      "name": "goal2.tests.test_watched_competitive_runtime.CompetitiveTests",
+      "count": 9,
+      "class_active": false
+    }
+  ],
+  "fast_helpers": [
+    {
+      "name": "BenchView",
+      "count": 6,
+      "active": true
+    },
+    {
+      "name": "ConsumerAcceptanceTests",
+      "count": 3,
+      "active": true
+    }
+  ]
+}
