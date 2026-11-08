@@ -1,0 +1,9 @@
+T170A_SOURCE 37c3c272c39ae3e97f2fed4eaaa032f8c58573d3
+test_a_watched_friendly_with_bench_answers_and_a_pause (goal2.tests.test_port_route_t151.PortRoute.test_a_watched_friendly_with_bench_answers_and_a_pause) ... port (engine child) 71.5 s wall, original 15.0 s cpu, score [2, 1]
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 71.597s
+
+OK
+T170A_RESULT {"head": "37c3c272c39ae3e97f2fed4eaaa032f8c58573d3", "command": ["/home/diego/projects/m3-trackb/goal2/.cache/venv/bin/python3", "-m", "unittest", "goal2.tests.test_port_route_t151.PortRoute.test_a_watched_friendly_with_bench_answers_and_a_pause", "-v"], "elapsed_s": 71.73889194399817, "exit_code": 0, "exercised_source_unchanged": true, "scope": "Unchanged full T151 friendly with bench/pause: PyPy candidate, CPython original; complete result/events/memory/seeds assertions retained. Unittest log also required; skips do not constitute success."}

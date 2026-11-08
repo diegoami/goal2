@@ -1,0 +1,18 @@
+test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids) ... FAIL
+
+======================================================================
+FAIL: test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_season_vendor_t170a.py", line 65, in test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids
+    self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),expected,name)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '58472fd3656346ce14512e8b17b10c0f1677f303270fe7c5352a2a8ae1d363bd' != 'e949159c9cc77f4d195bc9b150c67dfd913ba447417375122bc58db1bca97f92'
+- 58472fd3656346ce14512e8b17b10c0f1677f303270fe7c5352a2a8ae1d363bd
++ e949159c9cc77f4d195bc9b150c67dfd913ba447417375122bc58db1bca97f92
+ : goal2/engine/original_match/match.py
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (failures=1)

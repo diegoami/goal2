@@ -1,0 +1,37 @@
+test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied) ... FAIL
+test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids) ... FAIL
+
+======================================================================
+FAIL: test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_season_vendor_t170a.py", line 76, in test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+ImportError: cannot import name 'route' from 'goal2.engine.original_match' (/home/diego/projects/m3-trackb/goal2/goal2/engine/original_match/__init__.py)
+
+
+======================================================================
+FAIL: test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_season_vendor_t170a.py", line 62, in test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids
+    self.assertEqual(actual,set(EXPECTED['files']))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the second set but not the first:
+'goal2/engine/original_match/news.py'
+'goal2/engine/original_match/port/stages.py'
+'goal2/engine/original_match/port/silent.py'
+'goal2/engine/original_match/port/route.py'
+'goal2/engine/original_match/port/assistant.py'
+'goal2/engine/original_match/route.py'
+'goal2/engine/original_match/port/ageing.py'
+'goal2/engine/original_match/port/news.py'
+'goal2/engine/original_match/route_team.py'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.407s
+
+FAILED (failures=2)

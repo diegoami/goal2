@@ -1,0 +1,18 @@
+test_retained_full_cases (goal2.tests.test_pitch_observation.ReportTests.test_retained_full_cases) ... FAIL
+
+======================================================================
+FAIL: test_retained_full_cases (goal2.tests.test_pitch_observation.ReportTests.test_retained_full_cases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_pitch_observation.py", line 116, in test_retained_full_cases
+    self.assertEqual(report['source']['pin'], kit_manifest['source'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'b519d999673c9458211279fd4da8a8325b9f56fe' != '0f9f87f405282ce2a0461679ac71395d35e76e3a'
+- b519d999673c9458211279fd4da8a8325b9f56fe
++ 0f9f87f405282ce2a0461679ac71395d35e76e3a
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (failures=1)

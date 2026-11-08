@@ -156,3 +156,38 @@ def explicit_seed_draw(mem, variant):
     R = Regs(mem)
     rng_core(mem, R, off, seg, n)
     R.store()
+
+
+@PORTS.port('23E4:0831',ret='retf 6')
+def expand_small_set(mem,variant):
+    """T123: raw23E4_01 0831..0858; hidden destination stays below SP."""
+    from .runtime import sub_flags
+    R=Regs(mem);R.cld();sp=mem._entries[-1][0];R.bx=sp;R.dx=mem.reg('ds')
+    R.di=mem.u16(mem.ss_lin(sp+0xA));R.es=mem.u16(mem.ss_lin(sp+0xC))
+    R.si=mem.u16(mem.ss_lin(sp+6));source_segment=mem.u16(mem.ss_lin(sp+8))
+    mem.set_reg('ds',source_segment);R.bx=mem.u16(mem.ss_lin(sp+4))
+    leading=(R.bx>>8)&255;length=R.bx&255;R.cx=leading;R.al=0;R.arith(test_flags(0))
+    while R.cx:
+        mem.w8(R.es*16+R.di,R.al,'23E4:0848');R.di+=1;R.cx-=1
+    R.cx=length
+    while R.cx:
+        value=mem.u8(source_segment*16+R.si);mem.w8(R.es*16+R.di,value,'23E4:084C')
+        R.si+=1;R.di+=1;R.cx-=1
+    tail=(32-length-leading)&255;R.cx=tail;R.arith(sub_flags((32-length)&255,leading,8))
+    while R.cx:
+        mem.w8(R.es*16+R.di,R.al,'23E4:0854');R.di+=1;R.cx-=1
+    mem.set_reg('ds',R.dx);R.store()
+
+
+@PORTS.port('23E4:0900',ret='retf 4')
+def union_sets(mem,variant):
+    """T123: raw23E4_01 0900..0919; sequential words preserve overlap."""
+    from .runtime import sub_flags
+    R=Regs(mem);R.cld();sp=mem._entries[-1][0];R.bx=sp;R.dx=mem.reg('ds')
+    R.di=mem.u16(mem.ss_lin(sp+8));R.es=mem.u16(mem.ss_lin(sp+0xA))
+    R.si=mem.u16(mem.ss_lin(sp+4));source_segment=mem.u16(mem.ss_lin(sp+6));mem.set_reg('ds',source_segment);R.cx=16
+    while R.cx:
+        R.ax=mem.u16(source_segment*16+R.si);R.si+=2
+        R.ax|=mem.u16(R.es*16+R.di);R.arith(sub_flags(R.ax,0,16))
+        mem.w16(R.es*16+R.di,R.ax,'23E4:0914');R.di+=2;R.cx-=1
+    mem.set_reg('ds',R.dx);R.store()

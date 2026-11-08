@@ -1,0 +1,7 @@
+test_retained_full_cases (goal2.tests.test_pitch_observation.ReportTests.test_retained_full_cases) ... ok
+test_exact_source_and_scenario_selector (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_exact_source_and_scenario_selector) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.156s
+
+OK

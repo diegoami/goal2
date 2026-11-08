@@ -95,3 +95,15 @@ Exact6d0a defaultFAST:219/219modulesPASS,237declared slow exclusions. Full suite
 remain the integrated milestone's. Metadata-only receipt/capture publication
 must retain every exercised source/test/fixture byte; final no-tests/head and
 hosted Linux/Windows/native/security guards remain required.
+
+Hosted-readiness encountered accepted main40cd9da0 (T170a/651) before CI
+started. Normal merge preserves its reviewed0f9route dependency closure while
+retaining accepted698match70f/screen696c6a facades. No activation/default/ID change.
+All inherited evidence, including T170a expected-reviewed-runtime-v1.json, is
+byte-identical and immutable. The current inventory control initially FAILS the
+old exact match hash as expected; it now loads separately versioned
+expected-reviewed-runtime-698-v2.json. Its50exact file hashes, tables, reviewed
+base, per-file facade pins, registry/ABI/import/Unicorn-denial and legacy-ID
+assertions remain. No assertion or test removed. Focused integration10PASS4.884s;
+65provenance/50strictkitfilesPASS. The combined runtime needs fresh actual/full
+fast/platform acceptance; earlier6d0a receipts remain scoped to their source.
