@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "\\wsl.localhost\Ubuntu\tmp\641-native-v1.py", line 12, in <module>
+    runpy.run_path(sys.argv[0],run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "\\wsl.localhost\Ubuntu\home\diego\projects\m3-trackb\goal2-ci-policy\measurements\641-live-characteristics\widget-replay-v1.py", line 12, in <module>
+    from PySide6.QtWidgets import QApplication,QWidget
+ModuleNotFoundError: No module named 'PySide6'
