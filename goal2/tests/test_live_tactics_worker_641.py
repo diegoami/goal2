@@ -82,7 +82,12 @@ class ActualLiveTraits(unittest.TestCase):
             # held boundary; it adds no navigation/answer/timer or engine operation.
             observer=TeamTacticsScreen(day.window,day.model,answer=answer,apply=lambda *args:None)
             try:check(observer,decision.data,'unshown-read-only-observer')
-            finally:observer.deleteLater()
+            finally:
+                # Manual test pumps do not run app.exec's deferred-delete turn.
+                # Destroy only this unshown observer, never another active view.
+                from PySide6.QtCore import QCoreApplication,QEvent
+                observer.deleteLater()
+                QCoreApplication.sendPostedEvents(observer,QEvent.Type.DeferredDelete)
             test.assertTrue(day.model.state==before,'observer changed the career')
             test.assertEqual(decision.data,packet)
             test.assertEqual(digest(day.controller.events),events)
