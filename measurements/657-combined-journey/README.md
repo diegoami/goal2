@@ -42,3 +42,11 @@ comparison is invalid, not a game regression. Reference preparation now uses
 the exact controller.given._snapshot as the accepted636test does; every full
 result/event/memory/seed/career assertion remains unchanged. Both complete UI
 and reference arms are checkpointed privately before comparison. v5 stays FAIL.
+
+v6 uses the correct kickoff snapshot: all1200events, complete physical memory
+and bothseeds equal; only ports.calls[0791:2BE5] differs by1 (462048/462049),
+and therefore last_match/career differs. Full equality stays FAIL. No field is
+filtered/normalized. The immediate unsynchronized UI Esc is replaced by the
+accepted636/T190 fixed-LEAD pause selector: a declared presentation-ack hold
+plus real Esc at the recorded boundary, never a career/engine byte edit. The
+independent arm uses that exact boundary; all result/career assertions remain.

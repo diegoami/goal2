@@ -13,7 +13,7 @@ from goal2.desktop import data_setup,fixed_page
 from goal2.ui.window import Window
 from goal2.ui import saves,replays
 from goal2.tests.test_ui_bench_t180 import Walk,key as send,play_on,pump,PLAY_NEXT,enter_on
-from goal2.tests.substitution_selectors_636 import compatible_pair,swap_immediately,request_from_bench,accept_opportunity_with_escape
+from goal2.tests.substitution_selectors_636 import compatible_pair,swap_immediately,request_from_bench,accept_opportunity_with_escape,pause_at_lead_boundary
 from goal2.tests.match_day_policy import play_through_bridge
 from goal2.desktop.model import DesktopModel
 HEAD=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
@@ -69,10 +69,10 @@ class AuditWalk(Walk):
    snap('commentary-paused');key(Qt.Key.Key_Space);assert not c.commentary_paused
    self.out['commentary']=True;note('commentary Space holds and resumes');return
   if not self.out.get('pause_sent') and frame['minute']>=5:
-   self.out['pause_sent']=True;key(Qt.Key.Key_Escape)
+   boundary=pause_at_lead_boundary(w,pitch)
+   if boundary is not None:self.out['pause_sent']=True;self.out['pause_after']=boundary
  def on_menu(self,screen):
   if screen.phase=='pause' and not self.out.get('pause_done'):
-   self.out['pause_after']=w.match_day.controller.bridge._frame_sequence-1
    key(Qt.Key.Key_T);editor=current('TeamTacticsScreen');assert editor.team_header.team['manager'].text()=='Audit A'
    old=editor.answer.team_tactics;key(Qt.Key.Key_Return)
    pump(lambda:not editor.pending,120,'657 team tactic acknowledgement')
