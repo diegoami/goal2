@@ -212,11 +212,16 @@ class DriverCancellation(unittest.TestCase):
 class DedicatedOpportunityWire(unittest.TestCase):
     def test_server_preserves_enum_only_policy_instead_of_injecting_an_empty_pair_field(self):
         import queue
-        from goal2.game.engine_server import Commands
-        commands=Commands(queue.Queue())
-        commands._apply(({'op':'answer','decision':3,'substitutions':[],
-                          'changes':{'opportunity':'accept'}},b''))
-        self.assertEqual(commands.answers,[(3,{'opportunity':'accept'})])
+        from goal2.game.engine_server import Commands, BenchPolicy
+        from goal2.engine.original_match.match import Event
+        for response in ('accept','dismiss','timeout'):
+            commands=Commands(queue.Queue())
+            commands._apply(({'op':'answer','decision':3,'substitutions':[],
+                              'changes':{'opportunity':response}},b''))
+            self.assertEqual(commands.answers,[(3,{'opportunity':response})])
+            policy=BenchPolicy(commands,lambda *args:None);policy.asked=3
+            self.assertEqual(policy.decide(Event('decision',5,(0,0),{'context':'substitution_opportunity'})),
+                             {'opportunity':response})
 
     def test_opportunity_with_real_pairs_is_rejected_before_policy_queue(self):
         import queue
