@@ -1,0 +1,110 @@
+This plugin does not support propagateSizeHints()
+fresh Austria career through S02/S03/S04 UI
+JOURNEY RoundScreen:before
+JOURNEY MenuScreen:before
+JOURNEY PitchScreen
+commentary Space holds and resumes
+JOURNEY PitchScreen
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+Traceback (most recent call last):
+  File "/tmp/goal2-combined-journey-a/goal2/ui/s17_pitch.py", line 638, in tick
+    if controller.tick(time.monotonic()):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/ui/s17_pitch.py", line 185, in tick
+    return self._tick(now)
+           ~~~~~~~~~~^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/ui/s17_pitch.py", line 217, in _tick
+    for frame in bridge.poll_frames(token):
+                 ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-combined-journey-a/goal2/game/watched_jobs.py", line 607, in poll_frames
+    self._check_owner()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-combined-journey-a/goal2/game/watched_jobs.py", line 498, in _check_owner
+    if (self.owner.state is not self._original or self.owner.state != self._snapshot
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 27, in __eq__
+  File "<string>", line 18, in __eq__
+KeyboardInterrupt
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause
+JOURNEY MenuScreen:pause

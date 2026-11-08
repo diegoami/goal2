@@ -6,8 +6,10 @@ positions/personal/team tactics/help, then reaches a real watched match,
 commentary pause and a confirmed request/tactic edit. It is NOT acceptance: the
 audit returned synchronously to MenuScreen:pause inside one callback and its
 base walker's label-change rule missed the intermediate screens. Only this
-verified isolated invalid audit PID1337809 was sentSIGINT, allowing finally
-cleanup; no gate/suite/runner/owner process was stopped. Raw private screenshots/
+verified isolated invalid audit PID1337809 was sentSIGINT. Qt swallowed it;
+subsequently only that exact process and its verified engine child were retired
+withSIGTERM after checking command/cwd/start identity. No gate/suite/runner/owner
+process was stopped. Earlier SIGINT cleanup wording was unverified and is corrected. Raw private screenshots/
 state and exact retirement receipt stay in /tmp/goal2-audit657-run-v1. The log is
 retained. The corrected driver handles its own same-label return explicitly,
 without application/test/oracle/fixture/deadline changes. New target required
