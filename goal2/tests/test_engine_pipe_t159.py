@@ -238,6 +238,7 @@ def window_death_conversation(state, raw):
     return out
 
 
+@requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
 @requires.need(**requires.WATCHED)
 class SameMatch(unittest.TestCase):
     @classmethod

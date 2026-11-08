@@ -74,6 +74,7 @@ def play(jobs, token, limit=WAIT):
     return seen
 
 
+@requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
 @requires.need(modules=('PySide6', 'pygame'),
                files=(requires.WATCHED['files'][0], 'GOAL.DAT', 'e010-r0008-halftime.sav'))
 class Session(unittest.TestCase):

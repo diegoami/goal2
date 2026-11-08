@@ -332,6 +332,7 @@ class NewCareer(App):
         self.assertEqual(self.files(), [])
 
 
+@requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
 @CAREER
 class StandaloneFriendly(App):
     def test_from_s02_to_full_time_on_s17_and_back_with_nothing_saved(self):
