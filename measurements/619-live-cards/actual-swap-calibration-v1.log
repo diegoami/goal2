@@ -1,0 +1,43 @@
+test_injury_and_captain_swaps_are_visible_before_play_and_publish_once (goal2.tests.test_immediate_bench_t188.ActualImmediateBench.test_injury_and_captain_swaps_are_visible_before_play_and_publish_once) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_injury_and_captain_swaps_are_visible_before_play_and_publish_once (goal2.tests.test_immediate_bench_t188.ActualImmediateBench.test_injury_and_captain_swaps_are_visible_before_play_and_publish_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_immediate_bench_t188.py", line 261, in test_injury_and_captain_swaps_are_visible_before_play_and_publish_once
+    walk.run()
+    ~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_immediate_bench_t188.py", line 209, in react
+    return super().react(screen)
+           ~~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 184, in react
+    self.on_bench(screen)
+    ~~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_immediate_bench_t188.py", line 245, in on_bench
+    test.assertEqual(fixed_page.problems(self.window),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['h1 112x32 squeezed below 176x32'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'h1 112x32 squeezed below 176x32'
+
+- ['h1 112x32 squeezed below 176x32']
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 27.329s
+
+FAILED (failures=1)

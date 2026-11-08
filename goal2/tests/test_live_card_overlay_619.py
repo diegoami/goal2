@@ -162,4 +162,150 @@ class LiveOverlayPackets(unittest.TestCase):
                 screen.deleteLater()
             before.deleteLater();application.processEvents()
 
+
+
+@requires.need(modules=('PySide6', 'pygame', 'unicorn'), slow=True, **requires.HALFTIME)
+class ActualLiveCards(unittest.TestCase):
+    def test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once(self):
+        import tempfile
+        from pathlib import Path
+        from PySide6.QtCore import Qt
+        from goal2.desktop import data_setup, fixed_page
+        from goal2.ui.window import Window
+        from goal2.ui.s17_pitch import engine_fixture
+        from goal2.tests.test_ui_bench_t180 import Walk, app, career, key, enter_on, go_to, play_on, pump, PLAY_NEXT
+        from goal2.tests.test_pypy_worker_t152 import pypy
+        from goal2.tests.match_day_policy import play_through_bridge
+        from goal2.tests.live_card_assertions_619 import verify_bench, verify_choose, report
+        pypy()
+        application = app()
+        test = self
+        receipts = []
+
+        class CardsWalk(Walk):
+            def react(self, screen):
+                if type(screen).__name__ == 'ChooseScreen' and screen.mode != 'captain':
+                    verify_choose(test, screen, self.model, self.out['controller'].stop.data, receipts)
+                return super().react(screen)
+
+            def on_menu(self, screen):
+                if screen.phase == 'stop' and any(w in self.window.match_day.bench.injured
+                        for w in self.window.match_day.bench.eleven):
+                    key(self.window, Qt.Key.Key_Space)
+                else:
+                    play_on(self.window, screen)
+
+            def on_board(self, screen):
+                if screen.phase == 'half' and not self.out.get('personal_done'):
+                    key(self.window, Qt.Key.Key_Escape)
+                else:
+                    super().on_board(screen)
+
+            def on_bench(self, screen):
+                controller = self.out['controller']
+                verify_bench(test, screen, controller, receipts, 'natural-stop')
+                answer = screen.answer
+                if answer.context == 'half_time' and not self.out.get('personal_done'):
+                    stay = next(w for w in answer.eleven if answer.position(w) >= 2 and w not in answer.injured)
+                    off = next(w for w in answer.eleven if w != stay and answer.position(w) >= 2 and w not in answer.injured)
+                    on = next(w for w in answer.bench if answer.position(w) >= 2 and w not in answer.injured)
+                    go_to(self.window, screen, stay)
+                    key(self.window, Qt.Key.Key_T)
+                    personal = self.window.current()
+                    test.assertEqual(type(personal).__name__, 'PlayerTacticsScreen')
+                    key(self.window, Qt.Key.Key_Return)
+                    wanted = personal.bench.record(stay)[15]
+                    for _ in range(4):
+                        key(self.window, Qt.Key.Key_Down)
+                    key(self.window, Qt.Key.Key_Return)  # explicit nobody
+                    key(self.window, Qt.Key.Key_Return)  # first opposing outfield player
+                    wanted_mark = personal.bench.marking[stay]
+                    key(self.window, Qt.Key.Key_Escape)
+                    pending = dict(screen.answer.own)
+                    key(self.window, Qt.Key.Key_Escape)  # team edit while personal draft is pending
+                    menu = self.window.current()
+                    key(self.window, Qt.Key.Key_T)
+                    team = self.window.current()
+                    key(self.window, Qt.Key.Key_Return)
+                    pump(lambda: not team.pending or controller.error, 60, 'team edit did not finish')
+                    test.assertIsNone(controller.error)
+                    test.assertEqual(team.answer.own, pending)
+                    test.assertEqual(team.answer.marking[stay], wanted_mark)
+                    key(self.window, Qt.Key.Key_Escape)
+                    test.assertIs(self.window.current(), menu)
+                    key(self.window, Qt.Key.Key_Space)
+                    screen = self.window.current()
+                    test.assertEqual(screen.answer.own, pending)
+                    enter_on(self.window, screen, off)
+                    enter_on(self.window, screen, on)
+                    test.assertEqual(screen.answer.live_records[stay][15], wanted)
+                    test.assertEqual(screen.answer.own, {})
+                    test.assertEqual(screen.answer.marking, {})
+                    test.assertEqual(screen.answer.live_marking[stay], wanted_mark)
+                    test.assertEqual(screen.answer.value(), [])
+                    verify_bench(test, screen, controller, receipts, 'confirmed-own-and-swap')
+                    choices = len(controller.choices)
+                    key(self.window, Qt.Key.Key_Escape)
+                    key(self.window, Qt.Key.Key_Space)
+                    screen = self.window.current()
+                    test.assertEqual(screen.answer.value(), [])
+                    test.assertEqual(screen.answer.live_records[stay][15], wanted)
+                    test.assertEqual(len(controller.choices), choices)
+                    go_to(self.window, screen, stay)
+                    key(self.window, Qt.Key.Key_T)
+                    personal = self.window.current()
+                    test.assertEqual(personal.card(), screen.answer.card(stay))
+                    key(self.window, Qt.Key.Key_Escape)
+                    key(self.window, Qt.Key.Key_Escape)
+                    play_on(self.window, self.window.current())
+                    test.assertEqual(len(controller.choices), choices + 1)
+                    test.assertEqual(controller.choices[-1][1], [])
+                    self.out['personal_done'] = True
+                    return
+                injured = [w for w in answer.eleven if w in answer.injured]
+                if answer.takes_substitutions and answer.left and injured:
+                    off = injured[0]
+                    used = set(self.out.get('taken_off', []))
+                    on = next(w for w in answer.bench if w not in used and
+                              (answer.position(w) == 0) == (answer.position(off) == 0))
+                    enter_on(self.window, screen, off)
+                    enter_on(self.window, screen, on)
+                    self.out.setdefault('taken_off', []).append(off)
+                    verify_bench(test, screen, controller, receipts, 'injury-swap')
+                key(self.window, Qt.Key.Key_Escape)
+
+        with tempfile.TemporaryDirectory() as folder:
+            owner = career()
+            before = owner.state.match_count
+            fixture = owner.state.campaign.next_fixture
+            window = Window(data_setup.paths(Path(folder)))
+            window.resize(1440, 900)
+            window.show()
+            walk = CardsWalk('619-current-cards', window, owner)
+            try:
+                desk = window.open_career(owner)
+                desk.highlight(PLAY_NEXT)
+                key(window, Qt.Key.Key_Return)
+                walk.run()
+                controller = walk.out['controller']
+                self.assertTrue(walk.out.get('personal_done'))
+                self.assertIsNone(controller.error)
+                self.assertEqual(owner.state.match_count, before + 1)
+                own_commands = [value for _, value in controller.choices if isinstance(value, dict) and value.get('own_tactics')]
+                self.assertEqual(len(own_commands), 1)
+                other = career()
+                other.state = copy.deepcopy(controller.given._snapshot)
+                expected = play_through_bridge(other, controller.choices, fixture=engine_fixture(fixture), wait=1500)
+                self.assertEqual(controller.outcome, expected, 'all result/events/RNG/seeds/year/fullmemory')
+                self.assertEqual(owner.state, other.state, 'exact complete once-published career')
+                self.assertEqual(fixed_page.problems(window), [])
+                from goal2.tests.live_card_assertions_619 import verify_original_decisions
+                verify_original_decisions(self, controller, engine_fixture(fixture), owner.template_bytes, receipts)
+                report(self, receipts, 'personal-team-swap-reopen-play')
+            finally:
+                window.close()
+                window.deleteLater()
+                application.processEvents()
+
+
 if __name__=='__main__':unittest.main(verbosity=2)
