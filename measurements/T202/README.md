@@ -23,3 +23,5 @@ The private save, imported files and raw career state are not committed. capture
 rebuilt view using an explicit isolated audit target.
 
 Combined focused35testsPASS118.135s. Final three controls add explicit fixture-hash checks and actual desk→tactics→Esc navigation andPASS5.845s; unchanged broader controls retain their preceding result. Native prototype3/3PASS9.392s; exact committed-source native/default-fast/hosted acceptance follows before merge.
+
+Exact committed source dec3865e6e46ae37c8673bed65f35403c4a39239: defaultfast 204/204modulesPASS with185declaredslowexclusions; nativeWindows3/3PASS19.022s. Final source/fixture/local receipts and rawlogs are retained. Actual hostedplatform acceptance remains required; this evidence-only update changes no exercised inputs.
