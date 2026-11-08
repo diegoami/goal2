@@ -31,11 +31,11 @@ DEFAULTS = "The last five lines are the defaults every player follows unless his
 WIDTHS = (200, 176, 0)
 
 
-def words(state, element):
+def words(state, element, *, memory=None):
     """(the word with the element clear, the word with it set)."""
     from goal2.game.country_card import tactic_word
     from goal2.game.player_card import _Memory
-    memory = _Memory(state)
+    memory = _Memory(state) if memory is None else memory
     return tactic_word(memory, element, 0), tactic_word(memory, element, 1)
 
 
@@ -128,11 +128,19 @@ class TeamTacticsScreen(Screen):
             memory = TeamMemory(state)
             self.characteristics.set_panel(team_characteristics(
                 memory.country_record(state.managed_country), memory.player_record, memory.read_ds))
-        view = model.view()
-        rows, eleven = squad_rows(model)
-        if self.answer is not None:
-            rows = [self.answer.card(w) for w in self.answer.words()]
+        if self.answer is None:
+            rows, eleven = squad_rows(model)
+        else:
+            from goal2.game import roles
+            from goal2.game.player_card import _Memory
+            memory = _Memory(state)
+            table = roles.tables(state)
+            rows = []
+            for word in self.answer.words():
+                code, line = roles.role(state, self.answer.position(word), cache=table)
+                rows.append({"id": word, "role": code, "line": line})
             eleven = len(self.answer.eleven)
+        country_name = model.goaldat.country_names[state.managed_country]
         lineup = rows[:eleven]
         formation = "-".join(str(sum(1 for r in lineup if r["line"] == line))
                              for line in ("defence", "midfield", "attack"))
@@ -141,10 +149,10 @@ class TeamTacticsScreen(Screen):
         if fixture is not None:
             opponent = fixture.side_b if fixture.side_a == state.managed_country else fixture.side_a
             facts += [(" · next ", None), (model.goaldat.country_names[opponent], theme.TEXT_BRIGHT)]
-        self.country.setText(view["country_name"])
+        self.country.setText(country_name)
         self.facts.setText(rich(facts))
         for i, ((name, element), line) in enumerate(zip(LINES, self.rows)):
-            clear, set_ = words(state, element)
+            clear, set_ = words(state, element, memory=memory)
             byte = state.country_tactics if self.answer is None else self.answer.team_tactics
             now = byte >> (element - 1) & 1
             line.set((name, set_ if now else clear, clear if now else set_),
@@ -160,7 +168,7 @@ class TeamTacticsScreen(Screen):
         elif self.message:
             parts = [(self.message, theme.VALUE)]
         self.note.setText(f'<p style="line-height:{LINE_HEIGHT}%">{rich(parts)}</p>')
-        self.strip.show_rows(view["country_name"],
+        self.strip.show_rows(country_name,
                              [(r["role"], r["line"], full_name(model, r["id"])) for r in rows], -1, eleven == 11)
         self._refresh_hint()
 
@@ -168,10 +176,15 @@ class TeamTacticsScreen(Screen):
         """The lines as they read: (line, now, other option)."""
         return [tuple(line.texts()) for line in self.rows]
 
+    # [designed: owner #636] Cursor movement changes presentation only.
+    # Mutable roles/formation/flags are decoded afresh on every real refresh.
     def choose(self, index):
         if self.pending: return
+        previous = self.line
         self.line = max(0, min(len(LINES) - 1, index))
-        self.refresh()
+        self.rows[previous].set_on(False)
+        self.rows[self.line].set_on(True)
+        self._refresh_hint()
 
     def click(self, index):
         if index == self.line:

@@ -21,6 +21,59 @@ import time
 from pathlib import Path
 
 
+def answer_live_stop(window, pitch, key):
+    """[designed: #636] Smoke the real offered UI, with no queued player pair."""
+    from PySide6.QtCore import Qt
+    from goal2.game.eligibility import info
+    current = window.current()
+    if current is pitch:
+        box = pitch.stop_box
+        if not box.open:
+            return False
+        key(Qt.Key.Key_Escape if box.timed else Qt.Key.Key_N if box.answers else Qt.Key.Key_Return)
+        return True
+    if type(current).__name__ != "BenchScreen":
+        return False
+    if current.pending:
+        return True
+    answer = current.answer
+    available = lambda w: info(answer.record(w))["available"]
+    if any(answer.position(w) == 0 and available(w) for w in answer.eleven):
+        key(Qt.Key.Key_Escape)
+        return True
+    # A keeper's forced menu cannot be ignored. Use actual UI selections/R,
+    # retaining the incoming played role and the original availability checks.
+    keepers = [w for w in answer.bench if answer.position(w) == 0 and available(w)]
+    if answer.takes_substitutions and answer.left and keepers:
+        outgoing = next((w for w in answer.eleven if answer.position(w) == 0
+                         and not answer.record(w)[16] & 0x20), None)
+        outgoing = outgoing if outgoing is not None else next(w for w in answer.eleven if available(w))
+        target = keepers[0] if answer.first is not None else outgoing
+        action = Qt.Key.Key_Return
+    else:
+        target = next(w for w in answer.eleven if available(w))
+        action = Qt.Key.Key_R
+    words = answer.words()
+    for _ in range(len(words) + 1):
+        if window.current() is not current:
+            raise RuntimeError("smoke bench changed during cursor movement")
+        if current.current() == target:
+            break
+        key(Qt.Key.Key_Down if words.index(target) > current.row else Qt.Key.Key_Up)
+    else:
+        raise RuntimeError("smoke bench cursor did not reach its player")
+    if action == Qt.Key.Key_R:
+        for _ in range(14):
+            if answer.position(target) == 0:
+                break
+            key(action)
+        else:
+            raise RuntimeError("smoke could not select an emergency keeper")
+        key(Qt.Key.Key_Escape)
+    else:
+        key(action)
+    return True
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache", type=Path, required=True)
@@ -117,7 +170,9 @@ def main(argv=None) -> int:
     while not isinstance(window.current(), DeskScreen) and time.monotonic() - started < args.limit:
         app.processEvents()
         current = window.current()
-        if isinstance(current, ChooseScreen):
+        if answer_live_stop(window, pitch, key):
+            pass
+        elif isinstance(current, ChooseScreen):
             key(Qt.Key.Key_C, "c")
         elif current is not pitch and not (isinstance(current, RoundScreen) and current.arriving):
             key(Qt.Key.Key_Return)

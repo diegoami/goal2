@@ -1,0 +1,107 @@
+test_composite_flags_travel_together (goal2.tests.test_substitution_control_636.Packets.test_composite_flags_travel_together) ... ERROR
+test_false_flag_keeps_exact_legacy_packet (goal2.tests.test_substitution_control_636.Packets.test_false_flag_keeps_exact_legacy_packet) ... ERROR
+test_opportunity_answer_has_its_own_exact_enum (goal2.tests.test_substitution_control_636.Packets.test_opportunity_answer_has_its_own_exact_enum) ... ERROR
+test_request_and_cancel_keep_explicit_desired_boolean (goal2.tests.test_substitution_control_636.Packets.test_request_and_cancel_keep_explicit_desired_boolean) ... ERROR
+test_opportunity_outcomes_survive_completed_result_validation (goal2.tests.test_substitution_control_636.Publication.test_opportunity_outcomes_survive_completed_result_validation) ... ERROR
+test_standalone_request_and_cancel_survive_completed_result_validation (goal2.tests.test_substitution_control_636.Publication.test_standalone_request_and_cancel_survive_completed_result_validation) ... ERROR
+test_pending_selection_keeps_all_rows_and_sends_no_change (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_pending_selection_keeps_all_rows_and_sends_no_change) ... ok
+test_selection_only_changes_highlight_and_hint (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_selection_only_changes_highlight_and_hint) ... FAIL
+
+======================================================================
+ERROR: test_composite_flags_travel_together (goal2.tests.test_substitution_control_636.Packets.test_composite_flags_travel_together)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_substitution_control_636.py", line 27, in test_composite_flags_travel_together
+    process.match('watched', Fixture(7, 19, 21), frames=True, bench=True,
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  live_players=True, substitution_control=True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: EngineProcess.match() got an unexpected keyword argument 'substitution_control'
+
+======================================================================
+ERROR: test_false_flag_keeps_exact_legacy_packet (goal2.tests.test_substitution_control_636.Packets.test_false_flag_keeps_exact_legacy_packet)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_substitution_control_636.py", line 37, in test_false_flag_keeps_exact_legacy_packet
+    process.match('watched', Fixture(7, 19, 21), substitution_control=False)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: EngineProcess.match() got an unexpected keyword argument 'substitution_control'
+
+======================================================================
+ERROR: test_opportunity_answer_has_its_own_exact_enum (goal2.tests.test_substitution_control_636.Packets.test_opportunity_answer_has_its_own_exact_enum)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_substitution_control_636.py", line 20, in test_opportunity_answer_has_its_own_exact_enum
+    self.assertEqual(_changes({'opportunity': answer}), {'opportunity': answer})
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_jobs.py", line 60, in _changes
+    raise ValueError('invalid bench changes')
+ValueError: invalid bench changes
+
+======================================================================
+ERROR: test_request_and_cancel_keep_explicit_desired_boolean (goal2.tests.test_substitution_control_636.Packets.test_request_and_cancel_keep_explicit_desired_boolean)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_substitution_control_636.py", line 14, in test_request_and_cancel_keep_explicit_desired_boolean
+    self.assertEqual(_changes({'request_substitution': desired, 'edit_only': True}),
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_jobs.py", line 60, in _changes
+    raise ValueError('invalid bench changes')
+ValueError: invalid bench changes
+
+======================================================================
+ERROR: test_opportunity_outcomes_survive_completed_result_validation (goal2.tests.test_substitution_control_636.Publication.test_opportunity_outcomes_survive_completed_result_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_substitution_control_636.py", line 64, in test_opportunity_outcomes_survive_completed_result_validation
+    validate_result(raw)
+    ~~~~~~~~~~~~~~~^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_schema.py", line 68, in validate_result
+    _details(result,competitive=competitive)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_schema.py", line 203, in _details
+    _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'}|edit)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_schema.py", line 117, in _object
+    if not isinstance(value,dict) or set(value)!=set(keys):raise ValueError('invalid watched result record fields')
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid watched result record fields
+
+======================================================================
+ERROR: test_standalone_request_and_cancel_survive_completed_result_validation (goal2.tests.test_substitution_control_636.Publication.test_standalone_request_and_cancel_survive_completed_result_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_substitution_control_636.py", line 56, in test_standalone_request_and_cancel_survive_completed_result_validation
+    validate_result(raw)
+    ~~~~~~~~~~~~~~~^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_schema.py", line 68, in validate_result
+    _details(result,competitive=competitive)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_schema.py", line 202, in _details
+    raise ValueError('invalid stopped-edit decision')
+ValueError: invalid stopped-edit decision
+
+======================================================================
+FAIL: test_selection_only_changes_highlight_and_hint (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_selection_only_changes_highlight_and_hint)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_tactics_refresh_636.py", line 33, in test_selection_only_changes_highlight_and_hint
+    screen_class().choose(screen, 1)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/ui/s10_team_tactics.py", line 174, in choose
+    self.refresh()
+    ~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 1176, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 1180, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 1241, in _execute_mock_call
+    raise effect
+AssertionError: cursor selection redecoded game/card data
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.041s
+
+FAILED (failures=1, errors=6)

@@ -5,7 +5,12 @@
 t156-149-opponent-substitution.png, t156-274-quick-substitution-opportunity.png; E031 g1 step 3874,
 e031-shootout-start.png; M244-G4C-07 step 55, m244-shootout-prompt.png]
 
-The notices, each answered by any key, as the original's "press any key":
+[designed: owner #636] Opted-in substitution opportunities use the original timed poll horizon.
+UI Esc accepts with original Enter, then the actual legal bench opens; an ignored notice sends
+no key. Source headline0x70 and hint0x8D colours are retained; the large headline blink is the
+owner's adaptation. This is separate from the compatibility notices below.
+
+The legacy presentation, each answered by any key:
 
 - **SUBSTITUTION OPPORTUNITY** (`NOTICE_SUBSTITUTION`): the engine's `substitution` decision (your player injured, or
   the stoppage after a requested substitution). The key opens the match menu (S15), as in the original (T156-R1 step
@@ -21,7 +26,7 @@ words for a question; T181 asks those questions once the goal's sample has been 
 """
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout
 
 from goal2.ui import theme
@@ -34,6 +39,7 @@ NOTICE_SHOOTOUT = "shootout"
 TAG = "THE MATCH STOPS"                 # [designed: s18-match-stop.png]
 ANY_KEY = "press any key"               # [confirmed: t156-067, t156-149: "press any key"]
 SUBSTITUTION_OPPORTUNITY = "SUBSTITUTION OPPORTUNITY"   # [confirmed: t156-067]
+NO_GOALKEEPER = "HAS NO GOALKEEPER"  # [confirmed: upstream695 keeper notice template0x0B]
 SHOOTOUT = "PENALTY SHOOT-OUT"          # [confirmed: E031 C44-C46b; s17_pitch.STOPS]
 # [confirmed: T156-R1 steps 175–177] The goal questions; only Y or N answers them.
 ACTION_REPLAY = 'Do you want an action replay?'
@@ -74,11 +80,27 @@ class StopBox(QFrame):
         self.kind = None
         self.handler = None
         self.answers = {}
+        self.timed = False
+        self.opportunity_timer = QTimer(self)
+        self.opportunity_timer.setSingleShot(True)
+        self.opportunity_timer.timeout.connect(self._expire_opportunity)
+        self.blink_timer = QTimer(self)
+        self.blink_timer.setInterval(250)
+        self.blink_timer.timeout.connect(self._blink_opportunity)
+        self._opportunity_lit = True
         self.hide()
 
     def show_stop(self, kind, headline, detail, handler, answers=None):
         """Show a stop: `handler(key)` runs once on the answering key. `answers` {Qt key: words} makes it a
         question answered only by those keys (T181); without it any key answers, as the original's notices."""
+        self.cancel()
+        self.setFixedWidth(WIDTH)
+        self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; border: 2px solid {theme.HEADING}; }}")
+        self.headline.setStyleSheet("")
+        self.detail.setStyleSheet("")
+        self.headline.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        colour(self.key_hint, theme.KEY_HINT)
+        self.tag.show(); self.detail.show()
         self.kind, self.handler, self.answers = kind, handler, dict(answers or {})
         self.headline.setText(headline)
         set_para(self.detail, detail)
@@ -86,6 +108,54 @@ class StopBox(QFrame):
         self.place()
         self.show()
         self.raise_()
+
+    def show_opportunity(self, data, handler):
+        """[confirmed: original7FCF/CC2E; #695]400/1000 polls,10 nominal ms.
+        [designed: owner #636] Large lower-pitch flashing heading; UI Esc accepts.
+        Ordinary source headline0x70 is black on gray; keeper source0x0B is
+        light cyan on black (HAS NO GOALKEEPER). Both hints use blinking magenta0x8D.
+        The headline blink is the owner's presentation adaptation.
+        """
+        # Full packets are validated before the view. This method also supports
+        # the focused widget's minimal timing input without constructing a stop.
+        keeper = data['keeper_unavailable']
+        polls, ms = data['timeout_polls'], data['poll_ms']
+        if type(keeper) is not bool or type(polls) is not int or type(ms) is not int or polls != (1000 if keeper else 400) or ms != 10:
+            raise ValueError('invalid original opportunity timing')
+        self.show_stop(NOTICE_SUBSTITUTION, NO_GOALKEEPER if keeper else SUBSTITUTION_OPPORTUNITY, '', handler)
+        self.timed = True
+        self._opportunity_keeper = keeper
+        self.tag.hide();self.detail.hide()
+        self.setFixedWidth(min(740,max(380,getattr(self.parentWidget(),'pitch',self.parentWidget()).width()-24)))
+        background = '#000000' if keeper else '#aaaaaa'
+        self.setStyleSheet(f'#stopBox {{ background:{background}; border:0; }}')
+        self.headline.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.key_hint.setText('Esc / Enter: open the bench')
+        self._opportunity_lit = True
+        self._opportunity_colours()
+        self.place();self.raise_()
+        self.blink_timer.start()
+        self.opportunity_timer.start(polls * ms)
+
+    def _opportunity_colours(self):
+        foreground = ('#55ffff' if self._opportunity_keeper else '#000000') if self._opportunity_lit else ('#000000' if self._opportunity_keeper else '#aaaaaa')
+        self.headline.setStyleSheet(f'color:{foreground};font-weight:700;')
+        self.key_hint.setStyleSheet(f"color:{'#ff55ff' if self._opportunity_lit else '#000000'};background:#000000;")
+
+    def _blink_opportunity(self):
+        if self.timed and self.open:
+            self._opportunity_lit = not self._opportunity_lit
+            self._opportunity_colours()
+
+    def _expire_opportunity(self):
+        if self.timed and self.open:
+            self.answer(None)
+
+    def cancel(self):
+        self.opportunity_timer.stop();self.blink_timer.stop()
+        self.timed = False
+        self.kind, self.handler, self.answers = None, None, {}
+        self.hide()
 
     @property
     def open(self):
@@ -100,6 +170,7 @@ class StopBox(QFrame):
         if self.kind is None or (self.answers and key not in self.answers):
             return False
         handler = self.handler
+        self.opportunity_timer.stop(); self.blink_timer.stop(); self.timed = False
         self.kind, self.handler, self.answers = None, None, {}
         self.hide()
         if handler is not None:
@@ -114,7 +185,8 @@ class StopBox(QFrame):
         if pitch is None:
             return
         centre = pitch.mapTo(parent, pitch.rect().center())
-        self.move(max(0, centre.x() - self.width() // 2), max(0, centre.y() - self.height() // 2))
+        top = pitch.mapTo(parent, pitch.rect().bottomLeft()).y() - self.height() - 22 if self.timed else centre.y() - self.height() // 2
+        self.move(max(0, centre.x() - self.width() // 2), max(0, top))
 
 
 def score_line(names, score, minute):

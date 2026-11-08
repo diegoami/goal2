@@ -8,9 +8,10 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = "b519d999673c9458211279fd4da8a8325b9f56fe"
-# [designed: T187/T188a] T150's sealed base stays pinned; the accepted captain and
-# stopped-edit coordinator is exported from #659/#663. All other files stay on SOURCE.
-SOURCE_OVERRIDES = {"runtime/original_match/match.py": "b0c0fae2d3771e45c11b025deac047bb5d2de581"}
+# [designed: #636] T150 sealed base and all port bodies stay pinned. The two
+# facade files are byte-copies of accepted upstream696 (including inherited
+# optional T123 facade factoring, unused here); no T170/route/season adoption.
+SOURCE_OVERRIDES = {'runtime/original_match/match.py': 'c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4', 'runtime/original_match/screens.py': 'c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4'}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",

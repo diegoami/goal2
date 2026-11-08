@@ -1,0 +1,12 @@
+{
+  "upstream_pr": 696,
+  "source_head": "2541b38dcb6fb59d2ef2ce937662e1a2cbb33aa8",
+  "accepted_merge": "c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4",
+  "ci_run": 42454524220,
+  "sha256": {
+    "runtime/original_match/match.py": "e949159c9cc77f4d195bc9b150c67dfd913ba447417375122bc58db1bca97f92",
+    "runtime/original_match/screens.py": "8ce9b0d6c4c9f75da469c728a9ed03787e413aeb5f98693ba38c914ed36d143e"
+  },
+  "verification": "fresh MERGED/head/retained-parent/12successful real groups/security and actual merged GitHub blobs",
+  "scope": "only two facade files; all port bodies/table data/baseSOURCE remain unchanged; optional inherited T123 factoring unused"
+}

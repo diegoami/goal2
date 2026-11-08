@@ -35,10 +35,10 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | Request | Fields | What it does |
 | --- | --- | --- |
 | `open` | payload: the game, `session_save.encode` | Keeps the game; each match plays a fresh copy of it. Sent once per game, not per match. |
-| `match` | `kind` (`watched` or `competitive`), `fixture`, `options` (`reference_seed`, `delay_byte`, `record_draws`), `frames`, `bench`, `prompts` (optional) | Plays one match. With `prompts` (which needs `bench`) the player prompts are asked too (below). |
+| `match` | `kind` (`watched` or `competitive`), `fixture`, `options` (`reference_seed`, `delay_byte`, `record_draws`), `frames`, `bench`, `prompts`, `live_players`, `substitution_control` (optional strict booleans; False omitted) | Plays one match. With `prompts` (which needs `bench`) the player prompts are asked too (below). |
 | `ack` | `sample` | The window has shown this pitch sample. |
 | `pause` | | The player's Enter in play. |
-| `answer` | `decision`, and `substitutions` ((off, on) pairs) with optional `changes` (`positions`, `marking`, `own_tactics`, T180), or `taker` (a player word or null), or `shootout_order` (player words) | Answers the bench decision or player prompt of that number. |
+| `answer` | `decision`, and `substitutions` ((off, on) pairs) with optional `changes` (`positions`, `marking`, `own_tactics`, `tactics`, `edit_only`, T180; request/opportunity below), or `taker` (a player word or null), or `shootout_order` (player words) | Answers the bench decision or player prompt of that number. |
 | `cancel` | | Ends the running match. |
 | `quit` | | Ends the process. |
 
@@ -75,6 +75,22 @@ null is no key, the original's current pick stands after its wait, F030), the sh
 the menu before extra time (`extra_time`, answered with no substitutions). Each is announced with `decision` as a
 bench decision is, numbered in the same sequence, and passed to `Match.answer` as it is. A match whose takers all
 get no key plays as one without the prompts (the same memory and seeds; T167's test).
+
+[designed: owner #636] `substitution_control=True` requires the interactive bench and pitch samples.
+Every opted-in decision carries the authoritative boolean `request_substitution`; `live_players=True`
+independently requires the complete current player-record snapshot. The match day explicitly uses both.
+An ordinary pause accepts `changes={"request_substitution": true|false, "edit_only": true}` with no
+player pair. False is an explicit cancellation, never an empty change. The fresh stopped decision
+acknowledges the actual latch, including a refusal, without spending allowance or continuing Play.
+
+A distinct `substitution_opportunity` decision carries `keeper_unavailable`, `timeout_polls` (400 ordinary,
+1000 unavailable keeper), and `poll_ms` (10 nominal); it takes only
+`changes={"opportunity": "accept"|"dismiss"|"timeout"}`. It is not a legal pair-selection decision.
+Acceptance drives the original accepting key, then waits for the guest's real `substitution` decision
+before enabling a pair. Literal original Esc is `dismiss`; no key is `timeout`, including the original's
+forced keeper-menu distinction. The UI's Esc accepts as the owner's explicit key mapping. A consumed
+notice hides its timer; it does not invent cancellation when the actual request remains set.
+Legacy clients omitting these capabilities retain their existing packet/event/answer profiles.
 
 Commands arrive on a reader thread of the engine and wait in a queue. The match reads them at each paced sample and
 each decision wait and, so that a match without the bench can be cancelled too, also before each event and sample. A

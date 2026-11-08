@@ -1,0 +1,11 @@
+test_forced_keeper_uses_two_real_ui_marks_and_waits_for_ack (goal2.tests.test_portable_stops_636.Consumer.test_forced_keeper_uses_two_real_ui_marks_and_waits_for_ack) ... ok
+test_healthy_keeper_bench_returns_to_play_menu (goal2.tests.test_portable_stops_636.Consumer.test_healthy_keeper_bench_returns_to_play_menu) ... ok
+test_pending_bench_cannot_accumulate_another_key (goal2.tests.test_portable_stops_636.Consumer.test_pending_bench_cannot_accumulate_another_key) ... ok
+test_replay_question_retains_no_answer (goal2.tests.test_portable_stops_636.Consumer.test_replay_question_retains_no_answer) ... ok
+test_visible_opportunity_is_accepted_instead_of_ignored_on_pitch (goal2.tests.test_portable_stops_636.Consumer.test_visible_opportunity_is_accepted_instead_of_ignored_on_pitch) ... ok
+test_zero_budget_keeper_repair_uses_position_key_without_a_pair (goal2.tests.test_portable_stops_636.Consumer.test_zero_budget_keeper_repair_uses_position_key_without_a_pair) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.006s
+
+OK

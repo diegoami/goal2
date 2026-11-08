@@ -50,7 +50,7 @@ def _choice(value):
 # `Match.answer` as they are (goal2/engine/original_match/match.py): positions {player: code 0..13} (R, C on S19),
 # marking {player: opponent word or 0} (S09's mark line, 1771:49B8) and own_tactics {player: {element 1..4: True,
 # False or None}} (S09's four lines, 1771:4B61). Whether the original takes one is its to decide.
-CHANGES = ('positions', 'marking', 'own_tactics', 'tactics', 'edit_only')
+CHANGES = ('positions', 'marking', 'own_tactics', 'tactics', 'edit_only', 'request_substitution', 'opportunity')
 
 
 def _changes(value):
@@ -58,8 +58,19 @@ def _changes(value):
     word = lambda v: type(v) is int and 1 <= v <= 3060
     if not isinstance(value, dict) or set(value) - set(CHANGES):
         raise ValueError('invalid bench changes')
+    if 'opportunity' in value and set(value) != {'opportunity'}:
+        raise ValueError('opportunity cannot carry other edits')
     out = {}
     for name, items in value.items():
+        if name == 'request_substitution':
+            if type(items) is not bool: raise ValueError('request_substitution must be a boolean')
+            out[name] = items
+            continue
+        if name == 'opportunity':
+            if type(items) is not str or items not in ('accept', 'dismiss', 'timeout'):
+                raise ValueError('invalid substitution opportunity answer')
+            out[name] = items
+            continue
         if name == 'tactics':
             if (not isinstance(items, dict) or len(items) > 8
                     or not all(str(e) in tuple(str(n) for n in range(1, 9)) for e in items)
@@ -104,7 +115,7 @@ def _pairs(value):
     return [[off, on] for off, on in value]
 
 
-def _event(value, *, live_players=False):
+def _event(value, *, live_players=False, substitution_control=False):
     event = Event(**value)
     if (not isinstance(event.kind, str) or type(event.minute) is not int
             or not isinstance(event.score, tuple) or len(event.score) != 2
@@ -114,6 +125,8 @@ def _event(value, *, live_players=False):
     if event.kind=='decision':
         from goal2.game.watched_schema import validate_player_records
         validate_player_records(event.data,required=live_players)
+        from goal2.game.watched_schema import validate_substitution_decision
+        validate_substitution_decision(event.data, required=substitution_control)
     return event
 
 
@@ -354,8 +367,11 @@ class WatchedJobs:
         return self._handle if self._active else None
 
     def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False,
-              bench=False, prompts=False, live_players=False):
+              bench=False, prompts=False, live_players=False, substitution_control=False):
         if type(live_players) is not bool:raise ValueError('live_players must be boolean')
+        if type(substitution_control) is not bool:raise ValueError('substitution_control must be boolean')
+        if substitution_control and not (frames and bench):
+            raise ValueError('substitution control needs interactive pitch samples and bench')
         if type(frames) is not bool or type(bench) is not bool or type(prompts) is not bool:
             raise ValueError('frames, bench and prompts must be boolean')
         if prompts and not bench:
@@ -387,6 +403,7 @@ class WatchedJobs:
         self._bench = bench
         self._prompts = prompts
         self._live_players = live_players
+        self._substitution_control = substitution_control
         self.waiting = None
         self._asked = 0
         self._decisions = 0
@@ -426,6 +443,7 @@ class WatchedJobs:
                              options=dict(reference_seed=reference_seed, delay_byte=delay_byte,
                                           record_draws=record_draws))
         if self._live_players:self._request['live_players']=True
+        if self._substitution_control:self._request['substitution_control']=True
         if shared.needs_open(job.state, self._template):
             self._preparing = _Preparation(shared, job.state, self._template)
         else:
@@ -442,7 +460,8 @@ class WatchedJobs:
             self.shared.engine.match(self.KIND, request['fixture'], options=request['options'],
                                      frames=request['frames'], bench=request['bench'],
                                      prompts=request.get('prompts', False),
-                                     **({'live_players':True} if request.get('live_players') else {}))
+                                     **({'live_players':True} if request.get('live_players') else {}),
+                                     **({'substitution_control':True} if request.get('substitution_control') else {}))
         except OSError as exc:
             self._ended_before_match(exc)
         self._handle.bind()
@@ -496,11 +515,13 @@ class WatchedJobs:
                 if self._complete is not None:
                     raise _reply_failure(kind, value, True)
                 if kind == 'event' and isinstance(value, Event):
-                    value = _event(asdict(value),live_players=getattr(self,'_live_players',False))
+                    value = _event(asdict(value),live_players=getattr(self,'_live_players',False),
+                                   substitution_control=getattr(self,'_substitution_control',False))
                     self.events.append(value)
                     new.append(copy.deepcopy(value))
                     if self._bench and value.kind == 'decision' and (
                             value.data.get('context') in BENCH_CONTEXTS
+                            or (getattr(self,'_substitution_control',False) and value.data.get('context') == 'substitution_opportunity')
                             or (self._prompts and value.data.get('context') in PROMPT_CONTEXTS)):
                         if self.waiting is not None:
                             raise ValueError('bench decision before the previous was answered')
@@ -651,13 +672,26 @@ class WatchedJobs:
             raise ValueError('no bench decision is waiting')
         pairs = _pairs(list(substitutions))
         changes = _changes(changes or {})
+        data = self.waiting.data
+        context = data.get('context')
+        controlled = getattr(self, '_substitution_control', False)
+        if controlled and pairs and context not in ('half_time', 'substitution'):
+            raise ValueError('player pairs need a legal substitution stop')
+        request = 'request_substitution' in changes
+        if request and (not controlled or context != 'pause' or not changes.get('edit_only')
+                        or pairs or data.get('substitutions_now') is not False
+                        or set(changes) - {'request_substitution', 'edit_only', 'tactics'}):
+            raise ValueError('standalone request needs an opt-in ordinary paused edit without a pair')
+        if 'opportunity' in changes or context == 'substitution_opportunity':
+            if not controlled or context != 'substitution_opportunity' or pairs or set(changes) != {'opportunity'}:
+                raise ValueError('opportunity answer needs its opt-in notice only')
         if changes.get('edit_only'):
             data = self.waiting.data
             legal_bench = data.get('context') in ('half_time', 'substitution') and data.get('substitutions_now')
             paused_tactics = (data.get('context') in ('pause', 'extra_time') and not pairs
                               and bool(changes.get('tactics'))
                               and not (set(changes) - {'tactics', 'edit_only'}))
-            if not (legal_bench or paused_tactics):
+            if not (legal_bench or paused_tactics or request):
                 raise ValueError('only team tactics can be edited here; substitutions need a legal stopped bench')
         decision = self._decisions
         if changes:

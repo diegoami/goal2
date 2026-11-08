@@ -1,0 +1,26 @@
+{
+  "candidate_source": "08ad869ab12bdb17f87736c66e32ee0e7c4cb50a",
+  "outcome": "FAIL, never acceptance",
+  "cause": "outfield-only positive selector created fourth played C; original EA09 correctly refused Play",
+  "natural_outer_deadline_failures": [
+    "accept",
+    "cancel",
+    "zero"
+  ],
+  "deadline_seconds": 1500,
+  "timeout_observer_failure": "same ignored notice handled twice before deadline; corrected without timer/oracle change",
+  "retired_known_invalid_focused_only": {
+    "accepted_timeout_command_pid": 1350401,
+    "diagnostic_accept_command_pid": 1402262,
+    "main_authorization": "explicit targeted SIGINT then SIGTERM after Qt swallowed KeyboardInterrupt; no process groups/gates/runners/owner processes touched",
+    "exit": -15,
+    "owned_children_exited_via_eof": [
+      1398407,
+      1402325
+    ]
+  },
+  "fixed_inputs": "positive/incidental/warmup/zero choose compatible actual played-role counts, existing keeper/eligibility retained; explicit original refusal still tested",
+  "header_before": "actual capture clipped requested cue; prepared control alone did not reproduce it, retained honestly",
+  "after_control": "8 tests PASS7.267s, fullfont/lastglyph3sizes and live acknowledgement font-bounds assertion",
+  "game_oracles": "all original engine legality, real timer deadlines, result/events/RNG/fullmemory/career/once-only assertions retained"
+}

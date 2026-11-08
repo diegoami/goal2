@@ -1,0 +1,10 @@
+{
+  "source_commit": "658fc437d1f74b6e921f5ffb69f87012fc7b8beb",
+  "scope": "focused new transport/UI/lifecycle/S10 controls and retained T196/T188/T610/T202/635 overlay controls",
+  "tests": 72,
+  "skipped": 3,
+  "result": "PASS",
+  "seconds": 33.566,
+  "exclusions": "marked slow actual engine cases; not a natural-worker or native acceptance receipt",
+  "log_sha256": "84f7ffc5d4e2e06bf86781271db20a126f51fb81c961e0e0c37a1f61439259be"
+}

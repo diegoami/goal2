@@ -23,6 +23,8 @@ class Scripted:
         self.asked.append((context, event.minute))
         if number in self.answers:
             return self.answers[number]
+        if context == "substitution_opportunity":
+            return {"opportunity": "accept"}
         if context == "set_piece":
             return {"taker": None}
         if context == "shootout_order":
@@ -55,7 +57,7 @@ def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait
         jobs = WatchedJobs(model)
     # UI MatchDay explicitly requests this metadata. The same-choices oracle
     # requests it too; no event field is removed to make equality pass.
-    options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True, live_players=True)
+    options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True, live_players=True, substitution_control=True)
     answers = list(choices)
     # [designed: owner #612, T190] Reproduce a UI pause at a fixed LEAD sample boundary.
     # The default path is unchanged. Hold acknowledgements until the worker fills that
