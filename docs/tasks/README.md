@@ -390,3 +390,5 @@ operational status.
 - [T201](T201.md): render stored country-header top ranks and strip glyphs (#611).
 
 - [T202](T202.md): original pre-match characteristic cells on the tactics screen (#633).
+
+- [T170a](T170a.md): adopt the reviewed sealed-season dependency closure without activation (#650).
