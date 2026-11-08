@@ -4,7 +4,8 @@ from pathlib import Path
 ROOT=Path(sys.argv[1]);MODE=sys.argv[2];LABEL=sys.argv[3]
 assert os.name=='nt'
 assert MODE in ('create','reload')
-HEAD=os.environ['GOAL2_AUDIT_HEAD'];assert len(HEAD)==40
+HEAD=sys.argv[4];assert len(HEAD)==40
+os.environ['GOAL2_AUDIT_HEAD']=HEAD
 os.environ.update(QT_QPA_PLATFORM='offscreen',SDL_VIDEODRIVER='dummy',SDL_AUDIODRIVER='dummy',PYTHONDONTWRITEBYTECODE='1',PYTHONPATH=str(ROOT))
 pypy=Path(r'C:\Users\diego\goal2-playtest\main-f5703ddb\goal2-0.1.0-win64\pypy\pypy.exe');assert pypy.is_file()
 os.environ['GOAL2_ENGINE_PYTHON']=str(pypy)
