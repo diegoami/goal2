@@ -72,3 +72,26 @@ PASS24/24 (34.473s); final4identity controlsPASS after adding unnamed/own-comput
 boundaries. The actual fullTEAMobserver now asserts the named human header too.
 Final-source natural/native/default/platform checks remain required; no earlier
 receipt is silently relabelled final.
+
+Final functional source6d0a8c57: freshLinux actualfullcasePASS147.353s;
+actualWindowsQt/bundledPyPyPASS191.977s (bootstrap200.267s),1test/0skips,
+440source bindings. Both preserve ALL existing640/641 complete result/events/
+RNG/physicalmemory/career/once and state/event-identity oracles. Each observes
+13fullTEAMrefreshes/260record slots and22trait observations/440slots. The full
+observer additionally requires the active named human header. Actual Windows
+pending/current/ackPNGcaptures bind flags71→87 and show correctedK Ees;
+no operator/app/save/settings are touched. Native frontend is explicitly Qt
+OFFSCREEN; Windows paths/processes and real bundledPyPy are exercised. Hosted
+normal native focus/scaling remains a separate gate.
+
+The three actual-native-packet PNGs are Linux OFFSCREEN replays of an exact
+native current packet and captured current UI-state copy at3sizes. Independent
+original-backed panels equal and the complete state stays unchanged. They are
+not another naturally played match or a score proof (S10 has no score display).
+Raw original records, private session/templates and packet journals stay private;
+only rebuilt-window captures are included here.
+
+Exact6d0a defaultFAST:219/219modulesPASS,237declared slow exclusions. Full suites
+remain the integrated milestone's. Metadata-only receipt/capture publication
+must retain every exercised source/test/fixture byte; final no-tests/head and
+hosted Linux/Windows/native/security guards remain required.
