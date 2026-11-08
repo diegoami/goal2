@@ -1,0 +1,16 @@
+test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes (goal2.tests.test_substitution_ui_636.FullRequestCue.test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes (goal2.tests.test_substitution_ui_636.FullRequestCue.test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_substitution_ui_636.py", line 219, in test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes
+    self.assertLessEqual(metrics.horizontalAdvance(text),label.contentsRect().width()+1)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 352 not less than or equal to 321
+
+----------------------------------------------------------------------
+Ran 1 test in 0.871s
+
+FAILED (failures=1)

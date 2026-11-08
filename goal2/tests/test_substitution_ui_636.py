@@ -205,11 +205,14 @@ class FullRequestCue(unittest.TestCase):
         self.day.bench=BenchAnswer(self.model,decision,friendly=True)
         screen=self.day.open_bench()
         self.app.processEvents()
-        decision.data["request_substitution"]=True
-        screen._request_desired=True
-        screen.applied(BenchAnswer(self.model,decision,friendly=True),None)
         for width,height in ((1440,900),(1800,1125),(2110,1213)):
+            decision.data["request_substitution"]=False
+            screen.answer=BenchAnswer(self.model,decision,friendly=True)
             self.window.resize(width,height);self.app.processEvents();screen.refresh();self.app.processEvents()
+            decision.data["request_substitution"]=True
+            screen._request_desired=True
+            screen.applied(BenchAnswer(self.model,decision,friendly=True),None)
+            # The acknowledgement must already fit before another event-loop turn.
             label=screen.mode_label;text='SUBSTITUTION REQUESTED';metrics=label.fontMetrics()
             self.assertEqual(label.text(),text)
             self.assertGreaterEqual(label.font().pixelSize(),round(theme.HEADING_SIZE*self.window.frame.scale)-1)

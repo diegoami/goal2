@@ -287,6 +287,7 @@ class BenchScreen(Screen):
         self.body_layout.setSpacing(8)
         head, inner = box(margins=(16,12,16,12))
         row=QHBoxLayout()
+        self._header_row=row
         row.setSpacing(22)
         self.mode_label=label("","h1")
         self.mode_label.setSizePolicy(QSizePolicy.Policy.Fixed,QSizePolicy.Policy.Preferred)
@@ -374,6 +375,13 @@ class BenchScreen(Screen):
         set_para(self.note, self.line())
         self._refresh_hint()
         self._sync_cue()
+        # [designed: #636] A stopped acknowledgement can lengthen the cue before
+        # Qt handles its queued LayoutRequest. Reserve the current scaled font's
+        # full text width now; the match context can wrap into the remaining space.
+        self.mode_label.ensurePolished()
+        self.mode_label.setMinimumWidth(self.mode_label.fontMetrics().horizontalAdvance(self.mode_label.text()) + 2)
+        self._header_row.invalidate()
+        self._header_row.activate()
 
     def _sync_cue(self):
         """Blink only when this visible squad can make another immediate swap."""
