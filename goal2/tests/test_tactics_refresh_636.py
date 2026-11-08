@@ -44,3 +44,52 @@ class SelectionDoesNotDecode(unittest.TestCase):
 
 
 if __name__ == '__main__':unittest.main(verbosity=2)
+
+
+from goal2.tests import requires
+@requires.need(modules=('PySide6','pygame'), **requires.HALFTIME)
+class FreshStoppedRoles(unittest.TestCase):
+    def test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding(self):
+        import copy
+        from goal2.tests.test_live_team_tactics_610 import LiveTeamTactics
+        from goal2.ui.s19_bench import BenchAnswer
+        from goal2.ui.s10_team_tactics import LINES, words
+        from goal2.game import roles
+        from goal2.game.player_card import _Memory
+        from unittest.mock import patch
+        LiveTeamTactics.setUp(self)
+        LiveTeamTactics.prepare(self, 'half_time')
+        screen=LiveTeamTactics.open_tactics(self)
+        baseline=copy.deepcopy(self.model.state)
+        original_words=screen.answer.words()
+        slot=1;word=screen.answer.eleven[slot]
+        table=roles.tables(self.model.state)
+        for position in (12,5):
+            data=copy.deepcopy(self.decision.data)
+            data['tactics']=self.original_tactics ^ (16 if position==12 else 1)
+            rows=[]
+            for current in original_words:
+                record=bytearray(self.model.state.players[current])
+                if current==word:record[6]=position
+                rows.append([current,record.hex()])
+            data['player_records']=rows
+            answer=BenchAnswer(self.model,SimpleNamespace(data=data,minute=45,score=[0,0]))
+            screen.answer=answer
+            with patch.object(answer,'card',side_effect=AssertionError('full card redecoded')),patch.object(
+                    self.model,'view',side_effect=AssertionError('full career view redecoded')),patch(
+                    'goal2.game.player_card._Memory',wraps=_Memory) as memory:
+                screen.refresh()
+            self.assertEqual(memory.call_count,1,'one reader serves all eight tactic word pairs')
+            self.assertEqual(screen.strip.rows[slot].texts()[0],roles.role(self.model.state,position,cache=table)[0])
+            lines=[roles.role(self.model.state,answer.position(w),cache=table)[1] for w in answer.eleven]
+            formation='-'.join(str(lines.count(line)) for line in ('defence','midfield','attack'))
+            self.assertIn(formation,screen.facts.text())
+            for row,(_,element) in enumerate(LINES):
+                clear,set_=words(self.model.state,element)
+                now=bool(answer.team_tactics & (1<<(element-1)))
+                self.assertEqual(screen.lines()[row][1:],(set_,clear) if now else (clear,set_))
+            self.assertEqual(self.model.state,baseline)
+
+    def key(self,value):
+        from goal2.tests.test_live_team_tactics_610 import LiveTeamTactics
+        LiveTeamTactics.key(self,value)
