@@ -1,0 +1,39 @@
+test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once (goal2.tests.test_live_card_overlay_619.ActualLiveCards.test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once (goal2.tests.test_live_card_overlay_619.ActualLiveCards.test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/ui619-red-d56-main/goal2/tests/test_live_card_overlay_619.py", line 289, in test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once
+    walk.run()
+    ~~~~~~~~^^
+  File "/tmp/ui619-red-d56-main/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/ui619-red-d56-main/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/tmp/ui619-red-d56-main/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/tmp/ui619-red-d56-main/goal2/tests/test_live_card_overlay_619.py", line 189, in react
+    return super().react(screen)
+           ~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/ui619-red-d56-main/goal2/tests/test_ui_bench_t180.py", line 184, in react
+    self.on_bench(screen)
+    ~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/ui619-red-d56-main/goal2/tests/test_live_card_overlay_619.py", line 206, in on_bench
+    verify_bench(test, screen, controller, receipts, 'natural-stop')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/ui619-red-d56-main/goal2/tests/live_card_assertions_619.py", line 64, in verify_bench
+    pairs = data['player_records']
+            ~~~~^^^^^^^^^^^^^^^^^^
+KeyError: 'player_records'
+
+----------------------------------------------------------------------
+Ran 1 test in 16.630s
+
+FAILED (errors=1)

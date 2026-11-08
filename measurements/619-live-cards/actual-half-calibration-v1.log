@@ -1,0 +1,47 @@
+test_half_time_all_flags_confirm_before_play_and_match_headless_publication (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_half_time_all_flags_confirm_before_play_and_match_headless_publication) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_half_time_all_flags_confirm_before_play_and_match_headless_publication (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_half_time_all_flags_confirm_before_play_and_match_headless_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 469, in test_half_time_all_flags_confirm_before_play_and_match_headless_publication
+    self.run_journey('half_time')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 445, in run_journey
+    walk.run()
+    ~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 329, in react
+    return super().react(screen)
+           ~~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_ui_bench_t180.py", line 184, in react
+    self.on_bench(screen)
+    ~~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 418, in on_bench
+    verify_bench(test, screen, self.out['controller'], card_receipts, 'before-stop')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/live_card_assertions_619.py", line 80, in verify_bench
+    personal = PlayerTacticsScreen(screen.window, answer.model, word, answer)
+  File "/home/diego/projects/m3-trackb/goal2/goal2/ui/s09_player_tactics.py", line 43, in __init__
+    super().__init__(window)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/ui/screen.py", line 176, in __init__
+    self.bind((Qt.Key.Key_F1,), "help", window.open_help)
+                                        ^^^^^^^^^^^^^^^^
+AttributeError: 'builtin_function_or_method' object has no attribute 'open_help'
+
+----------------------------------------------------------------------
+Ran 1 test in 11.156s
+
+FAILED (errors=1)

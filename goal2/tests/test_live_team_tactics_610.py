@@ -311,6 +311,8 @@ class ActualLiveTeamTactics(unittest.TestCase):
         pypy()
         application = app()
         test = self
+        from goal2.tests.live_card_assertions_619 import verify_bench, verify_choose, report
+        card_receipts = []
         evidence = os.environ.get('GOAL2_TACTICS_EVIDENCE')
         def shot(window, name):
             if evidence:
@@ -321,6 +323,11 @@ class ActualLiveTeamTactics(unittest.TestCase):
                 window.grab().save(str(path))
 
         class TacticsWalk(Walk):
+            def react(self, screen):
+                if type(screen).__name__ == 'ChooseScreen' and screen.mode != 'captain':
+                    verify_choose(test, screen, self.model, self.out['controller'].stop.data, card_receipts)
+                return super().react(screen)
+
             def playing(self, pitch):
                 super().playing(pitch)
                 frame = pitch.controller.display.frame
@@ -357,6 +364,12 @@ class ActualLiveTeamTactics(unittest.TestCase):
                     key(self.window, Qt.Key.Key_T)
                     editor = self.window.current()
                     test.assertEqual(type(editor).__name__, 'TeamTacticsScreen')
+                    from goal2.ui.s19_bench import BenchScreen
+                    observer = BenchScreen(self.window, self.model, editor.answer)
+                    try:
+                        verify_bench(test, observer, controller, card_receipts, 'target-stop')
+                    finally:
+                        observer.deleteLater()
                     original = editor.answer.team_tactics
                     byte = original
                     choices = len(controller.choices)
@@ -402,6 +415,7 @@ class ActualLiveTeamTactics(unittest.TestCase):
                             bench=answer.bench, left=answer.left, frames=controller.bridge._frame_sequence)
 
             def on_bench(self, screen):
+                verify_bench(test, screen, self.out['controller'], card_receipts, 'before-stop')
                 answer = screen.answer
                 injured = [w for w in answer.eleven if w in answer.injured]
                 if answer.takes_substitutions and answer.left and injured:
@@ -412,6 +426,7 @@ class ActualLiveTeamTactics(unittest.TestCase):
                     enter_on(self.window, screen, off)
                     enter_on(self.window, screen, on)
                     test.assertIn(on, screen.answer.eleven)
+                    verify_bench(test, screen, self.out['controller'], card_receipts, 'after-swap')
                     self.out.setdefault('taken_off', []).append(off)
                 key(self.window, Qt.Key.Key_Escape)
 
@@ -441,6 +456,7 @@ class ActualLiveTeamTactics(unittest.TestCase):
                 test.assertEqual(controller.outcome.memory, result.memory)
                 test.assertEqual(controller.outcome.events, result.events)
                 test.assertEqual(owner.state, other.state)
+                report(test, card_receipts, 'tactics-' + target)
                 print('ACTUAL_UI_TACTICS ' + json.dumps(dict(target=target, edits=8, published_once=True,
                     commands=controller.choices, actual=walk.out['actual'],
                     headless_full_memory_events_result_state_equal=True)), flush=True)
