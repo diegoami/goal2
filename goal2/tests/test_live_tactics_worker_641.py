@@ -5,6 +5,7 @@ import copy
 import hashlib
 import json
 import unittest
+from types import SimpleNamespace
 from unittest import mock
 from goal2.tests import requires
 
@@ -22,13 +23,17 @@ class ActualLiveTraits(unittest.TestCase):
         from goal2.tests.test_live_tactics_characteristics_641 import expected_panel
         from goal2.tests.test_substitution_actual_636 import run_journey
         observations=[];current_data={};first_order=None;changed_order=False;changed_traits=False;first_panel=None
+        initial_panel=None;initial_players=None;traits_changed_from_input=False;energy_changed_from_input=False
         real_refresh=TeamTacticsScreen.refresh
         real_bench=MatchDay.live_bench
         test=self
 
         def check(screen,data,label):
-            nonlocal first_order,changed_order,changed_traits,first_panel
+            nonlocal first_order,changed_order,changed_traits,first_panel,traits_changed_from_input,energy_changed_from_input
             expected=expected_panel(screen.model,data)
+            test.assertIsNotNone(initial_panel)
+            traits_changed_from_input|=expected['descriptors']!=initial_panel['descriptors']
+            energy_changed_from_input|=any(bytes.fromhex(raw)[14]!=initial_players[w][14] for w,raw in data['player_records'])
             test.assertTrue(screen.characteristics.panel==expected,'current traits differ from independent Core projection')
             test.assertTrue(screen.characteristics.cells.grid==characteristic_view(expected['descriptors']))
             words=list(data['eleven'])+list(data['bench'])
@@ -57,6 +62,16 @@ class ActualLiveTraits(unittest.TestCase):
             return result
 
         def bench(day,pitch,decision):
+            nonlocal initial_panel,initial_players
+            if initial_panel is None:
+                initial=day.controller.given._snapshot
+                starters=list(initial.starting_eleven)
+                words=starters+[w for w in initial.managed_squad if w not in starters]
+                test.assertEqual(len(words),20)
+                initial_players=list(initial.players)
+                initial_data=dict(eleven=words[:11],bench=words[11:],tactics=initial.country_tactics,
+                    player_records=[[w,initial_players[w].hex()] for w in words])
+                initial_panel=expected_panel(SimpleNamespace(state=initial),initial_data)
             answer=real_bench(day,pitch,decision)
             current_data[id(answer)]=copy.deepcopy(decision.data)
             test.assertEqual(len(answer.live_records),20)
@@ -80,10 +95,13 @@ class ActualLiveTraits(unittest.TestCase):
         self.assertTrue(changed_order,'accepted actual swap must change the authoritative XI/bench order')
         self.assertTrue(changed_traits,'natural match/accepted swap must change current traits')
         self.assertTrue(any(row['edited'] for row in observations))
+        self.assertTrue(traits_changed_from_input,'current descriptors/cells must differ from declared kickoff input')
+        self.assertTrue(energy_changed_from_input,'natural current records must differ in energy from declared kickoff input')
         self.assertTrue(all(result[key] for key in ('result_equal','events_equal','memory_equal','career_equal')))
         print('ACTUAL_LIVE_TRAITS_641 '+json.dumps(dict(method='unchanged640actualrequest/tactic/swap inputs with fresh readonly panel observers',
             source_commit=result['source_commit'],observations=observations,record_checks=sum(r['records'] for r in observations),
             accepted_order_changed=changed_order,traits_changed_after_first_stop=changed_traits,
+            traits_changed_vs_declared_kickoff_input=traits_changed_from_input,natural_energy_changed_vs_declared_kickoff_input=energy_changed_from_input,
             full_same_choice_result_events_rng_memory_career_equal=True,state_event_identity_unchanged=True,
             no_extra_input_seed_fixture_limit_or_event_projection=True),sort_keys=True),flush=True)
 
