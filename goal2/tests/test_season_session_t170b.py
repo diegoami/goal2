@@ -119,17 +119,32 @@ def actual_boundaries(raw,waiting=None,expected='match'):
         before=match.m.read(0,MEM_SIZE);registers={name:match.m.reg(name) for name in REGS}
         assert before==reference.match.m.read(0,MEM_SIZE)
         assert registers=={name:reference.match.m.reg(name) for name in REGS}
+        parent=session._continuation.m
+        parent_memory=parent.read(0,MEM_SIZE)
+        parent_registers={name:parent.reg(name) for name in REGS}
+        for rejected in (session.advance,lambda:session.resume(object()),lambda:session.resume(match)):
+            snapshot=session.observe()
+            try:rejected()
+            except ValueError:pass
+            else:raise AssertionError('incomplete or foreign actual match accepted')
+            assert session.observe()==snapshot
+            assert keys.waiting==reference_keys.waiting
+            assert parent.read(0,MEM_SIZE)==parent_memory
+            assert {name:parent.reg(name) for name in REGS}==parent_registers
         for _ in range(3):
             observed=session.observe();detached=session.state
             detached['header']='caller mutation'
             assert observed.news_pages==observed.played_fixtures==()
             assert match.m.read(0,MEM_SIZE)==before
             assert {name:match.m.reg(name) for name in REGS}==registers
+            assert parent.read(0,MEM_SIZE)==parent_memory
+            assert {name:parent.reg(name) for name in REGS}==parent_registers
         assert session.pending_match is match and not match.over
         receipt.update(full_memory_sha256=hashlib.sha256(before).hexdigest(),
                        all16_registers=registers,observation_full_memory_unchanged=True,
                        observation_all16_unchanged=True,direct_entry_full_memory_equal=True,
-                       direct_entry_all16_equal=True)
+                       direct_entry_all16_equal=True,actual_rejection_parent_memory_all16_pure=True,
+                       observation_parent_memory_all16_unchanged=True)
     elif expected=='deferred-rollover':
         with patch('goal2.engine.original_match.port.engine.PortMachine',side_effect=AssertionError('terminal backend forbidden')):
             for _ in range(3):
