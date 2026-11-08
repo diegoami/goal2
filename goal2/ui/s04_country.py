@@ -124,8 +124,15 @@ class CountryCard(QWidget):
         facts = QHBoxLayout()
         facts.setSpacing(28)
         team, self.team = key_value((("status", "status"), ("manager", "manager")))
-        ranks, self.ranks = key_value((("world", "world"), ("continental", "continent"), ("top", "top")))
+        from goal2.ui.country_header import RankColumns, StripGlyphs
+        ranks = RankColumns(); self.ranks = ranks.values
         shape, self.shape = key_value((("formation", "formation"), ("skill", "skill"), ("strips", "strips")))
+        old_strips = self.shape["strips"]
+        shape.layout().removeWidget(old_strips)
+        self.strip_view = StripGlyphs(self.family)
+        self.strip_view.caption = old_strips.caption
+        shape.layout().addWidget(self.strip_view, 2, 1)
+        old_strips.hide(); old_strips.deleteLater(); self.shape["strips"] = self.strip_view
         for part in (team, ranks, shape):
             facts.addWidget(part, 0, Qt.AlignmentFlag.AlignTop)
         facts.addStretch(1)
@@ -193,17 +200,20 @@ class CountryCard(QWidget):
         self.ranks["world"].setText(str(c["world"]))
         self.ranks["continental"].caption.setText(c["continent"])
         self.ranks["continental"].setText(str(c["continental"]))
-        self.ranks["top"].setText(NOT_DECODED)
+        self.ranks["top_world"].setText(str(c["top_world"]) if "top_world" in c else NOT_DECODED)
+        self.ranks["top_continental"].setText(str(c["top_continental"]) if "top_continental" in c else NOT_DECODED)
         self.shape["formation"].setTextFormat(Qt.TextFormat.RichText)
         self.shape["formation"].setText(c['formation'])
         self.role_codes.setText(coloured_codes(
             (code, CODE_LINE.get(code, "unknown")) for code in c["eleven"]))
         self.shape["skill"].setText(c.get("skill", NOT_DECODED) or "")
-        self.shape["strips"].setText(NOT_DECODED)
+        if "strips" in c: self.strip_view.set_strips(c["strips"])
+        else: self.strip_view.set_unknown()
         for values, pairs in ((self.tactics, c["team_tactics"]), (self.defaults, c["player_defaults"])):
             for key, value in pairs:
                 values[key].setText(value)
         for widget in (*self.team.values(), *self.ranks.values(), *self.shape.values()):
+            if widget is self.strip_view: continue
             if widget.text() == NOT_DECODED: widget.setText("unknown")
             widget.setObjectName("undecoded" if widget.text() in (NOT_DECODED, "unknown") else "value")
         refresh(self)

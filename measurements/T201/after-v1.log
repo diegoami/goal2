@@ -1,0 +1,24 @@
+test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write (goal2.tests.test_country_header_render_t201.HeaderViews.test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write) ... This plugin does not support propagateSizeHints()
+FAIL
+test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback (goal2.tests.test_country_header_render_t201.HeaderViews.test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback) ... ok
+
+======================================================================
+FAIL: test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write (goal2.tests.test_country_header_render_t201.HeaderViews.test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-ui-a/goal2/tests/test_country_header_render_t201.py", line 30, in test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write
+    self.assertEqual(fixed_page.problems(window),[],(width,height))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['value (0, 0, 640, 480) clipped by QWidget (0, 0, 256, 78)'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'value (0, 0, 640, 480) clipped by QWidget (0, 0, 256, 78)'
+
+- ['value (0, 0, 640, 480) clipped by QWidget (0, 0, 256, 78)']
++ [] : (1440, 900)
+
+----------------------------------------------------------------------
+Ran 2 tests in 8.024s
+
+FAILED (failures=1)

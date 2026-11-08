@@ -1,0 +1,65 @@
+{
+  "scope": "Rebuilt UI from hash-bound original snapshots; explicit test presentation context, not natural live match",
+  "captures": [
+    {
+      "fixture": "selection",
+      "country": 7,
+      "active_display_snapshot": false,
+      "size": [
+        1440,
+        900
+      ],
+      "path": "measurements/T201/captures/selection-7-1440x900.png"
+    },
+    {
+      "fixture": "selection",
+      "country": 7,
+      "active_display_snapshot": false,
+      "size": [
+        1800,
+        1125
+      ],
+      "path": "measurements/T201/captures/selection-7-1800x1125.png"
+    },
+    {
+      "fixture": "selection",
+      "country": 7,
+      "active_display_snapshot": false,
+      "size": [
+        2110,
+        1213
+      ],
+      "path": "measurements/T201/captures/selection-7-2110x1213.png"
+    },
+    {
+      "fixture": "friendly",
+      "country": 16,
+      "active_display_snapshot": true,
+      "size": [
+        1440,
+        900
+      ],
+      "path": "measurements/T201/captures/friendly-16-1440x900.png"
+    },
+    {
+      "fixture": "friendly",
+      "country": 16,
+      "active_display_snapshot": true,
+      "size": [
+        1800,
+        1125
+      ],
+      "path": "measurements/T201/captures/friendly-16-1800x1125.png"
+    },
+    {
+      "fixture": "friendly",
+      "country": 16,
+      "active_display_snapshot": true,
+      "size": [
+        2110,
+        1213
+      ],
+      "path": "measurements/T201/captures/friendly-16-2110x1213.png"
+    }
+  ]
+}

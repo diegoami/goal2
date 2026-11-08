@@ -67,8 +67,9 @@ class CountryCard(unittest.TestCase):
             view.text = lambda painter, x, y, value, *a, drawn=drawn, **k: drawn.append((x, str(value)))
             view.grab();app.processEvents()
             texts = ' '.join(t for _, t in drawn)
-            for value in ('DENMARK', 'R Nielsen', '5-4-1', 'half pitch', 'man to man', 'not decoded yet (G05)', 'SPACE: PLAYERS'):
+            for value in ('DENMARK', 'R Nielsen', '5-4-1', 'half pitch', 'man to man', 'SPACE: PLAYERS'):
                 self.assertIn(value, texts, (width, value))
+            self.assertNotIn('not decoded yet (G05)', texts, 'T201 consumes every delivered Game-route header field')
             self.assertNotIn('ability', texts.lower())
             self.assertEqual(view.narrow, width < 740)
 
