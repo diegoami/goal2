@@ -57,9 +57,8 @@ original comparison. Final-source packet controls pass10/10 in0.234s. The old
 T610/T188/T167 assertion ASTs remain identical (97/68/77 assertions). No new event
 field is stripped from any equality comparison.
 
-acceptance-v1.json records exact measured source heads, all current source/table
-hashes, public evidence hashes and proof counts. Run `python3
-measurements/619-live-cards/verify.py` for static current-source binding checks;
+acceptance-v2.json records exact measured source heads, all current source/table
+hashes, public evidence hashes and proof counts. Run `python3 measurements/619-live-cards/verify_v2.py` for static current-source binding checks;
 this performs no engine execution and is not a replacement for the focused
 journeys or main's broad/platform checks. Historical packet-v1.json and older
 calibration/source receipts remain unchanged.
@@ -71,3 +70,22 @@ extra-time/shoot-out manual journey or entire season. Original-opcode replay
 is independent of the retained exact sealed UI/PyPy full-outcome comparisons.
 Broad gate/platform CI, merge and preview remain with main; this implementer runs
 focused proofs only. Raw natural records/saves remain private.
+
+
+Acceptance-v1 remains historical. Acceptance-v2 adds full commit IDs, exact
+worker/Qt versions, static-link output and focused reproduction commands; the
+runtime/tests/proofs are unchanged. Verify current bindings with verify_v2.py.
+
+Focused reproduction: first source `.cache/cloud.env`, set `GOAL2_SLOW=1` and
+`QT_QPA_PLATFORM=offscreen`, keep the existing PyPy worker and no GOAL2_CASES limit.
+
+```bash
+.cache/venv/bin/python -B -m unittest goal2.tests.test_live_card_overlay_619.LiveOverlayPackets -v
+.cache/venv/bin/python -B -m unittest goal2.tests.test_live_card_overlay_619.ActualLiveCards -v
+.cache/venv/bin/python -B -m unittest goal2.tests.test_immediate_bench_t188.ActualImmediateBench -v
+.cache/venv/bin/python -B -m unittest goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics -v
+.cache/venv/bin/python -B -m unittest goal2.tests.test_ui_match_day_t167.MatchDay.test_the_taker_decision_reaches_s16_and_the_engine goal2.tests.test_ui_match_day_t167.MatchDay.test_no_key_on_a_taker_leaves_the_computer_s_pick -v
+```
+
+Long reproductions use registered jobs/heavy slots and wait by PID. These are
+focused selectors, not a full suite or local gate.
