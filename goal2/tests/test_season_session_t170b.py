@@ -79,4 +79,80 @@ class Session(unittest.TestCase):
         tables=copy.deepcopy(engine_tables.load());tables.ds=bytes([tables.ds[0]^1])+tables.ds[1:]
         self.assertRaises(ValueError,SeasonSession,state(),tables)
 
+def actual_boundaries(raw,waiting=None,expected='match'):
+    """Actual PyPy dispatcher, no complete match, no original backend fallback."""
+    import builtins,hashlib,sys
+    assert sys.implementation.name=='pypy' and sys.version_info[:2]==(3,11)
+    original_import=builtins.__import__
+    def denied(name,*args,**kwargs):
+        if name=='unicorn' or name.startswith('unicorn.'):
+            raise ImportError('T170b positive Unicorn denial')
+        return original_import(name,*args,**kwargs)
+    builtins.__import__=denied
+    try:__import__('unicorn')
+    except ImportError:pass
+    else:raise AssertionError('Unicorn denial inactive')
+    from goal2.engine.original_match import route
+    from goal2.engine.original_match.machine import REGS,MEM_SIZE,Uc
+    assert Uc is None
+    image=Image.from_bytes(raw);tables=engine_tables.load();value=image.state(tables)
+    keys=Keys(route.DEFAULT_KEYS);keys.waiting=waiting
+    reference_keys=Keys(route.DEFAULT_KEYS);reference_keys.waiting=waiting
+    reference=route.play_round(value,tables,reference_keys)
+    session=SeasonSession(value,tables,keys)
+    transition=session.advance();assert transition.status==expected==reference.status
+    assert session.state==reference.state
+    assert transition.played_fixtures==reference.played_fixtures
+    assert transition.news_pages==reference.news_pages
+    assert keys.waiting==reference_keys.waiting
+    receipt={'status':transition.status,'input_sha256':hashlib.sha256(raw).hexdigest(),
+             'input_state_hash':canonical_hash(value),'output_state_hash':transition.output_hash,
+             'fixture_count':len(transition.played_fixtures),'news_count':len(transition.news_pages),
+             'rng_words':transition.rng_words,'waiting_key':keys.waiting,
+             'direct_route_state_equal':True,'direct_deltas_equal':True,'unicorn_denied':True}
+    if expected=='match':
+        match=session.pending_match
+        before=match.m.read(0,MEM_SIZE);registers={name:match.m.reg(name) for name in REGS}
+        assert before==reference.match.m.read(0,MEM_SIZE)
+        assert registers=={name:reference.match.m.reg(name) for name in REGS}
+        for _ in range(3):
+            observed=session.observe();detached=session.state
+            detached['header']='caller mutation'
+            assert observed.news_pages==observed.played_fixtures==()
+            assert match.m.read(0,MEM_SIZE)==before
+            assert {name:match.m.reg(name) for name in REGS}==registers
+        assert session.pending_match is match and not match.over
+        receipt.update(full_memory_sha256=hashlib.sha256(before).hexdigest(),
+                       all16_registers=registers,observation_full_memory_unchanged=True,
+                       observation_all16_unchanged=True,direct_entry_full_memory_equal=True,
+                       direct_entry_all16_equal=True)
+    elif expected=='deferred-rollover':
+        with patch('goal2.engine.original_match.port.engine.PortMachine',side_effect=AssertionError('terminal backend forbidden')):
+            for _ in range(3):
+                assert session.advance()==session.observe()
+                assert session.state==value and session.observe().call_number==1
+        receipt['terminal_repeat_backend_denied']=True
+    else:
+        assert session.pending_match is None
+        assert session.observe().played_fixtures==session.observe().news_pages==()
+    assert 'unicorn' not in sys.modules
+    return receipt
+
+
+class ActualManagedEntry(unittest.TestCase):
+    def test_real_pypy_managed_entry_observation_preserves_full_memory_and_all16(self):
+        from goal2.engine.original_match.assets import REFERENCE,reference_image
+        from goal2.tests import requires,pypy_engine
+        from pathlib import Path
+        requires.require(files=(REFERENCE['asset'],))
+        raw=reference_image(Path(__file__).resolve().parents[2]/'.cache')
+        observed=pypy_engine.call(__name__+':actual_boundaries',raw)
+        self.assertEqual(observed['status'],'match')
+        self.assertTrue(observed['observation_full_memory_unchanged'])
+        self.assertTrue(observed['observation_all16_unchanged'])
+        self.assertTrue(observed['direct_entry_full_memory_equal'])
+        self.assertTrue(observed['direct_entry_all16_equal'])
+        print('T170B_MANAGED '+__import__('json').dumps(observed,sort_keys=True),flush=True)
+
+
 if __name__=='__main__':unittest.main()
