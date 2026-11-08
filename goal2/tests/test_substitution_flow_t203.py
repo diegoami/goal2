@@ -50,6 +50,49 @@ class Flow(unittest.TestCase):
             self.pitch.tick();self.app.processEvents()
             self.assertEqual(type(self.window.current()).__name__,'BenchScreen')
             self.assertTrue(self.window.current().answer.takes_substitutions)
+    def test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards(self):
+        from unittest.mock import patch
+        import time
+        with patch.object(self.screen.answer,'card',wraps=self.screen.answer.card) as decoded:
+            started=time.perf_counter()
+            self.menu.refresh_accepted();self.menu.refresh_accepted()
+            elapsed=time.perf_counter()-started
+        print('T203_UNCHANGED_MENU '+__import__('json').dumps(dict(card_decodes=decoded.call_count,elapsed_s=elapsed)),flush=True)
+        self.assertEqual(decoded.call_count,0,'unchanged XI/roles must preserve fast request/tactics acknowledgements')
+    def test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states(self):
+        from PySide6.QtGui import QPalette
+        def luminance(colour):
+            channels=[colour.redF(),colour.greenF(),colour.blueF()]
+            values=[v/12.92 if v<=0.04045 else ((v+0.055)/1.055)**2.4 for v in channels]
+            return .2126*values[0]+.7152*values[1]+.0722*values[2]
+        self.window.activateWindow();self.app.processEvents()
+        for width,height in ((1440,900),(1800,1125),(2110,1213)):
+            self.window.resize(width,height);self.app.processEvents()
+            for state in ('normal','disabled','focus'):
+                button=self.screen.request_button;button.setEnabled(state!='disabled')
+                if state=='focus':button.setFocus()
+                else:self.window.setFocus()
+                self.app.processEvents();button.ensurePolished()
+                if state=='focus':self.assertTrue(button.hasFocus(),'measure real focus, not a named normal state')
+                group=QPalette.ColorGroup.Disabled if state=='disabled' else QPalette.ColorGroup.Active
+                foreground=button.palette().color(group,QPalette.ColorRole.ButtonText)
+                background=button.palette().color(group,QPalette.ColorRole.Button)
+                light,dark=sorted((luminance(foreground),luminance(background)),reverse=True)
+                contrast=(light+.05)/(dark+.05)
+                from collections import Counter
+                from PySide6.QtGui import QColor
+                image=button.grab().toImage()
+                pixels=Counter(image.pixelColor(x,y).name() for y in range(image.height()) for x in range(image.width()))
+                expected_foreground,expected_background = ('#000000','#aaaaaa') if state=='focus' else ('#ffffff','#555555') if state=='disabled' else ('#ffffff','#000000')
+                self.assertGreater(pixels[expected_foreground],10,'rendered button text must have visible contrasting glyphs')
+                self.assertGreater(pixels[expected_background],image.width()*image.height()//3,'rendered button background must match its readable theme state')
+                light,dark=sorted((luminance(QColor(expected_foreground)),luminance(QColor(expected_background))),reverse=True)
+                contrast=(light+.05)/(dark+.05)
+                print('T203_BUTTON '+__import__('json').dumps(dict(size=[width,height],state=state,actual_focus=button.hasFocus(),foreground=expected_foreground,background=expected_background,contrast=contrast,foreground_pixels=pixels[expected_foreground],background_pixels=pixels[expected_background])),flush=True)
+                self.assertGreaterEqual(contrast,4.5)
+                self.assertGreaterEqual(button.width(),button.fontMetrics().horizontalAdvance(button.text())+12)
+            self.screen.request_button.setEnabled(True)
+
     def test_request_button_and_full_cue_fit_three_sizes(self):
         for width,height in ((1440,900),(1800,1125),(2110,1213)):
             self.window.resize(width,height);self.app.processEvents();self.screen.refresh()
@@ -58,6 +101,10 @@ class Flow(unittest.TestCase):
             self.assertGreaterEqual(button.width(),button.fontMetrics().horizontalAdvance(button.text())+12)
             cue=self.screen.mode_label
             self.assertLessEqual(cue.fontMetrics().horizontalAdvance(cue.text()),cue.contentsRect().width()+1)
+            header=button.parentWidget()
+            self.assertLessEqual(button.geometry().right(),header.width())
+            self.assertLessEqual(cue.geometry().right(),button.geometry().left())
+            print('T203_HEADER '+__import__('json').dumps(dict(size=[width,height],cue_width=cue.width(),cue_text_width=cue.fontMetrics().horizontalAdvance(cue.text()),button_bounds=[button.x(),button.y(),button.width(),button.height()],context_bounds=[self.screen.context.x(),self.screen.context.y(),self.screen.context.width(),self.screen.context.height()],header_width=header.width())),flush=True)
 
 @requires.need(modules=('PySide6','pygame'),**requires.HALFTIME)
 class Acknowledgement(unittest.TestCase):
@@ -95,7 +142,9 @@ class Acknowledgement(unittest.TestCase):
         key(self.window,Qt.Key.Key_Escape)
         self.assertIs(self.window.current(),self.menu)
         self.assertNotEqual(self.menu.lineups[self.model.state.managed_country],before)
-        self.assertNotIn('SUBSTITUTION OPPORTUNITY',self.menu.situation.text())
+        self.assertNotIn('substitution opportunity',self.menu.situation.text().lower())
+        self.assertNotIn('substitution opportunity',self.bench.context.text().lower())
+        self.assertNotIn('substitution opportunity',self.pitch.request_badge.text().lower())
     def test_returned_menu_shows_the_acknowledged_current_xi(self):
         before=copy.deepcopy(self.menu.lineups[self.model.state.managed_country])
         self.pair();self.deliver();self.window.pop();self.app.processEvents()

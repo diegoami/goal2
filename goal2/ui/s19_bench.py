@@ -305,6 +305,12 @@ class BenchScreen(Screen):
         colour(self.mode_label,theme.VALUE)
         row.addWidget(self.mode_label)
         self.request_button = QPushButton()
+        # [designed: T203] Explicit theme contrast; native buttons otherwise
+        # inherit white text while retaining their native near-white background.
+        self.request_button.setStyleSheet(
+            f"QPushButton {{color:{theme.TEXT_BRIGHT};background-color:{theme.GROUND};border:2px solid {theme.FRAME};padding:6px 12px;}}"
+            f"QPushButton:disabled {{color:{theme.TEXT_BRIGHT};background-color:{theme.FRAME_DARK};border-color:{theme.FRAME_DARK};}}"
+            f"QPushButton:focus,QPushButton:hover {{color:{theme.GROUND};background-color:{theme.HIGHLIGHT};border-color:{theme.VALUE};}}")
         self.request_button.clicked.connect(self.toggle_request)
         row.addWidget(self.request_button)
         self.counter=label("","benchCounter")
@@ -373,7 +379,9 @@ class BenchScreen(Screen):
         self.counter.setText(answer.counter(left))
         names = self.names
         from goal2.ui.pitch import HOME
-        self.context.setText(f"{TIMES.get(answer.context, answer.context)} · {names[HOME]} {answer.score[HOME]}-"
+        context_text = ("match stopped" if answer.context == "substitution" and not answer.opportunity_visible
+                        else TIMES.get(answer.context, answer.context))
+        self.context.setText(f"{context_text} · {names[HOME]} {answer.score[HOME]}-"
                              f"{answer.score[1 - HOME]} {names[1 - HOME]} · {answer.minute}′"
                              )
         table = roles.tables(self.model.state)

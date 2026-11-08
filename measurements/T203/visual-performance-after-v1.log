@@ -1,0 +1,25 @@
+test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards (goal2.tests.test_substitution_flow_t203.Flow.test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards) ... This plugin does not support propagateSizeHints()
+T203_UNCHANGED_MENU {"card_decodes": 0, "elapsed_s": 0.0001968830038094893}
+ok
+test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states (goal2.tests.test_substitution_flow_t203.Flow.test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states) ... This plugin does not support propagateSizeHints()
+T203_BUTTON {"size": [1440, 900], "state": "normal", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [1440, 900], "state": "disabled", "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397}
+T203_BUTTON {"size": [1440, 900], "state": "focus", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [1800, 1125], "state": "normal", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [1800, 1125], "state": "disabled", "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397}
+T203_BUTTON {"size": [1800, 1125], "state": "focus", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [2110, 1213], "state": "normal", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [2110, 1213], "state": "disabled", "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397}
+T203_BUTTON {"size": [2110, 1213], "state": "focus", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+ok
+test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu) ... This plugin does not support propagateSizeHints()
+ok
+test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity) ... This plugin does not support propagateSizeHints()
+ok
+test_returned_menu_shows_the_acknowledged_current_xi (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_returned_menu_shows_the_acknowledged_current_xi) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 27.583s
+
+OK

@@ -89,6 +89,7 @@ class MenuScreen(Screen):
         middle = QHBoxLayout()
         middle.setSpacing(18)
         self.lineups = {}
+        self._accepted_projection = None
         self.lineup_words = {}
         self.lineup_rows = {}
         self.lineup_headings = {}
@@ -183,32 +184,44 @@ class MenuScreen(Screen):
             rows.append(tuple(line.texts()))
             widgets.append(line)
         column.addStretch(1)
+        if bench is not None:
+            self._accepted_projection = self._lineup_signature(bench)
         self.lineup_words[country] = list(eleven)
         self.lineups[country] = (formation, rows)
         self.lineup_rows[country] = widgets
         self.lineup_headings[country] = column.itemAt(0).widget()
         return frame
 
+    @staticmethod
+    def _lineup_signature(bench):
+        # Only these accepted fields affect these role/name/injury rows.
+        # Request/tactics acknowledgements still refresh the status below.
+        return (tuple(bench.eleven),tuple(bench.position(w) for w in bench.eleven),
+                frozenset(w for w in bench.injured if w in bench.eleven))
+
     def refresh_accepted(self):
         """[designed: T203] Current accepted XI/cue after a stopped acknowledgement."""
         bench = self.day.bench
         if bench is None or self.phase == "before":
             return
-        from goal2.game import roles
-        from goal2.ui.squad_card import LINE_COLOUR
-        country = self.model.state.managed_country
-        codes, lines = roles.tables(self.model.state)
-        positions = [bench.position(w) for w in bench.eleven]
-        formation = "-".join(str(sum(1 for p in positions if p < 14 and lines[p] == line)) for line in (1,2,3))
-        rows = []
-        for row, word in zip(self.lineup_rows[country],bench.eleven):
-            card = bench.card(word);injured = word in bench.injured
-            row.set((card["role"],card["full_name"]+(" · INJURED" if injured else "")),
-                    (LINE_COLOUR.get(card["line"],theme.TEXT_NORMAL),theme.BAD if injured else LINE_COLOUR.get(card["line"],theme.TEXT_NORMAL)))
-            rows.append(tuple(row.texts()))
-        self.lineup_words[country] = list(bench.eleven)
-        self.lineups[country] = (formation,rows)
-        self.lineup_headings[country].setText(f"{self.model.goaldat.country_names[country]} · {formation}".upper())
+        signature = self._lineup_signature(bench)
+        if signature != self._accepted_projection:
+            from goal2.game import roles
+            from goal2.ui.squad_card import LINE_COLOUR
+            country = self.model.state.managed_country
+            codes, lines = roles.tables(self.model.state)
+            positions = [bench.position(w) for w in bench.eleven]
+            formation = "-".join(str(sum(1 for p in positions if p < 14 and lines[p] == line)) for line in (1,2,3))
+            rows = []
+            for row, word in zip(self.lineup_rows[country],bench.eleven):
+                card = bench.card(word);injured = word in bench.injured
+                row.set((card["role"],card["full_name"]+(" · INJURED" if injured else "")),
+                        (LINE_COLOUR.get(card["line"],theme.TEXT_NORMAL),theme.BAD if injured else LINE_COLOUR.get(card["line"],theme.TEXT_NORMAL)))
+                rows.append(tuple(row.texts()))
+            self.lineup_words[country] = list(bench.eleven)
+            self.lineups[country] = (formation,rows)
+            self.lineup_headings[country].setText(f"{self.model.goaldat.country_names[country]} · {formation}".upper())
+            self._accepted_projection = signature
         names = self.model.goaldat.country_names
         time = TIMES[self.phase] if self.phase != "stop" or bench.opportunity_visible else "MATCH STOPPED"
         self.situation.setText(f"{self.day.kind_name.upper()} · location: {names[self.model.home(self.day.fixture)]} · {time}")

@@ -22,7 +22,9 @@ on them is the answer the engine receives, sent once, through the bridge, in the
   set-piece taker goes to S16, whose choice is the answer; the shoot-out order to S18's notice, then S16. A
   substitution opportunity goes to S18 (*SUBSTITUTION OPPORTUNITY*), any key to S15 (phase "stop", whose *players*
   opens S19 in *make substitutions now* mode) and *play* answers it. [designed: owner #610/#612]
-  A pause requested from S17 opens S15 with team tactics and players; original-style Esc on that menu resumes.
+  [designed: owner T203/#662] A pause requested from S17 opens the own bench S19 directly over S15.
+  Player Enter or the request/cancel button toggles only the independent request. Bench Esc returns to
+  the visible match menu; Play or original-style Esc there validates the XI and resumes.
   Team tactics confirm through a stopped edit, retaining personal drafts and accepted swaps. One bench answer (`s19_bench.BenchAnswer`) is built per
   bench decision and sent once; S09's mark and own tactics from S19 go in it. No stop keeps a default answer.
 - **The engine's report** of a bench answer that refuses a pair shows S19 with the reason until a key (`refused`).

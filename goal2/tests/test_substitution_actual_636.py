@@ -191,11 +191,12 @@ def run_journey(test, mode, *, owner_flow=False):
                     test.assertFalse(screen.answer.opportunity_visible)
                     test.assertTrue(screen.answer.takes_substitutions)
                     test.assertFalse(screen.cue_timer.isActive())
-                    test.assertNotIn('SUBSTITUTION OPPORTUNITY',screen.mode_label.text())
-                    test.assertNotIn('SUBSTITUTION OPPORTUNITY',self.window.match_day.pitch.request_badge.text())
+                    test.assertNotIn('substitution opportunity',screen.mode_label.text().lower())
+                    test.assertNotIn('substitution opportunity',screen.context.text().lower())
+                    test.assertNotIn('substitution opportunity',self.window.match_day.pitch.request_badge.text().lower())
                     menu=next(v for v in reversed(self.window.stack) if type(v).__name__=='MenuScreen')
                     test.assertIn(pair[1],menu.lineup_words[menu.model.state.managed_country])
-                    test.assertNotIn('SUBSTITUTION OPPORTUNITY',menu.situation.text())
+                    test.assertNotIn('substitution opportunity',menu.situation.text().lower())
                     self.out['indicators_cleared']=True
                 if mode=='accept':
                     before=screen.answer.left;choices=len(controller.choices)
@@ -210,6 +211,15 @@ def run_journey(test, mode, *, owner_flow=False):
                 choices=len(controller.choices)
                 key(self.window,Qt.Key.Key_Escape)
                 menu=self.window.current();test.assertEqual(type(menu).__name__,'MenuScreen');test.assertEqual(menu.phase,'stop')
+                if owner_flow:
+                    test.assertNotIn('substitution opportunity',menu.situation.text().lower())
+                    key(self.window,Qt.Key.Key_T)
+                    team=self.window.current();test.assertEqual(type(team).__name__,'TeamTacticsScreen')
+                    test.assertNotIn('substitution opportunity',team.facts.text().lower())
+                    test.assertIn(pair[1],team.answer.eleven);test.assertNotIn(pair[0],team.answer.eleven)
+                    key(self.window,Qt.Key.Key_Escape)
+                    test.assertIs(self.window.current(),menu)
+                    self.out['team_cue_checked']=True
                 play_on(self.window,menu)
                 test.assertEqual(type(self.window.current()).__name__,'PitchScreen')
                 test.assertIsNone(controller.stop)
@@ -267,7 +277,7 @@ def run_journey(test, mode, *, owner_flow=False):
                 test.assertIs(walk.out['request_ack']['acknowledged'],False)
             if mode=='accept':test.assertTrue(walk.out.get('tactic_done'));test.assertTrue(walk.out.get('refusal_checked'))
             if owner_flow:
-                for field in ('exact_owner_entry','true_false_true','indicators_cleared','half_swap'):test.assertTrue(walk.out.get(field),field)
+                for field in ('exact_owner_entry','true_false_true','indicators_cleared','team_cue_checked','half_swap'):test.assertTrue(walk.out.get(field),field)
             if mode=='timeout':test.assertTrue(walk.out.get('timeout_checked'))
             other=career();other.state=copy.deepcopy(controller.given._snapshot)
             expected=play_through_bridge(other,controller.choices,fixture=engine_fixture(fixture),competitive=fixture.kind!=1,wait=1500,
