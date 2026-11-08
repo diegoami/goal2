@@ -1,0 +1,9 @@
+test_match_menu_eleven_colours_the_full_names (native_colour_test.RosterColour.test_match_menu_eleven_colours_the_full_names) ... ok
+test_rendered_names_have_all_four_original_colours (native_colour_test.RosterColour.test_rendered_names_have_all_four_original_colours) ... ok
+test_selection_injury_and_unknown_role_stay_readable (native_colour_test.RosterColour.test_selection_injury_and_unknown_role_stay_readable) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.110s
+
+OK
+{"source": "24b87f7797047b663187c58d3ca131f2cce89705", "native_python": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]", "tests": 3, "failures": 0, "errors": 0, "source_sha256": {"goal2\\ui\\squad_card.py": "f191ef041aa32e1f0ee3ad57a5e4cac05adce7665ceb8a20ebd8aeff70f629e7", "goal2\\ui\\s15_match_menu.py": "63b602fd1e5de194d2c2958ff37e04d6668ff43d24f0aa692c4b0af059c9526d", "goal2\\tests\\test_roster_colours_637.py": "ef3c7498b37e192a778eea98f70c1e465846e58258ea34074b599240e12715de"}, "screens": [{"size": [1440, 900], "visible_rows": 20, "layout_problems": [], "image_sha256": "47fd8044535dd97d8bd1a6a4a536d0cd836c82e087830c014e54fea546d3e3e9"}, {"size": [1200, 750], "visible_rows": 20, "layout_problems": [], "image_sha256": "4b20823dc887b1f68e86870d3dbd14e8ef6676d141c9c76b507ef72b3adcb649"}], "installed_runtime": "d56e793", "production_files_changed": false, "owner_game_and_saves_changed": false}
