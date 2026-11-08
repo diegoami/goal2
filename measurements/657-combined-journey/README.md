@@ -50,3 +50,13 @@ filtered/normalized. The immediate unsynchronized UI Esc is replaced by the
 accepted636/T190 fixed-LEAD pause selector: a declared presentation-ack hold
 plus real Esc at the recorded boundary, never a career/engine byte edit. The
 independent arm uses that exact boundary; all result/career assertions remain.
+
+v7 on accepted656/e51 integration completes the actual fresh UI journey and
+FULL same-choice result (ports included)/1200events/memory/seeds/career equality,
+recording content equality and named save/quit. The separate child proves complete
+saved-career equality, but its cleanup accesses lazy Window.match_day when no
+match was opened in that child. Child process FAIL is retained; the data assertion
+is not relabelled process acceptance. Only reload/cleanup changes: getattr for
+the optional lazy controller and actual F3saved-goal playback/F4summary reopening
+with whole-career nonmutation. Create/exercised production/fixtures unchanged, so
+the successful whole match need not repeat underT189. New child output prefix.

@@ -187,10 +187,21 @@ try:
   expected=pickle.loads((TARGET/'expected-private.pickle').read_bytes());w.start();current('StartScreen');key(Qt.Key.Key_Return);current('DeskScreen')
   assert w.career.state==expected;assert not w.career.unsaved;snap('separate-process-reload')
   for keycode,kind in ((Qt.Key.Key_F4,'summary'),(Qt.Key.Key_F3,'goal')):
-   if replays.entries(paths.root/'recordings',kind):key(keycode);assert current('RecordingsScreen').entries;key(Qt.Key.Key_Escape)
+   if replays.entries(paths.root/'recordings',kind):
+    before_record=copy.deepcopy(w.career.state);key(keycode);listing=current('RecordingsScreen');assert listing.entries
+    stored=replays.read(listing.entries[0]['path']);key(Qt.Key.Key_Return)
+    if kind=='summary':
+     assert current('BoardScreen').data==stored['data']['board'];snap('summary-reloaded');key(Qt.Key.Key_Escape)
+    else:
+     current('SavedGoalMenu');key(Qt.Key.Key_Return)
+     pump(lambda:type(w.current()).__name__=='SavedGoalMenu',60,'657 saved goal playback completion')
+     snap('saved-goal-played');key(Qt.Key.Key_Escape)
+    current('RecordingsScreen');key(Qt.Key.Key_Escape);current('DeskScreen')
+    assert w.career.state==before_record
   key(Qt.Key.Key_F10);key(Qt.Key.Key_Y);assert not w.isVisible()
   receipt=dict(source=HEAD,complete_saved_career_equal=True,separate_process=True)
  (TARGET/(MODE+'-receipt.json')).write_text(json.dumps(receipt,indent=2)+'\n');print('PASS '+MODE,flush=True)
 finally:
- if w.match_day is not None:w.match_day.close()
+ day=getattr(w,'match_day',None)
+ if day is not None:day.close()
  w.leave();w.close();app.processEvents()
