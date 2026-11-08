@@ -334,7 +334,9 @@ class Screens(unittest.TestCase):
             self.assertSame()
             self.assertEqual(screen.lines()[index][1:], (other, now), f"{name}: the other option is now")
             self.assertIn(f"Changed just now: {name} {now} → {other}", re.sub(r"<[^>]+>", "", screen.note.text()))
-        self.assertIn("not decoded yet (G05)", screen.characteristics.values["morale"].text())
+        from goal2.game.country_card import card
+        self.assertEqual(screen.characteristics.panel,
+                         card(self.model.state,self.model.state.managed_country,self.model.goaldat)['characteristics'])
 
     # The mouse.
     def test_a_click_on_a_row_and_on_a_bar_key_does_what_its_key_does(self):

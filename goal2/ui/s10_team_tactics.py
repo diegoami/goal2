@@ -10,8 +10,8 @@ decision confirms the actual flag before further input. Career state is publishe
 moves the cursor to it, a click on the highlighted line is Enter [designed: T165].
 
 The formation is counted from the eleven's lines [derived: goal2/game/country_card.py; today's Team tactics]. The
-characteristics panel says "not decoded yet (G05)" where the Python route has no value, as today's country card
-does [designed: T144; main session, 2026-11-03, T165].
+characteristics panel uses the accepted original TEAM reader before a match [confirmed: original1771:1981
+calls157D; F038; T202]. Live stops retain their explicit fallback until current-record UI acceptance619.
 """
 from __future__ import annotations
 
@@ -103,10 +103,14 @@ class TeamTacticsScreen(Screen):
         boxes.addWidget(table, 1)
         right, right_layout = box("Characteristics")
         right.setFixedWidth(360)
-        self.characteristics = KeyValues(CHARACTERISTICS, label_width=110, tone=theme.TEXT_BRIGHT)
-        for name in CHARACTERISTICS:
-            self.characteristics.set(name, NOT_DECODED)
-        for value in self.characteristics.values.values(): value.setWordWrap(True)
+        if self.answer is None:
+            from goal2.ui.team_card import CharacteristicPanel
+            self.characteristics = CharacteristicPanel(self.window_.family)
+        else:
+            self.characteristics = KeyValues(CHARACTERISTICS, label_width=110, tone=theme.TEXT_BRIGHT)
+            for name in CHARACTERISTICS:
+                self.characteristics.set(name, NOT_DECODED)
+            for value in self.characteristics.values.values(): value.setWordWrap(True)
         right_layout.addWidget(self.characteristics)
         right_layout.addStretch(1)
         boxes.addWidget(right)
@@ -118,6 +122,12 @@ class TeamTacticsScreen(Screen):
 
     def refresh(self):
         model, state = self.model, self.model.state
+        if self.answer is None:
+            from goal2.game.team_card import TeamMemory
+            from goal2.engine.team_card.team_characteristics import team_characteristics
+            memory = TeamMemory(state)
+            self.characteristics.set_panel(team_characteristics(
+                memory.country_record(state.managed_country), memory.player_record, memory.read_ds))
         view = model.view()
         rows, eleven = squad_rows(model)
         if self.answer is not None:
