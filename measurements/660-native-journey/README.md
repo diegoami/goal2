@@ -19,3 +19,7 @@ records actual painted replay frames once each, and separately records polling
 for diagnosis. No game/bridge/action/ack/deadline changed and no frame filtered
 from the equality. This distinguishes missed observer polls from a real replay
 defect. v1source/log/rawprivateTemp remain unchanged; new label/target required.
+
+The first public console copy uses Git text normalization (CRLF→LF). Its exact
+raw byte copy is separately preserved as replay-polling-failure-v1-raw.log with
+-text, and in private keep; no measured values/game output are changed.

@@ -1,0 +1,40 @@
+fresh Austria career through S02/S03/S04 UI
+JOURNEY RoundScreen:before
+JOURNEY MenuScreen:before
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+commentary Space holds and resumes
+JOURNEY PitchScreen
+JOURNEY PitchScreen
+Traceback (most recent call last):
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\measurements\660-native-journey\native.py", line 36, in <module>
+    values=runpy.run_path(sys.argv[0],run_name='__main__')
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\measurements\660-native-journey\audit-v1.py", line 160, in <module>
+    before=copy.deepcopy(model.state);walk=AuditWalk();w.current().highlight(PLAY_NEXT);key(Qt.Key.Key_Return);walk.run()
+                                                                                                               ~~~~~~~~^^
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\goal2\tests\test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\goal2\tests\test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\measurements\660-native-journey\audit-v1.py", line 57, in each
+    return super().each()
+           ~~~~~~~~~~~~^^
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\goal2\tests\test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\goal2\tests\test_ui_bench_t180.py", line 176, in react
+    self.on_box(screen, box)
+    ~~~~~~~~~~~^^^^^^^^^^^^^
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-journey-a\measurements\660-native-journey\audit-v1.py", line 92, in on_box
+    assert self.replayed==self.expect['goal']['frames'],'replay samples differ from the captured goal'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: replay samples differ from the captured goal
+NATIVE660_RESULT {"audit_receipt": {}, "engine_python_sha256": "f71828480f3474a27a27d89ca0127e7cc970be3e460d3acbca36cfe117bcbdc7", "error": "AssertionError: replay samples differ from the captured goal", "fixture_sha256": {"GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca", "GOAL.HLP": "2f3be8648a52045b6f7af1f41cba020d6a662229e5db499e203c5d0957308f60", "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949"}, "label": "v1", "mode": "create", "os_name": "nt", "passed": false, "private_output": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native660-m3ka_gvi\\case", "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]", "qt_platform": "offscreen", "seconds": 72.92322039999999, "source_head": "e18eb3121e626063a3768075ef24ada04b02bbe2"}
