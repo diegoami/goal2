@@ -14,6 +14,8 @@ passes3/3 in0.090s on functional24b87f7797047b663187c58d3ca131f2cce89705.
 The controls inspect full-name glyph pixels for all four lines and the unknown,
 selected and injured cases; the menu control visits all11 rendered rows.
 
+The byte-exact `native-final.raw.log/json` are preserved beside the Git text copies;
+`artifact-sha256.json` binds those raw captures and producing script.
 `native-final.log/json` bind the committed renderer/test bytes to bundled native
 Windows CPython3.13.17:3/3 pass0.110s. Actual S08 temporary-career screenshots have
 20 visible rows and zero fixed-page problems at1440x900 and1200x750. Two modified
