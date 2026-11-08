@@ -1,0 +1,22 @@
+diff --git a/goal2/ui/s10_team_tactics.py b/goal2/ui/s10_team_tactics.py
+index a9a53e79..403a2d46 100644
+--- a/goal2/ui/s10_team_tactics.py
++++ b/goal2/ui/s10_team_tactics.py
+@@ -143,9 +143,15 @@ class TeamTacticsScreen(Screen):
+         if decoded:
+             from goal2.game.team_card import TeamMemory
+             from goal2.engine.team_card.team_characteristics import team_characteristics
+-            memory = TeamMemory(trait_state)
++            trait_memory = TeamMemory(trait_state)
+             self.characteristics.set_panel(team_characteristics(
+-                memory.country_record(trait_state.managed_country), memory.player_record, memory.read_ds))
++                trait_memory.country_record(trait_state.managed_country), trait_memory.player_record, trait_memory.read_ds))
++            memory = trait_memory
++            if self.answer is not None:
++                # Retain the existing one shared word reader for all eight
++                # tactic pairs; the trait reader has its independent live view.
++                from goal2.game.player_card import _Memory
++                memory = _Memory(state)
+         else:
+             from goal2.game.player_card import _Memory
+             memory = _Memory(state)

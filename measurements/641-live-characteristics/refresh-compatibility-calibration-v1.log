@@ -1,0 +1,18 @@
+test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding (goal2.tests.test_tactics_refresh_636.FreshStoppedRoles.test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding) ... This plugin does not support propagateSizeHints()
+FAIL
+test_pending_selection_keeps_all_rows_and_sends_no_change (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_pending_selection_keeps_all_rows_and_sends_no_change) ... ok
+test_selection_only_changes_highlight_and_hint (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_selection_only_changes_highlight_and_hint) ... ok
+
+======================================================================
+FAIL: test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding (goal2.tests.test_tactics_refresh_636.FreshStoppedRoles.test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_tactics_refresh_636.py", line 82, in test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding
+    self.assertEqual(memory.call_count,1,'one reader serves all eight tactic word pairs')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : one reader serves all eight tactic word pairs
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.451s
+
+FAILED (failures=1)

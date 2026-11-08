@@ -11,7 +11,8 @@ moves the cursor to it, a click on the highlighted line is Enter [designed: T165
 
 The formation is counted from the eleven's lines [derived: goal2/game/country_card.py; today's Team tactics]. The
 characteristics panel uses the accepted original TEAM reader before a match [confirmed: original1771:1981
-calls157D; F038; T202]. Live stops retain their explicit fallback until current-record UI acceptance619.
+calls157D; F038; T202]. Complete live snapshots use the same immutable reader with the accepted XI order
+[derived: #641, F038]; legacy clients without current records retain the explicit fallback.
 """
 from __future__ import annotations
 
@@ -103,15 +104,19 @@ class TeamTacticsScreen(Screen):
         boxes.addWidget(table, 1)
         right, right_layout = box("Characteristics")
         right.setFixedWidth(360)
-        if self.answer is None:
-            from goal2.ui.team_card import CharacteristicPanel
-            self.characteristics = CharacteristicPanel(self.window_.family)
-        else:
-            self.characteristics = KeyValues(CHARACTERISTICS, label_width=110, tone=theme.TEXT_BRIGHT)
-            for name in CHARACTERISTICS:
-                self.characteristics.set(name, NOT_DECODED)
-            for value in self.characteristics.values.values(): value.setWordWrap(True)
-        right_layout.addWidget(self.characteristics)
+        # [designed: #641] Both alternatives exist before FixedPage records/scales
+        # the screen. Hidden widgets do not impose a larger stacked size hint.
+        from goal2.ui.team_card import CharacteristicPanel
+        self._characteristic_panel = CharacteristicPanel(self.window_.family)
+        self._characteristic_fallback = KeyValues(CHARACTERISTICS, label_width=110, tone=theme.TEXT_BRIGHT)
+        for name in CHARACTERISTICS:
+            self._characteristic_fallback.set(name, NOT_DECODED)
+        for value in self._characteristic_fallback.values.values(): value.setWordWrap(True)
+        right_layout.addWidget(self._characteristic_panel)
+        right_layout.addWidget(self._characteristic_fallback)
+        self.characteristics = self._characteristic_panel if self.answer is None else self._characteristic_fallback
+        self._characteristic_panel.setVisible(self.answer is None)
+        self._characteristic_fallback.setVisible(self.answer is not None)
         right_layout.addStretch(1)
         boxes.addWidget(right)
         column.addLayout(boxes, 1)
@@ -122,18 +127,32 @@ class TeamTacticsScreen(Screen):
 
     def refresh(self):
         model, state = self.model, self.model.state
-        if self.answer is None:
+        # One fresh immutable projection per decision/refresh; cursor movement
+        # remains presentation-only. Pending position drafts still drive the
+        # formation/strip below, while traits use accepted current raw records.
+        records = getattr(self.answer, "live_records", None) if self.answer is not None else None
+        trait_state = state if self.answer is None else None
+        if records:
+            from goal2.ui.live_cards import card_state
+            trait_state = card_state(state, records, self.answer.team_tactics)
+            trait_state.managed_squad = list(self.answer.words())
+        decoded = trait_state is not None
+        self._characteristic_panel.setVisible(decoded)
+        self._characteristic_fallback.setVisible(not decoded)
+        self.characteristics = self._characteristic_panel if decoded else self._characteristic_fallback
+        if decoded:
             from goal2.game.team_card import TeamMemory
             from goal2.engine.team_card.team_characteristics import team_characteristics
-            memory = TeamMemory(state)
+            memory = TeamMemory(trait_state)
             self.characteristics.set_panel(team_characteristics(
-                memory.country_record(state.managed_country), memory.player_record, memory.read_ds))
+                memory.country_record(trait_state.managed_country), memory.player_record, memory.read_ds))
+        else:
+            from goal2.game.player_card import _Memory
+            memory = _Memory(state)
         if self.answer is None:
             rows, eleven = squad_rows(model)
         else:
             from goal2.game import roles
-            from goal2.game.player_card import _Memory
-            memory = _Memory(state)
             table = roles.tables(state)
             rows = []
             for word in self.answer.words():

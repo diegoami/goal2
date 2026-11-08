@@ -1,0 +1,26 @@
+{
+  "scope": "prepared/current-input GUI verification only; fresh accepted-worker run remains a separate required proof",
+  "base": "b097ac0d123ba8e80237fc2e976710d51e49932f",
+  "model": "Inherited Codex GPT-6 family; exact variant unavailable",
+  "sources_sha256": {
+    "goal2/ui/s10_team_tactics.py": "ac6b5cd746ee30e7760cfa6e42e56c18b427b0f912fe2ce10575c30235efb0bd",
+    "goal2/ui/live_cards.py": "d3681164dc7da398ea0e3b82df8bf22da34b77860fcbd241d674721bd05b5d53",
+    "goal2/game/team_card.py": "81c77de966a94eade21027a7a1b291a96b314325eb32b1c845c455a3db6a1c4d",
+    "goal2/engine/team_card/team_characteristics.py": "29ce61b550537fa0e98c31144124b7e1cd07a1bd2767fc8ff3d9c5b1a465efe0",
+    "goal2/ui/team_card.py": "cddea4f7878909ba016abf396933cf248a4afaff6697117b8b2f3ede7c257330",
+    "goal2/core/views.py": "936251fec0492903bebe1f400f68c9c61014bf837c855aeaba3d46c7ebd1ed97",
+    "goal2/tests/test_live_tactics_characteristics_641.py": "2d2783101a002e3e336452c0b3b280295ad5128cb943e8558a8dc6350819afcd",
+    "goal2/tests/test_live_tactics_worker_641.py": "1defc26aa3d30e935901a073968221fb3cd1fffe165c571a762fd5aa8e113068",
+    "goal2/tests/test_tactics_characteristics_t202.py": "2a023acf373f00f4211e9d552f4044b307e9b285267cc90d41af6f93efc89c49",
+    "goal2/tests/test_tactics_refresh_636.py": "af0b9312972078c4c0fab9a91517ae12edd1b22276fc53466116d9683745b56d"
+  },
+  "prepared_input_run_sha256": "0e10b3f05561b32544fa25d75d0126a8edb0dab2b8e6d12d125e4ef5762a111d",
+  "prepared_snapshots": 37,
+  "prepared_records_per_platform": 740,
+  "prepared_platforms": [
+    "Linux CPython/Qt offscreen",
+    "Windows bundle CPython/Qt offscreen"
+  ],
+  "actual_worker_execution_claimed": false,
+  "engine_vendor_changes_by_this_task": false
+}

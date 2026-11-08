@@ -1,0 +1,6 @@
+{
+  "source_sha256": "e3f715de949fd204fcf30ff9446353305c3b9ba2f17abca5abf0bfafce3a1faf",
+  "scope": "uncommitted prototype matched old constructor spy but parsed twice; rejected by main stronger actual _wrap_raw boundary budget",
+  "patch_sha256": "21a4cbd03ff05d75ec44a9f06d63e80322619b59343a0671cc78f752176b13a9",
+  "final_acceptance": false
+}

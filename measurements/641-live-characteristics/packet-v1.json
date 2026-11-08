@@ -1,0 +1,19 @@
+{
+  "base": "b097ac0d123ba8e80237fc2e976710d51e49932f",
+  "model": "Inherited Codex GPT-6 family; exact variant unavailable",
+  "before": {
+    "tests": 4,
+    "failures": 4,
+    "behavior": "complete live20 snapshot still renders G05"
+  },
+  "after": {
+    "tests": 7,
+    "pass": 7,
+    "includes": "4new +3unchanged T202"
+  },
+  "scope": "authored current packets +independent original-backed Core projection; not natural worker execution",
+  "sources_sha256": {
+    "goal2/ui/s10_team_tactics.py": "ac6b5cd746ee30e7760cfa6e42e56c18b427b0f912fe2ce10575c30235efb0bd",
+    "goal2/tests/test_live_tactics_characteristics_641.py": "f5ebb590551be10144cf6555ea2a32d78d34d0b52a26c35ca7e47d44d0f05957"
+  }
+}

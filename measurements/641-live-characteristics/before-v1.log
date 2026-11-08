@@ -1,0 +1,49 @@
+test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel) ... This plugin does not support propagateSizeHints()
+ERROR
+test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write) ... This plugin does not support propagateSizeHints()
+ERROR
+test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs) ... This plugin does not support propagateSizeHints()
+ERROR
+test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 79, in test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel
+    self.assertEqual(screen.characteristics.panel,expected_panel(model,second.data))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'KeyValues' object has no attribute 'panel'
+
+======================================================================
+ERROR: test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 63, in test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write
+    self.assertNotIn('not decoded',screen.characteristics.text())
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'KeyValues' object has no attribute 'text'
+
+======================================================================
+ERROR: test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 91, in test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs
+    self.assertEqual(screen.characteristics.panel,expected)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'KeyValues' object has no attribute 'panel'
+
+======================================================================
+ERROR: test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 100, in test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards
+    self.assertNotIn('not decoded',screen.characteristics.text())
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'KeyValues' object has no attribute 'text'
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.003s
+
+FAILED (errors=4)
