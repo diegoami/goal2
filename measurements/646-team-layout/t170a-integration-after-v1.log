@@ -1,0 +1,29 @@
+test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied) ... T170A_IMPORT {"engine_or_match_executed": false, "entries": 533, "implementation": "pypy", "public_assistant_included": false, "registry_modules": ["ageing", "assistant", "attributes", "ball", "contests", "discipline", "display", "duels", "entrypoints", "frame", "geometry", "menus", "motion", "news", "pilot", "positioning", "postmatch", "quick", "rare", "real", "restarts", "route", "runtime", "selection", "setup", "silent", "stages", "takers", "update"], "required_real_entries": 23, "route_exports": true, "unicorn_import_denied": true, "version": "3.11.15 (194f9f44b505, May 25 2026, 19:34:11)\n[PyPy 7.3.23 with GCC 10.2.1 20210130 (Red Hat 10.2.1-11)]"}
+ok
+test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids) ... ok
+test_computer_manager_selection_uses_its_record_index_instead_of_country (goal2.tests.test_team_manager_653.TeamManager.test_computer_manager_selection_uses_its_record_index_instead_of_country) ... ok
+test_named_human_manager_is_current_and_other_country_never_inherits_it (goal2.tests.test_team_manager_653.TeamManager.test_named_human_manager_is_current_and_other_country_never_inherits_it) ... ok
+test_tactics_header_uses_renamed_human_without_changing_career_or_other_fields (goal2.tests.test_team_manager_653.TeamManager.test_tactics_header_uses_renamed_human_without_changing_career_or_other_fields) ... This plugin does not support propagateSizeHints()
+ok
+test_unnamed_preview_keeps_existing_country_default_without_writing_identity (goal2.tests.test_team_manager_653.TeamManager.test_unnamed_preview_keeps_existing_country_default_without_writing_identity) ... ok
+test_full_original_team_fields_and_xi_panels_remain_visible_while_editing (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_full_original_team_fields_and_xi_panels_remain_visible_while_editing) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order) ... This plugin does not support propagateSizeHints()
+ok
+test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) ... ok
+test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides (goal2.tests.test_live_team_context_646.LiveTeamContext.test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 4.884s
+
+OK

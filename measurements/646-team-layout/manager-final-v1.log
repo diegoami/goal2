@@ -1,0 +1,10 @@
+test_computer_manager_selection_uses_its_record_index_instead_of_country (goal2.tests.test_team_manager_653.TeamManager.test_computer_manager_selection_uses_its_record_index_instead_of_country) ... ok
+test_named_human_manager_is_current_and_other_country_never_inherits_it (goal2.tests.test_team_manager_653.TeamManager.test_named_human_manager_is_current_and_other_country_never_inherits_it) ... ok
+test_tactics_header_uses_renamed_human_without_changing_career_or_other_fields (goal2.tests.test_team_manager_653.TeamManager.test_tactics_header_uses_renamed_human_without_changing_career_or_other_fields) ... This plugin does not support propagateSizeHints()
+ok
+test_unnamed_preview_keeps_existing_country_default_without_writing_identity (goal2.tests.test_team_manager_653.TeamManager.test_unnamed_preview_keeps_existing_country_default_without_writing_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.421s
+
+OK

@@ -1,0 +1,15 @@
+{
+  "pr": 698,
+  "head": "e47c1052bb5f738f08e7a43617c3015dc454a1f5",
+  "merge": "70f38677edc351579ce59fb8bb2de2fdc9be9624",
+  "tested_source": "19ca70b869d7c9b84bfee0730b06bdc9a547c473",
+  "runtime_sha256": "58472fd3656346ce14512e8b17b10c0f1677f303270fe7c5352a2a8ae1d363bd",
+  "actual_ci_run": 42479961243,
+  "actual_groups": 12,
+  "security_pass": true,
+  "full_proof_verified": true,
+  "phase": "accepted",
+  "time_utc": "2026-11-08T13:13:37Z",
+  "verification": "fresh independent MERGED/head/parent/12actualCI/security/actualblob and local git object equality",
+  "scope": "only match facade; screens/baseSOURCE/tables/port bodies unchanged"
+}

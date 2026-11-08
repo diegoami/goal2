@@ -1,0 +1,123 @@
+test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) ... 
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid=None) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid=[]) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={}) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': True, 'in_match_menu_used': 1, 'sides': [7, 19]}) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 256, 'in_match_menu_used': 1, 'sides': [7, 19]}) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': -1, 'sides': [7, 19]}) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [7, 7]}) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [0, 19]}) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [7, 129]}) ... FAIL
+  test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [7, 19], 'extra': 0}) ... FAIL
+test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides (goal2.tests.test_live_team_context_646.LiveTeamContext.test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': True, 'in_match_menu_used': 1, 'sides': [7, 19]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 256, 'in_match_menu_used': 1, 'sides': [7, 19]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': -1, 'sides': [7, 19]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [7, 7]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [0, 19]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [7, 129]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) (invalid={'match_set_up': 1, 'in_match_menu_used': 1, 'sides': [7, 19], 'extra': 0})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 26, in test_invalid_context_fails_before_snapshot_consumption
+    with self.subTest(invalid=invalid),self.assertRaises(ValueError):player_snapshot(packet)
+                                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides (goal2.tests.test_live_team_context_646.LiveTeamContext.test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_live_team_context_646.py", line 71, in test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides
+    self.assertEqual(screen.performance.panel,expected['performance'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != {'side': 0, 'team': 7, 'bars': [{'line': [314 chars]318]}
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.586s
+
+FAILED (failures=11)

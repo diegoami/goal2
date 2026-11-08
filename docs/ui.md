@@ -172,8 +172,15 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
 - **S09**: between matches the original's four lines (position, possession, passing, tackling) with **P** on a line
   set for this player. The mark line comes with the match screens: the original shows it only with a match set up
   (`1771:49B8`, F010). Arrows choose, Enter alters, Esc returns to the card.
-- **S10**: the eight lines with the value now and the other option; ↑↓ choose, Enter changes, Esc returns. The
-  characteristics say "not decoded yet (G05)": the Python route has no team characteristics.
+- **S10**: [confirmed: original1771:1981→157D; F036–F038; owner611/646] the full TEAM header,
+  skills, original XI caps/age and characteristics remain beside the eight editable tactics. The first
+  three are TEAM TACTICS and the last five PLAYER DEFAULTS. ↑↓ choose, Enter changes, Esc returns;
+  a changed match tactic waits for authoritative confirmation. Current stopped-match records supply
+  the live panels; performance appears only with its observed original visibility flags. Legacy decisions
+  without those observations retain an explicit fallback. Red roster names marked * are injured.
+  [derived: F024/F034; designed: T92, #653] The TEAM manager follows the country's selected
+  manager; the active named human uses the session identity. The unnamed country preview retains
+  its existing default name. Decoding additional imported human identities is outside this overlay.
 - **The mouse**: a click on a row (a player, a tactic line) moves the cursor there, and a click on the highlighted row
   is Enter. *Squad* and *Pool* above the card are ← and →.
 - **Colours** are set on each part by itself, as colour only, from `theme`'s roles; the window's style sheet is

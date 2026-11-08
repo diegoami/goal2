@@ -59,7 +59,7 @@ class TeamMemory(_Memory):
         address=int.from_bytes(pointer[:2],'little')+16*int.from_bytes(pointer[2:],'little')
         return self.raw.memory(address+3*index,3)
 
-    def panels(self,country):
+    def panels(self,country,*,performance_context=...):
         from goal2.engine.team_card.country import team_labels
         from goal2.engine.team_card.team_skills import team_skills
         from goal2.engine.team_card.team_performance import team_performance
@@ -68,10 +68,19 @@ class TeamMemory(_Memory):
         if country==0:raise ValueError('country must be 1..128')
         record=self.country_record(country);manager=record[0x2E]
         labels=team_labels(record,self.manager_record(manager) if manager else None,self.read_ds,self.read_code)
-        sides=tuple(int.from_bytes(self.read_ds(off,2),'little') for off in (0x9B34,0x9B36))
+        # [confirmed: F037; #646] A live decision's raw visibility bytes are
+        # authoritative. None means that observation is unavailable; never read
+        # career-era match flags as current. Ellipsis retains existing readers.
+        if performance_context is ...:
+            flags=(self.read_ds(0xC1E,1)[0],self.read_ds(0xC1F,1)[0])
+            sides=tuple(int.from_bytes(self.read_ds(off,2),'little') for off in (0x9B34,0x9B36))
+        elif performance_context is not None:
+            flags=(performance_context['match_set_up'],performance_context['in_match_menu_used'])
+            sides=performance_context['sides']
+        performance=None if performance_context is None else team_performance(
+            country,*flags,sides,self.country_record,self.player_record,self.read_ds)
         return {key:labels[key] for key in ('status','skill')} | {
             'team_skills':team_skills(record,self.player_record,self.country_record,self.manager_record,self.read_ds,self.read_code),
-            'performance':team_performance(country,self.read_ds(0xC1E,1)[0],self.read_ds(0xC1F,1)[0],sides,
-                                           self.country_record,self.player_record,self.read_ds),
+            'performance':performance,
             'characteristics':team_characteristics(record,self.player_record,self.read_ds),
         }

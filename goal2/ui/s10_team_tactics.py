@@ -1,7 +1,7 @@
 """S10 Team tactics: the team's eight lines.
 
 [designed: owner, 2026-11-03, #526; docs/design/ui-2026-11, S10 and its mockup s10-team-tactics.html; T165] Each
-line with its value now and the other option, in the original's order: defence system, protection, offside, then
+line with its current value, in the original's order: defence system, protection, offside, then
 the player defaults positioning, possession, passing, tackling and marking [confirmed: F010, the team tactics
 screen 1771:1981 lists element DS:6BBF[row]: 5, 6, 7, 1, 2, 3, 4, 8; the words from goal2.game.country_card,
 F008]. ↑↓ choose a line; before a match Enter uses `DesktopModel.set_team_tactic`.
@@ -29,7 +29,7 @@ LINES = (("defence system", 5), ("protection", 6), ("offside", 7), ("positioning
          ("passing", 3), ("tackling", 4), ("marking", 8))
 CHARACTERISTICS = ("hardness", "fitness", "energy", "morale")
 DEFAULTS = "The last five lines are the defaults every player follows unless his own tactics say otherwise (P)."
-WIDTHS = (200, 176, 0)
+WIDTHS = (200, 0, 0)
 
 
 def words(state, element, *, memory=None):
@@ -66,62 +66,67 @@ class TeamTacticsScreen(Screen):
     def _build(self):
         main = QHBoxLayout()
         main.setSpacing(18)
-        column = QVBoxLayout()
-        column.setSpacing(14)
-        head, head_layout = box()
-        row = QHBoxLayout()
-        row.setSpacing(28)
-        self.country = label("", "h1")
-        self.facts = label("", "sub")
+        from goal2.ui.country_header import TeamHeader
+        from goal2.ui.team_card import CharacteristicPanel, LineBars
+        from goal2.ui.squad_card import FactsTable
+        left = QVBoxLayout()
+        left.setSpacing(10)
+        self.team_header = TeamHeader(self.window_.family, compact=True)
+        self.country = self.team_header.name
+        left.addWidget(self.team_header)
+        bars, bars_layout = box('Skills')
+        self.skills = LineBars()
+        bars_layout.addWidget(self.skills)
+        self.performance_heading = label('PERFORMANCE', 'boxHeading')
+        self.performance = LineBars()
+        bars_layout.addWidget(self.performance_heading)
+        bars_layout.addWidget(self.performance)
+        left.addWidget(bars)
+        self.facts = label('', 'sub')
+        self.facts.setWordWrap(True)
         self.facts.setTextFormat(Qt.TextFormat.RichText)
-        row.addWidget(self.country, 0, Qt.AlignmentFlag.AlignVCenter)
-        row.addWidget(self.facts, 0, Qt.AlignmentFlag.AlignVCenter)
-        row.addStretch(1)
-        head_layout.addLayout(row)
-        column.addWidget(head)
-        boxes = QHBoxLayout()
-        boxes.setSpacing(18)
-        table, table_layout = box("Team tactics · player defaults")
-        table_layout.setSpacing(0)
-        table_layout.addSpacing(10)
-        header = Row(-1, WIDTHS, margins=(8, 4, 8, 4), underline=True)
-        header.set(("LINE", "NOW", "OTHER OPTION"), (theme.HEADING,) * 3)
-        for cell in header.cells: cell.setWordWrap(True)
-        header.setCursor(Qt.CursorShape.ArrowCursor)
-        table_layout.addWidget(header)
+        left.addWidget(self.facts)
+        left.addStretch(1)
+        main.addLayout(left, 1)
+        table, table_layout = box()
+        table_layout.setSpacing(2)
+        self.team_heading = label('TEAM TACTICS', 'boxHeading')
+        table_layout.addWidget(self.team_heading)
+        self.defaults_heading = label('PLAYER DEFAULTS', 'boxHeading')
         self.rows = []
         for i in range(len(LINES)):
-            line = Row(i, WIDTHS, margins=(8, 6, 8, 6), underline=True)
+            if i == 3:
+                table_layout.addSpacing(8)
+                table_layout.addWidget(self.defaults_heading)
+            line = Row(i, WIDTHS, margins=(8, 4, 8, 4), underline=True)
             line.chosen.connect(self.click)
-            table_layout.addWidget(line)
             for cell in line.cells: cell.setWordWrap(True)
+            # Original1981 shows label/current value. Retain the alternative in
+            # the existing lines() API, without a duplicate visible table.
+            line.cells[2].hide()
+            table_layout.addWidget(line)
             self.rows.append(line)
-        table_layout.addSpacing(14)
-        self.note = para("", "sub")
-        self.note.setMinimumWidth(560)
-        table_layout.addWidget(self.note)
-        table_layout.addStretch(1)
-        boxes.addWidget(table, 1)
-        right, right_layout = box("Characteristics")
-        right.setFixedWidth(360)
-        # [designed: #641] Both alternatives exist before FixedPage records/scales
-        # the screen. Hidden widgets do not impose a larger stacked size hint.
-        from goal2.ui.team_card import CharacteristicPanel
+        table_layout.addSpacing(8)
+        self.averages = FactsTable(('caps','age'))
+        table_layout.addWidget(self.averages)
         self._characteristic_panel = CharacteristicPanel(self.window_.family)
         self._characteristic_fallback = KeyValues(CHARACTERISTICS, label_width=110, tone=theme.TEXT_BRIGHT)
         for name in CHARACTERISTICS:
             self._characteristic_fallback.set(name, NOT_DECODED)
         for value in self._characteristic_fallback.values.values(): value.setWordWrap(True)
-        right_layout.addWidget(self._characteristic_panel)
-        right_layout.addWidget(self._characteristic_fallback)
+        table_layout.addWidget(self._characteristic_panel)
+        table_layout.addWidget(self._characteristic_fallback)
         self.characteristics = self._characteristic_panel if self.answer is None else self._characteristic_fallback
         self._characteristic_panel.setVisible(self.answer is None)
         self._characteristic_fallback.setVisible(self.answer is not None)
-        right_layout.addStretch(1)
-        boxes.addWidget(right)
-        column.addLayout(boxes, 1)
-        main.addLayout(column, 1)
+        self.note = para('', 'sub')
+        self.note.setMinimumWidth(520)
+        table_layout.addWidget(self.note)
+        table_layout.addStretch(1)
+        main.addWidget(table, 2)
         self.strip = Strip()
+        self.injury_hint = label('* injured', 'sub')
+        self.strip.layout().insertWidget(self.strip.layout().count()-1, self.injury_hint)
         main.addWidget(self.strip)
         self.body_layout.addLayout(main, 1)
 
@@ -140,15 +145,23 @@ class TeamTacticsScreen(Screen):
         self._characteristic_panel.setVisible(decoded)
         self._characteristic_fallback.setVisible(not decoded)
         self.characteristics = self._characteristic_panel if decoded else self._characteristic_fallback
+        from goal2.game.team_card import TeamMemory
+        from goal2.game.country_card import card as country_card
+        memory = TeamMemory(trait_state if decoded else state)
+        context = ... if self.answer is None else getattr(self.answer, 'team_context', None)
+        card = country_card(trait_state if decoded else state, state.managed_country,
+                            model.goaldat, memory=memory, performance_context=context)
         if decoded:
-            from goal2.game.team_card import TeamMemory
-            from goal2.engine.team_card.team_characteristics import team_characteristics
-            memory = TeamMemory(trait_state)
-            self.characteristics.set_panel(team_characteristics(
-                memory.country_record(trait_state.managed_country), memory.player_record, memory.read_ds))
+            traits = card['characteristics']
+            self.characteristics.set_panel(traits)
+            self.averages.set({n['field']:n['text'] for n in traits['numbers']}, theme.VALUE)
         else:
-            from goal2.game.player_card import _Memory
-            memory = _Memory(state)
+            self.averages.set({'caps':NOT_DECODED,'age':NOT_DECODED}, theme.TEXT_NORMAL)
+        self.skills.set_panel(card['team_skills'] if decoded else None)
+        performance = card['performance'] if self.answer is not None and decoded else None
+        self.performance.set_panel(performance)
+        self.performance.setVisible(performance is not None)
+        self.performance_heading.setVisible(performance is not None)
         if self.answer is None:
             rows, eleven = squad_rows(model)
         else:
@@ -168,7 +181,8 @@ class TeamTacticsScreen(Screen):
         if fixture is not None:
             opponent = fixture.side_b if fixture.side_a == state.managed_country else fixture.side_a
             facts += [(" · next ", None), (model.goaldat.country_names[opponent], theme.TEXT_BRIGHT)]
-        self.country.setText(country_name)
+        card = {**card, 'formation':formation, 'eleven':[r['role'] for r in lineup]}
+        self.team_header.set_card(card)
         self.facts.setText(rich(facts))
         for i, ((name, element), line) in enumerate(zip(LINES, self.rows)):
             clear, set_ = words(state, element, memory=memory)
@@ -187,8 +201,12 @@ class TeamTacticsScreen(Screen):
         elif self.message:
             parts = [(self.message, theme.VALUE)]
         self.note.setText(f'<p style="line-height:{LINE_HEIGHT}%">{rich(parts)}</p>')
+        injured = getattr(self.answer, 'injured', ())
+        self.injury_hint.setVisible(bool(injured))
         self.strip.show_rows(country_name,
-                             [(r["role"], r["line"], full_name(model, r["id"])) for r in rows], -1, eleven == 11)
+                             [(r["role"], r["line"], full_name(model, r["id"]) +
+                               (' *' if r['id'] in injured else '')) for r in rows], -1, eleven == 11,
+                             injured=[i for i,r in enumerate(rows) if r["id"] in injured])
         self._refresh_hint()
 
     def lines(self):
