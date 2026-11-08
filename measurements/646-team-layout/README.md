@@ -43,3 +43,14 @@ combined header/bar/XI24px-scaled fonts/all20rows/no-clipping at all three sizes
 Native receipt native-d68b-v2.json binds all nine changed runtime/test files.
 This remains prepared-data/offscreen native Qt proof, not a fresh native worker
 match or acceptance of unmerged upstream context. All earlier receipts retained.
+
+Actual before-adoption proof31a60551: fresh unchanged640/641 full UI/worker
+journey completed159.200s with all existing full result/events/RNG/memory/
+career/once and641 current-trait/state-event-identity assertions PASS. The new
+fullTEAMobserver fails as expected at13refreshes because accepted696facade
+does not emit authoritative team_context. This is a positive real-flow
+reproduction of the producer gap, not a passed full646proof. No deadlines,
+inputs, seeds, field projections or assertions changed; callback failures are
+collected until the normal journey completes to avoid swallowed Qt assertions.
+After accepted698adoption the SAME test/inputs must pass. Raw original records
+are not printed in this log.
