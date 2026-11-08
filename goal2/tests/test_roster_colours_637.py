@@ -50,7 +50,8 @@ class RosterColour(unittest.TestCase):
         names=['']*129;names[7]='TEST'
         state=SimpleNamespace(managed_country=4)
         model=SimpleNamespace(state=state,goaldat=SimpleNamespace(country_names=names))
-        menu=SimpleNamespace(model=model,day=SimpleNamespace(bench=None),phase='before',lineups={})
+        menu=SimpleNamespace(model=model,day=SimpleNamespace(bench=None),phase='before',lineups={},
+                             lineup_words={},lineup_rows={},lineup_headings={})
         cards={i:{'role':str(i),'line':lines[(i-1)%4],'full_name':'NAME '+lines[(i-1)%4].upper()} for i in range(1,12)}
         with patch('goal2.game.country_card.card',return_value={'players':list(cards),'formation':'4-4-2'}),patch('goal2.game.player_card.card',side_effect=lambda state,word,data:cards[word]):
             frame=MenuScreen._lineup(menu,7)

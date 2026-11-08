@@ -1,0 +1,17 @@
+{
+  "all_failures": "three minimal test stubs missing newly required fields plus one obsolete Menu\u2192Space navigation wait; old assertions/120s limits retained",
+  "declared_slow_exclusions": 239,
+  "exit_code": 1,
+  "failed_modules": [
+    "test_live_card_overlay_619",
+    "test_match_menu_arrows_t184",
+    "test_roster_colours_637",
+    "test_ui_pitch_t166"
+  ],
+  "modules_passed": 219,
+  "modules_total": 223,
+  "not_final_gate_acceptance": true,
+  "raw_log_path": ".cache/jobs/t203-gate-7b85.log",
+  "raw_log_sha256": "b9ec55af652e051e5c0409af357b7bfe7d174ed159ba91a1ce7aa151a58c6c2e",
+  "source_head": "7b85d680e12e5261aa6c3dbca1fe82926f64a0b0"
+}
