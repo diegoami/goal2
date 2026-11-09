@@ -143,6 +143,16 @@ class Publication(unittest.TestCase):
             rig.publication.publish_prepared(job.token,preparation)
         self.assertEqual(rig.campaign.canonical_hash,rig.before);self.assertEqual(rig.campaign.published,())
 
+    def test_state_that_does_not_hash_to_the_declared_output_is_never_installed(self):
+        rig=Rig(self);obs=rig.session.advance();job=rig.publication.begin(obs)
+        with patch.object(SeasonSession,'state',new_callable=PropertyMock,return_value=state(11)):
+            preparation=rig.publication.prepare_completion(job.token,rig.session)
+        preparation.run()
+        self.assertRegex(str(preparation.error),'differs from the observation')
+        with self.assertRaisesRegex(ValueError,'season call 1'):
+            rig.publication.publish_prepared(job.token,preparation)
+        self.assertEqual((rig.campaign.canonical_hash,rig.campaign.published),(rig.before,()))
+
     def test_unfinished_preparation_cannot_publish(self):
         rig=Rig(self);obs=rig.session.advance();job=rig.publication.begin(obs)
         preparation=rig.publication.prepare_completion(job.token,rig.session)
