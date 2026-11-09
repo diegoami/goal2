@@ -1,5 +1,5 @@
 {
-  "source_commit": "afa8dffa7025f4601d304fb17ebccd0d3a8fde39",
+  "source_commit": "f2a8a22fe7692f39245c63d1a4e37b03680758d0",
   "normal_text_px": 32,
   "capture_environment": "Qt offscreen on this computer; native Windows/package checks separate",
   "dimensions": [
@@ -1380,5 +1380,5 @@
       "sha256": "104388051c5eb44d027f958227227f9346955dd9ad501fbb8a9f55d26aa706f9"
     }
   ],
-  "report_sha256": "f8f21ecc935231cf9aa18e0670c1bc378bbdbcc82493b39dff800b6327992afd"
+  "report_sha256": "4cd946168f4336108e57dd6b57cdd95acc3cab3c55529b9da87c0bb1db056493"
 }
