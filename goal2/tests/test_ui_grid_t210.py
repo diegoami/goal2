@@ -326,14 +326,20 @@ class PendingGrid(unittest.TestCase):
             self.assertIn(key, grid_pending.PENDING)
 
     def test_the_list_names_every_screen_class_of_the_window(self):
-        """[designed: T210] Every screen starts pending, so a screen added later is on the grid from its first test."""
+        """[designed: T210] Every screen starts pending, so a screen added later is on the grid from its first test.
+        [designed: T211] A screen laid out on the grid declares `GRID = True` (goal2/ui/screen.py) and leaves the list: it is on
+        no list because it needs none, and a screen that declares it is not listed."""
         import re
-        screens = set()
+        screens, on_the_grid = set(), set()
         bases = {"BoxScreen"}   # the dialogs' base class: never shown on its own
         for path in sorted((ROOT / "goal2" / "ui").glob("*.py")):
-            screens |= set(re.findall(r"^class (\w+Screen|SavedGoalMenu)\(", path.read_text(encoding="utf-8"), re.M))
+            text = path.read_text(encoding="utf-8")
+            screens |= set(re.findall(r"^class (\w+Screen|SavedGoalMenu)\(", text, re.M))
+            on_the_grid |= set(re.findall(r"^class (\w+)\([\w.]+\):\n(?:    #[^\n]*\n|    \"\"\"[^\n]*\n)?    GRID = True", text, re.M))
         named = {key.split("@")[0] for key in grid_pending.PENDING}
-        self.assertEqual(sorted(screens - bases - named), [], "screens that are on no list: list them, or lay them out on the grid")
+        self.assertEqual(sorted(screens - bases - named - on_the_grid), [],
+                         "screens that are on no list: list them, or lay them out on the grid")
+        self.assertEqual(sorted(named & on_the_grid), [], "screens that are laid out on the grid are not pending")
 
     @requires.need(modules=("pygame",), **requires.HALFTIME)
     @unittest.skipUnless(sys.platform.startswith("linux"), "the list was measured on Linux, Qt offscreen")
@@ -405,7 +411,9 @@ class PendingGrid(unittest.TestCase):
         key(Qt.Key.Key_Return)
         look()
         reached = {key_ for key_ in grid_pending.PENDING if "@" not in key_} & set(visited)
-        self.assertGreaterEqual(len(reached), 10, f"visited {visited}")
+        # [designed: T211] The list shrinks as screens are reflowed, so the walk's reach is its own screens (the ten it opens),
+        # not how many of them are still listed.
+        self.assertGreaterEqual(len(set(visited)), 10, f"visited {visited}")
         self.assertEqual(sorted(reached - violating), [], "these screens are on the grid with no card now: remove them")
 
     def test_grid_pending_is_empty(self):

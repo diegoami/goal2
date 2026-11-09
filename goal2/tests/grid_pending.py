@@ -29,7 +29,6 @@ PENDING = {
     "ChooseScreen": "178 widgets off the 16 x 38 cell, 6 cards (the title bar's brand and name are off the cell on every screen)",
     "CountryScreen": "174 widgets off the 16 x 38 cell, 11 cards (the title bar's brand and name are off the cell on every screen)",
     "CountryTacticsScreen": "not in the journey: the desk walk reaches it; the title bar is off the cell and it carries cards, as every screen does",
-    "DeskScreen": "143 widgets off the 16 x 38 cell, 10 cards (the title bar's brand and name are off the cell on every screen)",
     "FixturesScreen": "126 widgets off the 16 x 38 cell, 2 cards (the title bar's brand and name are off the cell on every screen)",
     "FriendlyScreen": "83 widgets off the 16 x 38 cell, 4 cards (the title bar's brand and name are off the cell on every screen)",
     "HelpScreen": "24 widgets off the 16 x 38 cell, 0 cards (the title bar's brand and name are off the cell on every screen)",

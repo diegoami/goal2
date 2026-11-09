@@ -52,18 +52,33 @@ rankings), route (b) [designed: owner, 2026-11-03, #527 D2]. The desk never save
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
 from goal2.desktop import data_setup
 from goal2.game.country_card import card as country_card
 from goal2.game.identities import MANAGER_MAX
 from goal2.ui import theme
+from goal2.ui.cell_parts import CellLineField, GridStrip, key_values
+from goal2.ui.cells import CellLabel, CellPara, Cells
+from goal2.ui.frame import Frame
 from goal2.ui.s01_import import ImportScreen, checks
-from goal2.ui.screen import Screen, label, para, set_para
-from goal2.ui.squad_card import Strip, box, colour, full_name, squad_rows
-from goal2.ui.start_look import LineField, key_value
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import colour, full_name, squad_rows
 
-LEFT_WIDTH = 420   # [designed: s06-hub.html, the left column's `width:420px`]
+# [designed: T211; docs/design/ui-2026-11/proposal/README.md] The desk's cells: 90 columns and the 25 rows between the title row and the
+# two key rows; the left column 30 wide, the middle 34, the strip 24, an empty column between each.
+BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
+LEFT_COLS, LABEL_COLS = 30, 6
+MIDDLE_AT, MIDDLE_COLS = LEFT_COLS + 1, 34
+STRIP_AT = MIDDLE_AT + MIDDLE_COLS + 1
+
+
+def panel(label, cols, rows):
+    """A frame (a rule with its lowercase label) over a body of `cols` x `rows` cells: (frame, its body's cells)."""
+    frame = Frame(label)
+    inner = Cells(cols, rows, "panelRows")
+    frame.add(inner, 1)
+    return frame, inner
+
 HINT = ("↑↓ chooses; Enter opens. Play next game opens the match menu, captain and watched pitch.")   # [designed: s06-hub.html]
 
 
@@ -85,6 +100,7 @@ def next_match(model):
 
 
 class DeskScreen(Screen):
+    GRID = True   # [designed: T211] laid out on the 16 x 32 grid, no card
     title = "manager's desk"
     escape_text = None   # the home: nothing under it [designed: §3 "Navigation"]
     naming = False       # the manager's name line is open [designed: T177]
@@ -105,89 +121,73 @@ class DeskScreen(Screen):
     # Building.
     def _banner(self):
         """The competition's banner at the title bar's right end, as the original's and the mockup's."""
-        self.banner = label("", "who")
+        self.banner = CellLabel("", "who")
         self.banner.setTextFormat(Qt.TextFormat.RichText)
         self.name_label.parentWidget().layout().addWidget(self.banner)
 
     def _build(self):
-        main = QHBoxLayout()
-        main.setSpacing(18)
-        left_widget = QWidget()
-        left_widget.setFixedWidth(LEFT_WIDTH)
-        left = QVBoxLayout(left_widget)
-        left.setContentsMargins(0, 0, 0, 0)
-        left.setSpacing(14)
-        manager, inner = box("Manager")
-        rows, self.manager = key_value((("name", "name"), ("rating", "rating")))
-        inner.addWidget(rows)
+        """[designed: owner, 2026-11-08, #667; T211; docs/design/ui-2026-11/proposal/README.md, s06-hub] The desk on the 90 x 25
+        cells between the title row and the key rows: three columns, one empty cell apart. At the left the frames of the manager, the
+        team, the next opponent and the managers, and under them the hint and the screen's message; in the middle the six options as
+        boxes of two rows, as the original's, and the goal2 additions as boxes under their tag; at the right the twenty."""
+        body = Cells(BODY_COLS, BODY_ROWS, "deskBody")
+        self.body_layout.addWidget(body, 1)
+        self.area = body
+        # The left column.
+        manager, inner = panel("manager", LEFT_COLS, 2)
+        rows, self.manager = key_values((("name", "name"), ("rating", "rating")), LEFT_COLS, LABEL_COLS)
+        inner.put(rows, 0, 0, LEFT_COLS, 2)
         # [designed: owner, §6 item 18; T177] the name line of *manager's name*, as S04's, hidden until it opens
-        self.name_field = LineField(MANAGER_MAX, count=True)
+        self.name_field = CellLineField(MANAGER_MAX, count=True)
         self.name_field.hide()
-        inner.addWidget(self.name_field)
-        left.addWidget(manager)
-        team, inner = box("Team")
-        self.team_name = label("", "h1")
-        inner.addWidget(self.team_name)
-        rows, self.team_ranks = key_value((("world", "world"), ("continent", "continent")))
-        inner.addWidget(rows)
-        left.addWidget(team)
-        opponents, inner = box("Next opponents")
-        self.opponent_name = label("", "h1")
+        inner.put(self.name_field, LABEL_COLS + 1, 0, LEFT_COLS - LABEL_COLS - 1)
+        body.put(manager, 0, 0, LEFT_COLS, 3)
+        team, inner = panel("team", LEFT_COLS, 3)
+        self.team_name = inner.text("", "h1", 0, 0, LEFT_COLS)
+        rows, self.team_ranks = key_values((("world", "world"), ("continent", "continent")), LEFT_COLS, LABEL_COLS)
+        inner.put(rows, 0, 1, LEFT_COLS, 2)
+        body.put(team, 0, 4, LEFT_COLS, 4)
+        opponents, inner = panel("next opponents", LEFT_COLS, 4)
+        self.opponent_name = inner.text("", "h1", 0, 0, LEFT_COLS)
         colour(self.opponent_name, theme.VALUE)
-        inner.addWidget(self.opponent_name)
-        rows, self.opponent_ranks = key_value((("world", "world"), ("continent", "continent"), ("match", "match")))
-        inner.addWidget(rows)
-        left.addWidget(opponents)
-        managers, inner = box("Managers")
-        self.managers = label("", "value")
+        rows, self.opponent_ranks = key_values((("world", "world"), ("continent", "continent"), ("match", "match")),
+                                               LEFT_COLS, LABEL_COLS)
+        inner.put(rows, 0, 1, LEFT_COLS, 3)
+        body.put(opponents, 0, 9, LEFT_COLS, 5)
+        managers, inner = panel("managers", LEFT_COLS, 1)
+        self.managers = inner.text("", "value", 0, 0, LEFT_COLS)
         self.managers.setTextFormat(Qt.TextFormat.RichText)
-        inner.addWidget(self.managers)
-        left.addWidget(managers)
-        left.addStretch(1)
-        main.addWidget(left_widget)
-        middle = QVBoxLayout()
-        middle.setSpacing(10)
-        self.body_layout.addLayout(main, 1)
+        body.put(managers, 0, 15, LEFT_COLS, 2)
+        body.put(CellPara(HINT, "sub"), 0, 18, LEFT_COLS, 4)
         # The six options, in the original's order. [confirmed: t156-013-hub.png]
         self.add_option("team info", self.team_info, enter="Team info")
         self.add_option("fixture list", self.fixture_list, enter="Fixture list")
         self.add_option("tournament", self.tournament, enter="Tournament")
         self.add_option("history", self.history, enter="History")
         self.add_option("select squad", self.select_squad, key=Qt.Key.Key_Space, enter="Select squad")
-        play = self.add_option("play next game", self.play_next_game, enter="Play next game")
-        self.play_note = label("", "sub")
-        play.layout().insertWidget(1, self.play_note)
+        self.add_option("play next game", self.play_next_game, enter="Play next game")
+        self.play_note = CellLabel("", "sub")
         # Space is on its option, not on the bar, as the mockup draws it. [designed: s06-hub.html]
         for binding in self.bindings:
             if binding.keys == (Qt.Key.Key_Space,):
                 binding.shown = False
         self._refresh_bar()
-        for option in self.options:
-            middle.addWidget(option)
-        middle.addSpacing(4)
-        middle.addWidget(para(HINT, "sub"))
-        middle.addSpacing(10)
-        self.note = para("", "sub")
+        for index, option in enumerate(self.options):
+            body.put(option, MIDDLE_AT, 3 * index, MIDDLE_COLS, 2)   # a row between boxes, as the original's
+        body.put(self.play_note, MIDDLE_AT, 17, MIDDLE_COLS)
+        self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        middle.addWidget(self.note)
-        middle.addStretch(1)
-        addition = QHBoxLayout()
-        addition.addWidget(label("GOAL2 ADDITION", "tagNew"), 0, Qt.AlignmentFlag.AlignLeft)
-        addition.addStretch(1)
-        middle.addLayout(addition)
-        # [designed: owner #598] keep full-size extra actions; wrap when a row is full
-        from goal2.ui.key_flow import KeyFlow
-        extras = KeyFlow()
-        extras.setSpacing(10)
-        extras.addWidget(self.add_option("manager's name", self.rename, enter="New manager's name"))
-        extras.addWidget(self.add_option("new career", self.new_career, enter="New career"))
-        extras.addWidget(self.add_option("re-import data", self.reimport, enter="Re-import data"))
-        middle.addLayout(extras)
-        main.addLayout(middle, 1)
-        self.strip = Strip()
+        body.put(self.note, 0, 22, LEFT_COLS, 3)
+        body.text("GOAL2 ADDITION", "tagNew", MIDDLE_AT, 18)
+        # [designed: owner #598] the extra actions keep their full size, boxes as the six
+        for index, (text, handler, enter) in enumerate((("manager's name", self.rename, "New manager's name"),
+                                                        ("new career", self.new_career, "New career"),
+                                                        ("re-import data", self.reimport, "Re-import data"))):
+            body.put(self.add_option(text, handler, enter=enter), MIDDLE_AT, 19 + 2 * index, MIDDLE_COLS, 2)
+        self.strip = GridStrip()
         for row in self.strip.rows:
             row.setCursor(Qt.CursorShape.ArrowCursor)   # the desk's strip is read only, as the original's
-        main.addWidget(self.strip)
+        body.put(self.strip, STRIP_AT, 0, GridStrip.COLS, GridStrip.PAGE + 2)
 
     # What is shown.
     def refresh(self):
@@ -218,7 +218,7 @@ class DeskScreen(Screen):
         rows, eleven = squad_rows(model)
         self.strip.show_rows(names[state.managed_country],
                              [(r["role"], r["line"], full_name(model, r["id"])) for r in rows], -1, eleven == 11)
-        set_para(self.note, self.message)
+        self.note.setText(self.message)
 
     @staticmethod
     def _ranks(values, card):
@@ -229,7 +229,7 @@ class DeskScreen(Screen):
 
     def say(self, text):
         self.message = text
-        set_para(self.note, text)
+        self.note.setText(text)
 
     def shown(self):
         """Back from a screen the desk opened: read the model again (a swap, a new name, the tactics)."""

@@ -109,6 +109,12 @@ class Frame(QWidget):
     def label(self) -> str:
         return self.rule.label
 
+    def set_label(self, label: str) -> None:
+        """A new label on the rule (a panel whose title is its content: a strip's country). [designed: T211]"""
+        self.rule.label = label.lower()
+        self.rule.updateGeometry()
+        self.rule.update()
+
     def add(self, widget: QWidget, stretch: int = 0) -> QWidget:
         """Put `widget` in the panel under the rule."""
         self.body.addWidget(widget, stretch)
