@@ -102,9 +102,11 @@ class Comparator(unittest.TestCase):
         self.assertIn("length", str(caught.exception))
 
     def test_observe_reads_each_field_through_its_far_pointer(self):
-        memory = bytearray(0x40000)
+        memory = bytearray(0x60000)
         ds = 0x10000
-        regions = {"countries": 0x20000, "players": 0x30000, "fixtures": 0x3A000, "game": 0x3F000, "A91F": 0x3F800}
+        regions = {"countries": 0x20000, "players": 0x30000, "fixtures": 0x40000, "game": 0x50000, "A91F": 0x51000}
+        for (name, _, size, _, _), other in zip(so.FIELD_SPECS, list(so.FIELD_SPECS)[1:]):
+            self.assertLessEqual(regions[name] + size, regions[other[0]])     # the regions do not overlap
         for name, ptr, size, _, _ in so.FIELD_SPECS:
             base = regions[name]
             memory[ds + ptr:ds + ptr + 2] = (base & 15).to_bytes(2, "little")
@@ -118,8 +120,8 @@ class Comparator(unittest.TestCase):
             self.assertEqual(got[name], bytes(memory[regions[name]:regions[name] + size]), name)
         self.assertEqual((got["7B62"], got["8336"]), (0x1111, 0x2222))
         self.assertTrue(all(isinstance(got[n], bytes) for n in ("countries", "players", "fixtures", "game", "A91F")))
-        # nothing was written, and every read is bounded by the allocated sizes
-        self.assertTrue(all(size in (2, 4) or size in {s[2] for s in so.FIELD_SPECS} for _, size in seen))
+        # a read is a pointer word or a whole allocated block, nothing else
+        self.assertEqual(sorted({size for _, size in seen}), sorted({2} | {spec[2] for spec in so.FIELD_SPECS}))
 
     def test_the_terminal_predicate_is_the_routes_own(self):
         good = dict(stage=4, cursor=1361, count=1361, rounds=1)
