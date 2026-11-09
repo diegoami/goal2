@@ -399,10 +399,13 @@ def sealed_rounds(component, rounds):
 
 # --- additive, T170e: a whole season on the sealed side, with what a repeat is compared on ------------------------------
 
-def sealed_season(component, rounds):
+def sealed_season(component, rounds, rebase=None):
     """[designed: T170e/#566] Additive: the same calls as `sealed_rounds` (same session, same keys, the default match
     answers), plus what a repeated season is compared on: the news pages and the fixtures each call published, and
-    the terminal repeat (a further advance() at the boundary). Returns a dict
+    the terminal repeat (a further advance() at the boundary). `rebase` maps a round number to a Memory component:
+    before that round the session is replaced by a new one on that guest memory, keeping the same Keys. It is how the
+    player's own action between two rounds (a swap of the eleven the original refuses, made on the Core by the
+    original's keys) reaches the sealed side: the same menu state, not a state the sealed side chose. Returns a dict
     {"rounds": [Round, ...] (as sealed_rounds), "news": [[page, ...] per round], "played": [[fixture, ...] per round],
     "repeat": (observation after the terminal step, observation after one more advance()) or None}. Runs under
     engine_python(); `sealed_rounds` and `check` are not changed."""
@@ -422,7 +425,11 @@ def sealed_season(component, rounds):
         read = lambda linear, size: bytes(memory[linear:linear + size])
         return observe(read, ds), game_facts(read, ds)
     start, before = read_state()
+    rebase = dict(rebase or {})
     for number in range(1, rounds + 1):
+        if number in rebase:
+            session = SeasonSession(Image.from_bytes(rebase.pop(number)).state(tables), tables, keys)
+            start, before = read_state()
         step = session.advance()
         pages, fixtures, matches = list(step.news_pages), list(step.played_fixtures), 0
         while step.status == "match":
