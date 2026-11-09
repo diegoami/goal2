@@ -17,7 +17,9 @@ the sealed half again with the news and the fixtures each round published, for t
 
 Fast controls (always run; need Unicorn and the date-call state in .cache/): the start is the cursor-1 stage-2 manager
 menu of 1992, and the season test's own accounting (which round is 2 to 3, what a mismatch report holds) fails on
-altered data. The season itself is slow (GOAL2_SLOW=1): tens of minutes of Unicorn rounds, played once.
+altered data. The season itself is blocked by #695 (see BLOCKED below) and is a milestone proof, not a CI gate: hours of Unicorn rounds,
+played once, run deliberately. Until then it skips with its reason, under GOAL2_SLOW=1 as well. It was never run to the
+end; its chained sealed side, the 2 to 3 round, the terminal step and the repeat have never been executed.
 """
 import contextlib
 import dataclasses
@@ -254,6 +256,18 @@ def play():
     return Played(core, first["rounds"], repairs, first, second)
 
 
+# [designed: owner, 2026-11-09] The season case is blocked, and is not a CI gate. Blocked: the original's Core cannot play
+# the season (round 7 reaches 0791:CC7B choose_captain_or_taker role 3, which its catalogue lacks: #695, archaeology
+# #400), so it SKIPS, with GOAL2_SLOW=1 too, naming #695 rather than failing. Not a CI gate: a season is 215-280 s per
+# round of the Core (an estimated 2+ hours), a milestone proof run deliberately to produce a receipt (T170, Done-when
+# 4), never by a PR run or a slow dispatch. When #695 is closed, remove this gate (and add the receipt); the
+# assertions below are unchanged.
+BLOCKED = ("blocked by #695: the original's Core cannot play this season (choose_captain_or_taker roles 3/4 are not "
+           "catalogued); a milestone proof, run deliberately, never by CI")
+season_gate = unittest.skip(BLOCKED)
+
+
+@season_gate
 @requires.need(**NEEDS, slow=True)
 class Season(unittest.TestCase):
     def test_every_round_of_the_season_equals_the_original(self):
@@ -350,6 +364,7 @@ class Season(unittest.TestCase):
         self.assertEqual(again.rng_words, step.rng_words)
 
 
+@season_gate
 @requires.need(**NEEDS, slow=True)
 class TheAccountingCanFail(unittest.TestCase):
     """The checks above are not vacuous: fed a season altered in one place, they name that place."""
