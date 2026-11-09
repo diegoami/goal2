@@ -25,19 +25,26 @@ copies no career rule. [designed: owner, 2026-11-03, #527, D2]
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QHBoxLayout
 
 from goal2.desktop import data_setup
-from goal2.desktop.model import CONTINENTS, DesktopModel
+from goal2.desktop.model import DesktopModel
 from goal2.game.country_card import NOT_DECODED, card as country_card
 from goal2.game.identities import MANAGER_MAX
 from goal2.ui import saves, theme
-from goal2.ui.screen import Screen, label, para, set_para
-from goal2.ui.squad_card import colour
-from goal2.ui.start_look import LineField, Row, box, coloured_codes, key_value, refresh
+from goal2.ui.cell_parts import CellLineField, CellTableRow, key_values
+from goal2.ui.cells import CellLabel, CellPara, Cells
+from goal2.ui.country_parts import (CellCharacteristics, CellFactsLine, CellLineBars, CellStripGlyphs, decoded, framed)
+from goal2.ui.screen import Screen
+from goal2.ui.start_look import coloured_codes, refresh
 
 GROUP = 16           # [confirmed: T156-R1 step 3; s04-country.html] the list shows 16 countries at a time
-LIST_WIDTH = 390     # [designed: owner #598] retain complete country/ranking text at 24px
+# [designed: T211b; docs/design/ui-2026-11/proposal/README.md] The cells of S04 and S07: 90 columns and the 25 rows between the title row
+# and the two key rows. The card is 60 columns (34 and 25 with a cell between), the list at its right 29 (a country's 15 characters,
+# or one of 14 and the mark "next opponent", with room for a rank of three digits): 60 + 1 + 29 = 90.
+BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
+LIST_COLS, RANK_COLS = 29, 4
+LIST_AT = BODY_COLS - LIST_COLS
 PREVIEW_MS = 120     # [designed: T86, Launch's preview delay] the card follows the highlight after a pause
 NAME_NOTE = "Enter on a country opens this line; Enter again starts the career."
 # [confirmed: F008 DS:699A] a role code's line, by the code itself (goal2/desktop/country_card.py's table)
@@ -82,68 +89,90 @@ def ordered(countries, continental):
     return sorted(countries, key=key)
 
 
-class CountryCard(QWidget):
-    """The country card, S04's and S07's: the header (name, status, manager, world and continental ranking, top,
-    formation and its eleven role codes, skill, strips), then skills and performance, team tactics and player
-    defaults, characteristics with the original XI caps and age. `chooser` adds S04's own parts: "Player 1 ·
-    choose your country", the first match and the level of difficulty. [designed: s04-country.html,
-    s07-team-info.html; T163, T164]"""
+class CountryCard(Cells):
+    """The country card, S04's and S07's, on the 16 x 32 grid [designed: owner, 2026-11-08, #667; T211b; docs/design/ui-2026-11/
+    proposal/README.md]: two columns of frames (a rule with its lowercase label), a cell apart, touching down their column as the
+    original's card does. At the left, 34 cells: the team (its name, status, manager, skill, formation and strips), the skills, the
+    performance (only with `match_context`) and the team tactics; at the right, 25: the ranking now and top, the eleven's role codes,
+    the characteristics with the original XI's average caps and age, and the player defaults. S04 puts its name line under the right
+    column (`rows` 23 instead of 21). The same names as the card it replaces (`name`, `team`, `ranks`, `shape`, `strip_view`,
+    `role_codes`, `skills`, `performance`, `performance_heading`, `tactics`, `defaults`, `averages`, `characteristics`, `set_card`);
+    the first match S04 shows over it is S04's own (`CountryScreen.first`). [designed: s04-country.html, s07-team-info.html; T163,
+    T164; T211b]"""
+    LEFT, GAP, RIGHT = 34, 1, 25
+    COLS = LEFT + GAP + RIGHT
+    ROWS = 21                  # the right column's 21 rows, with a row between its frames (the left's are 18)
+    ROWS_WITH_PERFORMANCE = 24 # the left column's, with the performance shown: S07's card (S04's is never in a match context)
+    RIGHT_AT = LEFT + GAP
 
-    def __init__(self, chooser=False, *, match_context=False, family=None):
-        super().__init__()
+    def __init__(self, chooser=False, *, match_context=False, family=None, rows=ROWS):
         if type(match_context) is not bool:
             raise ValueError("match_context must be a boolean")
+        super().__init__(self.COLS, rows, "countryCard")
         self.match_context = match_context
         self.family = family or theme.FONT_FAMILY
         self.chooser = chooser
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(6)
-        from goal2.ui.country_header import TeamHeader
-        self.header = TeamHeader(self.family, chooser=chooser)
-        for name in ('name','first','team','ranks','shape','strip_view','role_codes'):
-            setattr(self, name, getattr(self.header, name))
-        layout.addWidget(self.header)
-        panels = QHBoxLayout()
-        panels.setSpacing(18)
-        skills, inner = box("Skills")
-        from goal2.ui.team_card import LineBars, CharacteristicPanel
-        from goal2.ui.squad_card import FactsTable
-        self.skills = LineBars()
-        inner.addWidget(self.skills)
-        inner.addSpacing(8)
-        self.performance_heading = label("PERFORMANCE", "boxHeading")
-        inner.addWidget(self.performance_heading)
-        self.performance = LineBars()
-        inner.addWidget(self.performance)
-        inner.addStretch(1)
-        tactics, inner = box("Team tactics")
-        inner.setSpacing(4)
-        inner.setContentsMargins(16, 10, 16, 10)
-        tactic_rows, self.tactics = key_value((("defence system", "defence system"), ("protection", "protection"),
-                                               ("offside", "offside")))
-        inner.addWidget(tactic_rows)
-        inner.addSpacing(8)
-        defaults_heading = label("PLAYER DEFAULTS", "boxHeading")
-        inner.addWidget(defaults_heading)
-        default_rows, self.defaults = key_value((("positioning", "positioning"), ("possession", "possession"),
-                                                 ("passing", "passing"), ("tackling", "tackling"),
-                                                 ("marking", "marking")))
-        inner.addWidget(default_rows)
-        inner.addStretch(1)
-        traits, inner = box("Characteristics")
-        self.averages = FactsTable(("caps", "age"))
-        for heading in self.averages.labels.values():
-            colour(heading, theme.CARD_LABEL)
-        inner.addWidget(self.averages)
-        self.characteristics = CharacteristicPanel(self.family)
-        inner.addWidget(self.characteristics)
-        inner.addStretch(1)
-        for part in (skills, tactics, traits):
-            panels.addWidget(part, 2 if part is tactics else 1)
-        layout.addLayout(panels, 1)
+        left, right = self.LEFT, self.RIGHT
+        # The team: its name, then status, manager, skill, formation and the strips. [designed: s04-country.html]
+        team, inner = framed("team", left, 6)
+        self.name = inner.text("", "h1", 0, 0, left)
+        self.team, self.shape = {}, {}
+        for row, (store, key) in enumerate((("team", "status"), ("team", "manager"), ("shape", "skill"),
+                                            ("shape", "formation"), ("shape", "strips")), 1):
+            caption = inner.text(key, "cardLabel", 0, row, 9)
+            value = CellStripGlyphs(self.family) if key == "strips" else CellLabel("", "value")
+            inner.put(value, 10, row, left - 10)
+            value.caption = caption
+            getattr(self, store)[key] = value
+        self.strip_view = self.shape["strips"]
+        self.shape["formation"].setTextFormat(Qt.TextFormat.RichText)
+        self.put(team, 0, 0, left, 7)
+        skills, inner = framed("skills", left, 4)
+        self.skills = CellLineBars()
+        inner.put(self.skills, 0, 0, left, 4)
+        self.put(skills, 0, 8, left, 5)
+        self.performance_heading, inner = framed("performance", left, 4)
+        self.performance = CellLineBars()
+        inner.put(self.performance, 0, 0, left, 4)
+        self.put(self.performance_heading, 0, 14, left, 5)
+        self.performance_heading.hide()
+        self.tactics_frame, inner = framed("team tactics", left, 3)
+        tactic_rows, self.tactics = key_values((("defence system", "defence system"), ("protection", "protection"),
+                                                ("offside", "offside")), left, 14)
+        inner.put(tactic_rows, 0, 0, left, 3)
+        self.put(self.tactics_frame, 0, 14, left, 4)
+        # The ranking now and at the top, and the eleven's role codes. [designed: s04-country.html]
+        ranking, inner = framed("ranking", right, 3)
+        inner.text("now", "sub", 8, 0, 7)
+        inner.text("top", "sub", 16, 0, 7)
+        self.ranks = {}
+        for row, (key, caption) in enumerate((("world", "world"), ("continental", "")), 1):   # the continent's name is set with the card
+            caption_label = inner.text(caption, "cardLabel", 0, row, 7)
+            for column, name in ((8, key), (16, "top_" + key)):
+                value = CellLabel("", "value")
+                inner.put(value, column, row, 7)
+                value.caption = caption_label
+                self.ranks[name] = value
+        self.put(ranking, self.RIGHT_AT, 0, right, 4)
+        eleven, inner = framed("line-up", right, 1)
+        self.role_codes = inner.text("", "value", 0, 0, right)
+        self.role_codes.setTextFormat(Qt.TextFormat.RichText)
+        self.put(eleven, self.RIGHT_AT, 5, right, 2)
+        # The characteristics, with the original XI's caps and age, and the player defaults. [designed: s04-country.html]
+        traits, inner = framed("characteristics", right, 5)
+        self.averages = CellFactsLine(right)
+        inner.put(self.averages, 0, 0, right, 1)
+        self.characteristics = CellCharacteristics()
+        inner.put(self.characteristics, 0, 1, right, 4)
+        self.put(traits, self.RIGHT_AT, 8, right, 6)
+        defaults, inner = framed("player defaults", right, 5)
+        default_rows, self.defaults = key_values((("positioning", "positioning"), ("possession", "possession"),
+                                                  ("passing", "passing"), ("tackling", "tackling"),
+                                                  ("marking", "marking")), right, 11)
+        inner.put(default_rows, 0, 0, right, 5)
+        self.put(defaults, self.RIGHT_AT, 15, right, 6)
 
-    def set_card(self, c, average, first=None):
+    def set_card(self, c, average=None):
         """Show decoded card fields. `average` remains accepted for existing callers; original numbers take precedence."""
         self.name.setText(c["name"])
         # [confirmed: F036–F038; T198] Consume original panels; the old twenty
@@ -151,12 +180,29 @@ class CountryCard(QWidget):
         self.skills.set_panel(c["team_skills"])
         performance = c["performance"] if self.match_context else None
         self.performance.set_panel(performance)
-        self.performance.setVisible(performance is not None)
         self.performance_heading.setVisible(performance is not None)
+        # [designed: T211b] the team tactics follow what is shown above them: touching the skills, or the performance
+        self.move(self.tactics_frame, 0, 14 + (6 if performance is not None else 0), self.LEFT, 4)
         traits = c["characteristics"]
         self.averages.set({n["field"]: n["text"] for n in traits["numbers"]}, theme.VALUE)
         self.characteristics.set_panel(traits)
-        self.header.set_card(c, first)
+        self.team["status"].setText(c.get("status", NOT_DECODED))
+        self.team["manager"].setText(c["manager"] or "")
+        self.ranks["world"].setText(str(c["world"]))
+        self.ranks["continental"].caption.setText(c["continent"])
+        self.ranks["continental"].setText(str(c["continental"]))
+        self.ranks["top_world"].setText(str(c["top_world"]) if "top_world" in c else NOT_DECODED)
+        self.ranks["top_continental"].setText(str(c["top_continental"]) if "top_continental" in c else NOT_DECODED)
+        self.shape["formation"].setText(c["formation"])
+        self.role_codes.setText(coloured_codes((code, CODE_LINE.get(code, "unknown")) for code in c["eleven"]))
+        self.shape["skill"].setText(c.get("skill", NOT_DECODED) or "")
+        if "strips" in c:
+            self.strip_view.set_strips(c["strips"])
+        else:
+            self.strip_view.set_unknown()
+        for widget in (*self.team.values(), *self.ranks.values(), *self.shape.values()):
+            if widget is not self.strip_view:
+                decoded(widget, widget.text())
         for values, pairs in ((self.tactics, c["team_tactics"]), (self.defaults, c["player_defaults"])):
             for key, value in pairs:
                 values[key].setText(value)
@@ -164,6 +210,7 @@ class CountryCard(QWidget):
 
 
 class CountryScreen(Screen):
+    GRID = True   # [designed: T211b] laid out on the 16 x 32 grid, no card
     title = "new game · step 2 of 3 · country and name"
     pre_game = True
 
@@ -203,51 +250,45 @@ class CountryScreen(Screen):
 
     # The screen.
     def _build(self):
-        row = QHBoxLayout()
-        row.setSpacing(18)
-        left = QVBoxLayout()
-        left.setSpacing(14)
-        self.card_view = CountryCard(chooser=True, family=self.window_.family)
-        for name in ("name", "first", "team", "ranks", "shape", "skills", "performance", "tactics", "defaults",
-                     "averages", "characteristics"):
+        """[designed: owner, 2026-11-08, #667; T211b; docs/design/ui-2026-11/proposal/README.md] The 90 x 25 cells between the title row
+        and the key rows: the prompt, the level of difficulty and the first match across the top; under them the card (60 x 21: its two
+        columns of frames) at the left and at the right the sixteen countries in a frame, with the manager's name in a frame under
+        them."""
+        body = Cells(BODY_COLS, BODY_ROWS, "countryBody")
+        self.body_layout.addWidget(body, 1)
+        self.area = body
+        body.text("Player 1 · choose your country", "sub", 0, 0)
+        body.text("level of difficulty", "sub", 49, 0)
+        body.put(CellLabel(NOT_DECODED, "undecoded"), 69, 0, len(NOT_DECODED))
+        self.first = body.text("", "sub", 0, 1, BODY_COLS)
+        self.card_view = CountryCard(chooser=True, family=self.window_.family, rows=CountryCard.ROWS)
+        for name in ("name", "team", "ranks", "shape", "skills", "performance", "tactics", "defaults", "averages",
+                     "characteristics"):
             setattr(self, name, getattr(self.card_view, name))
-        left.addWidget(self.card_view, 1)
-        name_box = QFrame()
-        name_box.setObjectName("box")
-        name_row = QHBoxLayout(name_box)
-        name_row.setContentsMargins(16, 14, 16, 14)
-        name_row.setSpacing(16)
-        name_row.addWidget(label("Manager's name", "muted"))
-        self.field = LineField(MANAGER_MAX, count=True, on_click=self.press_enter_key)
-        self.field.setFixedWidth(360)
-        name_row.addWidget(self.field)
-        self.name_note = para(NAME_NOTE, "sub")
-        name_row.addWidget(self.name_note, 1)
-        left.addWidget(name_box)
-        row.addLayout(left, 1)
-        countries, inner = box()
-        countries.setFixedWidth(LIST_WIDTH)
-        self.list_heading = label("", "boxHeading")
-        inner.addWidget(self.list_heading)
-        inner.setSpacing(0)
-        inner.addSpacing(8)
+        body.put(self.card_view, 0, 2, CountryCard.COLS, CountryCard.ROWS)
+        self.countries_frame, inner = framed("continental rank", LIST_COLS, GROUP + 1)
+        self.list_heading = self.countries_frame.rule
         self.rows = []
         for i in range(GROUP):
-            r = Row([None, 40], on_click=lambda i=i: self.click_row(i))
-            r.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-            inner.addWidget(r)
-            self.rows.append(r)
-        inner.addSpacing(10)
-        self.group_note = label("", "sub")
-        inner.addWidget(self.group_note)
-        inner.addStretch(1)
-        row.addWidget(countries)
-        self.body_layout.addLayout(row, 1)
+            row = CellTableRow(i, (LIST_COLS - RANK_COLS, RANK_COLS), (None, Qt.AlignmentFlag.AlignRight))
+            row.chosen.connect(self.click_row)
+            inner.put(row, 0, i, LIST_COLS)
+            self.rows.append(row)
+        self.group_note = CellPara("", "sub")   # "16 of 128 · ←→ next group": 25 characters, a row
+        inner.put(self.group_note, 0, GROUP, LIST_COLS)
+        body.put(self.countries_frame, LIST_AT, 2, LIST_COLS, GROUP + 2)
+        # The manager's name under the list: the line (open once a country is chosen) and what it says.
+        name_frame, inner = framed("manager's name", LIST_COLS, 4)
+        self.field = CellLineField(MANAGER_MAX, count=True, on_click=self.press_enter_key)
+        inner.put(self.field, 0, 0, LIST_COLS)
+        self.name_note = CellPara(NAME_NOTE, "sub")
+        inner.put(self.name_note, 0, 1, LIST_COLS, 3)
+        body.put(name_frame, LIST_AT, GROUP + 4, LIST_COLS, 5)
 
     def _show(self):
         number, name, world, continent, within = self.order[self.index]
         start = self.index // GROUP * GROUP
-        self.list_heading.setText("COUNTRIES · " + ("CONTINENTAL RANK" if self.continental else "WORLD RANK"))
+        self.countries_frame.set_label("continental rank" if self.continental else "world rank")
         for i, row in enumerate(self.rows):
             n, country_name, w, _, inside = self.order[start + i]
             row.set_cells([country_name, str(inside if self.continental else w)])
@@ -261,7 +302,8 @@ class CountryScreen(Screen):
 
     def _show_card(self):
         if self.card is not None:
-            self.card_view.set_card(self.card, self.average, self.first_match)
+            self.card_view.set_card(self.card, self.average)
+            self.first.setText("first: " + self.first_match)
 
     def preview(self):
         """The highlighted country's card, from a private new campaign of the model, as today's Launch."""
@@ -365,7 +407,7 @@ class CountryScreen(Screen):
         return self.window_.open_career(model)
 
     def _note(self, text, error=False):
-        set_para(self.name_note, text)
+        self.name_note.setText(text)
         self.name_note.setObjectName("error" if error else "sub")
         refresh(self.name_note)
 

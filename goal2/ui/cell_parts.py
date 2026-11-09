@@ -56,6 +56,43 @@ class CellRow(Row):
         self._paint()
 
 
+class CellTableRow(CellRow):
+    """A row of a list or a table in cells, as `squad_card.Row` (`cells`, `set`, `set_on`, `texts`, `chosen`): its cells at
+    columns, `widths` cells each, `gaps` empty cells before each (none by default), the highlight bar behind them when it is the
+    cursor's. `aligns` is a `Qt.AlignmentFlag` per cell (left by default). A cell's text longer than its width is squeezed below
+    the cells it needs, which `fixed_page.problems` reports: a column is never clipped. [designed: T211b]"""
+
+    def __init__(self, index, widths, aligns=None, gaps=None):
+        Clickable.__init__(self, "listRow")
+        self.index = index
+        self.underline = False
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        gaps = gaps if gaps is not None else (0,) * len(widths)
+        self.area = Cells(sum(widths) + sum(gaps), 1, "rowCells")
+        layout.addWidget(self.area)
+        self.cells = []
+        self.tones = []
+        column = 0
+        for number, width in enumerate(widths):
+            cell = CellLabel("", "rowCell")
+            if aligns is not None and aligns[number] is not None:
+                cell.setAlignment(aligns[number] | Qt.AlignmentFlag.AlignVCenter)
+            column += gaps[number]
+            self.area.put(cell, column, 0, width)
+            self.cells.append(cell)
+            self.tones.append(theme.TEXT_BRIGHT)
+            column += width
+        self.on = False
+        self.clicked.connect(lambda: self.chosen.emit(self.index))
+        self._paint()
+
+    def set_cells(self, texts, tones=None):
+        """The texts of the cells (as `start_look.Row.set_cells`), in the colours given or the bright text's."""
+        self.set(texts, tones)
+
+
 class GridStrip(Frame):
     """The list on the right as the original draws it: the twenty (the eleven, a gap, the bench) or a page of twenty of the
     pool, in a frame whose rule carries the country (`-holland---`). Rows are clicked through `chosen(index on the page)`."""
@@ -113,7 +150,7 @@ class CellLineField(LineField):
         layout.addWidget(self.shown)
         self.cursor = QFrame()
         self.cursor.setObjectName("cursor")
-        self.cursor.setFixedSize(theme.CELL_W, theme.CELL_H)
+        self.cursor.setFixedWidth(theme.CELL_W)   # a cell wide and as high as the row it is in (a fixed height rounds to a pixel more than a row at some scales)
         layout.addWidget(self.cursor)
         layout.addStretch(1)
         self.count = CellLabel("", "muted") if count else None
@@ -336,5 +373,5 @@ class GridCard(Cells):
             self.name_line.edit.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
 
-__all__ = ["CellBar", "CellBars", "CellFacts", "CellLineField", "CellNameLine", "CellRow", "CellValues", "GridCard", "GridStrip",
-           "key_values", "row_px"]
+__all__ = ["CellBar", "CellBars", "CellFacts", "CellLineField", "CellNameLine", "CellRow", "CellTableRow", "CellValues", "GridCard",
+           "GridStrip", "key_values", "row_px"]

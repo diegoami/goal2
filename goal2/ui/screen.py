@@ -246,7 +246,7 @@ class Screen(QWidget):
         make = cells.CellLabel if self.GRID else label   # the same call: (text, object name)
         corner.addWidget(make("GOAL2", "brand"))
         if self.pre_game:
-            corner.addWidget(label("the 1993 game, rebuilt", "brandNote"))
+            corner.addWidget(make("the 1993 game, rebuilt", "brandNote"))
         layout.addLayout(corner)
         self.name_label = make(self.title, "crumb" if self.pre_game else "who")
         layout.addWidget(self.name_label)
