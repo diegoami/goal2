@@ -369,3 +369,4 @@ operational status.
 - [T206](T206.md): `artifacts.py pull NAME` writes the file under its own name (#683).
 
 - [T208](T208.md): a density check: fail a screen that has a dead region (#672).
+- [T170c2](T170c2.md): publish a completed sealed round atomically into the campaign (#566).
