@@ -1,5 +1,5 @@
 {
-  "source_commit": "343208ff70d33f11919d298b5f6ad8554079f5dc",
+  "source_commit": "57b9084bcc4a3d09a06fe7570a49d4de64d54c80",
   "normal_text_px": 32,
   "capture_environment": "Qt offscreen on this computer; native Windows/package checks separate",
   "dimensions": [
@@ -19,7 +19,7 @@
   "captures": 144,
   "all_geometry_checks_passed": false,
   "producer": "tools/ui_readability_screenshots.py",
-  "producer_sha256": "f0dfb05d3d72529f3dd0d2c8f8b29b039a38b717bd7bb81cfde18488ffd7c942",
+  "producer_sha256": "b4ce6d26ce0a7395a567d1a017fe5b04fa9c671e423f4d833928eeabb8d59db3",
   "screens_with_problems": [
     {
       "picture": "s01-import-first.png",
@@ -1188,7 +1188,7 @@
       "width": 1440,
       "height": 1080,
       "path": "docs/design/ui-2026-11/images/s19-bench-refused.png",
-      "sha256": "2da4c1c676405cb7e4b884d273bc1a5a207c1447778126e48d3aa242ed14cccc"
+      "sha256": "6e348b013215d98892b9b7f3fc7e8f72b8b4e1ec139733b70808fa6bdeec858d"
     },
     {
       "screen": "BenchScreen",
@@ -1196,7 +1196,7 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s19-bench-refused.png",
-      "sha256": "63079dd41de0f5696480a6aecd8a28c42813b115fe43a073460c84f0ac821d38"
+      "sha256": "6cc31818956e2e08498b87930e19a97d01042d9bbe4a41a4a9cb41b8f01e266b"
     },
     {
       "screen": "PitchScreen",
@@ -1261,7 +1261,39 @@
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s14-round.png",
       "sha256": "104388051c5eb44d027f958227227f9346955dd9ad501fbb8a9f55d26aa706f9"
+    },
+    {
+      "screen": "CountryScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s04-country.png",
+      "sha256": "ddfcc5c0eb516daf3af326b1584dd8ad567b6ade80aa92711179ecb36262b1f1"
+    },
+    {
+      "screen": "CountryScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s04-country.png",
+      "sha256": "b7f22dae2525088619dd50c48fcc191839fbd4c7330e26735d0f87306d3d6c41"
+    },
+    {
+      "screen": "TeamInfoScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s07-team-info.png",
+      "sha256": "0f7c7b952c9f6501d84a565052bbc88b4968e980409e6b27363cbc6abeb00212"
+    },
+    {
+      "screen": "TeamInfoScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s07-team-info.png",
+      "sha256": "ed40ce9ff254142af54322ab79f119f7f0f0316a865813c135fb509097a0cc04"
     }
   ],
-  "report_sha256": "e90667c98f2b00653f32746ec71ad8319335d674d96a8332189b239ac31ba232"
+  "report_sha256": "8c575dae8cd72a44fe1b05a06cc7b1d399da4b16dcf00f7209c0888c83de3570"
 }
