@@ -374,3 +374,5 @@ operational status.
 - [T170d](T170d.md): the Core oracle for one sealed round, and its terminal step (#566).
 
 - [T170e](T170e.md): the 1992 season, stage 2 to its terminal boundary, compared to Core (#566).
+
+- [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
