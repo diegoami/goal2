@@ -34,7 +34,6 @@ PENDING = {
     "HistoryScreen": "screen 1440x1080 squeezed below 1444x734",
     "RoundScreen": "screen 1440x1080 squeezed below 1541x937",
     "MenuScreen": "screen 1440x1080 squeezed below 1535x1026",
-    "ChooseScreen": "screen 1440x1080 squeezed below 1132x1138",
     "PitchScreen": "screen 1440x1080 squeezed below 1453x1065",
     "BoardScreen": "screen 1440x1080 squeezed below 1416x1088",
     "SavedGoalMenu": "screen 1440x1080 squeezed below 610x1185",

@@ -100,16 +100,23 @@ class GridStrip(Frame):
     PAGE = 20
     COLS = 24   # [designed: T211] one cell in, a code and its gap, a name of up to 14 characters, a cell out, and room for a name
 
-    def __init__(self, cols=COLS):
+    def __init__(self, cols=COLS, count=PAGE):
+        """`count` rows: the twenty by default (the eleven, a gap, the bench); a strip of the eleven alone (S16) takes 11, so its
+        frame is as tall as its rows and no taller. [designed: T212]"""
         super().__init__("", "red")
         self.setObjectName("strip")
         self.cols = cols
-        self.area = Cells(cols, self.PAGE + 1, "stripRows")
+        self.count = count
+        self.area = Cells(cols, count + (1 if count > 11 else 0), "stripRows")
         self.add(self.area, 1)
         self.rows = []
         self.gap = QWidget()
-        self.area.put(self.gap, 0, 11, self.cols)
-        for i in range(self.PAGE):
+        if count > 11:
+            self.area.put(self.gap, 0, 11, self.cols)
+        else:
+            self.gap.setParent(self.area)
+            self.gap.hide()
+        for i in range(count):
             row = CellRow(i)
             row.chosen.connect(self.chosen.emit)
             self.area.put(row, 0, i + (1 if i > 10 else 0), self.cols)
@@ -118,7 +125,7 @@ class GridStrip(Frame):
     def show_rows(self, heading, rows, current=-1, gap=True, injured=()):
         """`rows`: (code, line, name) for up to twenty rows; `current` the highlighted row (-1: none)."""
         self.set_label(heading)
-        self.gap.setVisible(gap)
+        self.gap.setVisible(gap and self.count > 11)
         for i, row in enumerate(self.rows):
             self.area.move(row, 0, i + (1 if i > 10 and gap else 0), self.cols)
             if i < len(rows):
