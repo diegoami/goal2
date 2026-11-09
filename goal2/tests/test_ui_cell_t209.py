@@ -136,7 +136,10 @@ class Cell(unittest.TestCase):
         self.assertGreater(scale, 0.9)
         advance, height = advance_and_height(self.body(window))
         self.assertAlmostEqual(advance, theme.CELL_W * scale, delta=1, msg="a glyph is one cell wide, to a pixel of rounding")
-        self.assertAlmostEqual(height, theme.CELL_H * theme.STRETCH * scale, delta=1)
+        size = self.body(window).font().pixelSize()
+        self.assertAlmostEqual(size, theme.CELL_H * theme.STRETCH * scale, delta=1, msg="the pixel size is 1.2 taller")
+        self.assertGreaterEqual(height, size - 1)   # a platform's font engine may add a hinted pixel to the line (Windows: 38 -> 39)
+        self.assertLessEqual(height, size + 1)
         self.assertLessEqual(abs(QFontMetrics(self.body(window).font()).horizontalAdvance("M") - theme.CELL_W * scale), 1)
 
     def test_the_page_is_90_by_28_cells(self):
