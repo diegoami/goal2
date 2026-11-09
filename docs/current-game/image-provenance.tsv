@@ -1,0 +1,61 @@
+screen	image	route	reached	png_sha256
+boot-bulletin-1	images/boot-bulletin-1.png	boot	bulletin 1 of 2 after starting	0d73012eba1eded8811a9f0be94ecfe16618d8e7a4c5af723acb5f57ba035e9d
+boot-bulletin-2	images/boot-bulletin-2.png	boot	bulletin 2 of 2 after starting	9b79d87568a34edbe7d0703752a8573a80c1d9bea60dddcd72723420ffc75774
+boot-country	images/boot-country.png	boot	side bar 'country' (Ctrl+1)	abe6548e10f7a870366a82cde07869f97c1369bbf5d776e40aec3ac239ff4b66
+boot-country-coreHistoryView	images/boot-country-coreHistoryView.png	boot	country -> view 'coreHistoryView'	00463e47c49ad72d7a05214b9f0c451ef64e0bf4afd8100bb79a5070b73cbc15
+boot-fixtures	images/boot-fixtures.png	boot	side bar 'fixtures' (Ctrl+4)	4b3f8d09cfd33f12938b9b6656d9494012549691d4ee34961a3929d11bd6d0e5
+boot-fixtures-coreRoundView	images/boot-fixtures-coreRoundView.png	boot	fixtures -> view 'coreRoundView'	3e5a51cd48ee0c2157fef2374f60c3f01f9248a2d8c951d59d01192bccc375c5
+boot-fixtures-coreTournamentView	images/boot-fixtures-coreTournamentView.png	boot	fixtures -> view 'coreTournamentView'	b26390ff45b8e28e09d4cbf77124e50fbc60b302d1950f3bbf4c8052340369aa
+boot-launch-country	images/boot-launch-country.png	boot	New career, a country chosen	c23f1fff5d870d61db7f32fbc96bef26f7f7a75da7fc6663e04570c7486f4936
+boot-launch-review	images/boot-launch-review.png	boot	Enter on the country list	25153e90bcd85f79111e41c60279556dd0bb579589c7fdb138de7a968fafd504
+boot-launch-start	images/boot-launch-start.png	boot	the first window: Resume or New career	56ba2d17ec303b60c7c96d27febf1c73ce619cb1644e67b2ea20def1385f4412
+boot-pool	images/boot-pool.png	boot	side bar 'pool' (Ctrl+3)	945a641cca2c8c7a2aafaccab14ab207f6450a43016feb478c1c549497b36438
+boot-pool-compare	images/boot-pool-compare.png	boot	Pool -> the compare and exchange view	5168579dd6b53e46a6cf161d8c0abae06bb1c24c8a5e06c8945016780fc78ada
+boot-round-01-captain	images/boot-round-01-captain.png	boot	the round stopped at 'captain' (view 2)	c32f7d9298c0a69e51c4aa444780704419e8a70d372ca3abf80a2c95b4b818d0
+boot-round-02-captain	images/boot-round-02-captain.png	boot	the round stopped at 'captain' (view 0)	fd9f90f3d7bfd0e336e621c87ffc619f0cb1f3f263132723a952365c1c41fa2e
+boot-round-03-half-time	images/boot-round-03-half-time.png	boot	the round stopped at 'half-time' (view 1)	5818efbc31c141f6c0924619004bfd7b16e7ad5903077777705634928439d6dc
+boot-round-04-menu	images/boot-round-04-menu.png	boot	the round stopped at 'menu' (view 2)	087550f624e3627a9be7b9be717ed872469a7ea7d47be6f73f814f3755f4d169
+boot-round-05-menu	images/boot-round-05-menu.png	boot	the round stopped at 'menu' (view 2)	e19bd3f19ac002d6fd7ab97be2707ffd89d02981b66446b5fa6e568190a1d8e4
+boot-round-after	images/boot-round-after.png	boot	the page the round ends on	7cc73feaff06d5728087f36ea1bd316246ca7d262af4c309fd1ac30573ff61bc
+boot-round-before	images/boot-round-before.png	boot	Fixtures & match before playing	4b3f8d09cfd33f12938b9b6656d9494012549691d4ee34961a3929d11bd6d0e5
+boot-round-live-window	images/boot-round-live-window.png	boot	the main window while the watched match runs in the pitch window	d47979142b4c37ba96af3505605dbdd9ca91214b2fd19f29ec6f5e3c11c32700
+boot-round-taker	images/boot-round-taker.png	boot	the original asked for a corner taker during the watched match	caaa2bdcaccfca2b7a791d8f835a2c178916fe5171835a618254ab82127ac54c
+boot-save	images/boot-save.png	boot	side bar 'save' (Ctrl+5)	e55adc1202de2bb2dbe6b2d594fd0daa55b476dae7e6a7049d952167bd4bd383
+boot-team	images/boot-team.png	boot	side bar 'team' (Ctrl+2)	fd255ed171802d68cef1cc3f67a0822db45c895e55b7ee4ad4b054812babfb63
+boot-team-teamOwnView	images/boot-team-teamOwnView.png	boot	team -> view 'teamOwnView'	553701cfba60fcf41e4a0148fd9a020e4a33b6298589c7d0e97fe1e046788640
+boot-team-teamTacticsView	images/boot-team-teamTacticsView.png	boot	team -> view 'teamTacticsView'	21f9518a8f82957cd455bd93f26f1bfe33f8353f6023806fd4855edd9ad8e9f7
+core-country	images/core-country.png	core	side bar 'country' (Ctrl+1)	95fe26085b2141e7b36ade87174fed58c50768dfaf2b117f8372851c2158ddec
+core-country-coreHistoryView	images/core-country-coreHistoryView.png	core	country -> view 'coreHistoryView'	dbc48e5a4e858fc39a3eee393aa30ab4ad980cff5ebf635aa9a487d9e4845b98
+core-fixtures	images/core-fixtures.png	core	side bar 'fixtures' (Ctrl+4)	cae7423807626f6b642ce05b80ef0eb59b6b0efa6bdf910e6e94c0852460321d
+core-fixtures-coreRoundView	images/core-fixtures-coreRoundView.png	core	fixtures -> view 'coreRoundView'	780f6e685383af54f1064bff260825907ae01176980d136fcf1a50c190e1a47b
+core-fixtures-coreTournamentView	images/core-fixtures-coreTournamentView.png	core	fixtures -> view 'coreTournamentView'	22bd634425ed3c763778bad1c971e5ec9bafd04d4c25569954b3eb9692dd0af5
+core-pool	images/core-pool.png	core	side bar 'pool' (Ctrl+3)	c98d6c33ee55098649b798301c6dec216e38abb1481d32b454d27614cebbc7c0
+core-pool-compare	images/core-pool-compare.png	core	Pool -> the compare and exchange view	3d718c8577521f244b46fab502abe5b1ad1f9ba25976d7a739bde55d427b8dda
+core-save	images/core-save.png	core	side bar 'save' (Ctrl+5)	ad133c506f0b1dbb0243c9d8802db53332c7d78c4a734cca3fbeb51b3bf73d45
+core-team	images/core-team.png	core	side bar 'team' (Ctrl+2)	ce67c955c5319bd2a07f0cc1cf4b9df671ca85807a599c28c51f93f84f69f07b
+core-team-teamOwnView	images/core-team-teamOwnView.png	core	team -> view 'teamOwnView'	2bc78415102fe311f1427202a3019ff1461a0b254f298442a37b42bcc70291f8
+core-team-teamTacticsView	images/core-team-teamTacticsView.png	core	team -> view 'teamTacticsView'	b4011fdd08f482295d0b3833fbf66811ab803364083acb280f729e57a6a70eda
+import-data-folder	images/import-data-folder.png	first start	the first start, with no data folder yet (data_setup.make_dialog)	aa942da66740429954d875887f6b7b999c60ea2a7be01f9d92abf2bb4d6cc259
+import-data-refused	images/import-data-refused.png	first start	the same dialog after a folder it cannot take	ab714c094b3e07f12c1b5d2cc16f95d23a652ed53951a7c37af40230e5596904
+match-pitch-kick-off	images/match-pitch-kick-off.png	boot	the pitch window's own first frame (--pitch)	fbe0a97b0a4d64394aa3d34b992f311482b375f43234e0a9cdc08d2b89e7923a
+match-pitch-later	images/match-pitch-later.png	boot	the pitch window at 6' (--pitch)	25d9ace93dd053cae13436267828c18663dda737fec0d66421590a60cd2b674d
+match-pitch-play	images/match-pitch-play.png	boot	the pitch window at 2' (--pitch)	b9f630eb90ada3e673d43498220ed71a7518da0b04f205fcb2b04c3f7a739103
+template-launch-country	images/template-launch-country.png	template	New career, a country chosen	24fd8cdbcef1ed978063013be891e8e30e502d92ce0f224ea726b1f4d00aa389
+template-launch-players	images/template-launch-players.png	template	Space on the country list	7c40665eecba736384d25b5b30d007e162c094076ab082fe9b594448ec72b8f1
+template-launch-review	images/template-launch-review.png	template	Enter on the country list	43e2c15fecc81ae7ac4e69b2ce17b885d8e18c04f0f92b16a89dbad0c9644440
+template-launch-start	images/template-launch-start.png	template	the first window: Resume or New career	5707e07e8091edded7fdc67528211d4334bcefcae831dc553ddde1c8f7fa7292
+window-bars-retracted	images/window-bars-retracted.png	template	F11 on any page	fd05f3415f5ee6f127aa070ff059f7bfc769bcd207abcc38f48b007bf4d28faf
+window-country	images/window-country.png	template	side bar 'country' (Ctrl+1)	199fe37d1f4ef7194a9c4af4cd53c85b4e6b69294ab08ef70ef2f3ad733d2dd1
+window-country-countryCardView	images/window-country-countryCardView.png	template	country -> view 'countryCardView'	d91683d6bacd691fc694bf42a62b2d2e2aa0b14d4d2b43dda05a530cf5d62430
+window-country-countryGames	images/window-country-countryGames.png	template	country -> view 'countryGames'	3dab9f02cb8115561053df02fd18eb787ff0b5d5bdaab4563c8dfab2914fd301
+window-fixtures	images/window-fixtures.png	template	side bar 'fixtures' (Ctrl+4)	a3cb5af4bb0ce5da78ee37edb21b02a2bae07613e342f244a1d37ac71b5664cc
+window-fixtures-benchView	images/window-fixtures-benchView.png	template	fixtures -> view 'benchView'	89b7c1017f8c0ad90112e97d65d8d48e3ca5abef34ea7401663a158a665aae18
+window-fixtures-fixtureListView	images/window-fixtures-fixtureListView.png	template	fixtures -> view 'fixtureListView'	7210c1dfdbb25ecdea68b6d76fac239ce24a197ea610188818147ab8230d81ff
+window-fixtures-halfTimeView	images/window-fixtures-halfTimeView.png	template	fixtures -> view 'halfTimeView'	6aeac1bf514ea8b6bd607c81cf65905cecbc3a3a2eec628e786cf20ddab0ad4f
+window-fixtures-matchResultView	images/window-fixtures-matchResultView.png	template	fixtures -> view 'matchResultView'	33855771e527065b4b3e7805b4a7b404128a9639349fea0a863d700d29633c33
+window-pool	images/window-pool.png	template	side bar 'pool' (Ctrl+3)	e5f7362cb81200e3f26ec2f1f1ee37380888bdcbfdd21e8914911d6c8b91c3f6
+window-pool-poolCardsView	images/window-pool-poolCardsView.png	template	pool -> view 'poolCardsView'	2637bc4fa4053d0f6b9ac9e475890fc1d158d9509da79332197cca8442f11961
+window-save	images/window-save.png	template	side bar 'save' (Ctrl+5)	9c3689d0df2dec41ac62eb94dc951333c53374c1158cd61391fee2c3bd11c3f7
+window-small	images/window-small.png	template	the same page at 900x640	065aaaa9bc56bcd83327801491ed32b8b18504d09211e513078c2727f1646421
+window-team	images/window-team.png	template	side bar 'team' (Ctrl+2)	321c7ed502ddfbd950bf3f5c3e5b508c8b55bfab7b4a3f9cb1ce965cb10a9236
+window-team-teamTacticsView	images/window-team-teamTacticsView.png	template	team -> view 'teamTacticsView'	005d19ac167618ece00966a68dca5e6d3ad180f943b6a879fe03d77bc6d6995e

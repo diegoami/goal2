@@ -1,5 +1,7 @@
 # Desktop country management
 
+[designed: owner, 2026-11-08; T204] Every screen this guide describes is pictured in [docs/current-game](current-game/README.md), the build's own manual.
+
 [designed: owner #148, T69] The primary desktop interface uses PySide6. Install
 its optional dependency in a virtual environment (tested Python3.12/PySide6 6.12.0):
 
@@ -514,7 +516,7 @@ continues uninterrupted. Substituted XI/captain choices persist for later
 fixtures and through full-time save/resume.
 
 
-[designed: T66; T176] To watch the next scheduled **friendly** or **qualifier**, install the optional
+[designed: T66; T204] To watch the next scheduled **friendly** or **qualifier**, install the optional
 presentation and original runtime dependencies in the same environment as Qt:
 
 ```sh
@@ -616,7 +618,7 @@ Competitive Play, friendly Quick and friendly Watch share one match lock. Save,
 Resume and management edits wait until completion or cancellation. Cancel/close
 reaps only the owned child and preserves the active state and previous save.
 
-[designed: owner decision 1, #526; T176] A qualifier is watched too. When the next fixture is a qualifier that
+[designed: owner decision 1, #526; T204] A qualifier is watched too. When the next fixture is a qualifier that
 competitive Play supports, the page offers both routes: **Play** (the original competitive match, quick, as above)
 and **Watch original competitive match**. Watch plays the same `competitive` match on the engine process with the pitch
 samples and the bench (`WatchedController` starts it on the owner's `CompetitiveJobs`, the bridge Play uses), and the
