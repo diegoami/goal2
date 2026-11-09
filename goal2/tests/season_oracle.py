@@ -23,21 +23,27 @@ the vendored commit; route.py docstring]: the sealed route calls play_round 000E
 cursor=count, rounds=1 and stage 4 or 8 and which the route returns before as `deferred-rollover`. The original
 is stopped there for real (Machine.stop), so no stage_end, no rollover and no later effect runs on it.
 
+The press. The Core is driven by the whole "Play next game" action of main_menu_loop 000E:7439, which is what a
+player does; the sealed side starts from that same manager-menu memory and calls play_round. Where the action does
+something before it calls play_round (replace_retiree 000E:56F3 for a managed retiree an earlier ageing flagged),
+the two are not the same state and the oracle reports it (Round.facts["before_play_round"], Round.entry: the
+Core's memory at the route's own entry, from which the route's call can be compared alone).
+
 Same keys. The sealed side uses route.Keys(route.DEFAULT_KEYS) and keeps one Keys object across its calls, as
 SeasonSession does. The Core's timed polls normally get no key unless one is queued (T170's hazard), so the Core
 side is given the same key at the same places: CORE_KEYS says, for every site of DEFAULT_KEYS, which Core screen
-kind it is and how the Core is handed that key; test_season_oracle_t170d fails if DEFAULT_KEYS and CORE_KEYS
-drift apart.
+kind it is and how the Core is handed that key (its polls through RouteKeyCore, its reads through the Driver);
+test_season_oracle_t170d fails if DEFAULT_KEYS and CORE_KEYS drift apart, and core_rounds fails if the Driver
+presses a key the policy would not.
 
 Same match answers. The sealed side answers every decision of the held Match with the default answer
 (watched_match.consume_match with no policy); the Core plays the match watched, with no key at any live poll,
-the original's own taker timer and no action replay. A managed side whose eleven the original refuses is not
+the original's own taker timer and no action replay (Core.live_frames only batches the stops of the presentation). A managed side whose eleven the original refuses is not
 repaired on either side: the Core raises (no fix_eleven) and the case is not a case.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-import hashlib
 
 # --- the compared fields ----------------------------------------------------------------------------------------
 
@@ -53,7 +59,10 @@ FIELD_SPECS = (
 WORDS = (("7B62", 0x7B62), ("8336", 0x8336))                 # the main and the speaker RNG words (route.SEEDS)
 FIELDS = tuple(spec[0] for spec in FIELD_SPECS) + tuple(name for name, _ in WORDS)
 GAME_CURSOR, GAME_COUNT, GAME_STAGE, GAME_ROUNDS = 0x26, 0x28, 0x3C, 0x3D     # [confirmed: views.py, route.py]
-SITE_RETURN, SITE_TERMINAL = "000E:77C2", "000E:70E6"
+SITE_ENTRY, SITE_RETURN, SITE_TERMINAL = "000E:70B9", "000E:77C2", "000E:70E6"
+# [confirmed: routines.tsv 000E:56F3 replace_retiree] the Play action's step before play_round: the replacement of a
+# managed retiree (its caller 000E:57E5 is visited by every Play and calls it only when one is flagged)
+PRE_PLAY_SITES = ("000E:56F3",)
 TERMINAL_STAGES = (4, 8)
 
 
@@ -102,6 +111,7 @@ class Round:
     before: dict                    # game_facts before the round
     after: dict                     # game_facts at the observed site
     start: dict = field(default_factory=dict)   # the seven fields before the round: the round must have changed them
+    entry: bytes = b""              # the Core only, on request: its memory where play_round is entered (SITE_ENTRY)
     facts: dict = field(default_factory=dict)   # side-specific notes (keys used, status, deltas); never compared
 
 
@@ -163,25 +173,28 @@ def corrupt(fields, name):
 # --- the key policy ------------------------------------------------------------------------------------------------
 
 # [designed: T170d; confirmed: route.py READS/POLLS/DEFAULT_KEYS, goal2/core/screens.py SITES, driver.py] Every site
-# of route.DEFAULT_KEYS: the Core's kind there and how the Core is handed the same key. "queued" keys are put in the
-# Core's queue (Core.queue) before the round; "driver" keys are the Driver's own, the same keys. The match
-# screens' 214B:157C<... entries are 0791:E929's table screen (TABLE_READS) and the watch prompt.
+# of route.DEFAULT_KEYS, the Core's screen kind there, and how the Core is handed the same key:
+#   "poll"   the Core's poll answers it itself, as Keys.poll does (RouteKeyCore below): a key at the first poll,
+#            which then waits for the original's next read, whichever screen polls next
+#   "driver" the original reads there and the Core stops; the Driver's own key is the policy's (its _pass presses
+#            Return on every passing screen, N at the watch prompt)
+# The 214B:157C<... entries are the menu reader 214B:1560 with its caller (route._site): the watch prompt and the
+# group-table screens of 0791:E929 (TABLE_READS).
 CORE_KEYS = {
     "000E:0629": ("bulletin", "driver", "Return"),                       # the news pages' key wait (05F6)
     "000E:6C4F": ("round-results", "driver", "Return"),                  # the round's results
     "000E:6A89": ("fixture-result", "driver", "Return"),                 # a declined fixture's result
-    "000E:6B92": ("round-playing", "queued", "Return"),                  # 6970's read of the key its poll found
+    "000E:6B92": ("round-playing", "poll", "Return"),                    # 6970's read of the key its poll found
     "214B:157C<0791:E86E": ("match-watch-prompt", "driver", "n"),         # "Do you want to watch this match ?": N
     "214B:157C<1771:9022": ("tournament-table", "driver", "Return"),     # 0791:E929's group table screen, one pass
     "214B:157C<1771:91BE": ("tournament-table", "driver", "Return"),     # the same frame for the second finals table
     "1771:9567": ("championship-bracket", "driver", "Return"),           # the finals' table 1771:9509, "hit any key"
-    "000E:0515": ("bulletin-congratulations", "driver", "Return"),       # the tune: a key at the first poll
-    "000E:05EC": ("bulletin-congratulations", "driver", "Return"),       # the crowd animation (or best place): a key at the first poll
-    "000E:6B89": ("round-playing", "queued", "Return"),                  # 6970's poll while the round is shown
-    "000E:6BF7": ("round-playing", "queued", "Return"),                  # 6970's delay loop
+    "000E:0515": ("bulletin-congratulations", "poll", "Return"),         # the tune: a key at the first poll
+    "000E:05EC": ("bulletin-congratulations", "poll", "Return"),         # the crowd animation: a key at the first poll
+    "000E:6B89": ("round-playing", "poll", "Return"),                    # 6970's poll while the round is shown
+    "000E:6BF7": ("round-playing", "poll", "Return"),                    # 6970's delay loop
 }
-QUEUED_KINDS = tuple(sorted({kind for kind, how, _ in CORE_KEYS.values() if how == "queued"}))
-QUEUE_DEPTH = 4096        # [designed] one queued Return per simulated fixture is plenty; leaving none is an error
+POLL_SITES = tuple(site for site, (_, how, _) in CORE_KEYS.items() if how == "poll" and site != "000E:6B92")
 
 
 def route_keys():
@@ -192,7 +205,7 @@ def route_keys():
 
 def policy_problems(policy=None):
     """What differs between the route's key policy and CORE_KEYS: [] when every site of the policy is accounted for
-    (and nothing else is), and every key is the one the Core is handed."""
+    (and nothing else is), every key is the one the Core is handed, and the polls are the route's POLLS."""
     from goal2.engine.original_match import route
     policy = route_keys() if policy is None else dict(policy)
     keys = {"Return": route.ENTER, "n": route.KEY_N}
@@ -205,15 +218,52 @@ def policy_problems(policy=None):
         kind, how, name = CORE_KEYS[site]
         if policy[site] != keys[name]:
             problems.append(f"{site}: route key {policy[site]!r}, Core is handed {name!r} ({keys[name]!r})")
+    if set(POLL_SITES) != set(route.POLLS):
+        problems.append(f"the Core answers polls at {sorted(POLL_SITES)}, the route's POLLS are {sorted(route.POLLS)}")
     return problems
+
+
+def driver_keys_problems(log):
+    """What the Driver pressed (Driver.log: (kind, key)) that the route's policy would not have: [] when every key
+    pressed at a screen CORE_KEYS names is the policy's key there. Keys at other screens (the menus, the match) are
+    the Core's own navigation and the match answers, not this policy."""
+    from goal2.engine.original_match import route
+    keys = {"Return": route.ENTER, "n": route.KEY_N}
+    expected = {kind: keys[name] for kind, how, name in CORE_KEYS.values() if how == "driver"}
+    def same(a, b):         # the Driver's letters are lower case (screens.py), the route's N upper: one key
+        return a == b or (65 <= b <= 90 and a == b + 32)
+    return [f"the Driver pressed {key!r} at {kind}; the route's policy gives {expected[kind]!r}"
+            for kind, key in log if kind in expected and not same(key, expected[kind])]
+
+
+def _route_key_core():
+    from goal2.core import Core, screens
+
+    class RouteKeyCore(Core):
+        """[designed: T170d] The original under the route's poll policy. Route.Keys.poll answers a poll at a
+        site of DEFAULT_KEYS with the policy's key when none waits, and the key waits (every later poll finds it)
+        until a read takes it. The Core's own poll answers "no key" unless one is queued for that very screen
+        kind (T170's hazard); a key left by round-playing would also make the next bulletin poll neither stop nor
+        find it. So at the route's poll sites the key waits for whichever of them polls next, and is read by the
+        original's next read at any site (Core._on_readkey), as Keys.read does."""
+
+        def _on_keypressed(self, replay):
+            m = self.m
+            site = m.where(m.stack_word(2), m.stack_word(0))
+            if site in POLL_SITES:
+                kind = screens.identify(site, self._frame())
+                key = route_keys()[site]
+                if kind is not None and key is not None:
+                    self.pending = (kind, key if self.pending is None else self.pending[1])
+            super()._on_keypressed(replay)
+    return RouteKeyCore
 
 
 # --- the Core half ---------------------------------------------------------------------------------------------------
 
 def _core_driver(blob, goal_dat):
-    from goal2.core import Core
     from goal2.core.driver import Driver
-    core = Core.load(blob, goal_dat=goal_dat)
+    core = _route_key_core().load(blob, goal_dat=goal_dat)
     return core, Driver(core)
 
 
@@ -222,11 +272,16 @@ def component_of(blob, goal_dat):
     return _core_driver(blob, goal_dat)[0].memory_component()
 
 
-def core_rounds(blob, goal_dat, rounds):
-    """[Round, ...]: `rounds` calls of the original's play_round from the saved Core `blob` (a manager-menu wait),
-    each observed at its site (SITE_RETURN, or SITE_TERMINAL where the terminal predicate holds: the Core is stopped
+def core_rounds(blob, goal_dat, rounds, *, entry=False):
+    """[Round, ...]: `rounds` presses of "Play next game" on the saved Core `blob` (a manager-menu wait), each
+    observed at its site (SITE_RETURN, or SITE_TERMINAL where the terminal predicate holds: the Core is stopped
     there). The Core is driven by the Driver with the route's keys (CORE_KEYS) and the default match answers; an
-    eleven the original refuses raises (no repair). Stops, with the rounds so far, after the terminal step."""
+    eleven the original refuses raises (no repair). Stops, with the rounds so far, after the terminal step.
+
+    The press is the whole Play action of main_menu_loop 000E:7439, which can do something before it calls
+    play_round 000E:70B9 (the route's entry): replace_retiree 000E:56F3 for a managed retiree an earlier ageing
+    flagged. `facts["before_play_round"]` lists those sites, `facts["entry_changed"]` the fields they changed, and
+    `entry=True` keeps the memory at the entry as `Round.entry`, the state the route's own call starts from."""
     from goal2.core import CoreError
     core, driver = _core_driver(blob, goal_dat)
     m = core.m
@@ -254,6 +309,21 @@ def core_rounds(blob, goal_dat, rounds):
             snapshot("deferred-rollover")
             m.stop("oracle-site")           # the original stays paused here: no stage_end, no rollover
 
+    def entered(replay):
+        if not replay and "entry_fields" not in seen:
+            seen["entry_fields"] = observe(m.read, ds)
+            if entry:
+                seen["entry"] = core.memory_component()
+
+    def pre_play(site):
+        def hit(replay):
+            if not replay and "entry_fields" not in seen:
+                seen.setdefault("pre", []).append(site)
+        return hit
+
+    m.at(SITE_ENTRY, entered)
+    for site in PRE_PLAY_SITES:
+        m.at(site, pre_play(site))
     m.at(SITE_RETURN, returned)
     m.at(SITE_TERMINAL, stage_end)
     out = []
@@ -261,24 +331,22 @@ def core_rounds(blob, goal_dat, rounds):
         seen.clear()
         before = game_facts(m.read, ds)
         start = observe(m.read, ds)
-        # [designed: T170d] The route gives Return at every one of these polls (DEFAULT_KEYS); Core.queue refuses a
-        # Return for round-playing (its catalogue lists Space and Left/Right), so the pairs go into the queue itself,
-        # which _on_keypressed consumes as it does any queued key.
-        for kind in QUEUED_KINDS:
-            core.queued.extend([(kind, 13)] * QUEUE_DEPTH)
-        keys_before = len(core.keys)
+        keys_before, logged = len(core.keys), len(driver.log)
         try:
-            driver.play_round(watch=True, on_taker=lambda d, w: None, on_replay=lambda d, w: False)
+            with core.live_frames():
+                driver.play_round(watch=True, on_taker=lambda d, w: None, on_replay=lambda d, w: False)
         except CoreError:
             if m.stop_reason != "oracle-site":
                 raise
-        left = {kind: len(core.unqueue(kind)) for kind in QUEUED_KINDS}
-        if any(count == 0 for count in left.values()):
-            raise OracleMismatch(number, ["keys"], [f"the Core's queued {sorted(left)} keys ran out: a poll got no key"])
+        problems = driver_keys_problems(driver.log[logged:])
+        if problems:
+            raise OracleMismatch(number, ["keys"], problems)
         if "kind" not in seen:
             raise AssertionError(f"round {number}: the original returned from play_round at no observed site")
-        out.append(Round(seen["kind"], seen["fields"], before, seen["after"], start,
-                         dict(side="core", keys=len(core.keys) - keys_before, queue_left=left, waiting=seen.get("waiting"),
+        changed = [n for n in FIELDS if start[n] != seen["entry_fields"][n]]
+        out.append(Round(seen["kind"], seen["fields"], before, seen["after"], start, seen.get("entry", b""),
+                         dict(side="core", keys=len(core.keys) - keys_before, waiting=seen.get("waiting"),
+                              before_play_round=seen.get("pre", []), entry_changed=changed,
                               pages=[kind for kind, _ in driver.pages],
                               paused=m.stop_reason == "oracle-site")))
         if seen["kind"] == "deferred-rollover":
@@ -319,7 +387,7 @@ def sealed_rounds(component, rounds):
         fields, after = read_state()
         if (fields["7B62"], fields["8336"]) != step.rng_words:
             raise AssertionError(f"round {number}: the observation's RNG words {step.rng_words} are not the state's")
-        out.append(Round(step.status, fields, before, after, start,
+        out.append(Round(step.status, fields, before, after, start, b"",
                          dict(side="sealed", matches=matches, waiting=keys.waiting, call=step.call_number,
                               fixtures=len(step.played_fixtures), news=len(step.news_pages),
                               input_hash=step.input_hash, output_hash=step.output_hash)))

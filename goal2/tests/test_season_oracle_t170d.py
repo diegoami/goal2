@@ -168,19 +168,24 @@ class KeyPolicy(unittest.TestCase):
         watch = "214B:157C<0791:E86E"
         self.assertIn(f"{watch}: route key", " ".join(so.policy_problems(dict(policy, **{watch: route.ENTER}))))
 
-    def test_the_core_polls_named_are_polled_sites_of_its_own_table(self):
+    def test_the_core_polls_named_are_the_routes_polls_and_polled_sites_of_its_table(self):
         from goal2.core import screens
-        queued = [site for site, (kind, how, name) in so.CORE_KEYS.items() if how == "queued"]
-        self.assertEqual(sorted(queued), ["000E:6B89", "000E:6B92", "000E:6BF7"])
-        for site in ("000E:6B89", "000E:6BF7"):          # 6B92 is the read of the key 6B89's poll found: no Core site
+        from goal2.engine.original_match import route
+        self.assertEqual(sorted(so.POLL_SITES), sorted(route.POLLS))
+        for site in so.POLL_SITES:
             with self.subTest(site=site):
                 self.assertTrue(screens.SITES[site].poll)
-                self.assertEqual(screens.SITES[site].kind(None), "round-playing")
-        self.assertEqual(so.QUEUED_KINDS, ("round-playing",))
-        self.assertTrue(screens.KINDS["round-playing"].polled)
-        # The catalogue lists Space and Left/Right for this kind and refuses Return: the reason the oracle puts
-        # the route's Return into the queue itself.
+        self.assertEqual(screens.SITES["000E:6B89"].kind(None), "round-playing")
+        self.assertEqual(screens.SITES["000E:6BF7"].kind(None), "round-playing")
+        # The catalogue lists Space and Left/Right for round-playing and refuses Return: Core.queue could not give
+        # the route's key there, which is why the oracle answers these polls itself (season_oracle.RouteKeyCore).
         self.assertFalse(screens.KINDS["round-playing"].accepts(13))
+
+    def test_the_drivers_own_keys_are_checked_against_the_policy(self):
+        self.assertEqual(so.driver_keys_problems([("bulletin", 13), ("match-watch-prompt", ord("n")),
+                                                   ("manager-menu", 0x50), ("match-menu", 13)]), [])
+        self.assertEqual(len(so.driver_keys_problems([("bulletin", 0x20)])), 1)
+        self.assertEqual(len(so.driver_keys_problems([("match-watch-prompt", ord("y"))])), 1)
 
     def test_every_driver_key_is_one_the_drivers_round_really_presses(self):
         from goal2.core import screens
@@ -276,6 +281,8 @@ class OriginalRounds(unittest.TestCase):
             so.check(label, c.fields, s.fields)
             # the same position before, the same position after
             self.assertEqual((c.before, c.after), (s.before, s.after), label)
+            # the press did nothing before play_round, so the menu and the route's own entry are one state
+            self.assertEqual((c.facts["before_play_round"], c.facts["entry_changed"]), ([], []), label)
             # the round did something: a comparison of two unchanged states would prove nothing
             self.assertLess(c.before["cursor"], c.after["cursor"], label)
             changed = [n for n in so.FIELDS if c.start[n] != c.fields[n]]
@@ -337,6 +344,60 @@ class OriginalRounds(unittest.TestCase):
         self.assertEqual(caught.exception.fields, ("players",))
         self.assertIn(f"player {player} +0x0A", str(caught.exception))
         self.assertIn("round ageing/1 (sealed input altered)", str(caught.exception))
+
+
+
+
+# The third kind of position: a managed retiree an earlier ageing flagged. [confirmed: this oracle, 2026-11-09; the
+# Core's hook at 000E:56F3 runs before 000E:70B9] "Play next game" first replaces the retiree
+# (replace_retiree), then calls play_round. The route starts at play_round, so it cannot do the first part.
+RETIREE = dict(name="g16-bdf6c0842365fb09-congratulations-before.g2core",
+               sha256="bdf6c0842365fb09a2767f5710ce8f2ecbba3340a43b19bc7ad8aa14bac82901")
+PLAYER_RETIRED, PLAYER_REPLACEMENT = 2603, 2729
+
+
+@functools.lru_cache(maxsize=None)
+def retiree_run():
+    """(Core round with its entry memory, sealed round from the menu, sealed round from the entry)."""
+    from goal2.tests import pypy_engine
+    raw = (requires.CACHE / RETIREE["name"]).read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == RETIREE["sha256"]
+    menu = so.component_of(raw, GOAL_DAT)
+    first = pypy_engine.start("goal2.tests.season_oracle:sealed_rounds", menu, 1)
+    core = so.core_rounds(raw, GOAL_DAT, 1, entry=True)[0]
+    second = pypy_engine.start("goal2.tests.season_oracle:sealed_rounds", core.entry, 1)
+    return core, first.result()[0], second.result()[0]
+
+
+@requires.need(modules=("unicorn",), files=(RETIREE["name"], "GOAL.DAT"), slow=True)
+class RetireeReplacement(unittest.TestCase):
+    def test_the_routes_own_call_equals_the_original_at_the_6_to_7_ageing(self):
+        """play_round from the state where the original enters it: stage 6 to 7 (ageing, run_stage's builders, the
+        stage announcement with the congratulations animation under the poll policy), equal on all seven fields."""
+        core, _, sealed = retiree_run()
+        so.check("retiree/1 (route entry)", core.fields, sealed.fields)
+        self.assertEqual((core.before["stage"], core.after["stage"], sealed.after["stage"]), (6, 7, 7))
+        self.assertEqual((core.kind, sealed.kind), ("complete", "complete"))
+        self.assertGreaterEqual(aged(core.start["players"], core.fields["players"]), 100)
+
+    def test_the_plays_step_before_play_round_is_not_the_routes_and_the_oracle_says_so(self):
+        """Characterisation of a finding, not a Done-when: from the manager menu the sealed route differs from the
+        original in exactly the replacement the Play action makes before play_round (the retiree's record zeroed, a
+        fresh record in the pool). T170's integration owes that step; when it lands, this test is to be replaced by
+        the equality."""
+        core, sealed, _ = retiree_run()
+        self.assertEqual(core.facts["before_play_round"], ["000E:56F3"])
+        self.assertEqual(core.facts["entry_changed"], ["players", "game", "7B62"])
+        with self.assertRaises(so.OracleMismatch) as caught:
+            so.check("retiree/1 (manager menu)", core.fields, sealed.fields)
+        self.assertEqual(caught.exception.fields, ("players",))
+        self.assertIn(f"player {PLAYER_RETIRED} +0x00", str(caught.exception))
+        self.assertIn("2 players", str(caught.exception))
+        players = lambda side, w: side.fields["players"][20 * w:20 * w + 20]
+        self.assertEqual(players(core, PLAYER_RETIRED), bytes(20))               # replace_retiree zeroes the retiree
+        self.assertNotEqual(players(sealed, PLAYER_RETIRED), bytes(20))          # the route aged him instead
+        self.assertEqual(players(sealed, PLAYER_REPLACEMENT), bytes(20))         # and made no replacement
+        self.assertNotEqual(players(core, PLAYER_REPLACEMENT), bytes(20))
 
 
 if __name__ == "__main__":
