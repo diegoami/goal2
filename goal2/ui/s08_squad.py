@@ -70,14 +70,16 @@ def shift_held():
 
 class SideButton(Clickable):
     """*Squad (20)* or *Pool* above the card, as the mockup's two buttons; the side shown is the highlight bar, a cell in from each
-    edge of its text. [designed: T211]"""
+    edge of its text (the button is two cells wider than its text and the text is centred: no margin whose rounded pixels could
+    squeeze it at a fractional scale). [designed: T211]"""
 
     def __init__(self, text):
         super().__init__("sideButton")
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(theme.CELL_W, 0, theme.CELL_W, 0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.text = CellLabel(text, "sideText")
+        self.text.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.text)
         self.set_on(False)
 

@@ -13,7 +13,7 @@ keyboard"] Every screen of the new window is a `Screen`:
 fidelity-review.md §3, goal2/ui/cells.py): the title bar is one row, the page has no margin and no padding (a screen's panels
 are placed by cell, separated by one empty cell), a key of the bottom bar is its caption and its word joined (`F1help`, no box),
 the bar is as many rows as its keys need (never fewer than `KEY_ROWS`, so the page does not move when the Enter hint changes),
-and an option is a bordered box of three rows or a line of one. The other screens keep the layout they were drawn with until
+and an option is a bordered box of two rows or a line of one. The other screens keep the layout they were drawn with until
 they are reflowed (T211b, T212-T214); `GRID` goes when the last one is.
 
 Keys and the mouse take one path: a key's binding, a click on an option, on a key of the bottom bar or on the Enter
@@ -243,8 +243,8 @@ class Screen(QWidget):
         layout.setSpacing(theme.CELL_W if self.GRID else 28)
         corner = QHBoxLayout()
         corner.setSpacing(theme.CELL_W if self.GRID else 6)
-        make = cells.CellLabel if self.GRID else label
-        corner.addWidget(make("GOAL2", "brand") if self.GRID else label("GOAL2", "brand"))
+        make = cells.CellLabel if self.GRID else label   # the same call: (text, object name)
+        corner.addWidget(make("GOAL2", "brand"))
         if self.pre_game:
             corner.addWidget(label("the 1993 game, rebuilt", "brandNote"))
         layout.addLayout(corner)

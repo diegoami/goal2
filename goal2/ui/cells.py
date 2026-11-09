@@ -13,8 +13,8 @@ grid places its panels **by cell**, not by the size a font's line box happens to
   turns a cell into the page's pixels (the rounded edge of its column and row) and never into a measured size.
 
 [designed: T211] A cell is `theme.CELL_W` x `theme.CELL_H` logical pixels, drawn at the page's horizontal scale and at the
-vertical one (scale x the 4:3 stretch): 16 x 38.4 pixels at scale 1. A row's pixels are `row_px`, rounded; an edge is the
-rounded multiple of the exact cell, so a panel's edge is within half a pixel of the grid and the sum of rows never drifts.
+vertical one (scale x the 4:3 stretch): 16 x 38.4 pixels at scale 1. A row's pixels are `row_px`, rounded down, and the rows
+of a panel add up to its height; across, an edge is the rounded multiple of the exact cell.
 """
 from __future__ import annotations
 
@@ -43,8 +43,10 @@ def cell_h(widget) -> float:
 
 
 def row_px(widget, rows: int = 1) -> int:
-    """`rows` rows in whole pixels: a row is the rounded cell (38 at scale 1), so rows stacked add up as the layout adds them."""
-    return rows * max(1, round(cell_h(widget)))
+    """`rows` rows in whole pixels: a row is the cell's height rounded **down** (38 at scale 1, 43 at 1.12), so rows stacked add up as
+    the layout adds them and 28 of them never exceed the page (rounded up, 28 rows are 5 pixels too many at the scale 0.98 a clamped
+    Windows window has, where a cell is 37.65 pixels)."""
+    return rows * max(1, int(cell_h(widget) + 1e-6))
 
 
 def span_px(widget, rows: int) -> int:

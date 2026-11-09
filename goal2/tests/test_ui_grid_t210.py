@@ -216,7 +216,9 @@ class GridCheck(Base):
         def build(page):
             Frame("rankings", "brown", page).setGeometry(16 * 2, 38 * 1, 16 * 30, 38 * 5)
             Frame("characteristics", "red", page).setGeometry(16 * 32, 38 * 1, 16 * 40, 38 * 5)
-        window, _ = self.page(build)
+        window, page = self.page(build)
+        for frame in page.findChildren(Frame):
+            frame.layout().activate()   # [designed: T211] a window that is not shown lays nothing out by itself: the rule is a row once the frame is
         self.assertEqual(grid_check.violations(window), [])
 
 

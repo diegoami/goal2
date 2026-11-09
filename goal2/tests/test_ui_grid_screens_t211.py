@@ -7,8 +7,8 @@ page's own size) and there is no card (`#box`, `#boxHeading`); and neither scree
 `grid_pending.PENDING`, so the helpers enforce it everywhere else.
 
 The geometry is measured on a window that is never shown where the grid is concerned (a desktop clamps a top-level window to its
-work area: a measured Windows runner gave 1440x1061 for 1440x1080), and the sizes a shown window is asked for are bounded by the
-primary screen's available area; a window that is clamped is letterboxed, and the screen must still fit it. The careers read GOAL.DAT
+work area: a measured Windows runner gave 1440x1061 for 1440x1080); a shown window is asked for the three sizes and the screen must
+fit the size it gets (a clamped window is letterboxed), whatever that is: no test here asserts a size. The careers read GOAL.DAT
 and the E010 half-time template from the git-ignored `.cache/` and skip without them (goal2/tests/requires.py).
 """
 import shutil
@@ -35,7 +35,9 @@ from goal2.ui.s08_squad import ADDITION, COMING_LATER, SquadScreen, open_squad  
 from goal2.ui.screen import Clickable  # noqa: E402
 from goal2.ui.window import Window  # noqa: E402
 
-SIZES = ((1440, 1080), (1440, 900), (2110, 1213))
+# The task's three sizes, and 1440x1061: what a measured Windows runner gave a window asked for 1440x1080 (its work area), a scale
+# of 0.98 where a cell is 15.7 pixels across and the rounded pixels of a margin are not the cell's.
+SIZES = ((1440, 1080), (1440, 900), (2110, 1213), (1440, 1061))
 
 
 class Base(unittest.TestCase):
@@ -86,14 +88,14 @@ class Base(unittest.TestCase):
             layout.activate()
 
     def fitting(self, make, check=None):
-        """The screen at each size of `SIZES` (a window is asked for no more than the screen has): `fixed_page.problems` is empty."""
-        from PySide6.QtGui import QGuiApplication
+        """The screen at each size of `SIZES`: `fixed_page.problems` is empty. A desktop may open the window smaller than asked (a
+        measured Windows runner clamped 1440x1080 to its work area); the screen must fit the size the window has, whatever it is, and
+        nothing here asserts a size."""
         window = self.window()
         screen = make(window)
-        available = QGuiApplication.primaryScreen().availableGeometry()
         for width, height in SIZES:
             with self.subTest(size=(width, height)):
-                window.resize(min(width, available.width()), min(height, available.height()))
+                window.resize(width, height)
                 window.show()
                 for _ in range(3):
                     self.app.processEvents()
@@ -221,8 +223,6 @@ class SquadOnTheGrid(Base):
         self.fitting(self.make)
 
     def test_every_state_fits_at_every_size_and_is_on_the_grid(self):
-        from PySide6.QtGui import QGuiApplication
-        available = QGuiApplication.primaryScreen().availableGeometry()
         for name, put in self.states():
             with self.subTest(state=name):
                 window, screen = self.canonical(self.make)
@@ -234,7 +234,7 @@ class SquadOnTheGrid(Base):
                 shown_screen = self.make(shown)
                 put(shown_screen)
                 for width, height in SIZES:
-                    shown.resize(min(width, available.width()), min(height, available.height()))
+                    shown.resize(width, height)
                     shown.show()
                     for _ in range(3):
                         self.app.processEvents()
