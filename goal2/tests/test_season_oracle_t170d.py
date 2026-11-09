@@ -10,6 +10,7 @@ Slow cases (GOAL2_SLOW=1; Unicorn, PyPy and the T111 checkpoints in .cache): the
 sealed SeasonSession on real careers, and the same comparison failing on a deliberately altered sealed input.
 """
 from dataclasses import dataclass
+import functools
 import hashlib
 import json
 import unittest
@@ -199,3 +200,144 @@ class KeyPolicy(unittest.TestCase):
                 else:
                     self.assertIn(kind, Driver.PASSING)       # _pass presses Return on every one of them
                     self.assertTrue(screens.KINDS[kind].accepts(key))
+
+
+@dataclass(frozen=True)
+class Case:
+    """A real career position and how many rounds are compared from it."""
+    name: str
+    artifact: int               # index in docs/evidence/T111/artifacts.json (a manager-menu Core save)
+    prepare: int                # rounds the Core plays first (T111's test policy for an eleven it refuses)
+    rounds: int
+    kinds: tuple                # the route's status for each compared round
+    matches: tuple              # managed matches the sealed side holds in each
+    why: str
+
+
+# [designed: T170d] Every case starts from the original's own memory (the T111 saves, built by the original's keys);
+# `prepare` plays whole rounds of the Core first, with T111's fix_eleven for an eleven the original refuses, because the
+# sealed route chooses no eleven (T170: "Production chooses no legal eleven"). Those rounds are not compared.
+CASES = (
+    Case("ageing", 0, 0, 1, ("complete",), (0,),
+         "[confirmed: T111 Continuation] the last silent round of the qualifying stage: stage_end, run_stage's builders "
+         "and the in-season ageing at 2 to 3, with no managed match"),
+    Case("managed-match", 1, 1, 1, ("complete",), (1,),
+         "the second round of the continental groups: 59 silent fixtures and the managed side's match, whose eleven "
+         "the original accepts, played with the default answers"),
+    Case("terminal", 2, 0, 2, ("complete", "deferred-rollover"), (0, 0),
+         "[derived: T170 scope, 000E:70E6] the knockout stage 4 from its second round: a completed round, then "
+         "the explicit rollover boundary before stage_end, the Core stopped there"),
+)
+
+
+def checkpoint(case):
+    """The saved Core the case starts from: the T111 artifact, hash-checked, after `prepare` rounds."""
+    from goal2.core import Core
+    from goal2.core.driver import Driver
+    from goal2.tests.test_core_continuation_t111 import fix_eleven
+    item = ARTIFACTS[case.artifact]
+    raw = (requires.CACHE / item["name"]).read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == item["sha256"]
+    if not case.prepare:
+        return raw
+    core = Core.load(raw, goal_dat=GOAL_DAT)
+    driver = Driver(core)
+    for _ in range(case.prepare):
+        driver.play_round(fix_eleven=fix_eleven)
+    return core.save()
+
+
+@functools.lru_cache(maxsize=None)
+def played(case):
+    """(core rounds, sealed rounds) for the case: the sealed child runs beside the Core. Played once per case."""
+    from goal2.tests import pypy_engine
+    blob = checkpoint(case)
+    component = so.component_of(blob, GOAL_DAT)
+    child = pypy_engine.start("goal2.tests.season_oracle:sealed_rounds", component, case.rounds)
+    core = so.core_rounds(blob, GOAL_DAT, case.rounds)
+    return core, child.result()
+
+
+def aged(start, after):
+    """Players whose age byte (+1) rose by one between two `players` fields."""
+    return sum(1 for w in range(3061) if start[20 * w + 1] and after[20 * w + 1] == start[20 * w + 1] + 1)
+
+
+@requires.need(**NEEDS, slow=True)
+class OriginalRounds(unittest.TestCase):
+    def equal_rounds(self, case):
+        """The case played on both sides: same kinds, same match counts, and every round equal on all seven fields."""
+        core, sealed = played(case)
+        self.assertEqual([r.kind for r in core], list(case.kinds))
+        self.assertEqual([r.kind for r in sealed], list(case.kinds))
+        self.assertEqual([r.facts["matches"] for r in sealed], list(case.matches))
+        for number, (c, s) in enumerate(zip(core, sealed), 1):
+            label = f"{case.name}/{number}"
+            so.check(label, c.fields, s.fields)
+            # the same position before, the same position after
+            self.assertEqual((c.before, c.after), (s.before, s.after), label)
+            # the round did something: a comparison of two unchanged states would prove nothing
+            self.assertLess(c.before["cursor"], c.after["cursor"], label)
+            changed = [n for n in so.FIELDS if c.start[n] != c.fields[n]]
+            self.assertIn("fixtures", changed, label)
+            self.assertIn("game", changed, label)
+            # the key state after the call agrees: a waiting key on both sides or on neither
+            self.assertEqual(c.facts["waiting"] is None, s.facts["waiting"] is None, label)
+        return core, sealed
+
+    def test_the_ageing_round_equals_the_original(self):
+        core, sealed = self.equal_rounds(CASES[0])
+        self.assertEqual((core[0].before["stage"], core[0].after["stage"]), (2, 3))
+        # [confirmed: T111 Continuation] 100 players of the managed side and the pool age; the whole array does here
+        self.assertGreaterEqual(aged(core[0].start["players"], core[0].fields["players"]), 100)
+        self.assertEqual(aged(core[0].start["players"], core[0].fields["players"]),
+                         aged(sealed[0].start["players"], sealed[0].fields["players"]))
+
+    def test_the_round_with_a_managed_match_equals_the_original(self):
+        core, sealed = self.equal_rounds(CASES[1])
+        self.assertEqual(core[0].after["stage"], 3)
+        self.assertEqual(sealed[0].facts["matches"], 1)         # 59 fixtures with the advance, the match's own with resume
+
+    def test_the_terminal_step_equals_the_original_paused_at_the_same_site(self):
+        core, sealed = self.equal_rounds(CASES[2])
+        for side in (core[-1], sealed[-1]):
+            self.assertTrue(so.at_terminal(side.after), side.after)   # cursor=count, rounds=1, stage 4: not advanced
+        self.assertEqual((core[-1].after["stage"], sealed[-1].after["stage"]), (4, 4))
+        self.assertEqual(sealed[-1].facts["call"], 2)
+        self.assertTrue(core[-1].facts["paused"])
+        self.assertFalse(core[0].facts["paused"])
+
+    def test_the_comparison_names_the_field_and_the_round_on_the_real_runs_too(self):
+        case = CASES[0]
+        core, sealed = played(case)
+        label = f"{case.name}/1"
+        so.check(label, core[0].fields, sealed[0].fields)
+        for name in so.FIELDS:
+            with self.subTest(corrupted=name), self.assertRaises(so.OracleMismatch) as caught:
+                so.check(label, so.corrupt(core[0].fields, name), sealed[0].fields)
+            self.assertEqual(caught.exception.fields, (name,))
+            self.assertIn(f"round {label}: field {name}:", str(caught.exception))
+
+    def test_a_real_difference_in_the_sealed_run_is_reported_by_name(self):
+        """The sealed side starts from one changed byte of one player; nothing else differs. The oracle must say so."""
+        from goal2.tests import pypy_engine
+        case = CASES[0]
+        blob = checkpoint(case)
+        component = bytearray(so.component_of(blob, GOAL_DAT))
+        from goal2.engine.original_match.image import Image
+        image = Image(bytes(component))
+        player = 1 + 3060 // 2
+        address = image.far(0xA91B) + 20 * player + 0x0A + 0x78
+        component[address] ^= 0x01
+        child = pypy_engine.start("goal2.tests.season_oracle:sealed_rounds", bytes(component), 1)
+        core = so.core_rounds(blob, GOAL_DAT, 1)
+        sealed = child.result()
+        with self.assertRaises(so.OracleMismatch) as caught:
+            so.check("ageing/1 (sealed input altered)", core[0].fields, sealed[0].fields)
+        self.assertEqual(caught.exception.fields, ("players",))
+        self.assertIn(f"player {player} +0x0A", str(caught.exception))
+        self.assertIn("round ageing/1 (sealed input altered)", str(caught.exception))
+
+
+if __name__ == "__main__":
+    unittest.main()

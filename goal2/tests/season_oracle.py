@@ -237,6 +237,7 @@ def core_rounds(blob, goal_dat, rounds):
         seen["kind"] = kind
         seen["fields"] = observe(m.read, ds)
         seen["after"] = game_facts(m.read, ds)
+        seen["waiting"] = core.pending
 
     def returned(replay):
         if not replay and "kind" not in seen:
@@ -244,7 +245,6 @@ def core_rounds(blob, goal_dat, rounds):
             # [designed: T170d] A key a poll found and no read took waits in the route (Keys.waiting) and in the
             # Core (pending). The route's next call reads it at once; the Core's next read would be the manager
             # menu's, which would start another round by itself. The Core's is set aside here and reported.
-            seen["waiting"] = core.pending
             core.pending = None
 
     def stage_end(replay):
@@ -279,7 +279,8 @@ def core_rounds(blob, goal_dat, rounds):
             raise AssertionError(f"round {number}: the original returned from play_round at no observed site")
         out.append(Round(seen["kind"], seen["fields"], before, seen["after"], start,
                          dict(side="core", keys=len(core.keys) - keys_before, queue_left=left, waiting=seen.get("waiting"),
-                              pages=[kind for kind, _ in driver.pages])))
+                              pages=[kind for kind, _ in driver.pages],
+                              paused=m.stop_reason == "oracle-site")))
         if seen["kind"] == "deferred-rollover":
             break
     return out
