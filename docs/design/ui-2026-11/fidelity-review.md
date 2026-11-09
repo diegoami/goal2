@@ -80,9 +80,10 @@ from position.
 Where the original wants something visually large, it draws **line-art, not larger type**: the GOAL
 wordmark, the stencil "Fixtures" title, the vertical "Tactics", the giant match clock.
 
-The window scales the bitmap font instead: `theme.HEADING_SIZE`, and in `start_look.py` `#titleBrand`
-at `HUGE`, `#bigValue`, `#masthead`, `#story`, `#bulletinTitle` at `BIG`. Large type in a bitmap
-face is the strongest signal that a screen is a web page.
+The window scales the bitmap font instead. `start_look.py` defines three sizes above the text:
+`theme.HEADING_SIZE` (32 px, used by `#bigValue`, `#story` and the rest), `BIG` (48 px, the
+bulletin's `#masthead` and `#bulletinTitle`) and `HUGE` (64 px, the title's `#titleBrand`). Large
+type in a bitmap face is the strongest signal that a screen is a web page.
 
 ### 2.4 Frames versus cards
 

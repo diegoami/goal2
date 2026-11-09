@@ -59,6 +59,10 @@ says how little of that gap this closes.
 - **Not a new design.** The screens, their information, their flow and their keys are
   [the approved design](../README.md)'s, unchanged. The owner approved them in #526 and this
   proposal does not reopen them.
+- **Not a redesign of the content.** Each screen carries what its built counterpart carries: S08's
+  performance, S11's *watch* / *match* / *at kick-off* columns and its count, S15's play row naming
+  what follows, S05's page count, and the desk's own goal2 route. Where this proposal drops
+  something the window has, that is a defect, not a choice.
 - **Not complete.** Six screens of twenty-two. They were chosen because between them they exercise
   every rule above: the hub and the squad for frames, bars and the strip, the fixtures for leaders
   and a stencil title, the bulletin for the newspaper, the match menu for the organigram, the pitch
@@ -66,9 +70,15 @@ says how little of that gap this closes.
 
 ## The content
 
-Names, scores and fixtures are run **T156-R1**'s, the same the mockups use, so each screen can be
-read beside the mockup it replaces. Skill values and a few figures are illustrative, exactly as
-[the mockups' own note](../README.md) says of theirs.
+Names, scores and fixtures are **the window's own**, taken from the render each screen is shown
+beside: `T178-screens/s06-desk.png` and `s11-fixtures.png`, `T165-screens/s08-squad.png`,
+`T167-screens/s15-match-menu.png`, `fix-583-screens/s17-pitch.png`. That is why the desk manages
+Holland against Romania rather than the Norway of an earlier draft: the three panels of a strip
+should differ in how they are drawn, not in what they say.
+
+Two exceptions, both visible: S05's three stories are the original capture's words
+(`bulletin.png`), because the window's bulletin is still a stand-in, and the skill values on S08
+are illustrative, exactly as [the mockups' own note](../README.md) says of theirs.
 
 ## Rebuilding them
 

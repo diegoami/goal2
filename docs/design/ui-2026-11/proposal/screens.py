@@ -15,6 +15,11 @@ SQUAD = [('G', 'F V Breukelen', 'G'), ('S', 'R Koeman', 'D'), ('C', 'B Van Aerle
          ('C', 'A V Tiggelen', 'D'), ('D', 'J Wouters', 'M'), ('m', 'R Witschge', 'M'),
          ('M', 'F Rijkaard', 'M'), ('F', 'D Bergkamp', 'M'), ('w', 'B Roy', 'A'),
          ('W', 'R Gullit', 'A'), ('$', 'M Van Basten', 'A')]
+# Romania's eleven, as the built match menu shows it (T167-screens/s15-match-menu.png).
+ROMANIA = [('G', 'L Stelea', 'G'), ('S', 'G Popescu', 'D'), ('C', 'V Munteanu', 'D'),
+           ('b', 'A Petrescu', 'D'), ('B', 'M Mihali', 'D'), ('D', 'C Pana', 'M'),
+           ('m', 'G Balint', 'M'), ('M', 'G Hagi', 'M'), ('F', 'I Lupescu', 'M'),
+           ('$', 'T Rotariu', 'A'), ('$', 'M Lacatus', 'A')]
 BENCH = [('G', 'S Menzo', 'G'), ('S', 'F De Boer', 'D'), ('C', 'D Blind', 'D'),
          ('Ç', 'W Jonk', 'M'), ('Ç', 'P Bosz', 'M'), ('M', "J Van't Ship", 'M'),
          ('m', 'A Winter', 'M'), ('$', 'P Van Vossen', 'A'), ('$', 'W Kieft', 'A')]
@@ -77,7 +82,7 @@ def hub(path):
     s.rule(18, 9, 14, 'managers', DARK)
     for i in range(1, 7):
         s.text(19, 9 + i, str(i), VALUE)
-    s.text(21, 10, 'E Go', TEXT)
+    s.text(21, 10, 'Kees', TEXT)
     s.rule(18, 16, 14, None, DARK)
 
     s.rule(1, 15, 16, 'next opponents', DARK)
@@ -102,6 +107,10 @@ def hub(path):
             s.button(36, row, width, 3, option)
         row += 3
 
+    # goal2's own route, kept and marked as the built desk marks it.
+    s.text(36, 24, 'goal2 addition', GREEN)
+    s.button(36, 25, 18, 3, 're-import data', GREEN, GREEN)
+
     # The hint in the body, in magenta, where the original puts it.
     s.hint(19, 18, ['Use \u2191\u2193 to', 'find option'])
     s.hint(19, 21, ['Hit \u25c4\u2518 to', 'select', 'option'])
@@ -113,31 +122,33 @@ def hub(path):
 
 
 def squad(path):
-    """S08 Squad and pool, against docs/original-game/images/m244-squad.png."""
+    """S08 Squad and pool, against docs/original-game/images/m244-squad.png.
+
+    Its content is the window's own (T165-screens/s08-squad.png), performance included.
+    """
     s = Screen()
     s.corner()
-    s.hint(13, 0, ['- Use ↔ to toggle between your squad and',
+    s.hint(13, 0, ['- Use \u2194 to toggle between your squad and',
                    '  the pool of other players available to you.',
-                   '- Use ↕ to find player, ◄┘ to select.'])
-    s.text(13, 3, 'Hit Ins for assistant’s recommended 20', GREEN)
+                   '- Use \u2195 to find player, \u25c4\u2518 to select.'])
+    s.text(13, 3, 'Hit Ins for assistant\u2019s recommended 20', GREEN)
 
-    # The card: label on the rule, value under it, the whole width of the card.
-    s.rule(0, 5, 61, 'name', DARK)
-    s.text(1, 6, 'F V Breukelen', GK)
-    for col, label, value in ((20, 'age', '33'), (27, 'caps', '0'), (35, 'goals', '0'),
-                              (43, 'height', "6' 1\""), (50, 'bias', 'right foot')):
-        s.rule(col, 5, 0, None, DARK)
-        s.text(col, 5, label, LABEL)
+    CARD = 65                                     # the card's width; the strip starts at 66
+    s.rule(0, 5, CARD, 'name', DARK)
+    s.text(1, 6, 'F V Breuklen', GK)
+    for col, label, value in ((16, 'age', '33'), (21, 'caps', '0'), (27, 'goals', '0'),
+                              (34, 'height', "6' 1\""), (42, 'bias', 'right foot')):
+        s.text(col, 5, label, LABEL, over=True)
         s.text(col, 6, value, TEXT)
-    s.rule(0, 7, 61, 'position', DARK)
+    s.right(CARD, 6, 'ready to play', TEXT)
+    s.rule(0, 7, CARD, 'position', DARK)
     s.text(1, 8, 'goalkeeper', GREEN)
-    s.text(20, 7, 'club position', LABEL)
-    s.text(20, 8, 'goalkeeper', GREEN)
-    s.text(40, 7, 'cards', LABEL)
-    s.text(40, 8, '—', TEXT)
-    s.button(44, 7, 17, 3, 'ready to play', MUTED, TEXT)
+    for col, label, value, colour in ((16, 'club position', 'goalkeeper', GREEN),
+                                      (32, 'cards', '\u2014', TEXT),
+                                      (40, 'performance', 'not recorded', MUTED)):
+        s.text(col, 7, label, LABEL, over=True)
+        s.text(col, 8, value, colour)
 
-    # Skills: the label, then a bar of cells, then the value. Short, beside its label.
     skills = [('keeping', 8), ('kicking', 7), ('tackling', 6), ('heading', 6), ('marking', 2),
               ('passing', 2), ('crossing', 2), ('feinting', 2), ('control', 2), ('dribbling', 2),
               ('shooting', 2), ('penalties', 2)]
@@ -147,60 +158,72 @@ def squad(path):
         s.bar(11, 11 + i, 16, value * 16 // 9)
         s.right(29, 11 + i, str(value), TEXT)
 
-    s.rule(31, 10, 30, 'tactics', DARK, RED)
+    s.rule(31, 10, 34, 'tactics', DARK, RED)
     for i, (name, value) in enumerate((('position', 'leave box P'), ('possession', 'keep ball'),
                                        ('passing', 'throw the ball'),
-                                       ('tackling', 'avoid injury'), ('mark', '—'))):
+                                       ('tackling', 'avoid injury'), ('mark', '\u2014'))):
         s.text(32, 11 + i, name, LABEL)
         s.text(44, 11 + i, value, GREEN)
 
-    s.rule(31, 17, 30, 'characteristics', DARK, RED)
+    s.rule(31, 17, 34, 'characteristics', DARK, RED)
     for i, (name, word, value) in enumerate((('hardness', 'pushy', 6), ('fitness', 'ok', 4),
                                              ('energy', 'fine', 5), ('morale', 'brimming', 7),
                                              ('leadership', 'none', 1))):
         s.text(32, 18 + i, name, LABEL)
-        s.word_bar(43, 18 + i, 8, value, word)
+        s.word_bar(45, 18 + i, 8, value, word)
 
-    strip(s, 62, 1, 'Holland', 27, selected=0)
+    strip(s, 66, 1, 'Holland', 24, selected=0)
     s.keyline([('F2', 'new name'), ('R,C', 'reposition'), ('T', 'tactics')],
-              [('◄┘', 'move player'), ('Esc', 'exit')])
+              [('\u25c4\u2518', 'move player'), ('Esc', 'exit')])
     return s.save(path)
 
 
 def fixtures(path):
-    """S11 Fixtures, against docs/original-game/images/fixtures-watch.png."""
+    """S11 Fixtures, against docs/original-game/images/fixtures-watch.png.
+
+    Its rows, its two right-hand columns and its count are the window's own
+    (T178-screens/s11-fixtures.png).
+    """
     s = Screen()
     s.corner()
     s.stencil(14, 0, 'Fixtures', 76, DARK, 2.0)
     s.text(16, 4, 'and results', CYAN)
-    s.hint(58, 0, ['Use ↑↓ to scroll'])
-    s.hint(58, 2, ['Hit ◄┘ to', 'watch match'])
+    s.hint(58, 0, ['Use \u2191\u2193 to scroll'])
+    s.hint(58, 2, ['Hit \u25c4\u2518 to', 'watch match'])
 
-    rows = [('R.C.S', 'Holland', 'friendly', True), ('N.Ireland', 'Switzerland', 'friendly', False),
-            ('Malta', 'Bulgaria', 'friendly', False), ('Denmark', 'Austria', 'friendly', False),
-            ('Denmark', 'R.C.S', 'qualifying', False), ('Cyprus', 'Wales', 'friendly', False),
-            ('Greece', 'Hungary', 'friendly', False), ('Germany', 'Albania', 'friendly', False),
-            ('Yugoslavia', 'Russia', 'friendly', False), ('Germany', 'Greece', 'qualifying', False),
-            ('Switzerland', 'Holland', 'qualifying', False), ('Russia', 'Wales', 'qualifying', False),
-            ('Finland', 'Portugal', 'friendly', False), ('England', 'Spain', 'friendly', False),
-            ('Eire', 'Luxembourg', 'friendly', False), ('Norway', 'Sweden', 'friendly', False)]
-    left, width = 10, 70
+    rows = [('Austria', 'Denmark', 'friendly', False), ('Poland', 'Italy', 'friendly', False),
+            ('Scotland', 'Bulgaria', 'friendly', False), ('Yugoslavia', 'Finland', 'friendly', False),
+            ('Denmark', 'Finland', 'qualifying', False), ('Albania', 'Luxembourg', 'friendly', False),
+            ('Sweden', 'Germany', 'friendly', False), ('Wales', 'Switzerland', 'friendly', False),
+            ('Hungary', 'Belgium', 'friendly', False), ('Germany', 'Switzerland', 'qualifying', False),
+            ('Austria', 'Poland', 'qualifying', False), ('Albania', 'Hungary', 'qualifying', False),
+            ('Romania', 'Holland', 'friendly', True), ('Greece', 'Eire', 'friendly', False),
+            ('Turkey', 'Spain', 'friendly', False), ('France', 'Malta', 'friendly', False)]
+    left, width = 6, 78
+    s.text(left + 1, 5, 'watch', LABEL)
+    s.text(left + 48, 5, 'match', LABEL)
+    s.text(left + 62, 5, 'at kick-off', LABEL)
     s.vrule(left - 1, 6, len(rows) + 1, '#aa0000')
     s.vrule(left + width, 6, len(rows) + 1, '#aa0000')
-    for i, (a, b, kind, on) in enumerate(rows):
-        row = 6 + i
-        if on:
+    for i, (a, b, kind, mine) in enumerate(rows):
+        row, at = 6 + i, 'your match' if mine else 'auto result'
+        if mine:
             s.highlight(left, row, width, '')
-            s.right(left + 32, row, a, '#000000')
-            s.text(left + 34, row, 'v', '#000000')
-            s.text(left + 38, row, b, '#000000')
-            s.text(left + 56, row, kind, '#000000')
+            s.text(left + 2, row, '\u221a', '#000000')
+            s.right(left + 30, row, a, '#000000')
+            s.text(left + 32, row, 'v', '#000000')
+            s.text(left + 36, row, b, '#000000')
+            s.text(left + 48, row, kind, '#000000')
+            s.text(left + 62, row, at, '#000000')
         else:
             s.text(left, row, '-' * width, DARK)
-            s.right(left + 32, row, a, VALUE, over=True)
-            s.text(left + 34, row, 'v', CYAN, over=True)
-            s.text(left + 38, row, b, VALUE, over=True)
-            s.text(left + 56, row, kind, HINT if kind == 'friendly' else TEXT, over=True)
+            s.right(left + 30, row, a, VALUE, over=True)
+            s.text(left + 32, row, 'v', CYAN, over=True)
+            s.text(left + 36, row, b, VALUE, over=True)
+            s.text(left + 48, row, kind, HINT if kind == 'friendly' else TEXT, over=True)
+            s.text(left + 62, row, at, MUTED, over=True)
+    s.text(left, 23, '1 of 16', VALUE)
+    s.text(left + 10, 23, '\u221a marks a match you will watch: your own, always.', MUTED)
     s.keyline([], [('Esc', 'exit')])
     return s.save(path)
 
@@ -245,6 +268,7 @@ def bulletin(path):
                 for dy in range(0, 32, 4):
                     for dx in range((cc + r) % 2 * 4, 16, 8):
                         s.p.fillRect(x + dx, y + dy, 4, 2, QColor('#777777'))
+    s.centre(0, s.cols, 1, 'front page \u00b7 1 of 2', LABEL)
     s.highlight(38, 26, 15, '  hit any key')
     return s.save(path)
 
@@ -273,33 +297,38 @@ def score_panel(s, home='NORWAY', away='HOLLAND', scores=('0', '0'), kind='FRIEN
 
 
 def match_menu(path):
-    """S15 Match menu, against docs/original-game/images/match-menu.png: two mirrored sides."""
+    """S15 Match menu, against docs/original-game/images/match-menu.png: two mirrored sides.
+
+    Its sides, their formations, both elevens and the play row's own words are the window's
+    (T167-screens/s15-match-menu.png).
+    """
     from PySide6.QtGui import QColor
     s = Screen()
     s.corner()
-    score_panel(s)
-    s.centre(0, s.cols, 5, 'location: Norway', LABEL)
+    score_panel(s, home='HOLLAND', away='ROMANIA')
+    s.centre(0, s.cols, 5, 'location: Holland  \u00b7  before kick-off', LABEL)
+    s.right(s.cols, 4, 'automatic action replay OFF (Ins)', MUTED)
 
-    for col, side, shape, inboard in ((2, 'Norway', '4-5-1', 22), (69, 'Holland', '3-5-2', 55)):
+    for col, side, shape, eleven, inboard in ((2, 'Holland', '3-6-1', SQUAD, 22),
+                                              (69, 'Romania', '4-4-2', ROMANIA, 55)):
         s.button(col, 6, 19, 3, side, MUTED, VALUE)
         s.vrule(col + 9, 9, 1, DARK)                      # the connector to this side's children
         s.button(col if col < 40 else col + 9, 10, 10, 3, shape, MUTED, TEXT)
         s.vrule(col + 9, 13, 1, DARK)
-        for i, (code, name, line) in enumerate(SQUAD):
+        for i, (code, name, line) in enumerate(eleven):
             s.text(col + 1, 14 + i, name, LINE[line])
             s.right(col + 18, 14 + i, code, LINE[line])
         s.vrule(col - 1 if col < 40 else col + 19, 7, 18, '#aa0000')
         # Its own two routes, facing inward, joined to its header.
         s.button(inboard, 10, 13, 3, 'team tactics', MUTED, CYAN)
         s.button(inboard, 14, 13, 3, 'players', MUTED, CYAN)
-        s.p.setPen(s.p.pen())
-        s.vrule(col + 9 if col < 40 else col + 9, 9, 1, DARK)
 
-    # The middle column: what both sides share, with play highlighted as the original highlights it.
+    # The middle column: what both sides share, with play highlighted and naming what follows.
     s.button(37, 8, 14, 3, 'tournament', MUTED, CYAN)
     s.button(37, 12, 14, 3, 'match stats', MUTED, CYAN)
-    s.highlight(39, 17, 10, '   play')
-    s.hint(38, 20, ['Use \u2195\u2194', 'then \u25c4\u2518', 'to select', 'option'])
+    s.highlight(37, 17, 14, '     play')
+    s.centre(31, 26, 19, 'next: choose your captain,', HINT)
+    s.centre(31, 26, 20, 'then kick-off', HINT)
 
     # The stands at the foot, as the original draws them.
     for i in range(7):
@@ -319,7 +348,8 @@ def pitch(path):
     from PySide6.QtGui import QColor, QPen
     s = Screen()
     s.corner()
-    score_panel(s, scores=('0', '1'), note='Bergkamp scores', clock='17')
+    score_panel(s, home='HOLLAND', away='ROMANIA', scores=('0', '1'),
+                note='Munteanu wins the ball', clock='17')
 
     # The pitch: the original's own proportions, measured from match-live.png (593x256 px).
     #   length : height          2.316 : 1
@@ -355,18 +385,18 @@ def pitch(path):
 
     # The commentary, beside the pitch, as the approved design has it.
     s.rule(64, 5, 26, 'commentary', DARK, RED)
-    events = [("1\u00b4", 'Bratseth wins toss'), ("1\u00b4", 'Nilsen takes kick off'),
-              ("9\u00b4", 'Goal kick: Holland'), ("12\u00b4", 'Witschge corner'),
-              ("14\u00b4", 'FOUL by Nilsen'), ("14\u00b4", 'Nilsen BOOKED'),
-              ("15\u00b4", 'Witschge INJURED'), ("16\u00b4", 'Rijkaard on the ball'),
-              ("17\u00b4", 'Bergkamp SCORES')]
+    events = [("15\u00b4", '** LINESMAN FLAGS **'), ("15\u00b4", 'Roy collects'),
+              ("16\u00b4", 'Van Basten is OFFSIDE'), ("16\u00b4", '*** FREE KICK ***'),
+              ("16\u00b4", 'Camataru free kick'), ("16\u00b4", 'Rotariu collects'),
+              ("16\u00b4", 'tackle by Bergkamp'), ("16\u00b4", 'Wouters collects'),
+              ("16\u00b4", 'Munteanu wins ball')]
     for i, (minute, line) in enumerate(events):
         s.right(67, 6 + i, minute, VALUE)
-        s.text(68, 6 + i, line[:21], TEXT if 'SCORES' not in line else VALUE)
+        s.text(68, 6 + i, line[:21], TEXT if '*' not in line else VALUE)
     s.rule(64, 22, 26, None, DARK)
     s.text(65, 23, 'speed  \u00bb\u00bb\u00bb\u00bb\u00bb', HINT)
     s.text(65, 24, 'marks  positions', HINT)
-    s.highlight(65, 25, 24, ' your side: white')
+    s.highlight(65, 25, 24, ' your side: light red')
 
     s.keyline([('\u2195', '-display'), ('\u2194', '-speed\u00bb\u00bb\u00bb\u00bb\u00bb'),
                ('R', '-result'), ('spacebar', '-commentary'), ('F9', '-\u266a')],
