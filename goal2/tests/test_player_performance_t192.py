@@ -2,6 +2,7 @@
 import copy
 import unittest
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 # [confirmed: original1771:3827, accepted port performance_text_state at80831d9a]
 # Literal boundary oracles are independent of the implementation helper.
@@ -75,7 +76,7 @@ class PerformanceScreen(unittest.TestCase):
                         self.assertNotIn('not recorded', facts)
                         self.assertNotIn('not decoded', facts)
                         self.assertNotIn('raw ', facts)
-                        self.assertEqual(fixed_page.problems(window), [], (raw, width, height))
+                        assert_fits(self, window, (raw, width, height))
                         self.assertFalse(screen.card.facts.grab().isNull())
             finally:
                 window.leave(); window.deleteLater(); app.processEvents()

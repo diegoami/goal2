@@ -29,6 +29,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -124,9 +125,9 @@ class App(unittest.TestCase):
     def bar(self, screen):
         return dict((caps, text) for caps, text in screen.key_texts())
 
-    def fits(self, window):
+    def fits(self, window, capture=None):
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window, capture=capture)
 
     def files(self):
         return sorted(p.name for p in self.target.saves.glob("*")) if self.target.saves.is_dir() else []
@@ -425,7 +426,7 @@ class FailedSave(App):
         self.assertTrue(box.problem.isVisible())
         self.assertIn("The game was not saved: cannot write", box.problem.text())
         self.assertIn("Nothing was replaced", box.problem.text())
-        self.fits(window)
+        self.fits(window, capture="SaveScreen@failed-save")   # the message names the path: long on Windows
         self.assertEqual(earlier.read_bytes(), kept, "the earlier save is unchanged")
         self.assertTrue(model.unsaved, "the progress is still unsaved")
         self.assertEqual(model.save_path, earlier)

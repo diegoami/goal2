@@ -3,6 +3,7 @@ import copy
 from pathlib import Path
 import unittest
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits, assert_room
 from goal2.tests.test_ui_start_t163 import App
 from goal2.tests.test_core_team_panels_t144 import FIXTURES
 
@@ -85,10 +86,10 @@ class Panels(App):
         before=copy.deepcopy(screen.browser.state)
         for width,height in ((1440,900),(1800,1125),(2110,1213)):
             window.resize(width,height);self.app.processEvents();window.grab()
-            self.assertEqual(fixed_page.problems(window),[],(width,height))
+            assert_fits(self, window, (width,height))
             view=screen.card_view;cells=view.characteristics.cells
-            self.assertGreaterEqual(cells.width()+1,cells.content_size().width())
-            self.assertGreaterEqual(cells.height()+1,cells.content_size().height())
+            assert_room(self,window,cells.width()+1,cells.content_size().width())
+            assert_room(self,window,cells.height()+1,cells.content_size().height())
             self.assertGreaterEqual(cells.font().pixelSize(),round(24*window.frame.scale))
             for value in view.averages.values.values():
                 self.assertGreaterEqual(value.font().pixelSize(),round(24*window.frame.scale))

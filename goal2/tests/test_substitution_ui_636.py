@@ -176,6 +176,7 @@ class OpportunityScaling(unittest.TestCase):
     def test_heading_scales_with_the_page_and_the_notice_stays_inside_the_lower_pitch(self):
         from goal2.tests.test_ui_replay_t181 import ReplayScreens
         from PySide6.QtCore import QPoint
+        from goal2.ui import theme
         ReplayScreens.setUp(self)
         box=self.pitch.stop_box
         for width,height in ((1440,900),(1800,1125),(2110,1213)):
@@ -186,7 +187,7 @@ class OpportunityScaling(unittest.TestCase):
             self.assertGreaterEqual(top.x(),0);self.assertGreaterEqual(top.y(),0)
             self.assertLessEqual(top.x()+box.width(),self.pitch.pitch.width())
             self.assertLessEqual(top.y()+box.height(),self.pitch.pitch.height())
-            self.assertGreaterEqual(box.headline.font().pixelSize(),round(32*self.window.frame.scale)-1)
+            self.assertGreaterEqual(box.headline.font().pixelSize(),round(theme.TEXT*theme.STRETCH*self.window.frame.scale)-1)
             self.assertFalse(box.headline.text().strip()=='')
             box.cancel()
 
@@ -215,7 +216,7 @@ class FullRequestCue(unittest.TestCase):
             # The acknowledgement must already fit before another event-loop turn.
             label=screen.mode_label;text='SUBSTITUTION REQUESTED';metrics=label.fontMetrics()
             self.assertEqual(label.text(),text)
-            self.assertGreaterEqual(label.font().pixelSize(),round(theme.HEADING_SIZE*self.window.frame.scale)-1)
+            self.assertGreaterEqual(label.font().pixelSize(),round(theme.TEXT*theme.STRETCH*self.window.frame.scale)-1)
             self.assertLessEqual(metrics.horizontalAdvance(text),label.contentsRect().width()+1)
             image=label.grab().toImage();dpr=image.devicePixelRatio()
             start=max(0,int((label.contentsRect().left()+metrics.horizontalAdvance(text[:-1]))*dpr))

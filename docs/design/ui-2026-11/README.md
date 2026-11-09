@@ -402,6 +402,8 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 ![S19 Bench](images/s19-bench.png)
 
+![S19 Bench, a refused pair](images/s19-bench-refused.png)
+
 ### S20 Match board
 
 - **Purpose**: the statistics at half time and full time, and a saved match summary.
@@ -516,7 +518,7 @@ we can keep the rest"]
   [designed: owner #637] Keep readable selected-row contrast and explicit injury feedback.
 - [designed: owner, 2026-11-08, #611] Original screenshots are the visual acceptance baseline: compare rendered
   layout, colours, typography, table alignment, bars and prompts alongside the exercised keyboard flow.
-  Readability polish preserves the original visual structure and the explicitly accepted scalable24px text;
+  Readability polish preserves the original visual structure and the one 32 px text size that scales with the page;
   palette constants alone do not establish screen fidelity.
 - On the pitch, and in the names of the scoreboard, S15 and S20, each side wears its kit as the original computes
   it at kick-off from the country's three colour bytes, the keepers in the second colour (`goal2/ui/kits.py`).
@@ -526,10 +528,25 @@ we can keep the rest"]
   VGA-style font under CC BY-SA 4.0. It is vendored in [mockups/fonts/](mockups/fonts/PROVENANCE.md) with its
   licence and provenance. It is not the original game's font, and no byte of it comes from GOAL.EXE (CLAUDE.md
   rule 14).
-- **Text size**: designed at 1440×900. [designed: owner playtest #598, 2026-11-05] Normal text is 24 px and headings/names
-  are 32 px. Keyboard actions wrap as complete items, with full-size text. Squad rows and card columns
-  reserve room for the larger lettering. This supersedes the earlier 16 px/whole-cell-multiple choice. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
-  (T101).
+- **The cell, the grid, the text and the page**: [designed: owner, 2026-11-08; #666, #667; [fidelity-review.md §3](fidelity-review.md#3-the-decisions-owner-2026-11-08)]
+  - **The cell** is **16 × 32** pixels, twice the original's 8 × 16, and the page is a grid of **90 × 28** cells, 1440 × 896
+    (`goal2/ui/theme.py`: `CELL_W`, `CELL_H`, `COLS`, `ROWS`, `PAGE`). The vendored font at a pixel size of 32 is exactly one
+    cell: advance 16 and line height 32 [confirmed: measured 2026-11-09, `QFont` on the vendored PxPlus IBM VGA 8x16,
+    offscreen Qt; 24 px gives 12 and 24, off the grid].
+  - **One text size**, `theme.TEXT` = 32 px, on every screen: every glyph is one cell wide. A heading, a masthead, a brand or
+    a number is drawn at that size too. Hierarchy is colour (the palette above), frame and position, never size; anything
+    that must look large is **line-art** (#673–#675), not type scaled up. There is no heading size, no "big" and no "huge".
+  - **4:3**: the page is presented as DOSBox shows the original, with a **1.2 vertical stretch**: vertical lengths scale by
+    1.2 × s and horizontal ones by s, where s is the page's width over 1440, and the text is the same font taller and
+    narrowed back by `QFont` stretch so that a glyph keeps its 16 px advance. A 90 × 28 page is 1440 × 1075, half a per cent
+    short of an exact 4:3 1440 × 1080, so the page's rectangle is the largest 4:3 rectangle in the window, centred on black:
+    the window letterboxes the remainder and never re-flows or stretches a cell unevenly. At 1440 × 1080 the scale is 1.
+    (`goal2/desktop/fixed_page.py`, which also says why the page stays native widgets scaled by their lengths.)
+  - **This supersedes the owner's #598** (24 px normal text, 32 px headings and names, 48 and 64 px titles) in the direction
+    it went: the text is larger again, and the headings are gone. #598's other rules stay: keyboard actions wrap as whole
+    items, and rows and card columns reserve room for the lettering. The approved screens, flow and keys (#526) are not
+    reopened. A screen that does not fit its page at this size is a layout defect to fix in the layout
+    (`fixed_page.problems` finds it), never by shrinking, clipping or dropping text.
 - [designed: owner, 2026-11-08; #666] Why the built window does not yet read as GOAL2, with
   measurements taken from it, is [fidelity-review.md](fidelity-review.md). A **drawn proposal** for the whole look — the cell, one
   text size, the rule-and-label frame, dash leaders, bars of cells, line-art titles and the
@@ -674,7 +691,7 @@ with some modification for the sake of the UX."
     **Scheduled after the first playable version** (owner, 2026-11-03: "the look of the players is fine, an
     improvment with disk is post playable"). T179 (#573) is `post-playable`.
 
-[designed: owner playtest #598, 2026-11-05] At the 24px baseline the fixture window shows fourteen
+[designed: owner playtest #598, 2026-11-05; the 24 px baseline is superseded by the 32 px text of §3, T209] At the 24px baseline the fixture window shows fourteen
 rows; arrows still reach the complete list. Recent commentary keeps whole wrapped entries within its
 panel, with more room in the reading view. No engine event is removed from the transcript or recording.
 

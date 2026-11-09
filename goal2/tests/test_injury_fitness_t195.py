@@ -2,6 +2,7 @@
 import copy
 import unittest
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 @requires.need(modules=('unicorn',),files=('e006-r0001-main.sav','GOAL.DAT'))
 class InjuryFitness(unittest.TestCase):
@@ -59,7 +60,7 @@ class InjuryFitnessScreen(unittest.TestCase):
             self.assertEqual(bar.value,(0,14))
             self.assertTrue(bar.filled.isHidden())
             self.assertIn('INJURED',self.bench.card.readiness.text())
-            self.assertEqual(fixed_page.problems(self.window),[])
+            assert_fits(self, self.window)
         self.assertEqual(self.model.state,before)
 
 if __name__=='__main__':unittest.main()

@@ -71,9 +71,13 @@ class PitchWidget(QWidget):
     def scale(self) -> float:
         return self.width() / WIDTH
 
+    def scale_y(self) -> float:
+        """The vertical scale: the page's 1.2 stretch makes the widget taller than its width's scale (T209)."""
+        return self.height() / HEIGHT
+
     def field(self) -> QRect:
-        inset = round((SURROUND + 10) * self.scale())
-        return self.rect().adjusted(inset, inset, -inset, -inset)
+        inset_x, inset_y = round((SURROUND + 10) * self.scale()), round((SURROUND + 10) * self.scale_y())
+        return self.rect().adjusted(inset_x, inset_y, -inset_x, -inset_y)
 
     def cell(self):
         field = self.field()
@@ -89,8 +93,11 @@ class PitchWidget(QWidget):
         return QPoint(round(centre.x() + gy * sx), round(centre.y() + gx * sy))
 
     def type_at(self, size) -> QFont:
-        font = QFont(self.family)
-        font.setPixelSize(max(1, round(size * self.scale())))
+        """The page's text at `size` page pixels: the widget's own font (it carries the page's stretch, so a glyph is
+        as wide as the cell) at the vertical scale's pixel size. [designed: T209; the same size and stretch as the page]"""
+        font = QFont(self.font())
+        font.setFamily(self.family)
+        font.setPixelSize(max(1, round(size * self.scale_y())))
         return font
 
     # Painting.
@@ -154,7 +161,7 @@ class PitchWidget(QWidget):
                                    QPoint(max(line, mouth), self.at(2, 0).y())))
 
     def _players(self, painter, display, frame):
-        font = self.type_at(2 * theme.CELL)
+        font = self.type_at(theme.TEXT)
         painter.setFont(font)
         sx, sy = self.cell()
         holder = frame.get("officials", {}).get("holder")
@@ -167,9 +174,9 @@ class PitchWidget(QWidget):
             point = self.at(px, py)
             text = glyph(self.marks, slot, display.code(word, number), frame["selector"], holder)
             occupied[(point.x(), point.y())] = (slot, team, text, side_colour(team, self.kits, slot in KEEPERS))
-        size = round(2 * theme.CELL * self.scale())
+        wide, high = round(2 * theme.CELL_W * self.scale()), round(theme.CELL_H * self.scale_y())
         for (x, y), (slot, team, text, colour) in occupied.items():
-            box = QRect(x - size // 2, y - size // 2, size, size)
+            box = QRect(x - wide // 2, y - high // 2, wide, high)
             painter.setPen(QColor(colour))
             painter.drawText(box, Qt.AlignmentFlag.AlignCenter, text)
             self.painted.append((slot, team, text, colour, box))
@@ -190,7 +197,7 @@ class PitchWidget(QWidget):
         painter.setPen(pen)
         painter.drawRect(panel)
         painter.setFont(self.type_at(theme.TEXT))
-        line = round(theme.TEXT * 1.5 * scale)
+        line = round(theme.TEXT * 1.5 * self.scale_y())
         rows = max(1, (panel.height() - 2 * line) // line)
         painter.setPen(QColor(theme.HEADING))
         painter.drawText(panel.left() + line, panel.top() + line, "COMMENTARY")

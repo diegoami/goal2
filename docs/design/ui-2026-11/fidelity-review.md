@@ -33,6 +33,10 @@ came from.
 
 ## 2. The diagnosis
 
+[designed: T209] Every number of this section is measured on the window as built on 2026-11-08, before the decisions of §3 were
+built (`CELL = 16`, `TEXT = 24`, `HEADING_SIZE = 32`, `BIG`, `HUGE`, a uniform 1440×900 page). The rules it leads to are
+stated in [README.md §3](README.md#3-rules-for-the-whole-ui).
+
 §3's rule is "the original's palette and a blocky font, on a modern layout", from the owner's words
 in #526. The palette and the font are right. What is missing is the part that rule sets aside:
 **GOAL2's character is in its layout grammar, not in its colours or its typeface.** Four causes.

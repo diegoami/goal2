@@ -4,7 +4,12 @@
 (docs/design/ui-2026-11/README.md §3, read from the original's captures by palette.py); each constant below is one
 row of that table, and the test checks them against the README itself. The font is "PxPlus IBM VGA 8x16" (CC BY-SA
 4.0), vendored in `goal2/ui/fonts/` with its licence and provenance and loaded from there, never from a system
-install. Text is 24 px (owner #598), with 32 px headings; the page scales as a whole with the window (docs/design/ui-2026-11 §3, "Text size").
+install. [designed: owner, 2026-11-08, #666, #667; docs/design/ui-2026-11/fidelity-review.md §3] The cell is 16 x 32, the
+page 90 x 28 cells (1440 x 896), and there is **one text size**, `TEXT` = 32 px: every glyph on every screen is one cell
+wide, and hierarchy is colour, frame and position, never size. The page is presented at 4:3, stretched 1.2 vertically
+(`STRETCH`), by the page's own font (`text_font`: a taller pixel size and a narrower `QFont` stretch, so a glyph keeps its
+16 px advance) and by the page's lengths (goal2/desktop/fixed_page.py). This supersedes the owner's #598 (24 px text, 32 px
+headings) in the direction it went.
 
 Importing this module needs no Qt; `load_font` and `install` do.
 """
@@ -53,10 +58,19 @@ GOOD = TEXT_BRIGHT
 BAD = TITLE_BANNER
 SCRIM_ALPHA = 158   # 0.62 of 255
 
-# The text sizes: the font's 8x16 cell and its whole multiples. [designed: docs/design/ui-2026-11 §3, "Text size"]
-CELL = 16
-TEXT = 24   # [designed: owner #598] larger reading baseline
-HEADING_SIZE = 2 * CELL
+# The cell, the page and the one text size. [designed: owner, 2026-11-08, #666, #667; fidelity-review.md §3] The font is
+# 8 x 16; twice that is 16 x 32, and `TEXT` is the pixel size at which this font's cell is 16 x 32 [confirmed: measured
+# 2026-11-09, `QFont` on the vendored font, offscreen Qt: pixel size 32 gives advance 16 and line height 32; 24 gives 12 and
+# 24, off the grid].
+CELL_W, CELL_H = 16, 32
+CELL = (CELL_W, CELL_H)
+COLS, ROWS = 90, 28
+PAGE = (COLS * CELL_W, ROWS * CELL_H)   # 1440 x 896, the logical page
+TEXT = CELL_H   # the only text size; nothing larger is drawn as type (larger things are line-art, #673-#675)
+# [designed: owner, 2026-11-08, #667; DOSBox's 4:3] The page is shown with a 1.2 vertical stretch: 1440 x 896 becomes
+# 1440 x 1075.2, half a per cent short of an exact 4:3 1440 x 1080, and a window letterboxes the remainder.
+STRETCH = 1.2
+PICTURE = (PAGE[0], PAGE[0] * 3 // 4)   # 1440 x 1080: the 4:3 window the page fills at scale 1, which the pictures are taken at
 
 FONT_DIR = Path(__file__).with_name("fonts")
 FONT_FILE = FONT_DIR / "PxPlus_IBM_VGA_8x16.ttf"
@@ -81,18 +95,34 @@ def font_id() -> int:
     return _LOADED["id"]
 
 
-def install(app) -> str:
-    """Make the vendored font the application's font, at the owner's 24 px baseline; returns its family."""
+def stretch_percent(scale: float = 1.0) -> int:
+    """The `QFont` stretch that keeps a glyph one cell (16 x `scale`) wide when its pixel size is the stretched one
+    (`TEXT` x `STRETCH` x `scale`, rounded): a taller glyph does not widen. [derived: the font's advance is half its
+    pixel size; confirmed: measured 2026-11-09, pixel size 38 with stretch 83 gives advance 16 and height 39]"""
+    height = max(1, round(TEXT * STRETCH * scale))
+    return max(1, round(100 * TEXT * scale / height))
+
+
+def text_font(family: str = FONT_FAMILY, scale: float = 1.0):
+    """The one text size as the 4:3 page draws it at `scale` (the page's width over 1440): the pixel size and the stretch
+    of `stretch_percent`. A widget that sets its own font starts from this or from `widget.font()`, never from a bare
+    `QFont(family)` (a bare font has stretch 100 and is wider than the page's cell)."""
     from PySide6.QtGui import QFont
-    family = load_font()
     font = QFont(family)
-    font.setPixelSize(TEXT)
-    app.setFont(font)
+    font.setPixelSize(max(1, round(TEXT * STRETCH * scale)))
+    font.setStretch(stretch_percent(scale))
+    return font
+
+
+def install(app) -> str:
+    """Make the vendored font the application's font, at the one text size on the 4:3 page; returns its family."""
+    family = load_font()
+    app.setFont(text_font(family))
     return family
 
 
 def stylesheet(family: str = FONT_FAMILY) -> str:
-    """The window's style sheet, composed for the 1440x900 page; the page scales every px length with the window
+    """The window's style sheet, composed for the 1440x896 page (90 x 28 cells); the page scales every px length with the window
     (goal2/desktop/fixed_page.py). The sizes and colours are the mockups' (docs/design/ui-2026-11/mockups/style.css):
     [designed: owner, 2026-11-03, #526]."""
     return f"""
@@ -100,7 +130,7 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #page {{ background: {GROUND}; }}
 #screen {{ background: {GROUND}; }}
 #titleBar {{ background: {GROUND}; border-bottom: 2px solid {FRAME_DARK}; }}
-#brand {{ color: {HEADING}; font-size: {HEADING_SIZE}px; }}
+#brand {{ color: {HEADING}; }}
 #brandNote, #crumb, #sub, #muted {{ color: {TEXT_NORMAL}; }}
 #brandNote {{ padding-top: 8px; }}
 #who {{ color: {TEXT_BRIGHT}; }}
@@ -112,14 +142,14 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #enterHint #kbd {{ color: {ON_HIGHLIGHT}; background: transparent; border: 1px solid {ON_HIGHLIGHT}; }}
 #box {{ background: {GROUND}; border: 1px solid {FRAME_DARK}; }}
 #boxHeading, #th {{ color: {HEADING}; }}
-#benchMetadata {{ font-size: 20px; color: {TEXT_NORMAL}; }}
+#benchMetadata {{ color: {TEXT_NORMAL}; }}
 #benchCounter {{ border: 1px solid {FRAME}; padding: 6px 14px; }}
 #th {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td[check="good"] {{ color: {GOOD}; }}
 #td[check="bad"] {{ color: {BAD}; }}
 #td[check="none"] {{ color: {TEXT_NORMAL}; }}
-#h1, #h2 {{ font-size: {HEADING_SIZE}px; color: {TEXT_BRIGHT}; }}
+#h1, #h2 {{ color: {TEXT_BRIGHT}; }}
 #tag {{ color: {HEADING}; border: 1px solid {HEADING}; padding: 2px 8px; }}
 #tagNew {{ color: {GOALKEEPER}; border: 1px solid {GOALKEEPER}; padding: 2px 8px; }}
 #error {{ color: {BAD}; }}
@@ -128,7 +158,7 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #option[on="true"] {{ background: {HIGHLIGHT}; border: 1px solid {HIGHLIGHT}; }}
 #option[on="true"] QLabel {{ color: {ON_HIGHLIGHT}; }}
 #waitBox {{ background: {GROUND}; border: 1px solid {HIGHLIGHT}; }}
-#waitHead {{ color: {VALUE}; font-size: {HEADING_SIZE}px; }}
+#waitHead {{ color: {VALUE}; }}
 #dialog {{ background: {GROUND}; border: 2px solid {HEADING}; }}
 #helpText {{ background: {GROUND}; color: {TEXT_BRIGHT}; border: 1px solid {FRAME_DARK}; padding: 14px 16px; }}
 """

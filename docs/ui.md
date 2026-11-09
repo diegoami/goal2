@@ -10,7 +10,7 @@ and the portable build's default until T169 switches over. [designed: owner, 202
 It opens S01 while the per-user data folder lacks a file the new window needs, otherwise S02 Start. `--data-root`
 names the per-user goal2 folder (its `data` holds the imported files). `--import FOLDER` imports FOLDER as S01 does
 (`WINDOW_MANIFEST`, GOAL.HLP too when the folder has it), then starts; S22's message names it as the way to add
-GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` writes PNGs at 1440×900 from a
+GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` writes PNGs at 1440×1080 (the 4:3 page at its own size, `theme.PICTURE`) from a
 temporary data folder of its own and exits: S01, the placeholder home and S22 (with a stand-in help text) always;
 S02 with two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages (labelled so), S06
 the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, the match day of the career's
@@ -123,9 +123,11 @@ of the bottom bar and a click on the Enter hint all reach the same handler.
 `replace_home(screen)` empties the stack and starts again from `screen`; `open_career(model, pages=())` makes `model`
 the open career (`window.career`) and shows its pages (S05), then the home. Keys go to the current screen
 (`Screen.handle_key`). Closing the window first calls `closing()` on every screen on the stack that has one (S17
-cancels its match) [designed: T166]. The page is composed for 1440×900 and scales as a whole with the window: the central widget is
-today's `goal2.desktop.fixed_page.FixedPage`, reused, which multiplies every length of the page, its style sheet's
-text sizes included (T101). Its `problems(window)` check (no scroll bar, nothing clipped or squeezed) applies to every
+cancels its match) [designed: T166]. The page is composed for 90 × 28 cells of 16 × 32 (1440×896) and scales as a whole with the window, presented at 4:3
+[designed: owner, 2026-11-08, #667; T209; docs/design/ui-2026-11/README.md §3] — the central widget is
+today's `goal2.desktop.fixed_page.FixedPage` with its stretch (the legacy window keeps it uniform), which multiplies every
+length of the page, its style sheet's text size included, by the scale (vertical ones by 1.2 × the scale) and sets the
+font stretch that keeps a glyph one cell wide (T101). The text is one size, `theme.TEXT` (32 px). Its `problems(window)` check (no scroll bar, nothing clipped or squeezed) applies to every
 screen of the new window too.
 
 ## The look
@@ -468,6 +470,6 @@ saved-goal menu and F3/F4 lists.
 
 [confirmed: original0791:ED8A; measurements/610-live-team-tactics/original-esc-v1; owner #610/#612] Esc returns from player tactics to the squad, and from the squad to the match menu. At an active pause, half-time, substitution or extra-time menu, Esc resumes through the same XI validation as Play. Before kick-off and after full time, Esc selects and explains Play/Exit. A held Esc/Enter does not repeat across these transitions; directional repeats and later discrete key presses remain usable. Stop arrival consumes the outstanding “bench requested” status; dropped/failed requests and match cancellation cannot retain that obsolete note. Pending edits keep their screen until the engine confirms or refuses them. The manual/player-card audit (#611) remains separate required work.
 
-[designed: owner611; T193, based on original1771:42BC/T156] Player cards use aligned labelled cells for age/caps/goals/height/foot/performance, then position/club/cards. Fact headings use the red card-heading palette role, attribute labels brown, and values the player-line colour. Facts retain24px type, all20roster rows and existing rename/selection/readiness/bench controls. Compact bench spacing allows long card statuses and refusal text to fit at fractional native font metrics. This presentation change does not make saved player data live; that snapshot contract remains separate611 work.
+[designed: owner611; T193, based on original1771:42BC/T156] Player cards use aligned labelled cells for age/caps/goals/height/foot/performance, then position/club/cards. Fact headings use the red card-heading palette role, attribute labels brown, and values the player-line colour. Facts retain the one text size (`theme.TEXT`), all20roster rows and existing rename/selection/readiness/bench controls. Compact bench spacing allows long card statuses and refusal text to fit at fractional native font metrics. This presentation change does not make saved player data live; that snapshot contract remains separate611 work.
 
 [confirmed: original1771:3827; T192] Player cards display the original1–9 performance stars and leave the0x7FFF sentinel blank. The raw stored word remains available internally; the visible card no longer calls that known encoding undecoded. This display rule does not certify live-match data freshness: #611 separately requires a current engine player-record snapshot.

@@ -2,6 +2,7 @@
 import copy
 import unittest
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 from goal2.tests.test_ui_start_t163 import App
 
 @requires.need(modules=('PySide6',),**requires.HALFTIME)
@@ -27,7 +28,7 @@ class HeaderViews(App):
         self.assertEqual(view.ranks['top_world'].text(),'3');self.assertEqual(view.ranks['top_continental'].text(),'2')
         for width,height in ((1440,900),(1800,1125),(2110,1213)):
             window.resize(width,height);self.app.processEvents();window.grab()
-            self.assertEqual(fixed_page.problems(window),[],(width,height))
+            assert_fits(self, window, (width,height))
             image=view.shape['strips'].grab().toImage()
             colors={image.pixelColor(x,y).name() for y in range(image.height()) for x in range(image.width())}
             for index in data['strips']:self.assertIn(DOS[index],colors)

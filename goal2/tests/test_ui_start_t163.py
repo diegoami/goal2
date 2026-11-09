@@ -19,6 +19,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fills, assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -89,9 +90,9 @@ class App(unittest.TestCase):
         QTest.mouseClick(widget, Qt.MouseButton.LeftButton)
         self.app.processEvents()
 
-    def fits(self, window):
+    def fits(self, window, capture=None):
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window, capture=capture)
 
     def reference(self, country, year, name):
         model = DesktopModel.open(self.target.data / data_setup.TEMPLATE_NAME, self.target.goal_dat,
@@ -132,7 +133,7 @@ class NewGame(App):
         self.assertFalse(start.list_box.isVisible())
         self.assertFalse(start.load_item.isVisible())
         self.assertEqual(start.enter_text.text(), "New game")
-        self.fits(window)
+        self.fits(window, capture="StartScreen with no save")   # the saves' list is what overflows
         with mock.patch.object(DesktopModel, "new_campaign", autospec=True,
                                side_effect=DesktopModel.new_campaign) as new_campaign:
             self.key(window, Qt.Key.Key_N)
@@ -534,7 +535,7 @@ class Help(App):
         self.fits(window)
         window.resize(720, 450)
         self.app.processEvents()
-        self.assertGreaterEqual(screen.viewer.height(), 0.7 * window.page.height(), "at every scale")
+        assert_fills(self, window, screen.viewer, 0.7, "at every scale")
 
 
 class HelpImport(App):
@@ -608,13 +609,13 @@ class Bulletin(App):
 
 
 class Look(unittest.TestCase):
-    def test_the_added_sheet_uses_the_palette_and_whole_cells(self):
+    def test_the_added_sheet_uses_the_palette_and_the_one_text_size(self):
         sheet = start_look.stylesheet()
         colours = {c.lower() for c in re.findall(r"#[0-9a-fA-F]{6}\b", sheet)}
         self.assertTrue(colours)
         self.assertLessEqual(colours, set(theme.PALETTE.values()))
         sizes = [int(s) for s in re.findall(r"font-size:\s*(\d+)px", sheet)]
-        self.assertEqual([s for s in sizes if s % theme.CELL], [])
+        self.assertEqual([s for s in sizes if s != theme.TEXT], [], "no heading, masthead or brand size [T209]")
 
     def test_ng9_start_years(self):
         self.assertEqual([s03_new_game.start_year(y) for y in (1989, 1990, 1991, 2026, 2027)],

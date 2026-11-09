@@ -25,6 +25,7 @@ import unittest
 from pathlib import Path
 
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -205,7 +206,7 @@ class App(unittest.TestCase):
         screen = window.current()
         self.assertIsInstance(screen, kind)
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window)
         return screen
 
     def back_to_desk(self, window, desk):
@@ -299,7 +300,7 @@ class Fixtures(App):
         self.key(window, Qt.Key.Key_Return)
         screen = window.current()
         self.assertIsInstance(screen, FixturesScreen)
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window)
         expected = model.fixture_list(number)["rows"]
         self.assertTrue(all(name in (row[1], row[3]) for row in screen.shown_rows()))
         self.assertEqual(len(screen.shown_rows()), min(VISIBLE, len(expected)))
@@ -367,7 +368,7 @@ class Tournament(App):
             self.assertEqual(screen.table(), [])
             self.assertEqual(screen.matches(), [])
             self.assertIn("FINALS", screen.banner.text())
-            self.assertEqual(fixed_page.problems(window), [])
+            assert_fits(self, window)
         self.key(window, Qt.Key.Key_Insert)
         self.assertIn("not reach", screen.message_label.text())
         self.key(window, Qt.Key.Key_Left, 2)

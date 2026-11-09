@@ -3,6 +3,7 @@ import copy
 from types import SimpleNamespace
 import unittest
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 
 class TacticTransport(unittest.TestCase):
@@ -105,7 +106,7 @@ class LiveTeamTactics(unittest.TestCase):
         self.assertTrue(screen.pending)
         self.assertIn("Applying", screen.enter_hint_text())
         from goal2.desktop import fixed_page
-        self.assertEqual(fixed_page.problems(self.window), [])
+        assert_fits(self, self.window)
         self.assertEqual(self.model.state.country_tactics, self.original_tactics)
         self.key(Qt.Key.Key_Return)
         self.key(Qt.Key.Key_Escape)
@@ -136,7 +137,7 @@ class LiveTeamTactics(unittest.TestCase):
             self.deliver(byte)
             self.assertEqual(screen.answer.team_tactics, byte)
             from goal2.desktop import fixed_page
-            self.assertEqual(fixed_page.problems(self.window), [])
+            assert_fits(self, self.window)
             self.assertEqual(len(self.sent), row+1)
         self.key(Qt.Key.Key_Escape)
         reopened = self.open_tactics()
@@ -390,7 +391,7 @@ class ActualLiveTeamTactics(unittest.TestCase):
                         test.assertTrue(controller.stop.data['edited'])
                         test.assertEqual(before, self.day_state())
                         test.assertEqual(len(controller.choices), choices + row + 1)
-                        test.assertEqual(fixed_page.problems(self.window), [])
+                        assert_fits(test, self.window)
                         if row != len(LINES)-1: key(self.window, Qt.Key.Key_Down)
                     shot(self.window, 'confirmed')
                     key(self.window, Qt.Key.Key_Escape)
