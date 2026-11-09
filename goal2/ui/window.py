@@ -43,10 +43,24 @@ class Window(QMainWindow):
         self.stack = []
         self.career = None   # the open career, a DesktopModel, once S02 or S04 opened one
         self.leaving = False   # the player chose to quit: closing asks nothing more [designed: T168]
-        self.resize(*theme.PICTURE)   # [designed: owner, 2026-11-09, #667] opens at the 4:3 page's own size: no side bars
+        self.resize(*self.default_size())
 
     def _font(self):
         return theme.text_font(self.family)
+
+    @staticmethod
+    def default_size(available=None):
+        """[designed: owner, 2026-11-09, #667] The size a new window opens at: the 4:3 page's own size (`theme.PICTURE`, 1440x1080,
+        no side bars), or the screen's available area when that is smaller, the page then letterboxed in it. A desktop
+        clamps a top-level window to its work area (a measured Windows runner gave 1440x1061 for 1440x1080), so the
+        window asks for what can exist. `available` is a QSize or QRect; the primary screen's by default."""
+        if available is None:
+            from PySide6.QtGui import QGuiApplication
+            screen = QGuiApplication.primaryScreen()
+            available = screen.availableGeometry() if screen is not None else None
+        if available is None or available.isEmpty():
+            return theme.PICTURE
+        return min(theme.PICTURE[0], available.width()), min(theme.PICTURE[1], available.height())
 
     # The stack.
     def current(self):
