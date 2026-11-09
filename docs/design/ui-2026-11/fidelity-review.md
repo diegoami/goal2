@@ -65,7 +65,15 @@ with the command in [§7](#7-method-so-the-numbers-can-be-checked):
 | the proposal, `proposal/images/s08-squad.png` | 6.52 | 2.81 | **0** |
 
 The original is about 93 % black too: density is not about filling space, it is that the ink is
-spread evenly over the whole frame. **One** of the built desk's sixteen regions carries no ink at
+spread evenly over the whole frame. That holds of the management screens these two rows were measured
+from, not of every original screen. [designed: main, 2026-11-09; correction of this section's first draft,
+which said "every region of every original screen carries ink" after measuring two screens] Over all 135
+screens of `docs/original-game/images`, 57 have a tile under 1.5 % and 13 have one at 0.00 % (dos-shell,
+file-not-found-prompt, title-player-count, title-load-prompt, the two load-name prompts, round-playing and
+the bracket, table and results screens). Among the management screens `fixtures-watch.png` bottoms out at
+1.50 % and `match-menu.png` at 0.28 %. The 1.5 % floor is therefore the hub's and the squad's; a rebuilt
+screen whose original is sparse the same way is judged against its own counterpart (§5's mapping), not
+against the floor. **One** of the built desk's sixteen regions carries no ink at
 all and **five** are under 1.5 %; the original's emptiest region is 1.83 %.
 [original-presentation-cues.md](../original-presentation-cues.md) already names "large unused
 areas" as a sign to inspect; this is the number behind it.
@@ -188,6 +196,19 @@ tasks. The eight signature elements stay independent, and each is still a day's 
 magick docs/original-game/images/manager-menu.png -colorspace Gray \
     -crop 25x25% -format '%[fx:mean*100]\n' info:-
 ```
+
+**The density check** (§2.2, T208, #672) — the same measure as a command, with no ImageMagick needed (the
+PNG is decoded in Python). It takes screens or folders of them, prints the 4×4 table of each screen that has
+a tile under the floor (default 1.5 %, `--floor` to override for a deliberate exception) and exits non-zero:
+
+```sh
+python3 docs/design/ui-2026-11/check_density.py docs/design/ui-2026-11/T178-screens/s06-desk.png
+```
+
+It agrees with the `magick` command above to 0.05 percentage points on a committed screen
+(`goal2/tests/test_density_check_672.py`). [designed: owner, 2026-11-08] No gate runs it yet; #667 wires the
+floor into the UI tasks' Done-when lines, per screen: the default floor for a screen whose original clears it
+(the hub, the squad), `--floor` lowered to the counterpart's own minimum for one that does not.
 
 **The grid** (§2.1) — `goal2/ui/theme.py`'s `CELL`, `TEXT` and `HEADING_SIZE`, and the row pitch of
 a list measured from the horizontal projection of its column.
