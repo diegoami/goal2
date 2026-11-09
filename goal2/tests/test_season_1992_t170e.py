@@ -122,17 +122,31 @@ def repair_eleven(blob):
     is not fit with a fit player of the same line from the bench (Driver.swap, the squad screen). The original decides
     the legality; nothing is written to guest memory. Returns (the saved Core, (off, on))."""
     from goal2.core import Core, views
-    from goal2.core.driver import Driver
+    from goal2.core.driver import RETURN, SQUAD, Driver
     driver = Driver(Core.load(blob, goal_dat=GOAL_DAT))
     wait = driver.wait
     memory = views.Memory(wait.state)
     rows = views.team(wait.state)["squad"]
     cards = {r["player"]: views.player_card(wait.state, r["player"]) for r in rows}
-    fit, ready = memory.code_str(0x1771, 0x42A6), memory.code_str(0x1771, 0x42AF)
+    # [confirmed: views.player_card] at the manager menu (no match set up) a player who can play reads 1771:4298 ("ready
+    # to play"); injured, suspended and the rest read the other strings. (T111's fix_eleven, at the match menu, reads the
+    # match's own 42A6 "selected" / 42AF "on the bench" instead.)
+    fit = memory.code_str(0x1771, 0x4298)
     off = next(r for r in rows if r["eleven"] and cards[r["player"]]["readiness"] != fit)
     on = next(r for r in reversed(rows) if not r["eleven"] and r["line"] == off["line"]
-              and cards[r["player"]]["readiness"] == ready)
-    driver.swap(off["player"], on["player"])
+              and cards[r["player"]]["readiness"] == fit)
+    # The squad screen's keys, as Driver.swap presses them. Driver.swap is not called: it checks the marked slot against
+    # the player's index in the manager menu's squad order, which is not the screen's order once an injured player
+    # has been moved (it raised "did not mark player 125: (1, 11)" on the real round-6 menu, the mark being right).
+    driver._open_squad()
+    driver._to_player(off["player"])                 # checks that the highlighted player is the one read
+    if driver.press(RETURN, expect=(SQUAD,)).view["marked"] is None:
+        raise AssertionError(f"the original did not mark player {off['player']}")
+    driver._to_player(on["player"])
+    driver.press(RETURN, expect=(SQUAD,))
+    driver.to_menu()
+    eleven = [r["player"] for r in views.team(driver.wait.state)["squad"] if r["eleven"]]
+    assert off["player"] not in eleven and on["player"] in eleven, (off, on, eleven)
     return driver.core.save(), (off["player"], on["player"])
 
 
