@@ -370,3 +370,5 @@ operational status.
 
 - [T208](T208.md): a density check: fail a screen that has a dead region (#672).
 - [T170c2](T170c2.md): publish a completed sealed round atomically into the campaign (#566).
+- [T209](T209.md): the foundation, part 1: a 16 × 32 cell, one text size, 4:3 (#667).
+- [T210](T210.md): the foundation, part 2: frames as a rule with its label, and everything on the grid (#667).
