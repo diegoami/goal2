@@ -1,0 +1,13 @@
+{
+  "images_sha256": {
+    "legal-bench-before-swap.png": "b8f055c3a5add4cb6f5e7a2ca3076d6dd6c43808157734836c43c4abb3d3677b",
+    "opportunity-blink-first.png": "2b7da46f2b83287f354a94c1678d2c21516a1cd6a19800c985e8f077bee11801",
+    "opportunity-blink-second.png": "556134ba12bc55ede954d0d9d5a472022e2feb01705b358dda3c681230427f6b",
+    "request-confirmed.png": "399bb4a652fe76b309a7a5b634ae384c260966ab080162ed6023668ae2541514",
+    "request-on-pitch.png": "e116008ffe0b40fe3563b88540899728ea3753cb07798f304197a47c12b83eda",
+    "request-pending.png": "e62b148a78eecbe85eb257a567b29f82a91807dcb858e6b03af9857ab59cefc3",
+    "swap-confirmed-before-play.png": "2375c80f005f5020155a051c51bfe0dd2e98a8e4002ac14d197d7e2df3018eb5"
+  },
+  "paths_root": ".cache/t203-owner-after-v1/accept",
+  "scope": "private original/full-UI captures retained; first functional pass has reported contrast/stale-context visual defects, not final acceptance"
+}

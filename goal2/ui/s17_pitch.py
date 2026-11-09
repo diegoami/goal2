@@ -748,8 +748,10 @@ class PitchScreen(Screen):
                           f" · marks: {MARKS[self.pitch.marks].lower()}")
         _set(self.note, controller.note)
         requested = bool(getattr(controller, "substitution_requested", False)) and not controller.finished
-        self.request_badge.setVisible(requested and not self.stop_box.open)
-        if requested:
+        opportunity = bool(getattr(getattr(self.day, "bench", None), "opportunity_visible", False))
+        self.request_badge.setText("SUBSTITUTION OPPORTUNITY" if opportunity else "SUBSTITUTION REQUESTED")
+        self.request_badge.setVisible((requested or opportunity) and not self.stop_box.open)
+        if requested or opportunity:
             self.request_badge.setGeometry(12, 12, max(1,self.pitch.width()-24), max(48,self.request_badge.sizeHint().height()))
             self.request_badge.raise_()
         if self.pitch.enlarged:

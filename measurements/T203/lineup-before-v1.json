@@ -1,0 +1,9 @@
+{
+  "status": "red-confirmed",
+  "hypothesis": "S15 lineup remains stale after acknowledged new XI and returning from bench",
+  "tests": 1,
+  "failures": 1,
+  "private_log_path": ".cache/t203-private/lineup-before-v1.log",
+  "private_log_sha256": "7055f6d5debd8d245d2dba6f2670eefe1f1c959a01ac758543654f867ab5cd0f",
+  "reason_private": "assertion output contains private fixture player names; public receipt keeps hashes/counts only"
+}

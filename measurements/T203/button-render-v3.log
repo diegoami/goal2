@@ -1,0 +1,16 @@
+test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states (goal2.tests.test_substitution_flow_t203.Flow.test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states) ... This plugin does not support propagateSizeHints()
+T203_BUTTON {"size": [1440, 900], "state": "normal", "actual_focus": false, "foreground": "#ffffff", "background": "#000000", "contrast": 21.0, "foreground_pixels": 320, "background_pixels": 7327}
+T203_BUTTON {"size": [1440, 900], "state": "disabled", "actual_focus": false, "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397, "foreground_pixels": 320, "background_pixels": 8543}
+T203_BUTTON {"size": [1440, 900], "state": "focus", "actual_focus": true, "foreground": "#000000", "background": "#aaaaaa", "contrast": 9.039556127853002, "foreground_pixels": 320, "background_pixels": 7327}
+T203_BUTTON {"size": [1800, 1125], "state": "normal", "actual_focus": false, "foreground": "#ffffff", "background": "#000000", "contrast": 21.0, "foreground_pixels": 652, "background_pixels": 10706}
+T203_BUTTON {"size": [1800, 1125], "state": "disabled", "actual_focus": false, "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397, "foreground_pixels": 652, "background_pixels": 12186}
+T203_BUTTON {"size": [1800, 1125], "state": "focus", "actual_focus": true, "foreground": "#000000", "background": "#aaaaaa", "contrast": 9.039556127853002, "foreground_pixels": 652, "background_pixels": 10706}
+T203_BUTTON {"size": [2110, 1213], "state": "normal", "actual_focus": false, "foreground": "#ffffff", "background": "#000000", "contrast": 21.0, "foreground_pixels": 1276, "background_pixels": 12068}
+T203_BUTTON {"size": [2110, 1213], "state": "disabled", "actual_focus": false, "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397, "foreground_pixels": 1276, "background_pixels": 13636}
+T203_BUTTON {"size": [2110, 1213], "state": "focus", "actual_focus": true, "foreground": "#000000", "background": "#aaaaaa", "contrast": 9.039556127853002, "foreground_pixels": 1276, "background_pixels": 12068}
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 6.334s
+
+OK

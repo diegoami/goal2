@@ -104,8 +104,8 @@ every management screen.
 
 ### 2.5 Where the window already does it right
 
-`docs/current-game/` (T204, #664, merging as PR #685) pictures the **shipped** window, the one
-`goal2/ui/` replaces. On several screens it is closer to the original than either the mockups
+[docs/current-game](../../current-game/README.md) (T204, #664) pictures the **shipped** window,
+the one `goal2/ui/` replaces. On several screens it is closer to the original than either the mockups
 or the new window: skill bars drawn as discrete cells, the role code in a right-hand column with
 the name coloured by line, lowercase route labels, the pitch key line in the original's own joined
 form. Those belong in the new window; this backlog keeps them rather than letting them be lost.

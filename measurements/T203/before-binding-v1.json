@@ -1,0 +1,17 @@
+{
+  "actual_result": {
+    "after_enter": "PitchScreen",
+    "after_escape": "MenuScreen",
+    "preparatory_space": false,
+    "request": false
+  },
+  "head": "e8efc05b92a91fbe668bd84fe4b81340cf00d145",
+  "scope": "production unchanged; new tests instrument actual exact Esc\u2192Enter without preparatory Space; test sources were uncommitted during red measurement",
+  "sources": {
+    "goal2/tests/test_substitution_actual_636.py": "20c0f913da97428894548cce7ad26a881de2bc7f6db3ce422ba53960ee6b4a7a",
+    "goal2/tests/test_substitution_flow_t203.py": "208ed7da2198149672fb90fdb95aa6e5280c9211228316fcc77e9fe717b5ed6e",
+    "goal2/ui/match_day.py": "a399bfcc9083e10b5c6b49ed5a680b1290d5b6678c99bcc41fcc29bfb0d33854",
+    "goal2/ui/s15_match_menu.py": "63b602fd1e5de194d2c2958ff37e04d6668ff43d24f0aa692c4b0af059c9526d",
+    "goal2/ui/s19_bench.py": "91790e14873e6311c5b7afb0aa9b685f58ff6408eabb07b3dbf851922a4dfc76"
+  }
+}

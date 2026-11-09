@@ -1,0 +1,29 @@
+test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards (goal2.tests.test_substitution_flow_t203.Flow.test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards) ... This plugin does not support propagateSizeHints()
+T203_UNCHANGED_MENU {"card_decodes": 22, "elapsed_s": 1.0873010579962283}
+FAIL
+test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states (goal2.tests.test_substitution_flow_t203.Flow.test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states) ... This plugin does not support propagateSizeHints()
+T203_BUTTON {"size": [1440, 900], "state": "normal", "foreground": "#ffffff", "background": "#efefef", "contrast": 1.1498567558265647}
+FAIL
+
+======================================================================
+FAIL: test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards (goal2.tests.test_substitution_flow_t203.Flow.test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 61, in test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards
+    self.assertEqual(decoded.call_count,0,'unchanged XI/roles must preserve fast request/tactics acknowledgements')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 22 != 0 : unchanged XI/roles must preserve fast request/tactics acknowledgements
+
+======================================================================
+FAIL: test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states (goal2.tests.test_substitution_flow_t203.Flow.test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 81, in test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states
+    self.assertGreaterEqual(contrast,4.5)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 1.1498567558265647 not greater than or equal to 4.5
+
+----------------------------------------------------------------------
+Ran 2 tests in 7.728s
+
+FAILED (failures=2)

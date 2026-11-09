@@ -22,7 +22,9 @@ on them is the answer the engine receives, sent once, through the bridge, in the
   set-piece taker goes to S16, whose choice is the answer; the shoot-out order to S18's notice, then S16. A
   substitution opportunity goes to S18 (*SUBSTITUTION OPPORTUNITY*), any key to S15 (phase "stop", whose *players*
   opens S19 in *make substitutions now* mode) and *play* answers it. [designed: owner #610/#612]
-  A pause requested from S17 opens S15 with team tactics and players; original-style Esc on that menu resumes.
+  [designed: owner T203/#662] A pause requested from S17 opens the own bench S19 directly over S15.
+  Player Enter or the request/cancel button toggles only the independent request. Bench Esc returns to
+  the visible match menu; Play or original-style Esc there validates the XI and resumes.
   Team tactics confirm through a stopped edit, retaining personal drafts and accepted swaps. One bench answer (`s19_bench.BenchAnswer`) is built per
   bench decision and sent once; S09's mark and own tactics from S19 go in it. No stop keeps a default answer.
 - **The engine's report** of a bench answer that refuses a pair shows S19 with the reason until a key (`refused`).
@@ -280,7 +282,8 @@ class MatchDay:
                                    lambda key: self._stop_menu())
         if context == "pause":
             from goal2.ui.s15_match_menu import MenuScreen
-            return self.window.push(MenuScreen(self.window, self, "pause", decision.score))
+            self.window.push(MenuScreen(self.window, self, "pause", decision.score))
+            return self.open_bench()
         if context == "shootout_order":
             # [confirmed: e031-shootout-start.png] the shoot-out's notice before its order
             return pitch.show_stop(s18_stop.NOTICE_SHOOTOUT, s18_stop.SHOOTOUT,
@@ -429,6 +432,10 @@ class MatchDay:
                 answer.first = previous.first
             answer.live_own = {**previous.live_own, **answer.live_own}
             answer.live_marking = {**previous.live_marking, **answer.live_marking}
+        # [designed: T203/#662] Presentation clears only on a confirmed swap;
+        # guest permission and the independent request latch remain authoritative.
+        if previous is not None:
+            answer.opportunity_visible = previous.opportunity_visible and not bool(report and report.get("made"))
         self.bench = answer
         self._bench_feedback = report
         screen = getattr(self, "_editing_screen", None)
@@ -436,6 +443,10 @@ class MatchDay:
         self._editing_operation = None
         if screen is not None:
             screen.applied(answer, report)
+        for menu in self.window.stack:
+            if type(menu).__name__ == "MenuScreen":
+                menu.refresh_accepted()
+        pitch.refresh()
 
     def _bench_played(self, pitch):
         """S19's Esc at a pause: the bench's answer is sent once and the match plays on."""

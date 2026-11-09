@@ -1,0 +1,42 @@
+test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once (goal2.tests.test_live_card_overlay_619.ActualLiveCards.test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit) ... ok
+test_controller_opt_in_and_legacy_default_do_not_change_packet_callers (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_controller_opt_in_and_legacy_default_do_not_change_packet_callers) ... ok
+test_fresh_position_club_and_own_precede_stale_events_then_pending_edits (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_fresh_position_club_and_own_precede_stale_events_then_pending_edits) ... ok
+test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper) ... ok
+test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path) ... ok
+test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission) ... ok
+test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events) ... ok
+test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career) ... ok
+test_same_choices_reference_explicitly_requests_live_metadata (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_same_choices_reference_explicitly_requests_live_metadata) ... ok
+test_twenty_current_records_are_copied_immutable_and_leave_career_untouched (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_twenty_current_records_are_copied_immutable_and_leave_career_untouched) ... ok
+test_enter_and_escape_keep_the_chosen_country_and_option (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_enter_and_escape_keep_the_chosen_country_and_option) ... This plugin does not support propagateSizeHints()
+ok
+test_left_and_right_select_visible_country_without_changing_row (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_left_and_right_select_visible_country_without_changing_row) ... This plugin does not support propagateSizeHints()
+ok
+test_lineup_rebuild_preserves_the_country_and_row (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_lineup_rebuild_preserves_the_country_and_row) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_mouse_and_own_shortcuts_keep_their_targets (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_mouse_and_own_shortcuts_keep_their_targets) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_match_menu_eleven_colours_the_full_names (goal2.tests.test_roster_colours_637.RosterColour.test_match_menu_eleven_colours_the_full_names) ... This plugin does not support propagateSizeHints()
+ok
+test_rendered_names_have_all_four_original_colours (goal2.tests.test_roster_colours_637.RosterColour.test_rendered_names_have_all_four_original_colours) ... This plugin does not support propagateSizeHints()
+ok
+test_selection_injury_and_unknown_role_stay_readable (goal2.tests.test_roster_colours_637.RosterColour.test_selection_injury_and_unknown_role_stay_readable) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 1.139s
+
+OK (skipped=1)

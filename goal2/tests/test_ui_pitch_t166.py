@@ -357,8 +357,7 @@ class BenchAndClose(unittest.TestCase):
             key(window, Qt.Key.Key_Return)
             out["requests"] = controller.requests
             out["request_note"] = screen.note.text()
-            pump(lambda: type(window.current()).__name__ == "MenuScreen", 120, "the match menu did not open at the pause")
-            key(window, Qt.Key.Key_Space)
+            pump(lambda: type(window.current()).__name__ == "BenchScreen", 120, "the own bench did not open at the pause")
             out["bench_mode"] = window.current().mode
             key(window, Qt.Key.Key_Escape)        # bench -> match menu
             key(window, Qt.Key.Key_Escape)        # original in-match menu -> play, no substitution
