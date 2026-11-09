@@ -168,6 +168,12 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
             from goal2.desktop import worker
             career.state = worker.play(career.state, career.template_bytes)
             window.open_career(career)
+            # [designed: T211b] The match day closed above leaves its cancel to arrive after a moment, and it pops the screen opened
+            # next (the first picture here was the desk with "The match was cancelled" on it): let it arrive before Enter is pressed.
+            import time
+            for _ in range(200):
+                app.processEvents()
+                time.sleep(.01)
             for option, name in ((1, "s11-fixtures-round2.png"), (3, "s13-history-round2.png")):
                 desk = window.current()
                 desk.highlight(option)

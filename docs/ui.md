@@ -74,11 +74,11 @@ progress stays unsaved. `model.save_name` is the name a career was last saved or
 | `goal2/ui/s02_start.py` | S02 Start: Continue, the named saves, Y load, N new game, a failed load's Y/N; F the standalone friendly (T177). |
 | `goal2/ui/friendly.py` | The standalone friendly (T177): two countries chosen, played on S17, back to S02; nothing saved. |
 | `goal2/ui/s03_new_game.py` | S03 New game: 1–6 managers (2–6 later, #551), the optional starting year by NG-9. |
-| `goal2/ui/s04_country.py` | S04 Country and name: the card (`CountryCard`, shared with S07, with the twenty's average caps and age), the list in groups of 16 in the ranking's order (`ordered`), Ins, the name line; `PlayersScreen`, a country's twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
+| `goal2/ui/s04_country.py` | S04 Country and name [designed: T211b: on the 16 × 32 grid]: the card (`CountryCard`, shared with S07: two columns of frames, with the twenty's average caps and age), the list in groups of 16 in the ranking's order (`ordered`) in a frame, Ins, the name line in a frame under it; `PlayersScreen`, a country's twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
 | `goal2/ui/s05_bulletin.py` | S05 Bulletin: pages *n of m*, any key onward. |
 | `goal2/ui/s06_desk.py` | S06 The manager's desk (T164), its *manager's name* and *new career* (T177), and `ReimportScreen`, S01 over the data folder. |
-| `goal2/ui/s07_team_info.py` | S07 Team info (T164): S04's card for any country, the list, the next opponent marked; a country's twenty and its tactics, read only. |
-| `goal2/ui/s11_fixtures.py` | S11 Fixtures (T178): the coming round, or a country's coming fixtures. |
+| `goal2/ui/s07_team_info.py` | S07 Team info (T164; on the 16 × 32 grid, T211b): S04's card for any country, the list, the next opponent marked; a country's twenty and its tactics, read only. |
+| `goal2/ui/s11_fixtures.py` | S11 Fixtures (T178; on the 16 × 32 grid, T211b): the coming round, or a country's coming fixtures. |
 | `goal2/ui/s12_tournament.py` | S12 Tournament (T178): the displays and continents as tabs, a group's table beside its matches, the banner. |
 | `goal2/ui/s13_history.py` | S13 History (T178): this career's results by season; the boxes without a source. |
 | `goal2/ui/match_day.py` | The match day (T167): `MatchDay`, the window's bridges and the order of S14, S15, S16, S17 and S20; the desk's `play_next_game`; the watch question's rule (`asks_watch`). |
@@ -155,7 +155,8 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
 
 | Module | What it holds |
 | --- | --- |
-| `goal2/ui/cells.py`, `goal2/ui/cell_parts.py` | [designed: T211] The grid's parts: text and panels placed by cell (`CellLabel`, `CellPara`, `Cells`), and the strip, card, bars and typed line S06 and S08 are made of (S09 and S10 keep `squad_card`'s until they are reflowed). |
+| `goal2/ui/cells.py`, `goal2/ui/cell_parts.py` | [designed: T211] The grid's parts: text and panels placed by cell (`CellLabel`, `CellPara`, `Cells`), and the strip, card, bars and typed line S06 and S08 are made of (S09 and S10 keep `squad_card`'s until they are reflowed). [designed: T211b] `CellTableRow`: a row of a list or a table, its cells at columns, the highlight bar behind them (S04 and S07's lists, S11's rows). |
+| `goal2/ui/country_parts.py` | [designed: T211b] The country card's parts on the grid (S04, S07): the four lines' bars, the strips, the characteristics' rows, the caps and age on a line, a panel as a frame over cells (`framed`). S10 keeps `team_card`'s and `country_header`'s until it is reflowed. |
 | `goal2/ui/squad_card.py` | The parts the three share: the player card (every field of `goal2.game.player_card.card`), the strip on the right (the eleven, a gap, the bench; or a page of the pool), bars, label-value lines, table rows, the name line. |
 | `goal2/ui/s08_squad.py` | S08 Squad and pool. [designed: T211] On the 16 × 32 grid: the card (`cell_parts.GridCard`: the name and the facts as rules with their values under them, the skills, the tactics over the characteristics) and the twenty (`GridStrip`) side by side, a cell apart; the pool's filters and the goal2 addition's tag above the card; the message under it and what a pick waits for across the foot. |
 | `goal2/ui/s09_player_tactics.py` | S09 Player tactics. |
@@ -200,6 +201,8 @@ files. `tools/ui_squad_screenshots.py DIR` writes the screens' pictures (they ar
 [designed: owner, 2026-11-03, #526 decisions 1 and 14, #527 D2; T164, #538] A new career or a loaded save lands on S06,
 the manager's desk, the career's home: every management screen returns to it with Esc, and it has no Esc of its own.
 
+[designed: owner, 2026-11-09, #667; T211b] S07 is on the grid too: the card (60 cells: the frames *team*, *skills*, *team tactics* in a column of 34 and *ranking*, *line-up*, *characteristics*, *player defaults* in one of 25, a cell apart, one row between them; *performance* under the skills when the card is in a match context) and at its right the original's heading of the list (*check out all the competitors*) over the sixteen countries in a frame, 29 cells, their names right-aligned and *next opponent* in the cells after the highlighted one's; S04 is the same card and list under the prompt, the level of difficulty and the first match, with the manager's name in a frame under the list (a line, then what it says in three rows). The lists' ranking is on S04's frame rule (*continental rank*, *world rank*) and in S07's note under the list.
+
 [designed: owner, 2026-11-09, #667; T211] The desk is laid out on the 16 × 32 grid, in cells (90 columns, the 25 rows between the one-row
 title and the two key rows), three columns a cell apart and no card: at the left the frames *manager*, *team*, *next opponents* and
 *managers* (a rule with its lowercase label, goal2/ui/frame.py) with the hint and the screen's message under them; in the middle the
@@ -240,7 +243,7 @@ stage the route has not reached says so instead of showing rows.
   *European Championship* and *American Championship* as the captures print them, *African* and *Asian
   Championship* from the adjectives at `DS:690A` [derived], *World Cup* from stage 5; QUALIFYING or FINALS by
   stage. Stage 6 (the play-offs) is in no capture and keeps the route's words.
-- **S11** lists the round, each fixture's kind (*friendly*, *qualifying*), ✓ on your own match and what happens at
+- **S11** (on the 16 × 32 grid, T211b: the list in a frame across the 90 columns, its heading on the rule, the column names in brown over sixteen rows, the original's own number) lists the round, each fixture's kind (*friendly*, *qualifying*), ✓ on your own match and what happens at
   kick-off (*your match*, *auto result*); **↑↓** scroll, **Esc** back. Enter on your own match says it is always
   watched (owner decision 1). The original's ✓ toggle on another country's match is not built: the engine plays only
   the managed country's match watched (`prepare_watched` refuses another fixture, and the world refuses a watched

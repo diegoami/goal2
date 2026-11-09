@@ -43,6 +43,7 @@ GROUP = 16           # [confirmed: T156-R1 step 3; s04-country.html] the list sh
 # and the two key rows. The card is 60 columns (34 and 25 with a cell between), the list at its right 29 (a country's 15 characters,
 # or one of 14 and the mark "next opponent", with room for a rank of three digits): 60 + 1 + 29 = 90.
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
+LIST_WIDTH = 390     # [designed: owner #598] the list's width in pixels on the screens not yet on the grid (the standalone friendly's, goal2/ui/friendly.py)
 LIST_COLS, RANK_COLS = 29, 4
 LIST_AT = BODY_COLS - LIST_COLS
 PREVIEW_MS = 120     # [designed: T86, Launch's preview delay] the card follows the highlight after a pause
