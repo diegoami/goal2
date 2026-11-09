@@ -19,6 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "docs" / "design" / "ui-2026-11" / "check_density.py"
 ORIGINAL_DESK = ROOT / "docs" / "original-game" / "images" / "manager-menu.png"
+ORIGINAL_SQUAD = ROOT / "docs" / "original-game" / "images" / "m244-squad.png"
 
 _spec = importlib.util.spec_from_file_location("check_density", CHECKER)
 check_density = importlib.util.module_from_spec(_spec)
@@ -122,6 +123,15 @@ class DensityCheck(unittest.TestCase):
         code, out = run(path)
         self.assertEqual(code, 0, out)
         self.assertIn("1 screens, 0 failing", out)
+
+    def test_the_management_originals_the_floor_is_drawn_from_pass(self):
+        # [confirmed: fidelity-review.md 2.2, measured] The desk (min tile 1.83 %) and the squad (1.97 %) clear
+        # the default floor. The floor is NOT the whole original set's: 57 of 135 screens, match-menu.png among
+        # them (0.28 %), have a tile under it, so this test names the two screens and nothing wider.
+        for path in (ORIGINAL_DESK, ORIGINAL_SQUAD):
+            code, out = run(path)
+            self.assertEqual(code, 0, out)
+        self.assertEqual(run(ORIGINAL_DESK, "--floor", "1.9")[0], 1)
 
     def test_empty_quarter_fails_and_prints_the_table(self):
         # The bottom-right quarter of the screen carries no ink: tiles (row 3-4, col 3-4).

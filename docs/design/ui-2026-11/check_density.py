@@ -23,7 +23,8 @@ import zlib
 from pathlib import Path
 
 # [designed: T208] The tiling and the floor. The floor sits just under the original's own minimum tile
-# (1.83 %, manager-menu.png) so the originals pass with room and a tile of 1 % or less fails.
+# (1.83 %, manager-menu.png; m244-squad.png is 1.97 %) so those two originals pass with room and a tile of 1 % or
+# less fails. It is not every original's floor: 57 of the 135 original screens have a tile under it (section 2.2).
 TILES = 4
 DEFAULT_FLOOR = 1.5
 
