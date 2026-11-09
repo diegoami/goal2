@@ -17,13 +17,13 @@ the sealed half again with the news and the fixtures each round published, for t
 
 Fast controls (always run; need Unicorn and the date-call state in .cache/): the start is the cursor-1 stage-2 manager
 menu of 1992, and the season test's own accounting (which round is 2 to 3, what a mismatch report holds) fails on
-altered data. The season itself is blocked by #695 (see BLOCKED below) and is a milestone proof, not a CI gate: hours of Unicorn rounds,
-played once, run deliberately. Until then it skips with its reason, under GOAL2_SLOW=1 as well. It was never run to the
-end; its chained sealed side, the 2 to 3 round, the terminal step and the repeat have never been executed.
+altered data. The season itself is a milestone proof, not a CI gate: hours of Unicorn rounds, played once, run
+deliberately with GOAL2_SLOW=1 GOAL2_MILESTONE=1 (see the gate below); it skips otherwise, a slow dispatch included.
 """
 import contextlib
 import dataclasses
 import functools
+import os
 import sys
 import time
 import unittest
@@ -256,15 +256,45 @@ def play():
     return Played(core, first["rounds"], repairs, first, second)
 
 
-# [designed: owner, 2026-11-09] The season case is blocked, and is not a CI gate. Blocked: the original's Core cannot play
-# the season (round 7 reaches 0791:CC7B choose_captain_or_taker role 3, which its catalogue lacks: #695, archaeology
-# #400), so it SKIPS, with GOAL2_SLOW=1 too, naming #695 rather than failing. Not a CI gate: a season is 215-280 s per
-# round of the Core (an estimated 2+ hours), a milestone proof run deliberately to produce a receipt (T170, Done-when
-# 4), never by a PR run or a slow dispatch. When #695 is closed, remove this gate (and add the receipt); the
+# [designed: owner, 2026-11-09; T220] The season case is a milestone proof, not a CI gate (T170, Done-when 4): a season is
+# 215-280 s per round of the Core (an estimated 2+ hours), played deliberately to produce a receipt, never by a PR run or a
+# slow dispatch. The blanket skip that named #695 (the Core could not play round 7: CC7B roles 3/4 were not catalogued) came
+# off when T220 catalogued them, and is replaced by this gate, not by nothing: the season cases run only when asked for twice,
+# GOAL2_SLOW=1 (as every slow test) and GOAL2_MILESTONE=1, which no workflow sets (a control below reads them). The
 # assertions below are unchanged.
-BLOCKED = ("blocked by #695: the original's Core cannot play this season (choose_captain_or_taker roles 3/4 are not "
-           "catalogued); a milestone proof, run deliberately, never by CI")
-season_gate = unittest.skip(BLOCKED)
+MILESTONE = "GOAL2_MILESTONE"
+
+
+def milestone_gate(environ):
+    """The one-line reason the season does not run, or None when this environment asks for it."""
+    if environ.get(MILESTONE) != "1":
+        return (f"a milestone proof, never a PR check or a slow dispatch (T170 Done-when 4): set {MILESTONE}=1 with "
+                "GOAL2_SLOW=1 to play the 2+ hour season")
+    return None
+
+
+_MILESTONE_REASON = milestone_gate(os.environ)
+season_gate = unittest.skipIf(_MILESTONE_REASON is not None, _MILESTONE_REASON or "")
+
+
+class TheGate(unittest.TestCase):
+    """The season is not played by accident: this control fails if the gate is dropped or a workflow turns it on."""
+
+    def test_the_season_needs_the_milestone_variable_on_top_of_the_slow_one(self):
+        self.assertIsNotNone(milestone_gate({}))
+        self.assertIsNotNone(milestone_gate({"GOAL2_SLOW": "1"}))
+        self.assertIsNotNone(milestone_gate({MILESTONE: "0", "GOAL2_SLOW": "1"}))
+        self.assertIsNone(milestone_gate({MILESTONE: "1", "GOAL2_SLOW": "1"}))
+        if os.environ.get(MILESTONE) != "1":          # the season classes carry the gate in this very run
+            for case in (Season, TheAccountingCanFail):
+                self.assertTrue(getattr(case, "__unittest_skip__", False), case)
+
+    def test_no_workflow_or_gate_tool_sets_the_milestone_variable(self):
+        root = requires.ROOT
+        files = list((root / ".github" / "workflows").glob("*.yml")) + [root / "tools" / "check_premerge.py"]
+        self.assertTrue(files)
+        for path in files:
+            self.assertNotIn(MILESTONE, path.read_text(encoding="utf-8"), path.name)
 
 
 @season_gate

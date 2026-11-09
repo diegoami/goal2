@@ -1,0 +1,158 @@
+{
+  "evidence": "[confirmed: upstream T131, goal2-archaeology 7fbfd2e9 (#707): docs/requests/400-roles34.md, notes/400-roles34/delivery.json]",
+  "method": "Kept goal2 Core.save() states (magic G2C1) reached by unchanged original keys; steps 0 the wait before, 1 the decision at CC54, 2 Space then the board read CF3A, 3 Return back at the selector, 4 Return accepted (93C2). Loaded by Core.load; nothing is written to guest memory.",
+  "storage": "Private owner Drive folder goal2drive:goal2-archaeology/400-roles34-20261109/ (not this repository's: it holds a savestate of the original). Copy the files into .cache/ by hand; the test checks each SHA-256 and skips when one is absent.",
+  "weakest": "role4 Albania: T131's unchanged Core stops earlier at a role 3 of its own, so no unchanged-Core comparison exists for it; role 3 is kept at side 1 only.",
+  "artifacts": [
+    {
+      "name": "t131-a9fe9ceb05994265-role3-preceding-wait.g2core",
+      "sha256": "a9fe9ceb05994265428ee410b15abba7d1c9aa814f5a296516bfb703f5ca7304",
+      "case": "role3",
+      "step": 0,
+      "site": "0791:93C2",
+      "kind": "match-live",
+      "role": 3,
+      "side": 1
+    },
+    {
+      "name": "t131-964d78d67e8cd83c-role3-decision-before-space.g2core",
+      "sha256": "964d78d67e8cd83c4248106d304d2dfd09f411f6b3f50782412d983b617780de",
+      "case": "role3",
+      "step": 1,
+      "site": "0791:CC54",
+      "kind": "set-piece-select",
+      "role": 3,
+      "side": 1
+    },
+    {
+      "name": "t131-a09516fe0d0d4ca4-role3-space-pitch-read.g2core",
+      "sha256": "a09516fe0d0d4ca4fcf2b828f371580a75bf7981898b442d684e4add9134d634",
+      "case": "role3",
+      "step": 2,
+      "site": "0791:CF3A",
+      "kind": "set-piece-pitch",
+      "role": 3,
+      "side": 1
+    },
+    {
+      "name": "t131-407b6a751d22a72b-role3-return-back-at-selector.g2core",
+      "sha256": "407b6a751d22a72b38d25bc412b35c85e1cf9650b26509d737577c822922a74b",
+      "case": "role3",
+      "step": 3,
+      "site": "0791:CC54",
+      "kind": "set-piece-select",
+      "role": 3,
+      "side": 1
+    },
+    {
+      "name": "t131-238785d42fd20539-role3-return-accept.g2core",
+      "sha256": "238785d42fd205392c35ad68cf58dee6a99f8aa3a08ee8bb410c9abf0c2488ed",
+      "case": "role3",
+      "step": 4,
+      "site": "0791:93C2",
+      "kind": "match-live",
+      "role": 3,
+      "side": 1
+    },
+    {
+      "name": "t131-6557737543da7701-role4-england-preceding-wait.g2core",
+      "sha256": "6557737543da7701aa6b7377340a44f0e60de2594c25d3843c2e5e837510a60e",
+      "case": "england",
+      "step": 0,
+      "site": "0791:93C2",
+      "kind": "match-live",
+      "role": 4,
+      "side": 0
+    },
+    {
+      "name": "t131-dc1f31f1af0b355c-role4-england-decision-before-space.g2core",
+      "sha256": "dc1f31f1af0b355cb9d9c3a4514b4755fccb1bd9359fbe5914fd897d49478bc4",
+      "case": "england",
+      "step": 1,
+      "site": "0791:CC54",
+      "kind": "set-piece-select",
+      "role": 4,
+      "side": 0
+    },
+    {
+      "name": "t131-4a956146b9eac9dd-role4-england-space-pitch-read.g2core",
+      "sha256": "4a956146b9eac9dd6774fb249eee49da3eca13f36c5f9accd74205d34bc58982",
+      "case": "england",
+      "step": 2,
+      "site": "0791:CF3A",
+      "kind": "set-piece-pitch",
+      "role": 4,
+      "side": 0
+    },
+    {
+      "name": "t131-1e3ecd1594e728b1-role4-england-return-back-at-selector.g2core",
+      "sha256": "1e3ecd1594e728b1115db70c41fbfa3c9e20a5625081a1cb362287ef29a1b97b",
+      "case": "england",
+      "step": 3,
+      "site": "0791:CC54",
+      "kind": "set-piece-select",
+      "role": 4,
+      "side": 0
+    },
+    {
+      "name": "t131-2a70cbc70a9767c4-role4-england-return-accept.g2core",
+      "sha256": "2a70cbc70a9767c4da5f32c08948967c04ab73e26d90ee693b4554a9f8ecf1b5",
+      "case": "england",
+      "step": 4,
+      "site": "0791:93C2",
+      "kind": "match-live",
+      "role": 4,
+      "side": 0
+    },
+    {
+      "name": "t131-4c28a1087379994d-role4-albania-preceding-wait.g2core",
+      "sha256": "4c28a1087379994d04a5630cea948966a388f07ff6c51d4a77fc45cd9190bc16",
+      "case": "albania",
+      "step": 0,
+      "site": "0791:CC54",
+      "kind": "substitution-notice",
+      "role": 4,
+      "side": 1
+    },
+    {
+      "name": "t131-b2221e9c681dec5a-role4-albania-decision-before-space.g2core",
+      "sha256": "b2221e9c681dec5a4aa257f795922ecafc7df7e105cde6c7599b0de6ed60d439",
+      "case": "albania",
+      "step": 1,
+      "site": "0791:CC54",
+      "kind": "set-piece-select",
+      "role": 4,
+      "side": 1
+    },
+    {
+      "name": "t131-8e0fd565b24f9925-role4-albania-space-pitch-read.g2core",
+      "sha256": "8e0fd565b24f992554ab7a3478087303c2837f37c71a828d938518dc506c9bd6",
+      "case": "albania",
+      "step": 2,
+      "site": "0791:CF3A",
+      "kind": "set-piece-pitch",
+      "role": 4,
+      "side": 1
+    },
+    {
+      "name": "t131-4b08af6a0b187a42-role4-albania-return-back-at-selector.g2core",
+      "sha256": "4b08af6a0b187a422e3f6361a13809b26495c0607379088e8b9f88c9fcc599c3",
+      "case": "albania",
+      "step": 3,
+      "site": "0791:CC54",
+      "kind": "set-piece-select",
+      "role": 4,
+      "side": 1
+    },
+    {
+      "name": "t131-4a78a12771878a30-role4-albania-return-accept.g2core",
+      "sha256": "4a78a12771878a3022f324e12a347c20c8d692f4236be9b425746f173ad28055",
+      "case": "albania",
+      "step": 4,
+      "site": "0791:93C2",
+      "kind": "match-live",
+      "role": 4,
+      "side": 1
+    }
+  ]
+}

@@ -164,7 +164,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 **Not reached yet**, so not in the table:
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
   `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
-  until a screen task maps them: the unobserved penalty/free-kick taker roles3/4, the other players' screen of E949 (another country's, 1771:50F1), E022's other
+  until a screen task maps them: the other players' screen of E949 (another country's, 1771:50F1), E022's other
   message ("There is no player here" E062) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
@@ -380,7 +380,7 @@ The legacy evidence verifier and staged reference also carry the explicit guard-
 all other behavioural/reference files retain the accepted kit pin. Corruption and file-set checks stay strict.
 The unchanged announcement input and deliberate guard re-vendor are pinned in
 [evidence/T118/artifacts.json](evidence/T118/artifacts.json) and
-[the upstream handover](handover-2026-10-24-mutable-build-guard.md). T119 covers the earlier extra-time menus; T120 covers observed corner/goal-kick decisions, while roles3/4 remain separate evidence gaps. Tests use an independent direct-key replay and the
+[the upstream handover](handover-2026-10-24-mutable-build-guard.md). T119 covers the earlier extra-time menus; T120 covers observed corner/goal-kick decisions, and T220 the penalty and free-kick decisions T131 delivered (below). Tests use an independent direct-key replay and the
 original's printed full-time score; a different order is not claimed to reproduce E031's recorded score.
 
 ## Extra-time intervals (T119, #308's G13g)
@@ -430,7 +430,31 @@ allowing only the standard saved-VGA text restoration.
 key. Closing it leaves that genuine wait available for save/resume or reopening; it never advances the match.
 Selector/pitch saves retain the actual CPU, original keys and stop configuration. Round, worker and save guards
 remain in force. Input hashes are in [the private-input manifest](evidence/T120/artifacts.json).
-Roles3/4 and E062/EC60 remain unobserved/unmapped on archaeology#400.
+E062/EC60 remain unobserved/unmapped on archaeology#400; roles3/4 are catalogued by T220, below.
+
+## Penalty and free-kick decisions (T220, #695)
+
+[confirmed: upstream T131, goal2-archaeology `7fbfd2e9` (#707), docs/requests/400-roles34.md and notes/400-roles34/delivery.json]
+CC7B role3 (penalty) and role4 (free kick) are catalogued with the same selector, board read and controls as roles2/5
+(`set-piece-select` at the CC54/CEDE polls, `set-piece-pitch` at CF3A, the same view). Three cases of five kept Core
+states each (the wait before, the decision, Space and the board, Return, Return): role3 Denmark (side1) v England, round 7
+minute 33, slot 11, pick 131 (decision `964d78d67e8cd83c`); role4 England (side0) v Portugal, round 3 minute 71, slot 3,
+pick 163 (`dc1f31f1af0b355c`); role4 Albania (side1) v Cyprus, round 3 minute 58, slot 10, pick 10 (`b2221e9c681dec5a`).
+They are in the owner's private Drive, not in this repository; `test_core_taker_roles_695` checks each by its SHA-256 and
+skips when it is absent.
+
+[confirmed: T131] What makes them not generic captain states is CC7B's caller `6D4E` (choose_player): it returns to `6EEF`
+with the byte arguments `[10, 3, side]` for the penalty and to `6F92` with `[11, 4, side]` for the free kick. The entry
+(`screens._taker`) asks for exactly that frame; a role3 or role4 without it gives no kind and the runner stops. The
+delay-entry of T120 (`runner.timed_taker_entry`) stays for roles2/5 alone: T131's roles3/4 are kept at the polls.
+
+[confirmed: T131] The kept machines were reached by unchanged original keys; the unchanged Core stops at the decision for
+role3 and for England's role4. **Albania's role4 is the weakest evidence**: its unchanged Core stops earlier at a role3 of its
+own (minute 13), so its input comes from T131's label-adapted run alone. [derived] Role3 was kept at side1 only; the entry
+accepts side0 too, as the side is CC7B's argument indexing only the country and the stored pick (role4 is kept at both
+sides), and T131 recorded a role3 at side0 (round 10 minute 78, search-r1) as an observation without a kept state.
+Nothing else about roles3/4 is unobserved for the taker decisions: the extra-time menus (archaeology#400 item2), E062 and
+EC60 remain.
 
 [confirmed: supplied text pages] The test oracle combines the pitch's shaded field, match header and dismissal
 hint; `hit any key` alone also appears on stats and tactics screens. Production identification uses frames only.
