@@ -92,14 +92,14 @@ def ordered(countries, continental):
 
 class CountryCard(Cells):
     """The country card, S04's and S07's, on the 16 x 32 grid [designed: owner, 2026-11-08, #667; T211b; docs/design/ui-2026-11/
-    proposal/README.md]: two columns of frames (a rule with its lowercase label), a cell apart, touching down their column as the
-    original's card does. At the left, 34 cells: the team (its name, status, manager, skill, formation and strips), the skills, the
-    performance (only with `match_context`) and the team tactics; at the right, 25: the ranking now and top, the eleven's role codes,
-    the characteristics with the original XI's average caps and age, and the player defaults. S04 puts its name line under the right
-    column (`rows` 23 instead of 21). The same names as the card it replaces (`name`, `team`, `ranks`, `shape`, `strip_view`,
-    `role_codes`, `skills`, `performance`, `performance_heading`, `tactics`, `defaults`, `averages`, `characteristics`, `set_card`);
-    the first match S04 shows over it is S04's own (`CountryScreen.first`). [designed: s04-country.html, s07-team-info.html; T163,
-    T164; T211b]"""
+    proposal/README.md]: two columns of frames (a rule with its lowercase label), a cell apart, a row between a column's frames. At
+    the left, 34 cells: the team (its name, status, manager, skill, formation and strips), the skills, the performance (only with
+    `match_context`) and the team tactics; at the right, 25: the ranking now and top, the eleven's role codes, the characteristics
+    with the original XI's average caps and age, and the player defaults. The same names as the card it replaces (`name`, `team`,
+    `ranks`, `shape`, `strip_view`, `role_codes`, `skills`, `performance`, `performance_heading`, `tactics`, `defaults`, `averages`,
+    `characteristics`, `first`, `set_card`); S04's first match is a line across the page, so its label is the screen's. S04's card is
+    never in a match context, so its 21 rows hold what it shows (the left column's 18, the right's 21); S07's, which may show the
+    performance, is 24. [designed: s04-country.html, s07-team-info.html; T163, T164; T211b]"""
     LEFT, GAP, RIGHT = 34, 1, 25
     COLS = LEFT + GAP + RIGHT
     ROWS = 21                  # the right column's 21 rows, with a row between its frames (the left's are 18)
@@ -113,6 +113,7 @@ class CountryCard(Cells):
         self.match_context = match_context
         self.family = family or theme.FONT_FAMILY
         self.chooser = chooser
+        self.first = None   # S04's first match, over the page: its label is the screen's (`CountryScreen.first`)
         left, right = self.LEFT, self.RIGHT
         # The team: its name, then status, manager, skill, formation and the strips. [designed: s04-country.html]
         team, inner = framed("team", left, 6)
@@ -173,8 +174,12 @@ class CountryCard(Cells):
         inner.put(default_rows, 0, 0, right, 5)
         self.put(defaults, self.RIGHT_AT, 15, right, 6)
 
-    def set_card(self, c, average=None):
-        """Show decoded card fields. `average` remains accepted for existing callers; original numbers take precedence."""
+    def set_card(self, c, average=None, first=None):
+        """Show decoded card fields. `average` remains accepted for existing callers; original numbers take precedence. `first`,
+        S04's first match, is written to the `first` label the screen has put across the top of the page (the card has no room for
+        it: 62 characters on a row of 60 cells), if there is one."""
+        if first is not None and self.first is not None:
+            self.first.setText("first: " + first)
         self.name.setText(c["name"])
         # [confirmed: F036–F038; T198] Consume original panels; the old twenty
         # mean is not the TEAM number. Browser context cannot inherit match flags.
@@ -263,6 +268,7 @@ class CountryScreen(Screen):
         body.put(CellLabel(NOT_DECODED, "undecoded"), 69, 0, len(NOT_DECODED))
         self.first = body.text("", "sub", 0, 1, BODY_COLS)
         self.card_view = CountryCard(chooser=True, family=self.window_.family, rows=CountryCard.ROWS)
+        self.card_view.first = self.first
         for name in ("name", "team", "ranks", "shape", "skills", "performance", "tactics", "defaults", "averages",
                      "characteristics"):
             setattr(self, name, getattr(self.card_view, name))
@@ -303,8 +309,7 @@ class CountryScreen(Screen):
 
     def _show_card(self):
         if self.card is not None:
-            self.card_view.set_card(self.card, self.average)
-            self.first.setText("first: " + self.first_match)
+            self.card_view.set_card(self.card, self.average, self.first_match)
 
     def preview(self):
         """The highlighted country's card, from a private new campaign of the model, as today's Launch."""

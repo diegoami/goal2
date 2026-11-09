@@ -203,6 +203,14 @@ class CountryOnTheGrid(Base):
         self.text_fits_its_cells(screen.area)
         self.assertLessEqual(len(longest), theme.COLS)
 
+    def test_the_card_still_takes_the_first_match_as_it_did_and_writes_it_to_the_line_over_the_page(self):
+        """`CountryCard.set_card(card, average, first)`, as T201's test calls it: the first match is the screen's own row."""
+        window, screen = self.canonical(self.make)
+        screen.card_view.set_card(screen.card, screen.average, "2028 Qualifier: Austria / Friendly")
+        self.assertEqual(screen.first.text(), "first: 2028 Qualifier: Austria / Friendly")
+        self.assertIs(screen.card_view.first, screen.first)
+        self.assertEqual(screen.card_view.findChildren(QLabel, "first"), [])
+
     def test_the_name_line_and_what_it_says_fit_the_rows_they_have(self):
         window, screen = self.canonical(self.make)
         for message in (NAME_NOTE, "Type the manager's name first: 14 characters at most.", "x" * 60):
