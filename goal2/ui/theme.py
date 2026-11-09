@@ -144,6 +144,7 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #boxHeading, #th {{ color: {HEADING}; }}
 #benchMetadata {{ color: {TEXT_NORMAL}; }}
 #benchCounter {{ border: 1px solid {FRAME}; padding: 6px 14px; }}
+#screen[grid="true"] #benchCounter {{ border: none; padding: 0px; }}
 #th {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td[check="good"] {{ color: {GOOD}; }}

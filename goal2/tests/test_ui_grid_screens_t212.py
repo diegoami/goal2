@@ -476,5 +476,218 @@ class SavedPitchOnTheGrid(PitchOnTheGrid):
     test_the_score_the_pitch_and_the_commentary_are_where_the_cells_put_them = None
 
 
+BENCH = requires.need(modules=("PySide6", "pygame"), **requires.HALFTIME)
+LONG_REASON = ("This player has already been substituted and cannot return; choose a different player from the bench before "
+               "continuing.")
+
+
+@BENCH
+class BenchOnTheGrid(Base):
+    """S19 in each mode it has (make substitutions now, request, view, refused) and each state of its words: the pair chosen, the
+    engine's reports, the longest names. The one thing that does not fit is an injured player's row in the strip: see
+    `test_an_injured_players_row_is_why_the_bench_is_still_pending`."""
+
+    mode = "now"
+    injured = ()
+
+    def make(self, window):
+        from types import SimpleNamespace
+        from goal2.tests.test_ui_match_day_t167 import career
+        from goal2.ui.s19_bench import BenchAnswer, BenchScreen
+        model = career()
+        window.open_career(model)
+        self.model = model
+        words = model.state.managed_squad
+        self.off, self.on = words[1], words[12]
+        context = {"now": "half_time", "request": "pause", "view": "extra_time", "refused": "half_time"}[self.mode]
+        data = dict(context=context, eleven=list(words[:11]), bench=list(words[11:]), substitutions_left=5,
+                    injured=[words[w] for w in self.injured])
+        if self.mode == "request":
+            data.update(substitutions_now=False, request_substitution=False)
+        decision = SimpleNamespace(minute=45, score=[0, 0], data=data)
+        answer = BenchAnswer(model, decision)
+        report = None
+        if self.mode == "refused":
+            report = dict(asked=[[self.off, self.on]], made=[], requested=[], refused=[[self.off, self.on, LONG_REASON]],
+                          substitutions_left=5)
+        screen = window.push(BenchScreen(window, model, answer, names=("Italy", "Poland"), report=report,
+                                         request=lambda *values: None))
+        screen.cue_timer.stop()
+        self.addCleanup(screen.cue_timer.stop)
+        return screen
+
+    def settle(self, screen):
+        screen.refresh()
+
+    def long_names(self, screen):
+        data = screen.model.goaldat
+        for word in screen.answer.words():
+            data.player_names[word] = "Abcdefghij"
+            data.player_initials[word] = "X"
+        screen.refresh()
+
+    def pair(self, screen):
+        screen.answer.enter(self.off)
+        screen.answer.enter(self.on)
+        screen.refresh()
+
+    def states(self):
+        def long_message(screen):
+            # the longest the player is told at once: a pair made and one refused with the engine's longest reason (the T188 test's);
+            # in the request mode no pair is made (no legal stop), so what is said there is the request's line, the original's
+            # refusal of the eleven and the screen's own message
+            if self.mode == "request":
+                screen.answer.refused = "two goalkeepers are selected, and the original does not allow the eleven"
+                screen.message = "Substitution request cancelled."
+            else:
+                screen.feedback_report = dict(made=[[self.off, self.on]], refused=[[self.off, self.on, LONG_REASON]], requested=[])
+            screen.refresh()
+
+        def refused_eleven(screen):
+            screen.answer.refused = "two goalkeepers are selected, and the original does not allow the eleven"
+            screen.refresh()
+
+        def pending(screen):
+            self.pair(screen)
+            screen.pending = True
+            screen.refresh()
+
+        def marked(screen):
+            screen.answer.first = self.off
+            screen.refresh()
+
+        def longest(screen):
+            self.long_names(screen)
+            self.pair(screen)
+
+        def unlimited(screen):
+            screen.answer.friendly = True
+            screen.refresh()
+
+        def card_of_the_injured(screen):
+            """The bench's own words on the card of a player the match has injured: "INJURED — live match" (20 characters)."""
+            screen.answer.injured.add(self.off)
+            screen.row = screen.answer.words().index(self.off)
+            screen.refresh()
+
+        return (("default", lambda screen: None), ("a pair", self.pair), ("a mark", marked), ("long words", long_message),
+                ("the original's refused eleven", refused_eleven), ("waiting for the reply", pending), ("longest names", longest),
+                ("unlimited", unlimited))
+
+    def test_make_substitutions_now_fits_at_every_size_and_is_on_the_grid(self):
+        self.mode = "now"
+        self.every_state_fits()
+
+    def test_the_request_mode_with_its_button_fits_at_every_size_and_is_on_the_grid(self):
+        self.mode = "request"
+        self.every_state_fits()
+
+    def test_the_view_mode_fits_at_every_size_and_is_on_the_grid(self):
+        self.mode = "view"
+        self.every_state_fits()
+
+    def test_the_engines_refusal_fits_at_every_size_and_is_on_the_grid(self):
+        self.mode = "refused"
+        self.every_state_fits()
+
+    def test_it_is_not_on_the_grid_pending_list(self):
+        """It was listed until T212: it is on the grid with no card (T210's check); `reflow_pending` keeps it for one reason."""
+        from goal2.ui.s19_bench import BenchScreen
+        self.assertNotIn("BenchScreen", grid_pending.PENDING)
+        self.assertTrue(BenchScreen.GRID)
+
+    def test_its_panels_are_frames_and_the_card_is_the_squads(self):
+        window, screen = self.canonical(self.make)
+        self.assertIsInstance(screen.card, GridCard)
+        self.assertEqual([frame.label for frame in screen.findChildren(Frame) if frame.isVisibleTo(screen)],
+                         ["name", "readiness", "skills", "tactics", "characteristics", "substitution", "holland"])
+        self.assertEqual(grid_check.cards(window), [])
+        self.assertEqual(screen.findChildren(QLabel, "kbd"), [], "no boxed key cap on a grid screen")
+
+    def test_the_header_the_card_the_feedback_and_the_twenty_are_where_the_cells_put_them(self):
+        """The mode over the match's words (two rows), the card (69 x 18) and the twenty (20 wide, 22 rows) a cell apart, the
+        substitution's words in a frame of five rows under the card, the budget at the right of the title row."""
+        from goal2.ui.s19_bench import FEEDBACK_ROWS, HEAD_ROWS
+        window, screen = self.canonical(self.make)
+        cell, row = cells.cell_w(screen), cells.row_px(screen)
+        self.assertEqual(round(screen.card.width() / cell), GridCard.COLS)
+        self.assertEqual(round(screen.card.height() / row), GridCard.ROWS)
+        self.assertEqual(round(screen.strip.width() / cell), 20)
+        self.assertEqual(round(screen.strip.height() / row), GridStrip.PAGE + 2)
+        self.assertEqual(round((screen.strip.x() - screen.card.x() - screen.card.width()) / cell), 1, "one empty cell separates")
+        top = screen.mode_label.mapTo(screen, screen.mode_label.rect().topLeft()).y()
+        self.assertEqual(screen.card.mapTo(screen, screen.card.rect().topLeft()).y(), top + HEAD_ROWS * row)
+        feedback = screen.note.parentWidget().parentWidget()
+        self.assertEqual(round(feedback.height() / row), FEEDBACK_ROWS)
+        self.assertEqual(screen.counter.mapTo(screen, screen.counter.rect().topLeft()).y(), 0, "in the title row")
+        self.assertEqual(screen.counter.text(), "substitutions: unlimited (friendly)" if screen.answer.friendly else "substitutions left 5")
+
+    def test_the_mode_is_left_of_its_button_whatever_it_says(self):
+        """T203's header test, in cells: the cue's cells end before the button's begin, the button is a row of 22 cells."""
+        self.mode = "request"
+        window, screen = self.canonical(self.make)
+        self.assertTrue(screen.request_button.isVisibleTo(screen))
+        self.assertEqual(screen.request_button.height(), cells.row_px(screen))
+        self.assertLess(screen.mode_label.geometry().right(), screen.request_button.geometry().left())
+        self.assertGreaterEqual(screen.mode_label.width(), 34 * round(cells.cell_w(screen)) - 1)
+
+    def test_the_note_takes_four_rows_the_longest_refusal_included(self):
+        self.mode = "refused"
+        window, screen = self.canonical(self.make)
+        rows = screen.note.height() // cells.row_px(screen)
+        self.assertEqual(rows, 4)
+        self.assertIn(LONG_REASON, screen.note.text())
+        self.assertLessEqual(len(screen.note.lines()), rows)
+
+    def test_the_card_says_a_players_live_injury_in_the_two_rows_it_has(self):
+        """"INJURED — live match" is 20 characters, the readiness frame 13: two rows (S08's "ready to play" is one)."""
+        window, screen = self.canonical(self.make)
+        screen.answer.injured.add(self.off)
+        screen.row = screen.answer.words().index(self.off)
+        screen.refresh()
+        self.relayout(window)
+        self.assertIn("INJURED", screen.card.readiness.text())
+        self.assertEqual(len(screen.card.readiness.lines()), 2)
+        self.assertLessEqual(len(screen.card.readiness.lines()), screen.card.readiness.height() // cells.row_px(screen))
+
+    def test_the_bar_keeps_its_two_rows_whatever_the_enter_hint_says(self):
+        """The bar is two rows (the key bar's own height) for each hint the bench gives: take off, put on, cancel, unmark."""
+        window, screen = self.canonical(self.make)
+        rows = cells.span_px(screen, 2)
+        for put in (lambda: None, lambda: screen.move(11), lambda: self.pair(screen), lambda: screen.move(-11)):
+            put()
+            self.relayout(window)
+            self.assertEqual(screen.key_bar.height(), rows, screen.enter_hint_text())
+            self.assertEqual(screen.body.height(), window.page.height() - cells.row_px(screen) - rows)
+
+    def test_an_injured_players_row_is_why_the_bench_is_still_pending(self):
+        """[designed: T212] A live injury is said in the strip's row (" · INJURED", S19's own words, T188b): the name cell then needs
+        the cells of its text, and the 20-cell strip (the page's 90 less the card's 69 and the cell between) has 16 for it. The card cannot
+        be narrower (its skills and characteristics are 32 and 35 cells: 68) and the page has no more rows, so this is the one thing the
+        bench does not fit. It is why `BenchScreen` is still on `reflow_pending.PENDING`: when a decision (the owner's) fixes it, this test
+        fails and the entry goes."""
+        self.injured = (1,)
+        window = self.window()
+        screen = self.make(window)
+        window.resize(*theme.PICTURE)
+        window.show()
+        for _ in range(3):
+            self.app.processEvents()
+        self.settle(screen)
+        for _ in range(3):
+            self.app.processEvents()
+        found = fixed_page.problems(window)
+        self.assertEqual(len(found), 2, found)
+        self.assertTrue(all(("listRow" in text or "rowCell" in text) and "squeezed below" in text for text in found), found)
+        row = screen.strip.rows[1]
+        self.assertIn("INJURED", row.texts()[-1])
+        need = row.cells[-1].cols()
+        have = round(row.cells[-1].width() / cells.cell_w(screen))
+        self.assertGreater(need, have, f"the name cell needs {need} cells and has {have}")
+        self.assertIn("BenchScreen", reflow_pending.PENDING)
+        # nothing else of the screen is squeezed: the grid has no card and the widgets are on the cells
+        self.assertEqual(grid_check.violations(window), [])
+
+
 if __name__ == "__main__":
     unittest.main()

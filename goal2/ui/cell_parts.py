@@ -324,8 +324,9 @@ class GridCard(Cells):
         status = Frame("readiness")
         status_body = Cells(14, 2, "readinessRows")
         status.add(status_body, 1)
-        self.readiness = CellLabel("", "readiness")
-        status_body.put(self.readiness, 0, 0, 13)
+        # [designed: T212] a paragraph of its two rows: "ready to play" is one, the bench's "INJURED — live match" (20 characters) two
+        self.readiness = CellPara("", "readiness")
+        status_body.put(self.readiness, 0, 0, 13, 2)
         self.put(status, sum(self.POSITIONS.values()), 2, self.COLS - sum(self.POSITIONS.values()), 3)
         self.name_line = CellNameLine()
         self.name_line.hide()

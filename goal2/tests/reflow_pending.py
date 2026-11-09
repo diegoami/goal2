@@ -36,7 +36,7 @@ PENDING = {
     "MenuScreen": "screen 1440x1080 squeezed below 1535x1026",
     "BoardScreen": "screen 1440x1080 squeezed below 1416x1088",
     "SavedGoalMenu": "screen 1440x1080 squeezed below 610x1185",
-    "BenchScreen": "screen 1440x1080 squeezed below 1208x1207",
+    "BenchScreen": "a live injury is said in the strip's row (\" · INJURED\"): the name cell needs 18 cells and the 20-cell strip has 16 ('D Pf\u2019nberger · INJURED' needs 22; T212)",
     "ReimportScreen": "box 1260x648 squeezed below 1538x648",
     "TeamTacticsScreen": "screen 1440x1080 squeezed below 1398x1149",
     "CountryTacticsScreen": "screen 1440x1080 squeezed below 969x1119",

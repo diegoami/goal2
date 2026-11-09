@@ -506,7 +506,7 @@ class ScoreDigit(QFrame):
         layout.addWidget(self.text)
 
     def sizeHint(self):
-        return QSize(round(DIGIT_COLS * cells.cell_w(self)), cells.row_px(self))
+        return QSize(int(DIGIT_COLS * cells.cell_w(self)), cells.row_px(self))
 
     def minimumSizeHint(self):
         return self.sizeHint()
