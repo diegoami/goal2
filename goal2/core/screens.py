@@ -135,9 +135,9 @@ KINDS = {k.name: k for k in (
     Kind(TAKER_SELECT, keys(("C-computer select", "c C"), ("↑↓", "Up Down"), ("◄┘-select", "Return"),
                            ("keep", "Escape"), ("spacebar-pitch", "space"),
                            ("read without moving", "Left Right")), polled=True, designed=True,
-         evidence="[derived: F030; confirmed: T88/T89 at archaeology9aa9f27c/922fd8d8] observed CC7B roles2/5"),
+         evidence="[derived: F030; confirmed: T88/T89 at archaeology9aa9f27c/922fd8d8, T131 at 7fbfd2e9] observed CC7B roles 2/3/4/5"),
     Kind(TAKER_PITCH, keys(("hit any key", "(any)")), designed=True,
-         evidence="[confirmed: T88/T89 original Space/Return] CC7B pitch read returning CF3A"),
+         evidence="[confirmed: T88/T89, T131 original Space/Return] CC7B pitch read returning CF3A"),
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
     Kind("match-summary-save-prompt", _YES_NO, polled=True, evidence=_CAT),
@@ -673,17 +673,44 @@ CAPTAIN = 0x9978
 
 def _captain(f, bp):
     # choose_captain_or_taker 0791:CC7B(role [bp+4], side): role 1 the captain (CF0B; routines.tsv); the takers
-    # T120 adds the observed roles2/5 below; roles3/4 still have no entry.
+    # T120 adds the observed roles2/5 below, T220 the penalty (3) and free-kick (4) takers T131 delivered.
     return "captain-select" if f.byte(bp, 4) == 1 else _taker(f, bp)
+
+
+# [confirmed: upstream T131, goal2-archaeology 7fbfd2e9 (#707), docs/requests/400-roles34.md, notes/400-roles34/delivery.json]
+# CC7B's caller 6D4E (choose_player) returns to 6EEF with the byte arguments [10, 3, side] for the penalty, to 6F92 with
+# [11, 4, side] for the free kick (the restart callers 6ECF and 6F3E, F030/T92). Checkpoints (the first 16 hex digits of
+# each file's SHA-256), each in five kept Core states: role 3 Denmark side 1, round 7 minute 33, decision 964d78d67e8cd83c;
+# role 4 England side 0, round 3 minute 71, decision dc1f31f1af0b355c; role 4 Albania side 1, round 3 minute 58, decision
+# b2221e9c681dec5a. The unchanged Core stops at the decision machine for role 3 and for England's role 4 (T131's
+# stop-r1/stop-c9, memory and registers identical); Albania's has no such comparison (its Core stops earlier at a role 3 of
+# its own), so **Albania's is the weakest of the three**. Role 3 was kept at side 1 only; its side 0 (round 10 minute 78) is
+# a recorded observation of the role and side bytes, no kept state [derived: the side is CC7B's argument and indexes only
+# the country and the stored pick, as at roles 2/5 and role 4's two sides].
+TAKER_ORIGINS = {3: (0x6EEF, 10), 4: (0x6F92, 11)}      # role -> (6D4E's return offset, its first byte argument)
+
+
+def _taker_origin(f, bp, role, side):
+    """[confirmed: T131, as above] True when CC7B's caller 6D4E is the penalty (role 3) or free-kick (role 4) restart's: its
+    return offset and its three byte arguments [10 or 11, role, side] (low bytes: the high bytes are scratch)."""
+    origin, first = TAKER_ORIGINS[role]
+    parent = f.up(bp)
+    return (f.near_caller(parent) == origin
+            and (f.byte(parent, 4), f.byte(parent, 6), f.byte(parent, 8)) == (first, role, side))
 
 
 def _taker(f, bp):
     # [confirmed: T88/T89 live frames; F030 at53d7ef5] Noncaptain CC7B from choose_player's6D74.
-    # Only roles2/5 have genuine inputs; roles3/4 remain explicitly unobserved on archaeology#400.
-    if f.byte(bp, 4) not in (2, 5):
+    # Roles2/5 have genuine inputs (T88/T89). [confirmed: T131] So do roles3/4, each read together with its caller 6D4E's
+    # frame, which a generic captain state does not show; a role 3 or 4 without it, and any other role, give None and the
+    # runner stops: no entry is inferred from role2's shape.
+    role = f.byte(bp, 4)
+    if role not in (2, 3, 4, 5):
         return None
     if (f.near_caller(bp) != 0x6D74 or f.byte(bp, 6) not in (0, 1)
             or not 1 <= f.word(bp, -5) <= 11):
+        return None
+    if role in TAKER_ORIGINS and not _taker_origin(f, bp, role, f.byte(bp, 6)):
         return None
     return TAKER_SELECT
 

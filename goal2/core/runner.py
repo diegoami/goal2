@@ -202,7 +202,9 @@ def timed_taker_entry(memory, load, regs):
     if (waiting != bp + 12 or selector != waiting + 20 or selector + 8 >= 0x10000
             or f.near_caller(waiting) != 0xCED9 or f.word(waiting,4) != 1000):
         return False
-    return _screens._taker(f, selector) == _screens.TAKER_SELECT
+    # [designed: T220] Only roles 2/5 have a delay input (T88/T89); T131's roles 3/4 are kept at the polls, not in the delay,
+    # so a role 3 or 4 here is no validated entry and is not widened to one.
+    return f.byte(selector, 4) in (2, 5) and _screens._taker(f, selector) == _screens.TAKER_SELECT
 
 
 class UnknownScreen(CoreError):

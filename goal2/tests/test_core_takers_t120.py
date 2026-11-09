@@ -126,6 +126,9 @@ class Controls(unittest.TestCase):
   class Frame:
    def byte(self,bp,off):return self.role if off==4 else 0
    def near_caller(self,bp):return 0x6D74
+   # [T220] roles 3/4 now ask for their caller's frame: a frame that shows a highlight but no penalty/free-kick caller
+   def word(self,bp,off):return 5
+   def up(self,bp):return 0
   f=Frame()
   for f.role in (0,1,3,4,6):self.assertIsNone(screens._taker(f,0))
 
