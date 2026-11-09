@@ -364,3 +364,4 @@ operational status.
 - [T203](T203.md): distinguish the ordinary bench/request toggle from natural substitution opportunities and immediate swaps (#662).
 
 - [T204](T204.md): a manual of the build as it ships, with its own screenshots (#664).
+- [T205](T205.md): show the original's layout grammar as a drawn proposal (#666).
