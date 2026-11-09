@@ -27,10 +27,11 @@ words for a question; T181 asks those questions once the goal's sample has been 
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout
+from PySide6.QtGui import QColor, QPainter
+from PySide6.QtWidgets import QFrame
 
-from goal2.ui import theme
-from goal2.ui.screen import label, para, set_para
+from goal2.ui import cells, theme
+from goal2.ui.cells import CellLabel, CellPara
 from goal2.ui.squad_card import colour
 
 NOTICE_SUBSTITUTION = "substitution"
@@ -45,7 +46,12 @@ SHOOTOUT = "PENALTY SHOOT-OUT"          # [confirmed: E031 C44-C46b; s17_pitch.S
 ACTION_REPLAY = 'Do you want an action replay?'
 SAVE_GOAL = 'Do you want to save this goal?'
 YES_NO = {Qt.Key.Key_Y: 'Y yes', Qt.Key.Key_N: 'N no'}
-WIDTH = 640
+# [designed: T212] The box is 40 cells wide (the 640 pixels of the mockup, a whole number of cells); its rows are what its words take: one cell
+# in from each edge (the border is drawn at the edge, over no cell the text sits in), the tag, the headline's rows, the detail's rows, the
+# key line. The timed opportunity is as wide as the pitch less two cells, between 24 and 46.
+COLS = 40
+TIMED_COLS = (24, 46)
+BORDER = 2   # logical pixels
 
 
 class StopBox(QFrame):
@@ -55,28 +61,15 @@ class StopBox(QFrame):
     def __init__(self, parent):
         super().__init__(parent)
         self.setObjectName("stopBox")
-        self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; border: 2px solid {theme.HEADING}; }}")
-        self.setFixedWidth(WIDTH)
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(30, 26, 30, 26)
-        layout.setSpacing(14)
-        tag_row = QHBoxLayout()
-        self.tag = label(TAG, "tag")
-        tag_row.addWidget(self.tag)
-        tag_row.addStretch(1)
-        layout.addLayout(tag_row)
-        self.headline = label("", "h1")
-        self.headline.setWordWrap(True)
-        layout.addWidget(self.headline)
-        self.detail = para("", "value")
-        layout.addWidget(self.detail)
-        keys = QHBoxLayout()
-        keys.addStretch(1)
-        self.key_hint = label(ANY_KEY, "keyLabel")
+        self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; }}")
+        self.cols = COLS
+        self.edge = theme.HEADING   # the border's colour; None: no border (the timed opportunity is a bar)
+        self.tag = CellLabel(TAG, "tag", self)
+        self.headline = CellPara("", "h1", self)
+        self.detail = CellPara("", "value", self)
+        self.key_hint = CellLabel(ANY_KEY, "keyLabel", self)
+        self.key_hint.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         colour(self.key_hint, theme.KEY_HINT)
-        keys.addWidget(self.key_hint)
-        self.keys_row = keys
-        layout.addLayout(keys)
         self.kind = None
         self.handler = None
         self.answers = {}
@@ -94,16 +87,17 @@ class StopBox(QFrame):
         """Show a stop: `handler(key)` runs once on the answering key. `answers` {Qt key: words} makes it a
         question answered only by those keys (T181); without it any key answers, as the original's notices."""
         self.cancel()
-        self.setFixedWidth(WIDTH)
-        self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; border: 2px solid {theme.HEADING}; }}")
+        self.cols = COLS
+        self.edge = theme.HEADING
+        self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; }}")
         self.headline.setStyleSheet("")
         self.detail.setStyleSheet("")
-        self.headline.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.headline.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         colour(self.key_hint, theme.KEY_HINT)
         self.tag.show(); self.detail.show()
         self.kind, self.handler, self.answers = kind, handler, dict(answers or {})
         self.headline.setText(headline)
-        set_para(self.detail, detail)
+        self.detail.setText(detail)
         self.key_hint.setText(" · ".join(self.answers.values()) if self.answers else ANY_KEY)
         self.place()
         self.show()
@@ -126,9 +120,12 @@ class StopBox(QFrame):
         self.timed = True
         self._opportunity_keeper = keeper
         self.tag.hide();self.detail.hide()
-        self.setFixedWidth(min(740,max(380,getattr(self.parentWidget(),'pitch',self.parentWidget()).width()-24)))
+        pitch = getattr(self.parentWidget(), 'pitch', self.parentWidget())
+        across = round(pitch.width() / cells.cell_w(self)) - 2
+        self.cols = max(TIMED_COLS[0], min(TIMED_COLS[1], across))
         background = '#000000' if keeper else '#aaaaaa'
-        self.setStyleSheet(f'#stopBox {{ background:{background}; border:0; }}')
+        self.edge = None
+        self.setStyleSheet(f'#stopBox {{ background:{background}; }}')
         self.headline.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.key_hint.setText('Esc / Enter: open the bench')
         self._opportunity_lit = True
@@ -177,16 +174,60 @@ class StopBox(QFrame):
             handler(key)
         return True
 
+    # The cells. [designed: T212]
+    def inner_cols(self):
+        """The cells of the words: the box less one cell at each edge."""
+        return self.cols - 2
+
+    def rows(self):
+        """The box's rows: an empty row at each edge, the tag (not the timed bar's), the headline's rows, the detail's, the key line."""
+        wide = round(self.inner_cols() * cells.cell_w(self))
+        tag = 0 if self.tag.isHidden() else 1
+        detail = 0 if self.detail.isHidden() else len(self.detail.lines(wide))
+        return 2 + tag + len(self.headline.lines(wide)) + detail + 1
+
     def place(self):
-        """Centred over the pitch (the parent's `pitch` widget), as the mockup draws it."""
+        """The box in its cells, centred over the pitch (the parent's `pitch` widget), as the mockup draws it: its edges are whole
+        cells of the pitch's, so it sits on the grid. The timed bar is at the pitch's foot."""
         parent = self.parentWidget()
         pitch = getattr(parent, "pitch", None)
-        self.adjustSize()
+        cell, row = cells.cell_w(self), cells.row_px(self)
+        inner = self.inner_cols()
+        wide = round(inner * cell)
+        rows = self.rows()
+        self.resize(round(self.cols * cell), rows * row)
+        at = 1   # the first row of the words
+        if not self.tag.isHidden():
+            self.tag.setGeometry(round(cell), at * row, wide, row)
+            at += 1
+        head = len(self.headline.lines(wide))
+        self.headline.setGeometry(round(cell), at * row, wide, head * row)
+        at += head
+        if not self.detail.isHidden():
+            detail = len(self.detail.lines(wide))
+            self.detail.setGeometry(round(cell), at * row, wide, detail * row)
+            at += detail
+        self.key_hint.setGeometry(round(cell), at * row, wide, row)
         if pitch is None:
             return
-        centre = pitch.mapTo(parent, pitch.rect().center())
-        top = pitch.mapTo(parent, pitch.rect().bottomLeft()).y() - self.height() - 22 if self.timed else centre.y() - self.height() // 2
-        self.move(max(0, centre.x() - self.width() // 2), max(0, top))
+        # a whole number of the pitch's cells from its edges
+        columns = round(pitch.width() / cell)
+        left = (columns - self.cols) // 2
+        pitch_rows = round(pitch.height() / row)
+        top = (pitch_rows - rows) // 2 if not self.timed else pitch_rows - rows - 1
+        origin = pitch.mapTo(parent, pitch.rect().topLeft())
+        self.move(max(0, origin.x() + round(left * cell)), max(0, origin.y() + max(0, top) * row))
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        if self.edge is None:
+            return
+        painter = QPainter(self)
+        width = max(1, round(BORDER * cells.cell_w(self) / theme.CELL_W))
+        painter.setPen(QColor(self.edge))
+        for step in range(width):   # the border is drawn at the edge, inside the empty cell: no cell of text is under it
+            painter.drawRect(self.rect().adjusted(step, step, -1 - step, -1 - step))
+        painter.end()
 
 
 def score_line(names, score, minute):
