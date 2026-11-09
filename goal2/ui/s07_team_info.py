@@ -24,16 +24,24 @@ from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 from goal2.game.country_card import card as country_card
 from goal2.ui import theme
-from goal2.ui.s04_country import GROUP, LIST_WIDTH, PREVIEW_MS, CountryCard, PlayersScreen, averages, ordered
+from goal2.ui.cell_parts import CellTableRow
+from goal2.ui.cells import CellPara, Cells
+from goal2.ui.country_parts import framed
+from goal2.ui.s04_country import (BODY_COLS, BODY_ROWS, GROUP, LIST_AT, LIST_COLS, PREVIEW_MS, CountryCard, PlayersScreen, averages,
+                                  ordered)
 from goal2.ui.s06_desk import next_match
-from goal2.ui.screen import Screen, label, para, set_para
+from goal2.ui.screen import Screen, label, para
 from goal2.ui.squad_card import Row as TableRow, Strip, box as card_box, colour
-from goal2.ui.start_look import Row, box
 
 MARK = "next opponent"   # [designed: s07-team-info.html]
+# [designed: T211b] A row of the list: the country's name right-aligned in 15 cells (the longest name is 15 characters), a cell, then the
+# mark's 13: the list's 29. Right-aligned, the names stand in the page's last quarter, where the list is the only ink: left-aligned, six
+# of every name's characters fall in the tile before it and check_density.py reads a region of 1.05 % there (the original's list: 4.9 %).
+MARK_COLS = len(MARK)
 
 
 class TeamInfoScreen(Screen):
+    GRID = True   # [designed: T211b] laid out on the 16 x 32 grid, no card
     title = "team info"
     escape_text = "desk"
 
@@ -70,31 +78,28 @@ class TeamInfoScreen(Screen):
         self._show()
 
     def _build(self):
-        row = QHBoxLayout()
-        row.setSpacing(18)
-        self.card_view = CountryCard(family=self.window_.family)
-        row.addWidget(self.card_view, 1)
-        countries, inner = box()
-        countries.setFixedWidth(LIST_WIDTH)
-        inner.addWidget(label("CHECK OUT ALL THE COMPETITORS", "boxHeading"))
-        inner.setSpacing(0)
-        inner.addSpacing(8)
+        """[designed: owner, 2026-11-08, #667; T211b; docs/design/ui-2026-11/proposal/README.md] The card (60 cells wide, the same as S04's)
+        at the left and at the right, a cell apart, the original's heading of the list, *check out all the competitors*, over the sixteen
+        countries in a frame, on the 90 x 25 cells between the title row and the key rows; what the screen says under the list."""
+        body = Cells(BODY_COLS, BODY_ROWS, "teamBody")
+        self.body_layout.addWidget(body, 1)
+        self.area = body
+        self.card_view = CountryCard(family=self.window_.family, rows=CountryCard.ROWS_WITH_PERFORMANCE)
+        body.put(self.card_view, 0, 0, CountryCard.COLS, CountryCard.ROWS_WITH_PERFORMANCE)
+        body.text("check out all the competitors", "sub", LIST_AT, 2)
+        self.countries_frame, inner = framed("countries", LIST_COLS, GROUP + 2)
         self.rows = []
         for i in range(GROUP):
-            r = Row([None, 160], on_click=lambda i=i: self.click_row(i))
-            r.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-            inner.addWidget(r)
-            self.rows.append(r)
-        inner.addSpacing(10)
-        self.group_note = label("", "sub")
-        inner.addWidget(self.group_note)
-        inner.addSpacing(10)
-        self.note = para("", "sub")
+            row = CellTableRow(i, (LIST_COLS - MARK_COLS - 1, MARK_COLS), (Qt.AlignmentFlag.AlignRight, None), (0, 1))
+            row.chosen.connect(self.click_row)
+            inner.put(row, 0, i, LIST_COLS)
+            self.rows.append(row)
+        self.group_note = CellPara("", "sub")   # "16 of 128 · continental ranking": 31 characters, two rows
+        inner.put(self.group_note, 0, GROUP, LIST_COLS, 2)
+        body.put(self.countries_frame, LIST_AT, 4, LIST_COLS, GROUP + 3)
+        self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        inner.addWidget(self.note)
-        inner.addStretch(1)
-        row.addWidget(countries)
-        self.body_layout.addLayout(row, 1)
+        body.put(self.note, LIST_AT, GROUP + 7, LIST_COLS, 2)
 
     # What is shown.
     def _show(self):
@@ -141,7 +146,7 @@ class TeamInfoScreen(Screen):
         return [row.cells[1].text() for row in self.rows]
 
     def say(self, text):
-        set_para(self.note, text)
+        self.note.setText(text)
 
     # The keys.
     def move(self, step):

@@ -1,5 +1,5 @@
 {
-  "source_commit": "f2a8a22fe7692f39245c63d1a4e37b03680758d0",
+  "source_commit": "57b9084bcc4a3d09a06fe7570a49d4de64d54c80",
   "normal_text_px": 32,
   "capture_environment": "Qt offscreen on this computer; native Windows/package checks separate",
   "dimensions": [
@@ -19,7 +19,7 @@
   "captures": 144,
   "all_geometry_checks_passed": false,
   "producer": "tools/ui_readability_screenshots.py",
-  "producer_sha256": "f0dfb05d3d72529f3dd0d2c8f8b29b039a38b717bd7bb81cfde18488ffd7c942",
+  "producer_sha256": "b4ce6d26ce0a7395a567d1a017fe5b04fa9c671e423f4d833928eeabb8d59db3",
   "screens_with_problems": [
     {
       "picture": "s01-import-first.png",
@@ -250,123 +250,6 @@
         "screen 1616x1212 squeezed below 1270x1289",
         "body 1616x1054 squeezed below 1270x1134",
         "body 1562x1006 squeezed below 1216x1086"
-      ]
-    },
-    {
-      "picture": "s04-country.png",
-      "screen": "CountryScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 1080,
-      "count": 113,
-      "first": [
-        "screen 1440x1080 squeezed below 1688x1176",
-        "body 1440x855 squeezed below 1688x953",
-        "body 1392x811 squeezed below 1640x909"
-      ]
-    },
-    {
-      "picture": "s04-country.png",
-      "screen": "CountryScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 900,
-      "count": 115,
-      "first": [
-        "screen 1200x900 squeezed below 1406x989",
-        "body 1200x710 squeezed below 1406x801",
-        "body 1160x674 squeezed below 1366x765"
-      ]
-    },
-    {
-      "picture": "s04-country.png",
-      "screen": "CountryScreen",
-      "phase": null,
-      "width": 2110,
-      "height": 1213,
-      "count": 112,
-      "first": [
-        "screen 1616x1212 squeezed below 1906x1322",
-        "body 1616x960 squeezed below 1906x1073",
-        "body 1562x912 squeezed below 1852x1025"
-      ]
-    },
-    {
-      "picture": "s07-team-info.png",
-      "screen": "TeamInfoScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 1080,
-      "count": 54,
-      "first": [
-        "screen 1440x1080 squeezed below 1337x1229",
-        "body 1440x855 squeezed below 1337x1006",
-        "body 1392x811 squeezed below 1289x962"
-      ]
-    },
-    {
-      "picture": "s07-team-info.png",
-      "screen": "TeamInfoScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 900,
-      "count": 54,
-      "first": [
-        "screen 1200x900 squeezed below 1112x1018",
-        "body 1200x710 squeezed below 1112x830",
-        "body 1160x674 squeezed below 1072x794"
-      ]
-    },
-    {
-      "picture": "s07-team-info.png",
-      "screen": "TeamInfoScreen",
-      "phase": null,
-      "width": 2110,
-      "height": 1213,
-      "count": 54,
-      "first": [
-        "screen 1616x1212 squeezed below 1507x1342",
-        "body 1616x960 squeezed below 1507x1093",
-        "body 1562x912 squeezed below 1453x1045"
-      ]
-    },
-    {
-      "picture": "s11-fixtures.png",
-      "screen": "FixturesScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 1080,
-      "count": 111,
-      "first": [
-        "screen 1440x1080 squeezed below 1274x1222",
-        "body 1440x909 squeezed below 1274x1053",
-        "body 1392x865 squeezed below 1226x1009"
-      ]
-    },
-    {
-      "picture": "s11-fixtures.png",
-      "screen": "FixturesScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 900,
-      "count": 111,
-      "first": [
-        "screen 1200x900 squeezed below 1060x1018",
-        "body 1200x756 squeezed below 1060x876",
-        "body 1160x720 squeezed below 1020x840"
-      ]
-    },
-    {
-      "picture": "s11-fixtures.png",
-      "screen": "FixturesScreen",
-      "phase": null,
-      "width": 2110,
-      "height": 1213,
-      "count": 111,
-      "first": [
-        "screen 1616x1212 squeezed below 1431x1362",
-        "body 1616x1020 squeezed below 1431x1173",
-        "body 1562x972 squeezed below 1377x1125"
       ]
     },
     {
@@ -1305,7 +1188,7 @@
       "width": 1440,
       "height": 1080,
       "path": "docs/design/ui-2026-11/images/s19-bench-refused.png",
-      "sha256": "2da4c1c676405cb7e4b884d273bc1a5a207c1447778126e48d3aa242ed14cccc"
+      "sha256": "6e348b013215d98892b9b7f3fc7e8f72b8b4e1ec139733b70808fa6bdeec858d"
     },
     {
       "screen": "BenchScreen",
@@ -1313,7 +1196,7 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s19-bench-refused.png",
-      "sha256": "63079dd41de0f5696480a6aecd8a28c42813b115fe43a073460c84f0ac821d38"
+      "sha256": "6cc31818956e2e08498b87930e19a97d01042d9bbe4a41a4a9cb41b8f01e266b"
     },
     {
       "screen": "PitchScreen",
@@ -1353,7 +1236,7 @@
       "width": 1440,
       "height": 1080,
       "path": "docs/design/ui-2026-11/images/s11-fixtures.png",
-      "sha256": "a2c1d31bc6dc1be699e86ed57d1762d7114f70b6207b1c7ed706dc6aa40bd7b8"
+      "sha256": "0370dbac0136d0426dd7335d3434fff73f3ca5f95f0e4aaedf4990080cc3088f"
     },
     {
       "screen": "FixturesScreen",
@@ -1361,7 +1244,7 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s11-fixtures.png",
-      "sha256": "f50a0845872d704e6fc6d42c7f03e055c4685f4c06f9a662ba6171a7eab03c73"
+      "sha256": "636f857752e844b4c4a778ec5cfa704b9a719ce55123b70bb43bc1f958fa3310"
     },
     {
       "screen": "RoundScreen",
@@ -1378,7 +1261,39 @@
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s14-round.png",
       "sha256": "104388051c5eb44d027f958227227f9346955dd9ad501fbb8a9f55d26aa706f9"
+    },
+    {
+      "screen": "CountryScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s04-country.png",
+      "sha256": "ddfcc5c0eb516daf3af326b1584dd8ad567b6ade80aa92711179ecb36262b1f1"
+    },
+    {
+      "screen": "CountryScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s04-country.png",
+      "sha256": "b7f22dae2525088619dd50c48fcc191839fbd4c7330e26735d0f87306d3d6c41"
+    },
+    {
+      "screen": "TeamInfoScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s07-team-info.png",
+      "sha256": "0f7c7b952c9f6501d84a565052bbc88b4968e980409e6b27363cbc6abeb00212"
+    },
+    {
+      "screen": "TeamInfoScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s07-team-info.png",
+      "sha256": "ed40ce9ff254142af54322ab79f119f7f0f0316a865813c135fb509097a0cc04"
     }
   ],
-  "report_sha256": "4cd946168f4336108e57dd6b57cdd95acc3cab3c55529b9da87c0bb1db056493"
+  "report_sha256": "8c575dae8cd72a44fe1b05a06cc7b1d399da4b16dcf00f7209c0888c83de3570"
 }

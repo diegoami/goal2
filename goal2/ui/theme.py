@@ -153,6 +153,7 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #tag {{ color: {HEADING}; border: 1px solid {HEADING}; padding: 2px 8px; }}
 #tagNew {{ color: {GOALKEEPER}; border: 1px solid {GOALKEEPER}; padding: 2px 8px; }}
 #screen[grid="true"] #tagNew {{ color: {GOALKEEPER}; border: none; padding: 0px; }}
+#screen[grid="true"] #brandNote {{ padding: 0px; }}
 #error {{ color: {BAD}; }}
 #field {{ background: {GROUND}; border: 2px solid {FRAME}; }}
 #option {{ background: {GROUND}; border: 1px solid {FRAME_DARK}; }}

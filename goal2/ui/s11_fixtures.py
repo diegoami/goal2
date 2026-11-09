@@ -25,15 +25,22 @@ With a country (S07's Enter), the list is that country's coming fixtures instead
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QVBoxLayout
 
 from goal2.ui import theme
-from goal2.ui.screen import Screen, para, set_para
-from goal2.ui.squad_card import Row, box, colour, last_on_the_bar
+from goal2.ui.cell_parts import CellTableRow
+from goal2.ui.cells import CellPara, Cells
+from goal2.ui.country_parts import framed
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import colour, last_on_the_bar
 
-VISIBLE = 14   # [designed: s11-fixtures.html, the box's height at 1440x900 holds fourteen rows at the owner's 24px baseline (#598)]
-# Watch, the first side, v, the second side, the match's kind, what happens at kick-off. [designed: s11-fixtures.html]
-WIDTHS = (120, 300, 40, 260, 230, 0)
+# [confirmed: docs/original-game/images/fixtures-watch.png, t156-224-fixture-list.png: the original's list shows sixteen rows]
+# [designed: T211b] The list shows sixteen rows, the original's own (it held fourteen at the 24 px text of #598: s11-fixtures.html).
+VISIBLE = 16
+# Watch, the first side, v, the second side, the match's kind, what happens at kick-off. [designed: s11-fixtures.html] In cells
+# [designed: T211b]: the 90 columns of the page, a name of up to 15 characters right-aligned before the v and left-aligned after it,
+# a kind of up to 33 (the longest stage's word, `model.kind_word`) and what happens at kick-off, 11 at most.
+WIDTHS = (6, 16, 3, 16, 34, 15)
+ALIGNS = (Qt.AlignmentFlag.AlignHCenter, Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignHCenter, None, None, None)
 CHECK = "✓"   # [confirmed: t156-224-fixture-list.png, the mark on the watched row]
 LATER_WATCH = ("Watching another country's match comes later (#570): this route's engine plays only "
                "your own match watched.")
@@ -53,7 +60,11 @@ def action(row):
     return "auto result", "Watch match: later", LATER_WATCH
 
 
+BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3   # the 90 x 25 cells between the title row and the key rows
+
+
 class FixturesScreen(Screen):
+    GRID = True   # [designed: T211b] laid out on the 16 x 32 grid, no card
     title = "fixture list"
 
     def __init__(self, window, model, country=None, back="desk"):
@@ -77,39 +88,30 @@ class FixturesScreen(Screen):
         self._show()
 
     def _build(self):
-        frame, inner = box(self.heading())
-        inner.setSpacing(0)
-        inner.addSpacing(10)
-        header = Row(-1, WIDTHS, margins=(8, 4, 8, 4), underline=True)
-        header.set(("WATCH", "", "", "", "MATCH", "AT KICK-OFF"), (theme.HEADING,) * len(WIDTHS))
+        """[designed: owner, 2026-11-08, #667; T211b; docs/design/ui-2026-11/proposal/README.md, s11-fixtures] The list in a frame (a rule
+        with its lowercase label, the heading) across the 90 columns of the page: the column names in brown over the rows, the
+        fourteen rows, then the count, what the ✓ means and what Enter said, in rows of cells under it."""
+        body = Cells(BODY_COLS, BODY_ROWS, "fixturesBody")
+        self.body_layout.addWidget(body, 1)
+        self.area = body
+        frame, inner = framed(self.heading(), BODY_COLS, VISIBLE + 1)
+        header = CellTableRow(-1, WIDTHS, ALIGNS)
+        header.set(("watch", "", "", "", "match", "at kick-off"), (theme.CARD_LABEL,) * len(WIDTHS))
         header.setCursor(Qt.CursorShape.ArrowCursor)
-        self._align(header)
-        inner.addWidget(header)
+        inner.put(header, 0, 0, BODY_COLS)
         self.rows = []
         for i in range(VISIBLE):
-            row = Row(i, WIDTHS, margins=(8, 5, 8, 5), underline=True)
-            self._align(row)
+            row = CellTableRow(i, WIDTHS, ALIGNS)
             row.chosen.connect(self.click_row)
-            inner.addWidget(row)
+            inner.put(row, 0, i + 1, BODY_COLS)
             self.rows.append(row)
-        inner.addSpacing(12)
-        self.empty = para("", "sub")
-        inner.addWidget(self.empty)
-        inner.addWidget(para(NOTE, "sub"))
-        inner.addSpacing(8)
-        self.note = para("", "sub")
+        body.put(frame, 0, 0, BODY_COLS, VISIBLE + 2)
+        self.empty = CellPara("", "sub")   # the count, or why there is no list: 86 characters at most, a row
+        body.put(self.empty, 0, VISIBLE + 2, BODY_COLS)
+        body.put(CellPara(NOTE, "sub"), 0, VISIBLE + 3, BODY_COLS, 3)
+        self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        inner.addWidget(self.note)
-        inner.addStretch(1)
-        column = QVBoxLayout()
-        column.addWidget(frame, 1)
-        self.body_layout.addLayout(column, 1)
-
-    @staticmethod
-    def _align(row):
-        row.cells[0].setAlignment(Qt.AlignmentFlag.AlignCenter)
-        row.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        row.cells[2].setAlignment(Qt.AlignmentFlag.AlignCenter)
+        body.put(self.note, 0, VISIBLE + 6, BODY_COLS, 2)
 
     def heading(self):
         if self.listing is None:
@@ -141,8 +143,8 @@ class FixturesScreen(Screen):
             empty = "No coming fixtures: the stage is complete, and the next one is not reached yet (T170)."
         else:
             empty = f"{self.index + 1} of {len(self.items)}"
-        set_para(self.empty, empty)
-        set_para(self.note, self.message)
+        self.empty.setText(empty)
+        self.note.setText(self.message)
         self.set_enter(action(self.items[self.index])[1] if self.items else "", self.enter)
 
     def shown_rows(self):
@@ -172,4 +174,4 @@ class FixturesScreen(Screen):
         if not self.items:
             return
         self.message = action(self.items[self.index])[2]
-        set_para(self.note, self.message)
+        self.note.setText(self.message)
