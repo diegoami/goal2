@@ -1,5 +1,5 @@
 {
-  "source_commit": "89b5d25c99091e10b40bd7309e995a03a3143950",
+  "source_commit": "afa8dffa7025f4601d304fb17ebccd0d3a8fde39",
   "normal_text_px": 32,
   "capture_environment": "Qt offscreen on this computer; native Windows/package checks separate",
   "dimensions": [
@@ -289,123 +289,6 @@
         "screen 1616x1212 squeezed below 1906x1322",
         "body 1616x960 squeezed below 1906x1073",
         "body 1562x912 squeezed below 1852x1025"
-      ]
-    },
-    {
-      "picture": "s06-desk.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 1080,
-      "count": 78,
-      "first": [
-        "screen 1440x1080 squeezed below 1531x1203",
-        "body 1440x855 squeezed below 1531x980",
-        "body 1392x811 squeezed below 1483x936"
-      ]
-    },
-    {
-      "picture": "s06-desk.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 900,
-      "count": 78,
-      "first": [
-        "screen 1200x900 squeezed below 1275x1026",
-        "body 1200x710 squeezed below 1275x838",
-        "body 1160x674 squeezed below 1235x802"
-      ]
-    },
-    {
-      "picture": "s06-desk.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 2110,
-      "height": 1213,
-      "count": 74,
-      "first": [
-        "screen 1616x1212 squeezed below 1723x1383",
-        "body 1616x960 squeezed below 1723x1134",
-        "body 1562x912 squeezed below 1669x1086"
-      ]
-    },
-    {
-      "picture": "s08-pool-search.png",
-      "screen": "SquadScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 1080,
-      "count": 53,
-      "first": [
-        "screen 1440x1080 squeezed below 1281x1232",
-        "body 1440x791 squeezed below 1281x945",
-        "body 1392x747 squeezed below 1233x901"
-      ]
-    },
-    {
-      "picture": "s08-pool-search.png",
-      "screen": "SquadScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 900,
-      "count": 53,
-      "first": [
-        "screen 1200x900 squeezed below 1069x1026",
-        "body 1200x656 squeezed below 1069x784",
-        "body 1160x620 squeezed below 1029x748"
-      ]
-    },
-    {
-      "picture": "s08-pool-search.png",
-      "screen": "SquadScreen",
-      "phase": null,
-      "width": 2110,
-      "height": 1213,
-      "count": 52,
-      "first": [
-        "screen 1616x1212 squeezed below 1445x1368",
-        "body 1616x890 squeezed below 1445x1049",
-        "body 1562x842 squeezed below 1391x1001"
-      ]
-    },
-    {
-      "picture": "s06-rename.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 1080,
-      "count": 93,
-      "first": [
-        "screen 1440x1080 squeezed below 1531x1203",
-        "body 1440x855 squeezed below 1531x980",
-        "body 1392x811 squeezed below 1483x936"
-      ]
-    },
-    {
-      "picture": "s06-rename.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 900,
-      "count": 93,
-      "first": [
-        "screen 1200x900 squeezed below 1275x1026",
-        "body 1200x710 squeezed below 1275x838",
-        "body 1160x674 squeezed below 1235x802"
-      ]
-    },
-    {
-      "picture": "s06-rename.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 2110,
-      "height": 1213,
-      "count": 93,
-      "first": [
-        "screen 1616x1212 squeezed below 1723x1383",
-        "body 1616x960 squeezed below 1723x1134",
-        "body 1562x912 squeezed below 1669x1086"
       ]
     },
     {
@@ -1328,45 +1211,6 @@
       ]
     },
     {
-      "picture": "s11-fixtures-round2.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 1080,
-      "count": 79,
-      "first": [
-        "screen 1440x1080 squeezed below 1499x1203",
-        "body 1440x855 squeezed below 1499x980",
-        "body 1392x811 squeezed below 1451x936"
-      ]
-    },
-    {
-      "picture": "s11-fixtures-round2.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 1440,
-      "height": 900,
-      "count": 79,
-      "first": [
-        "screen 1200x900 squeezed below 1248x1026",
-        "body 1200x710 squeezed below 1248x838",
-        "body 1160x674 squeezed below 1208x802"
-      ]
-    },
-    {
-      "picture": "s11-fixtures-round2.png",
-      "screen": "DeskScreen",
-      "phase": null,
-      "width": 2110,
-      "height": 1213,
-      "count": 75,
-      "first": [
-        "screen 1616x1212 squeezed below 1686x1383",
-        "body 1616x960 squeezed below 1686x1134",
-        "body 1562x912 squeezed below 1632x1086"
-      ]
-    },
-    {
       "picture": "s13-history-round2.png",
       "screen": "HistoryScreen",
       "phase": null,
@@ -1413,7 +1257,7 @@
       "width": 1440,
       "height": 1080,
       "path": "docs/design/ui-2026-11/images/s06-hub.png",
-      "sha256": "5055185fef599fc61a91a12ae9a4729f36772321207fde109c582e49134e37e2"
+      "sha256": "d77c9bcfc677e3d019dc968347fbbfbd14b088935b5b2e73e06253d223a11297"
     },
     {
       "screen": "DeskScreen",
@@ -1421,7 +1265,7 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s06-hub.png",
-      "sha256": "dbe37087ea78de4742b3cc74eedc6bc655e6456620450c776ec2b1b7f77afc10"
+      "sha256": "a377ede3a32c770c6e71d226b6d46ae037fd8a04d0b48ce453622f0195a88870"
     },
     {
       "screen": "MenuScreen",
@@ -1536,5 +1380,5 @@
       "sha256": "104388051c5eb44d027f958227227f9346955dd9ad501fbb8a9f55d26aa706f9"
     }
   ],
-  "report_sha256": "28bc0bf6bc64565d40e98f56712ae351d3a946b3e9ac121357fca99d48bda754"
+  "report_sha256": "f8f21ecc935231cf9aa18e0670c1bc378bbdbcc82493b39dff800b6327992afd"
 }
