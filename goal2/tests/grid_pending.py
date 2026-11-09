@@ -48,7 +48,6 @@ PENDING = {
     "SaveScreen": "24 widgets off the 16 x 38 cell, 0 cards (the title bar's brand and name are off the cell on every screen)",
     "SavedGoalMenu": "51 widgets off the 16 x 38 cell, 6 cards (the title bar's brand and name are off the cell on every screen)",
     "SavedPitchScreen": "48 widgets off the 16 x 38 cell, 3 cards (the title bar's brand and name are off the cell on every screen)",
-    "SquadScreen": "211 widgets off the 16 x 38 cell, 6 cards (the title bar's brand and name are off the cell on every screen)",
     "StartScreen": "77 widgets off the 16 x 38 cell, 11 cards (the title bar's brand and name are off the cell on every screen)",
     "TeamInfoScreen": "163 widgets off the 16 x 38 cell, 10 cards (the title bar's brand and name are off the cell on every screen)",
     "TeamPlayersScreen": "not in the journey: the desk walk reaches it; the title bar is off the cell and it carries cards, as every screen does",

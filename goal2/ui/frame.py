@@ -51,6 +51,9 @@ class FrameRule(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setMinimumHeight(theme.CELL_H)   # one row; apply() scales it with the page's vertical scale
         self.setMaximumHeight(theme.CELL_H)
+        # [designed: T211] The widget's colour is its label's, so what reads a widget's colour (the palette) reads the rule's
+        # (the style sheet's `*` rule would otherwise make it white).
+        self.setStyleSheet(f"color: {self.label_colour()};")
 
     def cell_width(self) -> float:
         """A cell's width in pixels as this page draws it (16 at scale 1)."""
@@ -68,7 +71,7 @@ class FrameRule(QWidget):
         return KINDS[self.kind]
 
     def minimumSizeHint(self) -> QSize:
-        return QSize(round((len(self.label) + 2) * self.cell_width()), self.minimumHeight())
+        return QSize(int((len(self.label) + 2) * self.cell_width()), self.minimumHeight())   # floor: a rounded edge never squeezes it
 
     def sizeHint(self) -> QSize:
         return self.minimumSizeHint()

@@ -19,7 +19,6 @@ rounded multiple of the exact cell, so a panel's edge is within half a pixel of 
 from __future__ import annotations
 
 import html
-import math
 import re
 import textwrap
 
@@ -76,7 +75,7 @@ class CellLabel(QLabel):
         return max(self.reserve, *(len(line) for line in lines))
 
     def sizeHint(self) -> QSize:
-        return QSize(math.ceil(self.cols() * cell_w(self) - 0.5), row_px(self))
+        return QSize(int(self.cols() * cell_w(self)), row_px(self))   # a pixel under the exact cells: a rounded edge never squeezes it
 
     def minimumSizeHint(self) -> QSize:
         return self.sizeHint()

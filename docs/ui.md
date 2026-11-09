@@ -155,8 +155,9 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
 
 | Module | What it holds |
 | --- | --- |
+| `goal2/ui/cells.py`, `goal2/ui/cell_parts.py` | [designed: T211] The grid's parts: text and panels placed by cell (`CellLabel`, `CellPara`, `Cells`), and the strip, card, bars and typed line S06 and S08 are made of (S09 and S10 keep `squad_card`'s until they are reflowed). |
 | `goal2/ui/squad_card.py` | The parts the three share: the player card (every field of `goal2.game.player_card.card`), the strip on the right (the eleven, a gap, the bench; or a page of the pool), bars, label-value lines, table rows, the name line. |
-| `goal2/ui/s08_squad.py` | S08 Squad and pool. |
+| `goal2/ui/s08_squad.py` | S08 Squad and pool. [designed: T211] On the 16 × 32 grid: the card (`cell_parts.GridCard`: the name and the facts as rules with their values under them, the skills, the tactics over the characteristics) and the twenty (`GridStrip`) side by side, a cell apart; the pool's filters and the goal2 addition's tag above the card; the message under it and what a pick waits for across the foot. |
 | `goal2/ui/s09_player_tactics.py` | S09 Player tactics. |
 | `goal2/ui/s10_team_tactics.py` | S10 Team tactics. |
 
@@ -198,6 +199,13 @@ files. `tools/ui_squad_screenshots.py DIR` writes the screens' pictures (they ar
 
 [designed: owner, 2026-11-03, #526 decisions 1 and 14, #527 D2; T164, #538] A new career or a loaded save lands on S06,
 the manager's desk, the career's home: every management screen returns to it with Esc, and it has no Esc of its own.
+
+[designed: owner, 2026-11-09, #667; T211] The desk is laid out on the 16 × 32 grid, in cells (90 columns, the 25 rows between the one-row
+title and the two key rows), three columns a cell apart and no card: at the left the frames *manager*, *team*, *next opponents* and
+*managers* (a rule with its lowercase label, goal2/ui/frame.py) with the hint and the screen's message under them; in the middle the
+six options as boxes of two rows (a row between them, as the original's) and under the *GOAL2 ADDITION* tag the extras as boxes; at the
+right the twenty in a frame named for the country. Its pieces are `goal2/ui/cells.py` and `goal2/ui/cell_parts.py`; the rules are in
+[design/ui-2026-11/README.md §3](design/ui-2026-11/README.md#3-rules-for-the-whole-ui).
 
 - **S06** shows the manager (name; rating *unknown*: the route keeps none), the team with its world and continental
   rankings, the next opponents with theirs and the match's kind with home or away (*friendly away*, T167, #562), the managers, and the twenty with role codes, the eleven above the bench; the competition at the title

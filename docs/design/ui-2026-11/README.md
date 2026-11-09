@@ -560,6 +560,18 @@ we can keep the rest"]
     are not (all of them when T210 merged); its `assert_on_grid` is what a screen's test calls, a listed screen is exempt in the
     ordinary tests, one dedicated test holds each listed screen to still violating (the list only shrinks), and
     `test_ui_grid_t210.test_grid_pending_is_empty` is the gate for merging `ui/foundation-32` into main.
+  - **A screen on the grid** [designed: owner, 2026-11-09, #667; T211] The desk (S06) and the squad (S08) are the first screens laid out
+    on the cell, and what they use is the way the others follow (T211b, T212–T214). A screen sets `GRID = True` (`goal2/ui/screen.py`)
+    and places its panels **by cell** (`goal2/ui/cells.py`): `Cells` puts a child at a column and a row for so many columns and rows,
+    `CellLabel` is a line of text one row high whose size is its characters' cells, not the font's line box (a platform's font may
+    round the advance or add a pixel to a line: a measured Windows runner did), `CellPara` is a paragraph wrapped at the cells its
+    width holds. The page is a fixed 90 × 28 whatever the window, so nothing is measured from the text. A row is the rounded cell (38
+    pixels at scale 1), so nested panels add up with no rounding and the 4:3 page's few spare pixels fall under the last row. The
+    title is one row; a key of the bottom bar is its caption and its word joined (`F1help`: no key cap box) in rows of cells a cell
+    apart, never fewer than two rows, so the page does not move when the Enter hint changes; an option is a box of two rows (the
+    original's, its border one pixel at the edge of the box) or a line of one. The panels are `Frame`s, or `FrameRule` and a value
+    under it for a fact; the desk's strip and the squad's card are `goal2/ui/cell_parts.py`. A screen that does not set `GRID` keeps its
+    old layout until it is reflowed, and the flag goes when the last one is.
   - **This supersedes the owner's #598** (24 px normal text, 32 px headings and names, 48 and 64 px titles) in the direction
     it went: the text is larger again, and the headings are gone. #598's other rules stay: keyboard actions wrap as whole
     items, and rows and card columns reserve room for the lettering. The approved screens, flow and keys (#526) are not
