@@ -8,7 +8,7 @@ that was not there. The destination comes from the name the caller gave.
 Nothing here touches the network: `pull_commands` returns the arguments, it does not run them.
 The expected destinations are built with `Path`, never written as text: `str(Path(...))` separates
 with a backslash on Windows, and writing them with '/' failed there while passing on Linux
-(run 42554102301, #689).
+(run 42554102301).
 """
 import sys
 import unittest
