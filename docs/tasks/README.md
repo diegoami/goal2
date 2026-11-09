@@ -372,3 +372,5 @@ operational status.
 - [T170c2](T170c2.md): publish a completed sealed round atomically into the campaign (#566).
 
 - [T170d](T170d.md): the Core oracle for one sealed round, and its terminal step (#566).
+
+- [T170e](T170e.md): the 1992 season, stage 2 to its terminal boundary, compared to Core (#566).
