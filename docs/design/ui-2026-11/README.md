@@ -542,6 +542,24 @@ we can keep the rest"]
     short of an exact 4:3 1440 × 1080, so the page's rectangle is the largest 4:3 rectangle in the window, centred on black:
     the window letterboxes the remainder and never re-flows or stretches a cell unevenly. At 1440 × 1080 the scale is 1.
     (`goal2/desktop/fixed_page.py`, which also says why the page stays native widgets scaled by their lengths.)
+  - **The frame** [designed: owner, 2026-11-08, #666, #670; T210; fidelity-review.md §3 and §2.4] A panel's frame is **a rule with its
+    lowercase label sitting on it, the rule continuing as dashes to the panel's edge**, brown or red: `-rankings-----`,
+    `-characteristics-` (the proposal draws it: [proposal/](proposal/README.md), `grid.py` `Screen.rule`). Panels touch and nest;
+    there is no padding, no fill and no card, so the bordered box with its uppercase cyan heading (`#box`, `#boxHeading` in
+    `theme.stylesheet`) goes screen by screen as the layout tasks reach it. It is `goal2/ui/frame.py`: `Frame` (the rule on top,
+    `Frame.body` under it) and `FrameRule`, one row of cells drawn glyph by glyph at the cell (16 px across, one row down, at the
+    page's scale and stretch), never a Qt border with the label drawn over it. The label is brown (`theme.CARD_LABEL`) or, for a
+    heading panel, red (`theme.CARD_HEADING`); the leading dash and the dashes are the dark frame grey (`theme.FRAME_DARK`), as the
+    proposal draws them [designed: T210]. A panel narrower than its label and a dash on each side is reported by
+    `fixed_page.problems`, never clipped.
+  - **The grid check** [designed: owner, 2026-11-08, #668; T210] Every edge of a panel is a whole number of cells.
+    `goal2/ui/grid_check.py` walks a window's visible widgets and reports each rectangle whose x, y, width or height is not a
+    multiple of the cell (to a pixel: a row is 38 pixels in a layout and 38.4 in the grid, and the few pixels the 4:3 page has
+    over its 28 rows are taken up by the widget that stretches, never by the cell) and each card still drawn. A screen is on the
+    grid when `grid_check.violations(window)` is empty. Until every screen is, `goal2/tests/grid_pending.py` lists the screens that
+    are not (all of them when T210 merged); its `assert_on_grid` is what a screen's test calls, a listed screen is exempt in the
+    ordinary tests, one dedicated test holds each listed screen to still violating (the list only shrinks), and
+    `test_ui_grid_t210.test_grid_pending_is_empty` is the gate for merging `ui/foundation-32` into main.
   - **This supersedes the owner's #598** (24 px normal text, 32 px headings and names, 48 and 64 px titles) in the direction
     it went: the text is larger again, and the headings are gone. #598's other rules stay: keyboard actions wrap as whole
     items, and rows and card columns reserve room for the lettering. The approved screens, flow and keys (#526) are not
