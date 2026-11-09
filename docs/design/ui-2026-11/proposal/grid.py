@@ -1,4 +1,4 @@
-"""[designed: owner, 2026-11-08; T177, #666] The character canvas the proposal screens are drawn on.
+"""[designed: owner, 2026-11-08; T205, #666] The character canvas the proposal screens are drawn on.
 
 The whole point of the proposal is that GOAL2's look is a **grammar**, not a palette and a font, so
 this module is the grammar and nothing else: a 90x28 grid of 16x32 cells (twice the original's
@@ -28,7 +28,10 @@ APP = QGuiApplication.instance() or QGuiApplication(sys.argv[:1])
 CW, CH = 16, 32
 COLS, ROWS = 90, 28
 W, H = COLS * CW, ROWS * CH                      # 1440 x 896, the logical page
-ASPECT = 1.2                                     # the original's pixel aspect (owner's decision 2)
+# The original's pixel aspect (owner's decision 2): 640x400 shown on a 4:3 display. Applied to this
+# page it gives 1440x1075, half a per cent short of an exact 4:3 1440x1080; a window letterboxes the
+# remainder rather than stretching the cell unevenly.
+ASPECT = 1.2
 
 # The palette, by role, from README.md section 3 (read from the captures by palette.py).
 BG = '#000000'
@@ -176,7 +179,7 @@ class Screen:
 
     def corner(self, col=0, row=0):
         """The GOAL corner block, on every screen, as the original has it."""
-        self.text(col, row, '(c) NE93', MUTED)
+        self.text(col, row, "(c) NE'93", MUTED)
         self.stencil(col, row + 1, 'goal', 44, CYAN, 2.0)
         self.text(col + 5, row + 3, 'v.2', MUTED)
         self.p.setPen(QPen(QColor(DARK), 2))
@@ -209,7 +212,7 @@ class Screen:
         path.parent.mkdir(parents=True, exist_ok=True)
         image = self.image
         if presented:
-            # The original's pixels are 1.2x taller than wide: the page is shown at 4:3.
+            # The original's pixels are 1.2x taller than wide: the page is shown at (near) 4:3.
             image = image.scaled(image.width(), round(image.height() * ASPECT),
                                  Qt.AspectRatioMode.IgnoreAspectRatio,
                                  Qt.TransformationMode.FastTransformation)

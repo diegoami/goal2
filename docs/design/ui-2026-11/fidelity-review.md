@@ -42,8 +42,10 @@ in #526. The palette and the font are right. What is missing is the part that ru
 The original is a strict **80 × 25** character grid: an 8×16 cell on 640×400. The window's
 `goal2/ui/theme.py` has `CELL = 16`, `TEXT = 24` and `HEADING_SIZE = 32` — the owner's playtest
 #598 already raised the normal text from 16 px to 24 px, superseding §3's earlier
-whole-cell-multiple rule. At 1440×900 that is still roughly **90 columns by 37 lines**, against the
-original's 80 × 25, and the line box is not a whole cell, so nothing sits on a grid boundary.
+whole-cell-multiple rule. At 1440×900 that is **90 columns** at the 16 px cell, and about **37
+lines** at a 24 px line box — against the original's 80 columns and 25 rows. The two numbers come
+from different bases, which is the point: the line box is not a whole cell, so nothing sits on a
+grid boundary.
 
 The remaining step is small and it is the one that matters: **32 px on a 16 × 32 cell**, which is
 90 × 28 — the original's grid, doubled.
@@ -63,8 +65,9 @@ with the command in [§7](#7-method-so-the-numbers-can-be-checked):
 | the proposal, `proposal/images/s08-squad.png` | 6.52 | 2.81 | **0** |
 
 The original is about 93 % black too: density is not about filling space, it is that the ink is
-spread evenly over the whole frame. Five of the built desk's sixteen regions carry **no ink at
-all**. [original-presentation-cues.md](original-presentation-cues.md) already names "large unused
+spread evenly over the whole frame. **One** of the built desk's sixteen regions carries no ink at
+all and **five** are under 1.5 %; the original's emptiest region is 1.83 %.
+[original-presentation-cues.md](../original-presentation-cues.md) already names "large unused
 areas" as a sign to inspect; this is the number behind it.
 
 ### 2.3 Hierarchy by size instead of by colour
@@ -101,8 +104,8 @@ every management screen.
 
 ### 2.5 Where the window already does it right
 
-[docs/current-game](../../current-game/README.md) (T204, #664) pictures the **shipped** window, the
-one `goal2/ui/` replaces. On several screens it is closer to the original than either the mockups
+`docs/current-game/` (T204, #664, merging as PR #685) pictures the **shipped** window, the one
+`goal2/ui/` replaces. On several screens it is closer to the original than either the mockups
 or the new window: skill bars drawn as discrete cells, the role code in a right-hand column with
 the name coloured by line, lowercase route labels, the pitch key line in the original's own joined
 form. Those belong in the new window; this backlog keeps them rather than letting them be lost.
@@ -114,7 +117,10 @@ form. Those belong in the new window; this backlog keeps them rather than lettin
    dash leaders, line-art titles and no dead region. This supersedes the owner's #598 (24 px / 32 px)
    in the same direction it already went.
 2. **Presentation: 4:3, as DOSBox shows it.** The logical page is stretched 1.2 vertically, so
-   boxes, letters and the pitch have the proportions the game had on a CRT.
+   boxes, letters and the pitch have the proportions the game had on a CRT. A 90 × 28 page of
+   16 × 32 cells is 1440 × 896, which the stretch takes to 1440 × 1075 — half a per cent short of
+   an exact 4:3 1440 × 1080, so a window letterboxes the remainder rather than stretching the cell
+   unevenly.
 
 ### A caveat for anyone measuring the captures
 
@@ -129,12 +135,15 @@ narrower than it was on screen. Both corrections apply before a capture's geomet
 original capture and the window as built. It is a picture of a design, not app code; nothing in
 `goal2/` changes.
 
-It is honest about its limit. On the measure that matters most it succeeds — **no dead region on
-either screen**, against five and four today. On raw density it closes about half the gap on the
-squad (5.38 → 6.52 against the original's 10.21) and little of it on the desk (3.84 → 4.07 against
-6.02), because six screens drawn by hand carry less of the original's incidental content than the
-original does. The grammar is what is being proposed; the density follows from applying it to every
-panel, which is implementation work, not drawing work.
+It is honest about its limit. On the measure that matters most it succeeds — **no region under
+1.5 % on either screen**, against five and four today, and its emptiest region (1.94 % on the desk,
+2.81 % on the squad) is above the original's own (1.83 %, 1.97 %).
+
+On raw density it closes much less: **24 % of the squad's gap** (5.38 → 6.52 against the original's
+10.21) and **11 % of the desk's** (3.84 → 4.07 against 6.02). Six screens drawn by hand carry less
+of the original's incidental content than the original does. The grammar is what is being proposed;
+the rest of the density follows from applying it to every panel of every screen, which is
+implementation work, not drawing work.
 
 ## 5. The backlog
 

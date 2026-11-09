@@ -40,12 +40,16 @@ Every rule in the backlog, in one place, so the whole grammar can be seen workin
 | **The clock** (#675) | Large blocky digits in the top-right corner, and empty digit cells before kick-off. |
 | **Dash leaders** (#676) | `------R.C.S---v---Holland------friendly`, names interrupting the rule; the strip's name carries the line colour and the role code is a right-hand column. |
 | **Block bars** (#677) | A bar is a row of separate cells, grey then magenta, beside its label; a characteristic's word sits on the filled part. |
+| **The commentary** (owner decision 2, #526) | S17 keeps the commentary column beside the pitch, which the approved design added and the original does not have: the original's pitch fills the screen. The field keeps the original's own proportions in the space that remains. |
 | **The organigram** (#678) | The match menu's two sides mirrored, each with its own formation, lineup and routes joined to its header, the shared routes between them, the stands at the foot. |
 | **The key line** (#679) | `F1help F3load goal …` and `F10quit`: key and word joined, no box, on the last row; the hint in the body, in magenta, over two short lines. |
 | **The newspaper** (#680) | Three papers with their own paper colour and masthead, greeked columns, a halftone block, page rules behind, and the `hit any key` plate. |
 
-The ink is measured too: the four empty tiles of `s06-hub.png` and the three of `s08-squad.png`
-(#672) are gone, because the content is laid out at the size the original uses.
+The ink is measured too (#672). Over a 4×4 tiling, counting regions under 1.5 % of ink: the window
+as built has **5** on the desk and **4** on the squad, the design's mockups **2** and **4**, and
+the proposal **0** and **0** — its emptiest region is above the original's own. Raw density is a
+different matter, and [the review](../fidelity-review.md#4-the-proposal-and-what-it-does-not-reach)
+says how little of that gap this closes.
 
 ## What this is not
 

@@ -1,4 +1,4 @@
-"""[designed: owner, 2026-11-08; T177, #666] The proposal's screens, drawn on the character canvas.
+"""[designed: owner, 2026-11-08; T205, #666] The proposal's screens, drawn on the character canvas.
 
 Six screens of `docs/design/ui-2026-11/README.md` section 2, drawn with the grammar the backlog
 asks for, so the grammar can be judged as a picture instead of as prose. Their content is the
@@ -310,47 +310,67 @@ def match_menu(path):
 
 
 def pitch(path):
-    """S17 Pitch, against docs/original-game/images/match-live.png."""
+    """S17 Pitch, against docs/original-game/images/match-live.png.
+
+    The original's pitch fills the screen; the approved design puts the commentary beside it
+    [designed: owner decision 2, #526], so this keeps the commentary column and gives the pitch
+    the rest. The field's own proportions are the original's, measured from the capture:
+    """
     from PySide6.QtGui import QColor, QPen
     s = Screen()
     s.corner()
     score_panel(s, scores=('0', '1'), note='Bergkamp scores', clock='17')
 
-    # The pitch: the original's own proportions, measured from match-live.png.
+    # The pitch: the original's own proportions, measured from match-live.png (593x256 px).
+    #   length : height          2.316 : 1
+    #   penalty area depth       0.1619 of the length, 0.668 of the height
+    #   goal                     0.0135 of the length deep, 0.125 of the height
+    #   centre                   a plain line; the original draws no centre circle
     top, bottom = 6 * 32, 26 * 32
-    left, right = 2 * 16, 88 * 16
+    left, right = 2 * 16, 62 * 16
     length, height = right - left, bottom - top
     s.p.setPen(QPen(QColor(MUTED), 2))
     s.p.drawRect(left, top, length, height)
     s.p.drawLine(left + length // 2, top, left + length // 2, bottom)
-    box_depth = round(length * 0.162)                    # 16.2 % of the length, as the original
-    box_height = round(height * 0.67)
+    box_depth, box_height = round(length * 0.1619), round(height * 0.668)
     for x0 in (left, right - box_depth):
         s.p.drawRect(x0, top + (height - box_height) // 2, box_depth, box_height)
-    goal = round(height * 0.19)
-    for x0, w in ((left - 10, 10), (right, 10)):
-        s.p.drawRect(x0, top + (height - goal) // 2, w, goal)
-    # Corner flags: magenta squares, as the original's.
-    for x in (left, right):
+    goal_depth, goal_height = max(4, round(length * 0.0135)), round(height * 0.125)
+    for x0 in (left - goal_depth, right):
+        s.p.drawRect(x0, top + (height - goal_height) // 2, goal_depth, goal_height)
+    for x in (left, right):                                  # corner flags, magenta, as the original's
         for y in (top, bottom):
             s.p.fillRect(x - 4, y - 4, 8, 8, QColor('#aa00aa'))
 
     home = [('S', 0.30, 0.22), ('M', 0.34, 0.33), ('C', 0.27, 0.42), ('C', 0.33, 0.50),
-            ('$', 0.36, 0.50), ('M', 0.33, 0.62), ('C', 0.30, 0.72), ('¢', 0.38, 0.78),
+            ('$', 0.36, 0.50), ('M', 0.33, 0.62), ('C', 0.30, 0.72), ('\u00a2', 0.38, 0.78),
             ('G', 0.03, 0.50), ('W', 0.42, 0.40), ('D', 0.40, 0.60)]
     away = [('C', 0.62, 0.25), ('B', 0.66, 0.28), ('M', 0.60, 0.40), ('D', 0.64, 0.45),
             ('C', 0.58, 0.52), ('W', 0.63, 0.55), ('M', 0.60, 0.68), ('F', 0.55, 0.60),
-            ('S', 0.70, 0.50), ('G', 0.96, 0.50), ('Ç', 0.52, 0.47)]
+            ('S', 0.70, 0.50), ('G', 0.96, 0.50), ('\u00c7', 0.52, 0.47)]
     for letters, colour in ((home, TITLE), (away, TEXT)):
         for ch, fx, fy in letters:
-            col = (left + fx * length) / 16
-            row = (top + fy * height) / 32
-            s.text(round(col), round(row), ch, colour)
+            s.text(round((left + fx * length) / 16), round((top + fy * height) / 32), ch, colour)
     s.p.fillRect(left + round(0.47 * length), top + round(0.50 * height), 8, 8, QColor(TEXT))
 
-    s.keyline([('↕', '-display'), ('↔', '-speed»»»»»'),
-               ('R', '-result'), ('spacebar', '-commentary'), ('F9', '-♪')],
-              [('Esc,◄┘', '-bench')])
+    # The commentary, beside the pitch, as the approved design has it.
+    s.rule(64, 5, 26, 'commentary', DARK, RED)
+    events = [("1\u00b4", 'Bratseth wins toss'), ("1\u00b4", 'Nilsen takes kick off'),
+              ("9\u00b4", 'Goal kick: Holland'), ("12\u00b4", 'Witschge corner'),
+              ("14\u00b4", 'FOUL by Nilsen'), ("14\u00b4", 'Nilsen BOOKED'),
+              ("15\u00b4", 'Witschge INJURED'), ("16\u00b4", 'Rijkaard on the ball'),
+              ("17\u00b4", 'Bergkamp SCORES')]
+    for i, (minute, line) in enumerate(events):
+        s.right(67, 6 + i, minute, VALUE)
+        s.text(68, 6 + i, line[:21], TEXT if 'SCORES' not in line else VALUE)
+    s.rule(64, 22, 26, None, DARK)
+    s.text(65, 23, 'speed  \u00bb\u00bb\u00bb\u00bb\u00bb', HINT)
+    s.text(65, 24, 'marks  positions', HINT)
+    s.highlight(65, 25, 24, ' your side: white')
+
+    s.keyline([('\u2195', '-display'), ('\u2194', '-speed\u00bb\u00bb\u00bb\u00bb\u00bb'),
+               ('R', '-result'), ('spacebar', '-commentary'), ('F9', '-\u266a')],
+              [('Esc,\u25c4\u2518', '-bench')])
     return s.save(path)
 
 

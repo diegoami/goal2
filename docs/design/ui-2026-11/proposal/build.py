@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""[designed: owner, 2026-11-08; #666] Render the proposal's screens, and the comparison strips.
+"""[designed: owner, 2026-11-08; T205, #666] Render the proposal's screens and the comparison strips.
 
     python3 docs/design/ui-2026-11/proposal/build.py            screens and strips
     python3 docs/design/ui-2026-11/proposal/build.py --screens  the screens only
 
-A strip is the original capture (shown at 4:3, as it was seen), the mockup it would replace, and
-the proposal, side by side. The strips need ImageMagick (`magick`); without it the screens are
-still written and the strips are skipped with a word.
+A strip is three panels: the original capture (shown at 4:3, as it was seen), the window as it is
+built today (the newest render the UI tasks left in `../T1*-screens/`), and the proposal. The
+strips need ImageMagick (`magick`); without it the screens are still written and the strips are
+skipped with a word. Needs the desktop extra, as the other UI tooling does.
 """
 import shutil
 import subprocess
@@ -53,12 +54,13 @@ def strips(out):
     work = out / '.work'
     work.mkdir(parents=True, exist_ok=True)
     for name, (original, built) in ORIGINALS.items():
-        today = HERE.parent / built
+        today, label = HERE.parent / built, 'THE WINDOW TODAY'
         if not today.exists():
-            today = HERE.parent / f'images/{name}.png'
+            # No render from a UI task: fall back to the design's own mockup, and say so.
+            today, label = HERE.parent / f'images/{name}.png', "THE DESIGN'S MOCKUP"
         panels = [column(ROOT / f'docs/original-game/images/{original}.png',
                          'THE ORIGINAL (at 4:3)', work / 'a.png'),
-                  column(today, 'THE WINDOW TODAY', work / 'b.png'),
+                  column(today, label, work / 'b.png'),
                   column(out / f'{name}.png', 'THE PROPOSAL', work / 'c.png')]
         target = out / f'compare-{name}.png'
         subprocess.run(['magick', *[str(p) for p in panels], '+append',
