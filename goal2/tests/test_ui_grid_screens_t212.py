@@ -670,7 +670,8 @@ class BenchOnTheGrid(Base):
             self.assertEqual(screen.body.height(), window.page.height() - cells.row_px(screen) - rows)
 
     def shown(self, injured):
-        """The bench on a shown window at the page's own size, with `injured` (indices in the squad) said injured by the match."""
+        """The bench on a shown window at the page's own size, with `injured` (indices in the squad) said injured by the match. A desktop
+        may clamp the window (a measured Windows runner gave 1440x1061, a scale of 0.98): what is asked of it is `fixed_page.problems`."""
         self.injured = injured
         window = self.window()
         screen = self.make(window)
@@ -686,17 +687,22 @@ class BenchOnTheGrid(Base):
     def test_an_injured_players_name_takes_two_rows_and_the_rows_under_it_move_down(self):
         """[designed: T212] A live injury is said in the strip's row (" · INJURED", S19's own words, T188b): the name and the word are more
         than the 16 cells the 20-cell strip leaves its name, so the row takes a second row, the paragraph of its name wrapped at the cells,
-        and the rows under it move down. The text is whole (`texts()[-1]` has INJURED), nothing is squeezed."""
+        and the rows under it move down. The text is whole (`texts()[-1]` has INJURED), nothing is squeezed (a shown window at any size
+        it gets); the rows and the grid are measured on the page's own size, where a cell is whole pixels (never shown: a desktop clamps)."""
         window, screen = self.shown((1,))
         self.assertEqual(fixed_page.problems(window), [])
+        self.assertIn("INJURED", screen.strip.rows[1].texts()[-1])
+        self.injured = (1,)
+        window, screen = self.canonical(self.make)
+        self.settle(screen)
+        self.relayout(window)
         row = screen.strip.rows[1]
-        self.assertIn("INJURED", row.texts()[-1])
         unit = cells.row_px(screen)
         self.assertEqual(row.height(), 2 * unit)
         self.assertEqual(len(row.cells[-1].lines()), 2)
         self.assertEqual(screen.strip.rows[2].y(), row.y() + 2 * unit, "the next row is under the two")
         self.assertEqual(screen.strip.rows[0].height(), unit)
-        self.assertEqual(grid_check.violations(window), [])
+        self.on_the_grid(window)
 
     def test_three_injured_players_fit_and_a_fourth_is_where_the_strip_runs_out_of_rows(self):
         """The strip has three rows more than the twenty and the gap need: three names that take two rows fit. A fourth is more than the
