@@ -8,7 +8,7 @@ screenshot journey. Does not touch an owner's career.
 It writes, into DIR, the journey's pictures, a capture of every view at each size and `layout-report.json` (the full
 `fixed_page.problems` text of every capture). Unless `--no-docs`, it also regenerates the design's receipt
 `docs/design/ui-2026-11/t186-layout-receipt.json` (the text size, the sizes, and every screen whose `problems` are not empty)
-and the ten screens' pictures it names under `docs/design/ui-2026-11/images/` and `images/t186-large/`: those are the
+and the twelve screens' pictures it names under `docs/design/ui-2026-11/images/` and `images/t186-large/`: those are the
 tool's output and are never edited by hand. [designed: T209] The sizes are the 4:3 page at its own size (1440x1080, the
 pictures), the standard 1440x900 window (the page is 1200x900 in it) and a large 2110x1213 window.
 
@@ -32,7 +32,8 @@ DIMENSIONS=((1440,1080),(1440,900),(2110,1213))
 SELECTED={'s06-desk.png':'s06-hub','s15-match-menu.png':'s15-match-menu','s19-bench.png':'s19-bench',
           's19-bench-refused.png':'s19-bench-refused','s17-pitch.png':'s17-pitch','s20-board-full.png':'s20-board',
           's11-fixtures.png':'s11-fixtures','s14-round.png':'s14-round',
-          's04-country.png':'s04-country','s07-team-info.png':'s07-team-info'}   # [designed: T211b] S04 and S07 are embedded in the README
+          's04-country.png':'s04-country','s07-team-info.png':'s07-team-info',   # [designed: T211b] S04 and S07 are embedded in the README
+          's16-captain.png':'s16-captain','s18-match-stop.png':'s18-match-stop'}   # [designed: T212] so are S16 and S18 (the stop box over the pitch)
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -83,7 +84,7 @@ def main():
     return bool(bad)
 
 def publish(output,records,journey_names,text):
-    """Regenerate the design's receipt and its ten pictures from the capture just made. A picture taken twice under one
+    """Regenerate the design's receipt and its twelve pictures from the capture just made. A picture taken twice under one
     name is the last one, which is the file the journey leaves."""
     picture,large=DIMENSIONS[0],DIMENSIONS[-1]
     if len(records)!=len(journey_names):

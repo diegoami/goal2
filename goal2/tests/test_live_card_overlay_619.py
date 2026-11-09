@@ -152,7 +152,7 @@ class LiveOverlayPackets(unittest.TestCase):
         from goal2.ui.s16_choose import ChooseScreen
         application=QApplication.instance() or QApplication([])
         model,decision=fixture();window=SimpleNamespace(open_help=lambda:None)
-        with patch('goal2.game.player_card.card',side_effect=decoded),patch('goal2.ui.squad_card.PlayerCard.set_card',lambda self,value:setattr(self,'packet_card',value)):
+        with patch('goal2.game.player_card.card',side_effect=decoded),patch('goal2.ui.cell_parts.GridCard.set_card',lambda self,value:setattr(self,'packet_card',value)):
             before=ChooseScreen(window,model,'captain',list(range(1,12)),1,lambda value:None);before.timer.stop()
             running=ChooseScreen(window,model,'taker',list(range(1,12)),1,lambda value:None,decision_data=decision.data);running.timer.stop()
             order=ChooseScreen(window,model,'order',list(range(1,12)),1,lambda value:None,decision_data=decision.data)

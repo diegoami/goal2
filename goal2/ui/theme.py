@@ -144,6 +144,7 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #boxHeading, #th {{ color: {HEADING}; }}
 #benchMetadata {{ color: {TEXT_NORMAL}; }}
 #benchCounter {{ border: 1px solid {FRAME}; padding: 6px 14px; }}
+#screen[grid="true"] #benchCounter {{ border: none; padding: 0px; }}
 #th {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td[check="good"] {{ color: {GOOD}; }}
@@ -153,6 +154,7 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #tag {{ color: {HEADING}; border: 1px solid {HEADING}; padding: 2px 8px; }}
 #tagNew {{ color: {GOALKEEPER}; border: 1px solid {GOALKEEPER}; padding: 2px 8px; }}
 #screen[grid="true"] #tagNew {{ color: {GOALKEEPER}; border: none; padding: 0px; }}
+#screen[grid="true"] #tag {{ color: {HEADING}; border: none; padding: 0px; }}
 #screen[grid="true"] #brandNote {{ padding: 0px; }}
 #error {{ color: {BAD}; }}
 #field {{ background: {GROUND}; border: 2px solid {FRAME}; }}

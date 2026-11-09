@@ -56,6 +56,30 @@ class CellRow(Row):
         self._paint()
 
 
+class CellWrapRow(CellRow):
+    """A row of the twenty whose name may take two rows: its code in a cell of two, its name a paragraph in the cells left (wrapped at
+    the characters its width holds). The same `cells`, `set`, `set_on`, `texts`, `chosen` and highlight bar as `CellRow`. [designed: T212]"""
+    NAME_INSET = 4   # the two margin cells and the code's two
+
+    def __init__(self, index):
+        Clickable.__init__(self, "listRow")
+        self.index = index
+        self.underline = False
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(theme.CELL_W, 0, theme.CELL_W, 0)
+        layout.setSpacing(0)
+        code = CellLabel("", "rowCell", reserve=2)
+        code.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        name = CellPara("", "rowCell")
+        layout.addWidget(code, 0)
+        layout.addWidget(name, 1)
+        self.cells = [code, name]
+        self.tones = [theme.TEXT_BRIGHT, theme.TEXT_BRIGHT]
+        self.on = False
+        self.clicked.connect(lambda: self.chosen.emit(self.index))
+        self._paint()
+
+
 class CellTableRow(CellRow):
     """A row of a list or a table in cells, as `squad_card.Row` (`cells`, `set`, `set_on`, `texts`, `chosen`): its cells at
     columns, `widths` cells each, `gaps` empty cells before each (none by default), the highlight bar behind them when it is the
@@ -100,25 +124,36 @@ class GridStrip(Frame):
     PAGE = 20
     COLS = 24   # [designed: T211] one cell in, a code and its gap, a name of up to 14 characters, a cell out, and room for a name
 
-    def __init__(self, cols=COLS):
+    def __init__(self, cols=COLS, count=PAGE, spare=0):
+        """`count` rows: the twenty by default (the eleven, a gap, the bench); a strip of the eleven alone (S16) takes 11, so its
+        frame is as tall as its rows and no taller. `spare` rows more than the players and the gap need (S19's, for a name that takes
+        two). [designed: T212]"""
         super().__init__("", "red")
         self.setObjectName("strip")
         self.cols = cols
-        self.area = Cells(cols, self.PAGE + 1, "stripRows")
+        self.count = count
+        self.area = Cells(cols, count + (1 if count > 11 else 0) + spare, "stripRows")
         self.add(self.area, 1)
         self.rows = []
         self.gap = QWidget()
-        self.area.put(self.gap, 0, 11, self.cols)
-        for i in range(self.PAGE):
-            row = CellRow(i)
+        if count > 11:
+            self.area.put(self.gap, 0, 11, self.cols)
+        else:
+            self.gap.setParent(self.area)
+            self.gap.hide()
+        for i in range(count):
+            row = self.make_row(i)
             row.chosen.connect(self.chosen.emit)
             self.area.put(row, 0, i + (1 if i > 10 else 0), self.cols)
             self.rows.append(row)
 
+    def make_row(self, index):
+        return CellRow(index)
+
     def show_rows(self, heading, rows, current=-1, gap=True, injured=()):
         """`rows`: (code, line, name) for up to twenty rows; `current` the highlighted row (-1: none)."""
         self.set_label(heading)
-        self.gap.setVisible(gap)
+        self.gap.setVisible(gap and self.count > 11)
         for i, row in enumerate(self.rows):
             self.area.move(row, 0, i + (1 if i > 10 and gap else 0), self.cols)
             if i < len(rows):
@@ -134,6 +169,31 @@ class GridStrip(Frame):
 
     def shown_texts(self):
         return [row.texts() for row in self.rows if not row.isHidden()]
+
+
+class WrapStrip(GridStrip):
+    """The twenty in a frame with rows to spare, as S19's: a name that does not fit one line of its cell (a live injury said after it)
+    wraps onto a second row and the rows under it move down one. The same `show_rows`, `rows`, `chosen` and `shown_texts` as `GridStrip`.
+    A row that needs more rows than the frame has left is squeezed, which `fixed_page.problems` reports. [designed: T212]"""
+
+    def __init__(self, cols, spare):
+        super().__init__(cols, GridStrip.PAGE, spare)
+
+    def make_row(self, index):
+        return CellWrapRow(index)
+
+    def show_rows(self, heading, rows, current=-1, gap=True, injured=()):
+        super().show_rows(heading, rows, current, gap, injured)
+        import textwrap
+        wide = max(1, self.cols - CellWrapRow.NAME_INSET)
+        at = 0
+        for i, row in enumerate(self.rows):
+            height = max(1, len(textwrap.wrap(rows[i][2], wide, drop_whitespace=True))) if i < len(rows) else 1
+            self.area.move(row, 0, at, self.cols, height)
+            at += height
+            if i == 10:
+                self.area.move(self.gap, 0, at, self.cols)
+                at += 1 if gap else 0
 
 
 class CellLineField(LineField):
@@ -317,8 +377,9 @@ class GridCard(Cells):
         status = Frame("readiness")
         status_body = Cells(14, 2, "readinessRows")
         status.add(status_body, 1)
-        self.readiness = CellLabel("", "readiness")
-        status_body.put(self.readiness, 0, 0, 13)
+        # [designed: T212] a paragraph of its two rows: "ready to play" is one, the bench's "INJURED — live match" (20 characters) two
+        self.readiness = CellPara("", "readiness")
+        status_body.put(self.readiness, 0, 0, 13, 2)
         self.put(status, sum(self.POSITIONS.values()), 2, self.COLS - sum(self.POSITIONS.values()), 3)
         self.name_line = CellNameLine()
         self.name_line.hide()
@@ -373,5 +434,5 @@ class GridCard(Cells):
             self.name_line.edit.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
 
-__all__ = ["CellBar", "CellBars", "CellFacts", "CellLineField", "CellNameLine", "CellRow", "CellTableRow", "CellValues", "GridCard",
-           "GridStrip", "key_values", "row_px"]
+__all__ = ["CellBar", "CellBars", "CellFacts", "CellLineField", "CellNameLine", "CellRow", "CellTableRow", "CellValues", "CellWrapRow",
+           "GridCard", "GridStrip", "WrapStrip", "key_values", "row_px"]

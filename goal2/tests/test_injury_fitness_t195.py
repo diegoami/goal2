@@ -58,7 +58,14 @@ class InjuryFitnessScreen(unittest.TestCase):
             bar,word_label=self.bench.card.characteristics.rows['fitness']
             self.assertEqual(word_label.text(),'injured')
             self.assertEqual(bar.value,(0,14))
-            self.assertTrue(bar.filled.isHidden())
+            # [designed: T212] the bench's card is the grid's (`CellBar` paints its two parts itself: no `filled` widget): the empty bar
+            # has no light grey (the filled colour) in it, and is the empty colour all along
+            from PySide6.QtGui import QColor
+            from goal2.ui import theme
+            image=bar.grab().toImage()
+            colours=[image.pixelColor(x,image.height()//2).name() for x in range(image.width())]
+            self.assertNotIn(QColor(theme.BAR_FILLED).name(),colours)
+            self.assertIn(QColor(theme.BAR_EMPTY).name(),colours)
             self.assertIn('INJURED',self.bench.card.readiness.text())
             assert_fits(self, self.window)
         self.assertEqual(self.model.state,before)

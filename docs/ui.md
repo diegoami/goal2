@@ -84,8 +84,8 @@ progress stays unsaved. `model.save_name` is the name a career was last saved or
 | `goal2/ui/match_day.py` | The match day (T167): `MatchDay`, the window's bridges and the order of S14, S15, S16, S17 and S20; the desk's `play_next_game`; the watch question's rule (`asks_watch`). |
 | `goal2/ui/s14_round.py` | S14 Round results (T167). |
 | `goal2/ui/s15_match_menu.py` | S15 Match menu (T167). |
-| `goal2/ui/s16_choose.py` | S16 Choose a player: the captain, a set-piece taker, the penalty order (T167). |
-| `goal2/ui/s17_pitch.py` | S17 Pitch (T166): the screen, `MatchController` over the match day's bridge, the suggested captain (`best_leader`). |
+| `goal2/ui/s16_choose.py` | S16 Choose a player: the captain, a set-piece taker, the penalty order (T167; on the 16 × 32 grid, T212: what the match waits for across the top, the squad's card (`GridCard`) with the eleven in a frame of 20 cells at its right, level with its foot, the order wrapped under them). |
+| `goal2/ui/s17_pitch.py` | S17 Pitch (T166): the screen, `MatchController` over the match day's bridge, the suggested captain (`best_leader`). [designed: T212] On the 16 × 32 grid: the score across three rows, the pitch (64 × 18 cells), the commentary (the speed and your side's colour under it) in a frame at its right and what a key said under the pitch; the pitch's drawing is T179's and is not touched. |
 | `goal2/ui/s20_board.py` | S20 Match board (T167). |
 | `goal2/ui/pitch.py` | S17's pitch widget: lines, surround, marks coloured by side, the ball, the enlarged commentary. |
 | `goal2/ui/saves.py` | The named save format (Qt-free). |
@@ -280,7 +280,11 @@ acknowledgements, and the match the player watched is the match the engine publi
   the last two events; the pitch (`goal2/ui/pitch.py`: the lines and boxes of the samples' grid, the green surround,
   one character per grid cell in the original's drawing order, keepers as faces, the ball on an empty cell); the
   commentary, the speed, the display and your side's colour. The home side is the fixture's side B, named first
-  (`DesktopModel.home`, #562; T167).
+  (`DesktopModel.home`, #562; T167). [designed: T212] On the 16 × 32 grid: the two sides with their goals and the minute at the left of
+  three rows, at the right the original's frame of the kind of match (`-friendly-----`) with the last two events in it; the pitch is 64 × 18 cells
+  (the widget is as large as the cells it is given and paints at the scale of its size: its drawing is T179's) with the commentary in a frame
+  of 25 cells at its right (thirteen rows, the speed and the display, your side's colour); what the bench or a key said is under the pitch.
+  A saved goal's replay has no commentary and says what its record holds there (the minute and the scorer, the score).
 - **Keys** [confirmed: E031 C39–C40, C08; T156-R1 steps 45, 267]: **←→** speed, **↑↓** the five display styles
   (role codes first), **Space** a larger commentary reading panel and back, **R** quick result (every sample is
   acknowledged as it arrives; *HANG ON A TICK* stands where *R result* was, `t156-267-quick-hang-on`), **F9** says
@@ -330,7 +334,9 @@ answer the engine receives, sent once, through the bridge, in the order the engi
 - **S16** asks the captain before kick-off ("Choose your captain to kick off"; the highlight on T143's pick; **↑↓**,
   **Enter**, **C** the computer's), confirmed through `DesktopModel.confirm` before the engine is asked; a set-piece
   taker during play (the engine's `set_piece` decision, over the bridge and the pipe: `prompts`); and the shoot-out
-  order (Enter adds, **Esc** undoes). With no key the current pick stands after the original's wait, 10 s (F030).
+  order (Enter adds, **Esc** undoes). With no key the current pick stands after the original's wait, 10 s (F030). [designed: T212] On the
+  16 × 32 grid S16 is what the match waits for across the top, under it the squad's card (69 × 18 cells) with the eleven in a frame of 20 cells at
+  its right, level with the card's foot (its rule is the country, as the original's box under its list), and the penalty order's lines under them.
 - **S20** shows what the events and the outcome give: the score, the half-time score, the scorers and minutes; at full
   time the original's board as the engine read it (its nine counters, the bars' raw words, the man of the match); at
   half time bookings and red cards from the events, and the rest say *at full time*. After a quick result the QUICK
@@ -357,7 +363,14 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
   player injured, or the stoppage after a request; the original's refused eleven is said there), any key to S15
   (phase *stop*), whose *players* opens S19; the other side's substitution (*SUBSTITUTION X on for Y*), any key plays
   on; the penalty shoot-out's notice before S16's order. T181's goal questions use the same box (below).
-- **S19** (`goal2/ui/s19_bench.py`) shows the card, live eleven/bench and the engine's remaining budget.
+- **S18's box** [designed: T212, on the 16 × 32 grid] is 40 cells wide and as many rows as its words take (the tag, the headline, the detail, the
+  key line, one empty cell at each edge: its border is drawn at the edge), centred over the pitch's cells; the timed opportunity is a bar at the pitch's
+  foot as wide as the pitch less two cells (24 to 46). The request badge is a row of the pitch's cells.
+- **S19** (`goal2/ui/s19_bench.py`) shows the card, live eleven/bench and the engine's remaining budget. [designed: T212, on the 16 × 32 grid] At the left
+  the mode and its button, the match's words, the substitution's words in a frame of five rows and the squad's card; at the right the twenty in a frame
+  down to the foot, the budget at the right of the title row. A live injury is said after the name (*· INJURED*) and the name then takes two rows of the
+  strip, which has three more than the twenty and the gap need: three injured players fit and a fourth is more than the page has rows for
+  (`fixed_page.problems` says so). The card's *readiness* is a paragraph of two rows (*INJURED — live match*).
   [designed: owner playtest2026-11-05, #599; supersedes T180's queued/deferred UI] At a legal stop, **Enter** on
   two players in either order sends one edit-only answer. The original's returned decision updates the squad
   and counter immediately, before Play; repeat input is held until that reply. Refused pairs stay at the usable

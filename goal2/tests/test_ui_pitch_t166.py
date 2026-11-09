@@ -38,7 +38,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6.QtCore import QEvent, Qt  # noqa: E402
 from PySide6.QtGui import QColor, QKeyEvent  # noqa: E402
-from PySide6.QtWidgets import QApplication  # noqa: E402
+from PySide6.QtWidgets import QApplication, QLabel  # noqa: E402
 
 from goal2.desktop import data_setup, fixed_page  # noqa: E402
 from goal2.desktop.match_view import SPEEDS  # noqa: E402
@@ -196,7 +196,8 @@ class SameMatch(unittest.TestCase):
                 # The engine's samples, as its reader thread has received them, against the acknowledged one.
                 out["worst"] = max(out["worst"], bridge._match.received_frames - 1 - bridge._frame_ack)
                 if controller.quick and screen.isVisible():
-                    labels = [w.text() for w in screen.key_bar.findChildren(type(screen.note), "keyLabel")]
+                    # [designed: T212] the keys' words are cells on the grid (a QLabel still), and so is the note: no longer one class
+                    labels = [w.text() for w in screen.key_bar.findChildren(QLabel, "keyLabel")]
                     out["hang_on"] = out["hang_on"] or (HANG_ON in labels and screen.note.text() == HANG_ON)
 
             pump(lambda: controller.drawn >= 0, 120, "no kick-off sample drawn", watch)

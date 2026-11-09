@@ -27,9 +27,9 @@ The officials are not drawn: the palette has no role for their colour [designed:
 """
 from __future__ import annotations
 
-from PySide6.QtCore import QPoint, QRect, Qt
+from PySide6.QtCore import QPoint, QRect, QSize, Qt
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QSizePolicy, QWidget
 
 from goal2.desktop.pygame_viewer import DEFAULT_MARKS, DRAW_ORDER, GRID, MARGIN, glyph
 from goal2.ui import theme
@@ -56,7 +56,9 @@ class PitchWidget(QWidget):
     def __init__(self, display_source, on_drawn, family):
         super().__init__()
         self.setObjectName("pitch")
-        self.setFixedSize(WIDTH, HEIGHT)
+        # [designed: T212] The widget is as large as the cells S17 gives it (64 x 18: 1024 x 576, the 1000 x 560 of the mockup rounded up to the
+        # cell) and paints at the scale of its size over `WIDTH` x `HEIGHT`; its drawing is unchanged (T179 owns its look).
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.page_painted = True          # repainted when the window rescales (fixed_page.apply)
         self.display_source = display_source
         self.on_drawn = on_drawn
@@ -66,6 +68,9 @@ class PitchWidget(QWidget):
         self.enlarged = False
         self.commentary = []              # the enlarged commentary's lines, oldest first
         self.painted = []                 # what the last paint drew: (slot, team, text, colour, QRect)
+
+    def sizeHint(self):
+        return QSize(WIDTH, HEIGHT)
 
     # Geometry, in widget pixels.
     def scale(self) -> float:

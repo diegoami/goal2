@@ -124,8 +124,8 @@ class CellPara(QLabel):
         painter.setPen(QColor(self.palette().color(self.foregroundRole())))
         for index, line in enumerate(self.lines()):
             top = round(index * cell_h(self))
-            painter.drawText(QRect(0, top, self.width(), row_px(self)), int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter),
-                             line)
+            across = self.alignment() & Qt.AlignmentFlag.AlignHorizontal_Mask   # left unless the paragraph was given another (T212)
+            painter.drawText(QRect(0, top, self.width(), row_px(self)), int(across | Qt.AlignmentFlag.AlignVCenter), line)
         painter.end()
 
 

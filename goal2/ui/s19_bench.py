@@ -16,13 +16,16 @@ The engine kit's legacy queue API remains available to reference clients; this p
 """
 from __future__ import annotations
 
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QSizePolicy, QPushButton
+from PySide6.QtCore import QSize, Qt, QTimer
+from PySide6.QtWidgets import QPushButton
 
-from goal2.ui import theme
+from goal2.ui import cells, theme
+from goal2.ui.cell_parts import GridCard, GridStrip, WrapStrip
+from goal2.ui.cells import CellLabel, CellPara, Cells
+from goal2.ui.frame import Frame
 from goal2.ui.live_cards import player_snapshot, card_state
-from goal2.ui.screen import Screen, label, para, set_para
-from goal2.ui.squad_card import PlayerCard, Strip, box, colour, full_name, last_on_the_bar
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import colour, full_name, last_on_the_bar
 
 NO_MORE = "no more substitutes"                 # [confirmed: F027 E544; E015-r0013 state 790]
 UNLIMITED = "substitutions: unlimited (friendly)"   # [designed: owner BM-7, #73]
@@ -40,6 +43,23 @@ ESC_KEEPS_REQUESTED = "Esc: the requested substitutions are still made"
 OFF, ON, MARKED = " v", " ^", " *"              # [designed: T102] the strip's marks: taken off, put on, first Enter
 TIMES = {"half_time": "half time", "substitution": "substitution opportunity", "pause": "during play",
          "extra_time": "before extra time"}
+# [designed: T212; docs/design/ui-2026-11/proposal/README.md, s08-squad] S19 on the 16 x 32 grid, in the squad's cells (90 columns, the 25 rows
+# between the title row and the two key rows): at the left the mode and its button on the first row and the match's words on the
+# second, under them the card (69 x 18, the squad's) and under the card the substitution's own words in a frame of five rows (the
+# budget of substitutions at the right of its first row, the words under it); at the right, a cell apart and down to the foot, the
+# twenty in a frame of 25 rows (the twenty, the gap, and three rows more: a name followed by a live injury takes two).
+BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
+HEAD_ROWS = 2
+CARD_AT = HEAD_ROWS
+LEFT_COLS = 69
+STRIP_COLS = 20
+STRIP_AT = BODY_COLS - STRIP_COLS
+STRIP_SPARE = BODY_ROWS - (GridStrip.PAGE + 2)
+MODE_COLS = 34          # "NO SUBSTITUTIONS BEFORE EXTRA TIME", the longest of the modes
+BUTTON_AT, BUTTON_COLS = MODE_COLS + 1, 22   # "Request substitution", a cell in from each side
+COUNTER_COLS = 35       # "substitutions: unlimited (friendly)", the longest of the budget's words
+FEEDBACK_AT = CARD_AT + GridCard.ROWS
+FEEDBACK_ROWS = BODY_ROWS - FEEDBACK_AT   # its rule, the budget's row and three rows of words
 
 
 class BenchAnswer:
@@ -252,8 +272,19 @@ class BenchAnswer:
         return NO_MORE if left == 0 else f"substitutions left {left}"
 
 
+class RequestButton(QPushButton):
+    """The explicit request or cancel button: one row of the cells, its text between a cell's edges. [designed: T203; T212 on the cells]"""
+
+    def sizeHint(self):
+        return QSize(int(BUTTON_COLS * cells.cell_w(self)), cells.row_px(self))
+
+    def minimumSizeHint(self):
+        return self.sizeHint()
+
+
 class BenchScreen(Screen):
     """S19. `mode`: "now", "request", "view", or "refused" (the engine's report, shown until a key)."""
+    GRID = True   # [designed: T212] laid out on the 16 x 32 grid, no card
 
     def __init__(self, window, model, answer, *, mode=None, names=("", ""), back=None, report=None, apply=None, request=None):
         self.mode = mode or ("refused" if report is not None else "view" if answer.context not in ("half_time", "substitution", "pause")
@@ -295,61 +326,41 @@ class BenchScreen(Screen):
     def _build(self):
         # [designed: owner #599/#598] Use the full-width status row so large feedback
         # and all twenty players fit together, including a three-line original refusal.
-        self.body_layout.setSpacing(8)
-        head, inner = box(margins=(16,12,16,12))
-        row=QHBoxLayout()
-        self._header_row=row
-        row.setSpacing(22)
-        self.mode_label=label("","h1")
-        self.mode_label.setSizePolicy(QSizePolicy.Policy.Fixed,QSizePolicy.Policy.Preferred)
-        colour(self.mode_label,theme.VALUE)
-        row.addWidget(self.mode_label)
-        self.request_button = QPushButton()
+        body = Cells(BODY_COLS, BODY_ROWS, "benchBody")
+        self.body_layout.addWidget(body, 1)
+        self.area = body
+        self.mode_label = CellLabel("", "h1")
+        colour(self.mode_label, theme.VALUE)
+        body.put(self.mode_label, 0, 0, MODE_COLS)
+        self.request_button = RequestButton()
         # [designed: T203] Explicit theme contrast; native buttons otherwise
         # inherit white text while retaining their native near-white background.
+        # [designed: T212] no padding: the button is a row of cells and its text is centred in it.
         self.request_button.setStyleSheet(
-            f"QPushButton {{color:{theme.TEXT_BRIGHT};background-color:{theme.GROUND};border:2px solid {theme.FRAME};padding:6px 12px;}}"
+            f"QPushButton {{color:{theme.TEXT_BRIGHT};background-color:{theme.GROUND};border:2px solid {theme.FRAME};padding:0px;}}"
             f"QPushButton:disabled {{color:{theme.TEXT_BRIGHT};background-color:{theme.FRAME_DARK};border-color:{theme.FRAME_DARK};}}"
             f"QPushButton:focus,QPushButton:hover {{color:{theme.GROUND};background-color:{theme.HIGHLIGHT};border-color:{theme.VALUE};}}")
         self.request_button.clicked.connect(self.toggle_request)
-        row.addWidget(self.request_button)
-        self.counter=label("","benchCounter")
-        row.addWidget(self.counter)
-        self.context=label("","benchMetadata")
-        self.context.setWordWrap(True)
-        self.context.setMinimumWidth(0)
-        self.context.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Preferred)
-        row.addWidget(self.context,1)
-        inner.addLayout(row)
-        self.body_layout.addWidget(head)
-        main=QHBoxLayout()
-        main.setSpacing(18)
-        column=QVBoxLayout()
-        column.setSpacing(6)
-        self.card=PlayerCard()
-        self.card.layout().setContentsMargins(16,5,16,5)
-        # [designed: T193] Room for all labelled facts plus long feedback at native fractional font metrics.
-        self.card.layout().setSpacing(1)
-        for metadata in (self.card.facts,self.card.positions):
-            metadata.setWordWrap(True)
-            metadata.setObjectName("benchMetadata")
-        column.addWidget(self.card,1)
-        feedback, feedback_layout=box("SUBSTITUTION",margins=(16,8,16,8))
+        body.put(self.request_button, BUTTON_AT, 0, BUTTON_COLS)
+        self.context = CellPara("", "benchMetadata")
+        body.put(self.context, 0, 1, LEFT_COLS)
+        self.card = GridCard()
+        body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
+        feedback = Frame("substitution", "red")
         feedback.setObjectName("benchFeedback")
-        feedback_layout.setSpacing(4)
-        self.note=para("","benchFeedbackText")
-        self.note.setStyleSheet(f"color: {theme.VALUE};")
-        feedback_layout.addWidget(self.note)
-        column.addWidget(feedback)
-        main.addLayout(column,1)
-        self.strip=Strip()
-        self.strip.setFixedWidth(466)
-        self.strip.layout().setContentsMargins(16,10,16,10)
-        for player in self.strip.rows:
-            player.layout().setContentsMargins(8,0,8,0)
+        inner = Cells(GridCard.COLS, FEEDBACK_ROWS - 1, "benchFeedbackRows")
+        feedback.add(inner, 1)
+        # the budget at the right of the frame's first row, the substitution's words under it
+        self.counter = CellLabel("", "benchCounter")
+        self.counter.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        inner.put(self.counter, GridCard.COLS - COUNTER_COLS, 0, COUNTER_COLS)
+        self.note = CellPara("", "benchFeedbackText")
+        colour(self.note, theme.VALUE)
+        inner.put(self.note, 0, 1, GridCard.COLS, inner.rows - 1)
+        body.put(feedback, 0, FEEDBACK_AT, GridCard.COLS, FEEDBACK_ROWS)
+        self.strip = WrapStrip(STRIP_COLS, STRIP_SPARE)
         self.strip.chosen.connect(self.click_row)
-        main.addWidget(self.strip)
-        self.body_layout.addLayout(main,1)
+        body.put(self.strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS)
 
     # What is shown.
     def current(self):
@@ -399,16 +410,9 @@ class BenchScreen(Screen):
         word = self.current()
         if word is not None:
             self.card.set_card(answer.card(word))
-        set_para(self.note, self.line())
+        self.note.setText(self.line())
         self._refresh_hint()
         self._sync_cue()
-        # [designed: #636] A stopped acknowledgement can lengthen the cue before
-        # Qt handles its queued LayoutRequest. Reserve the current scaled font's
-        # full text width now; the match context can wrap into the remaining space.
-        self.mode_label.ensurePolished()
-        self.mode_label.setMinimumWidth(self.mode_label.fontMetrics().horizontalAdvance(self.mode_label.text()) + 2)
-        self._header_row.invalidate()
-        self._header_row.activate()
 
     def _sync_cue(self):
         """Blink only when this visible squad can make another immediate swap."""

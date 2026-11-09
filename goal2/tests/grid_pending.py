@@ -23,10 +23,8 @@ import sys
 # journey] Every screen of the window has widgets off the cell (the title bar, which T210 does not touch, is 77 px high and
 # starts at x = 24) and most carry cards (`#box`, `#boxHeading`).
 PENDING = {
-    "BenchScreen": "220 widgets off the 16 x 38 cell, 8 cards (the title bar's brand and name are off the cell on every screen)",
     "BoardScreen": "69 widgets off the 16 x 38 cell, 7 cards (the title bar's brand and name are off the cell on every screen)",
     "BulletinScreen": "25 widgets off the 16 x 38 cell, 6 cards (the title bar's brand and name are off the cell on every screen)",
-    "ChooseScreen": "178 widgets off the 16 x 38 cell, 6 cards (the title bar's brand and name are off the cell on every screen)",
     "CountryTacticsScreen": "not in the journey: the desk walk reaches it; the title bar is off the cell and it carries cards, as every screen does",
     "FriendlyScreen": "83 widgets off the 16 x 38 cell, 4 cards (the title bar's brand and name are off the cell on every screen)",
     "HelpScreen": "24 widgets off the 16 x 38 cell, 0 cards (the title bar's brand and name are off the cell on every screen)",
@@ -35,7 +33,6 @@ PENDING = {
     "ImportScreen": "33 widgets off the 16 x 38 cell, 1 card (the title bar's brand and name are off the cell on every screen)",
     "MenuScreen": "120 widgets off the 16 x 38 cell, 5 cards (the title bar's brand and name are off the cell on every screen)",
     "NewGameScreen": "42 widgets off the 16 x 38 cell, 2 cards (the title bar's brand and name are off the cell on every screen)",
-    "PitchScreen": "48 widgets off the 16 x 38 cell, 3 cards (the title bar's brand and name are off the cell on every screen)",
     "PlayerTacticsScreen": "188 widgets off the 16 x 38 cell, 8 cards (the title bar's brand and name are off the cell on every screen)",
     "PlayersScreen": "199 widgets off the 16 x 38 cell, 6 cards (the title bar's brand and name are off the cell on every screen)",
     "QuestionScreen": "23 widgets off the 16 x 38 cell, 0 cards (the title bar's brand and name are off the cell on every screen)",
@@ -45,7 +42,6 @@ PENDING = {
     "RoundScreen": "85 widgets off the 16 x 38 cell, 2 cards (the title bar's brand and name are off the cell on every screen)",
     "SaveScreen": "24 widgets off the 16 x 38 cell, 0 cards (the title bar's brand and name are off the cell on every screen)",
     "SavedGoalMenu": "51 widgets off the 16 x 38 cell, 6 cards (the title bar's brand and name are off the cell on every screen)",
-    "SavedPitchScreen": "48 widgets off the 16 x 38 cell, 3 cards (the title bar's brand and name are off the cell on every screen)",
     "StartScreen": "77 widgets off the 16 x 38 cell, 11 cards (the title bar's brand and name are off the cell on every screen)",
     "TeamPlayersScreen": "not in the journey: the desk walk reaches it; the title bar is off the cell and it carries cards, as every screen does",
     "TeamTacticsScreen": "169 widgets off the 16 x 38 cell, 8 cards (the title bar's brand and name are off the cell on every screen)",
