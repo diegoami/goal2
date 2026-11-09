@@ -1,4 +1,4 @@
-"""Pictures of S08 (squad, and pool with *put here*), S09 and S10 at 1440x900 (T165).
+"""Pictures of S08 (squad, and pool with *put here*), S09 and S10 at 1440x1080, the 4:3 page at its own size (T165; T209).
 
     QT_QPA_PLATFORM=offscreen python tools/ui_squad_screenshots.py DIR [--country N]
 
@@ -34,7 +34,7 @@ def screenshots(out: Path, country: int = 20) -> list[Path]:
     model = DesktopModel.open(ROOT / ".cache/e010-r0008-halftime.sav", ROOT / ".cache/GOAL.DAT", tmp / "career",
                               country=country)
     window = Window(data_setup.paths(tmp / "goal2"))
-    window.resize(1440, 900)
+    window.resize(*theme.PICTURE)
     window.show()
     written = []
 

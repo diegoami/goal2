@@ -1,7 +1,8 @@
 """The look the start and new-game screens (S02–S05) add to the window's style sheet, and the small parts they share.
 
 [designed: owner, 2026-11-03, #526; docs/design/ui-2026-11/mockups/style.css] Colours are `theme`'s, by role only;
-normal text is 24 px after owner correction #598; headings retain 32, 48 and 64 px. The window appends
+there is one text size, `theme.TEXT` (owner, 2026-11-08, #667): what was a heading, a masthead or the brand is drawn at
+it, and colour and position carry the hierarchy. The window appends
 `stylesheet()` to `theme.stylesheet`, so the page scales these lengths with the rest (goal2/desktop/fixed_page.py).
 """
 from __future__ import annotations
@@ -16,39 +17,36 @@ from goal2.ui.screen import Clickable, kbd, label
 # palette table and "Role codes are coloured by line"]
 LINE_COLOUR = {"goalkeeper": theme.GOALKEEPER, "defence": theme.DEFENCE, "midfield": theme.MIDFIELD,
                "attack": theme.ATTACK}
-BIG = 3 * theme.CELL      # 48 px: the bulletin's masthead [designed: style.css, s05's front page]
-HUGE = 4 * theme.CELL     # 64 px: the title's GOAL2 [designed: style.css, s02's brand]
 
 
 def stylesheet() -> str:
     t = theme
     return f"""
-#titleBrand {{ color: {t.HEADING}; font-size: {HUGE}px; }}
+#titleBrand {{ color: {t.HEADING}; }}
 #boxHeading {{ color: {t.HEADING}; }}
 #cardLabel {{ color: {t.CARD_LABEL}; }}
 #value, #cell {{ color: {t.TEXT_BRIGHT}; }}
 #undecoded {{ color: {t.TEXT_NORMAL}; }}
-#bigValue {{ color: {t.VALUE}; font-size: {t.HEADING_SIZE}px; }}
+#bigValue {{ color: {t.VALUE}; }}
 #row {{ background: {t.GROUND}; border-bottom: 1px solid {t.FRAME_DARK}; }}
 #row[on="true"] {{ background: {t.HIGHLIGHT}; }}
 #row[on="true"] QLabel {{ color: {t.ON_HIGHLIGHT}; }}
 #row #bad {{ color: {t.BAD}; }}
 #primary {{ background: {t.HIGHLIGHT}; border: 1px solid {t.HIGHLIGHT}; }}
 #primary QLabel {{ color: {t.ON_HIGHLIGHT}; }}
-#primaryText {{ font-size: {t.HEADING_SIZE}px; }}
 #primary #kbd {{ border: 1px solid {t.ON_HIGHLIGHT}; background: transparent; }}
 #digit {{ background: {t.GROUND}; border: 1px solid {t.FRAME_DARK}; }}
 #digit[on="true"] {{ background: {t.HIGHLIGHT}; border: 1px solid {t.HIGHLIGHT}; }}
-#digitText {{ font-size: {t.HEADING_SIZE}px; color: {t.TEXT_BRIGHT}; }}
-#digitLater {{ font-size: {t.HEADING_SIZE}px; color: {t.TEXT_NORMAL}; }}
+#digitText {{ color: {t.TEXT_BRIGHT}; }}
+#digitLater {{ color: {t.TEXT_NORMAL}; }}
 #digit[on="true"] QLabel {{ color: {t.ON_HIGHLIGHT}; }}
 #lineField {{ background: {t.GROUND}; border: 2px solid {t.FRAME_DARK}; }}
 #lineField[active="true"] {{ border: 2px solid {t.FRAME}; }}
 #cursor {{ background: {t.TEXT_BRIGHT}; }}
 #bad {{ color: {t.BAD}; }}
-#masthead {{ color: {t.TEXT_BRIGHT}; font-size: {BIG}px; }}
-#story {{ color: {t.TEXT_BRIGHT}; font-size: {t.HEADING_SIZE}px; }}
-#bulletinTitle {{ color: {t.TEXT_BRIGHT}; font-size: {BIG}px; }}
+#masthead {{ color: {t.TEXT_BRIGHT}; }}
+#story {{ color: {t.TEXT_BRIGHT}; }}
+#bulletinTitle {{ color: {t.TEXT_BRIGHT}; }}
 #rule {{ background: {t.FRAME_DARK}; }}
 #gk {{ color: {t.GOALKEEPER}; }}
 #def {{ color: {t.DEFENCE}; }}

@@ -8,7 +8,7 @@ Start. The portable build's launcher and default stay today's window (goal2/desk
 
 `--data-root` is the per-user goal2 folder (default: data_setup.user_root(); the data is in its `data`).
 `--import FOLDER` imports the data files in FOLDER as S01 does (GOAL.HLP too, when the folder has it), then starts.
-`--screenshot DIR` writes PNGs at 1440x900 into DIR and exits: S01, the placeholder home and S22 always; S02 with
+`--screenshot DIR` writes PNGs at 1440x1080 (the 4:3 page at its own size, `theme.PICTURE`) into DIR and exits: S01, the placeholder home and S22 always; S02 with
 two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages, S06 the manager's desk,
 S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, the match day of its first friendly
 under PyPy 3.11, on a copy of the career (T167: S14 before and after the match, S15 before kick-off and at half time,
@@ -64,7 +64,7 @@ def career_source(data_root=None):
 
 
 def screenshots(out: Path, data_root=None) -> list[Path]:
-    """PNGs of the new window's screens at 1440x900, in a temporary data folder of their own."""
+    """PNGs of the new window's screens at 1440x1080, in a temporary data folder of their own."""
     from PySide6.QtCore import Qt
     from PySide6.QtWidgets import QApplication
     from goal2.desktop import data_setup
@@ -86,7 +86,7 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
         offered.mkdir()
         (offered / data_setup.HELP_NAME).write_bytes(STAND_IN_HELP)   # not the released file: refused as wrong
         window = Window(target, choose=lambda: str(offered))
-        window.resize(1440, 900)
+        window.resize(*theme.PICTURE)
         window.show()
 
         def shot(name):

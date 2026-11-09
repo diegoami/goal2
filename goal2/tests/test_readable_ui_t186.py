@@ -19,8 +19,9 @@ class Readable(unittest.TestCase):
 
     def test_normal_text_is_materially_larger(self):
         from goal2.ui import theme
-        self.assertGreaterEqual(theme.TEXT,24)
-        self.assertGreaterEqual(self.bench.counter.font().pixelSize(),24)
+        self.assertEqual(theme.TEXT,32)   # [designed: owner, 2026-11-08, #667] supersedes #598's 24 px
+        self.assertEqual(self.bench.counter.font().pixelSize(),
+                         round(theme.TEXT*theme.STRETCH*self.window.frame.scale))
 
     def test_live_injury_stays_red_when_selected_and_has_a_word_label(self):
         from goal2.ui import theme
@@ -35,7 +36,8 @@ class Readable(unittest.TestCase):
     def test_pair_feedback_is_large_and_below_the_card(self):
         self.answer.enter(self.off);self.answer.enter(self.on)
         self.bench.refresh();self.app.processEvents()
-        self.assertGreaterEqual(self.bench.note.font().pixelSize(),24)
+        from goal2.ui import theme
+        self.assertEqual(self.bench.note.font().pixelSize(),round(theme.TEXT*theme.STRETCH*self.window.frame.scale))
         self.assertGreater(self.bench.note.mapTo(self.bench,self.bench.note.rect().topLeft()).y(),
                            self.bench.card.mapTo(self.bench,self.bench.card.rect().topLeft()).y())
         self.assertIn('off',self.bench.note.text())

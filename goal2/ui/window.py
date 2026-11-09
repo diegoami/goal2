@@ -8,9 +8,10 @@ returns to the same screen. [designed: T163, #537; docs/design/ui-2026-11 §1, t
 Closing the window never loses unsaved progress silently: it asks S21's save question first (`closeEvent`), and
 `leave` closes once the player has answered (F10's questions or the close button's). [designed: T168, #542]
 
-The page is composed for 1440x900 and scales as a whole with the window, as today's fixed pages do
+The page is composed for 90 x 28 cells of 16 x 32 (1440x896), presented at 4:3 (a 1.2 vertical stretch, letterboxed), and
+scales as a whole with the window [designed: owner, 2026-11-08, #667; T209], as today's fixed pages do
 [designed: docs/design/ui-2026-11 §3, "Text size"; T101]: the window's central widget is
-`goal2.desktop.fixed_page.FixedPage`, reused unchanged, and each screen's lengths are recorded and scaled when it
+`goal2.desktop.fixed_page.FixedPage` with its stretch, and each screen's lengths are recorded and scaled when it
 is pushed.
 """
 from __future__ import annotations
@@ -34,7 +35,8 @@ class Window(QMainWindow):
         self.sheet = theme.stylesheet(self.family) + start_look.stylesheet()
         self.page = QStackedWidget()
         self.page.setObjectName("page")
-        self.frame = fixed_page.FixedPage(self.page, self.sheet, self)
+        self.frame = fixed_page.FixedPage(self.page, self.sheet, self, logical=theme.PAGE, stretch=theme.STRETCH,
+                                          text=theme.TEXT, aspect=(4, 3))
         self.frame.setStyleSheet(f"#fixedPage {{ background: {theme.GROUND}; }}")
         self.setCentralWidget(self.frame)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -44,10 +46,7 @@ class Window(QMainWindow):
         self.resize(fixed_page.WIDTH, fixed_page.HEIGHT)
 
     def _font(self):
-        from PySide6.QtGui import QFont
-        font = QFont(self.family)
-        font.setPixelSize(theme.TEXT)
-        return font
+        return theme.text_font(self.family)
 
     # The stack.
     def current(self):
@@ -57,7 +56,7 @@ class Window(QMainWindow):
         self.stack.append(screen)
         self.page.addWidget(screen)
         fixed_page.record(self.page)
-        fixed_page.apply(self.page, self.frame.scale, self.sheet)
+        fixed_page.apply(self.page, self.frame.scale, self.sheet, self.frame.stretch, self.frame.text)
         self.page.setCurrentWidget(screen)
         self.setFocus()
         screen.shown()

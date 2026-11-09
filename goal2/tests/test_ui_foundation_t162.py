@@ -116,11 +116,11 @@ class Look(App):
         self.assertTrue(colours)
         self.assertLessEqual({c.lower() for c in colours}, set(theme.PALETTE.values()))
 
-    def test_text_sizes_follow_owner_readability_correction(self):
+    def test_there_is_one_text_size(self):
+        """[designed: owner, 2026-11-08, #667; T209] supersedes #598's 24 px text and 32 px headings."""
         sizes = [int(s) for s in re.findall(r"font-size:\s*(\d+)px", theme.stylesheet())]
-        self.assertIn(24, sizes)
-        self.assertIn(32, sizes)
-        self.assertEqual(set(sizes), {20, 24, 32})
+        self.assertEqual(set(sizes), {theme.TEXT})
+        self.assertEqual(theme.TEXT, 32)
 
     def test_the_font_is_the_vendored_pxplus_loaded_from_the_package(self):
         package_fonts = Path(theme.__file__).resolve().parent / "fonts"
@@ -132,7 +132,8 @@ class Look(App):
         family = theme.install(self.app)
         self.assertEqual(family, "PxPlus IBM VGA 8x16")
         self.assertEqual(self.app.font().family(), family)
-        self.assertEqual(self.app.font().pixelSize(), 24)
+        self.assertEqual(self.app.font().pixelSize(), round(theme.TEXT * theme.STRETCH), "the one text size, 1.2 taller")
+        self.assertEqual(self.app.font().stretch(), theme.stretch_percent(), "and narrowed back to one cell wide")
         self.assertEqual(QFontDatabase.applicationFontFamilies(theme.font_id()), [family])
         pyproject = (ROOT / "pyproject.toml").read_text()
         self.assertRegex(pyproject, r'"goal2\.ui" = \[[^\]]*"fonts/\*\.ttf"[^\]]*"fonts/LICENSE\.TXT"')
@@ -140,11 +141,12 @@ class Look(App):
     def test_the_page_scales_as_a_whole_with_the_window(self):
         window = self.window()
         window.start()
-        window.resize(720, 450)
+        window.resize(720, 540)   # the 4:3 page at half size
         self.app.processEvents()
         self.assertAlmostEqual(window.frame.scale, 0.5)
-        self.assertEqual((window.page.width(), window.page.height()), (720, 450))
-        self.assertIn("font-size: 12px", window.page.styleSheet(), "24 px text at half the page size")
+        self.assertEqual((window.page.width(), window.page.height()), (720, 540))
+        self.assertIn(f"font-size: {round(theme.TEXT * theme.STRETCH * 0.5)}px", window.page.styleSheet(),
+                      "32 px text, stretched 1.2, at half the page size")
         window.resize(1440, 900)
         self.app.processEvents()
         self.assertEqual(fixed_page.problems(window), [])

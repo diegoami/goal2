@@ -608,13 +608,13 @@ class Bulletin(App):
 
 
 class Look(unittest.TestCase):
-    def test_the_added_sheet_uses_the_palette_and_whole_cells(self):
+    def test_the_added_sheet_uses_the_palette_and_the_one_text_size(self):
         sheet = start_look.stylesheet()
         colours = {c.lower() for c in re.findall(r"#[0-9a-fA-F]{6}\b", sheet)}
         self.assertTrue(colours)
         self.assertLessEqual(colours, set(theme.PALETTE.values()))
         sizes = [int(s) for s in re.findall(r"font-size:\s*(\d+)px", sheet)]
-        self.assertEqual([s for s in sizes if s % theme.CELL], [])
+        self.assertEqual([s for s in sizes if s != theme.TEXT], [], "no heading, masthead or brand size [T209]")
 
     def test_ng9_start_years(self):
         self.assertEqual([s03_new_game.start_year(y) for y in (1989, 1990, 1991, 2026, 2027)],
