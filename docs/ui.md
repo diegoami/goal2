@@ -124,7 +124,7 @@ of the bottom bar and a click on the Enter hint all reach the same handler.
 the open career (`window.career`) and shows its pages (S05), then the home. Keys go to the current screen
 (`Screen.handle_key`). Closing the window first calls `closing()` on every screen on the stack that has one (S17
 cancels its match) [designed: T166]. The page is composed for 90 × 28 cells of 16 × 32 (1440×896) and scales as a whole with the window, presented at 4:3
-[designed: owner, 2026-11-08, #667; T209; docs/design/ui-2026-11/README.md §3]: the central widget is
+[designed: owner, 2026-11-08, #667; T209; docs/design/ui-2026-11/README.md §3] — the central widget is
 today's `goal2.desktop.fixed_page.FixedPage` with its stretch (the legacy window keeps it uniform), which multiplies every
 length of the page, its style sheet's text size included, by the scale (vertical ones by 1.2 × the scale) and sets the
 font stretch that keeps a glyph one cell wide (T101). The text is one size, `theme.TEXT` (32 px). Its `problems(window)` check (no scroll bar, nothing clipped or squeezed) applies to every
