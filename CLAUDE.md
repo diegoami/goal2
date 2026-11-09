@@ -53,7 +53,12 @@ Unicorn performance optimisation is authorised by a resume.
 1. The main session plans, triages, talks to the owner and merges. It implements itself or spawns
    a subagent (`.claude/agents/implementer.md`) on its own judgment; the owner names a model only
    when they want a specific one.
-2. Work on a branch in the checkout at hand; one task at a time per checkout. No worktrees.
+2. Work on a branch in the checkout at hand; one task at a time per checkout. [designed: owner,
+   2026-11-09] **No worktrees in a cloud session**, which is what the rule was written for
+   (6476bd26, "cloud-viable workflow"): a cloud checkout is its own workspace and a worktree does
+   not travel into one. Locally a worktree is allowed, and is one task per worktree like any other
+   checkout. It still needs its own `.cache` and `.venv` to run anything, so a spare clone is
+   usually the cheaper answer.
    Locally a task branch `task/T<nn>-<slug>`; in a cloud session the session's own `claude/…`
    branch, for every task of that session (process.md §3). Never `git stash`, never force-push,
    never rewrite `main`.
