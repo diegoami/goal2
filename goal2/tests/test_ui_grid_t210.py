@@ -19,7 +19,7 @@ from goal2.tests import requires
 
 requires.require(modules=("PySide6",))
 
-from PySide6.QtCore import QPoint  # noqa: E402
+from PySide6.QtCore import QPoint, Qt  # noqa: E402
 from PySide6.QtGui import QColor, QImage, QRegion  # noqa: E402
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QWidget  # noqa: E402
 
@@ -85,6 +85,7 @@ class FrameDrawing(Base):
         self.assertEqual(rule_text("Name", 8), "-name---", "the grammar's label is lowercase")
         self.assertEqual(rule_text("characteristics", 5), "-characteristics-", "never narrower than the label and a dash")
         self.assertEqual(len(rule_text("a", 90)), 90)
+        self.assertEqual(FrameRule("Name").label, "name", "lowercase as stored, not only as drawn")
         with self.assertRaises(ValueError):
             FrameRule("x", "blue")
 
@@ -161,6 +162,7 @@ class GridCheck(Base):
             put("onGrid", (16 * 4, 38 * 2, 16 * 10, 38 * 3))
             put("offGridX", (16 * 4 + 7, 38 * 2, 16 * 10, 38))
             put("offGridSize", (16 * 4, 38 * 8, 16 * 10 + 5, 38 * 3 - 9))
+            put("offGridY", (16 * 30, 38 * 5 + 13, 16 * 4, 38))
             put("foot", (0, theme.PICTURE[1] - 38, 16 * 90, 38))   # the page's last row, on the grid counted from the bottom
             put("whole", (0, 0, 16 * 90, theme.PICTURE[1]))   # a screen fills the page: 1080 is 28 rows and the 4:3 slack
             put("qt_internal", (3, 5, 7, 11))
@@ -175,7 +177,8 @@ class GridCheck(Base):
     def test_an_off_grid_widget_is_reported_and_an_on_grid_one_is_not(self):
         window, _ = self.synthetic()
         found = grid_check.off_grid(window)
-        self.assertEqual(self.names(found), ["offGridSize", "offGridX"], found)
+        self.assertEqual(self.names(found), ["offGridSize", "offGridX", "offGridY"], found)
+        self.assertTrue(next(line for line in found if line.startswith("offGridY")).endswith("in y"))
         self.assertIn("x", next(line for line in found if line.startswith("offGridX")).split("cell in ")[1])
         size = next(line for line in found if line.startswith("offGridSize")).split("cell in ")[1]
         self.assertIn("width", size)
@@ -185,11 +188,12 @@ class GridCheck(Base):
         window, _ = self.synthetic()
         self.assertEqual(self.names(grid_check.cards(window)), ["card", "card"])
         self.assertEqual(sorted(line.split()[1] for line in grid_check.cards(window)), ["box", "boxHeading"])
-        self.assertEqual(len(grid_check.violations(window)), 4, "two off the grid and two cards")
+        self.assertEqual(len(grid_check.violations(window)), 5, "three off the grid and two cards")
 
     def test_a_hidden_widget_and_a_qt_internal_one_are_not_the_pages(self):
         window, page = self.synthetic()
         page.findChild(QWidget, "offGridX").hide()
+        page.findChild(QWidget, "offGridY").hide()
         page.findChild(QWidget, "offGridSize").setGeometry(16 * 4, 38 * 8, 16 * 10, 38 * 3)
         self.assertEqual(grid_check.off_grid(window), [])
         child = QWidget(page.findChild(QWidget, "qt_internal"))
@@ -325,10 +329,84 @@ class PendingGrid(unittest.TestCase):
         """[designed: T210] Every screen starts pending, so a screen added later is on the grid from its first test."""
         import re
         screens = set()
+        bases = {"BoxScreen"}   # the dialogs' base class: never shown on its own
         for path in sorted((ROOT / "goal2" / "ui").glob("*.py")):
             screens |= set(re.findall(r"^class (\w+Screen|SavedGoalMenu)\(", path.read_text(encoding="utf-8"), re.M))
         named = {key.split("@")[0] for key in grid_pending.PENDING}
-        self.assertEqual(sorted(screens - named), [], "screens that are on no list: list them, or lay them out on the grid")
+        self.assertEqual(sorted(screens - bases - named), [], "screens that are on no list: list them, or lay them out on the grid")
+
+    @requires.need(modules=("pygame",), **requires.HALFTIME)
+    @unittest.skipUnless(sys.platform.startswith("linux"), "the list was measured on Linux, Qt offscreen")
+    def test_every_pending_screen_the_desk_reaches_still_violates_at_1440x1080(self):
+        """[designed: owner, 2026-11-09, #667] The listed screens one career opens, with no match played (the walk of
+        `test_ui_cell_t209.PendingReflow`), at the canonical 1440x1080 on the platform they were measured on; the rest are
+        `EveryScreen`'s (slow). A screen that is on the grid with no card now must be removed from `PENDING`: the ordinary
+        tests exempt it, so this is where the list is held to shrink."""
+        import shutil
+        import tempfile
+        from goal2.desktop.model import DesktopModel
+        from goal2.ui.s08_squad import open_squad
+        from goal2.ui.s10_team_tactics import open_team_tactics
+        app = QApplication.instance() or QApplication([])
+        font_before = app.font()
+        theme.install(app)
+        self.addCleanup(app.setFont, font_before)
+        tmp = Path(tempfile.mkdtemp(prefix="goal2-t210-pending-"))
+        self.addCleanup(shutil.rmtree, tmp, True)
+        model = DesktopModel.open(requires.CACHE / "e010-r0008-halftime.sav", requires.CACHE / "GOAL.DAT", tmp / "career",
+                                  country=20)
+        window = Window(data_setup.paths(tmp / "goal2"))
+        window.resize(*theme.PICTURE)
+        window.show()
+        self.addCleanup(lambda: (window.close(), window.deleteLater(), app.processEvents()))
+        violating, visited = set(), []
+
+        def look():
+            for _ in range(3):
+                app.processEvents()
+            name = type(window.current()).__name__
+            visited.append(name)
+            if grid_check.violations(window):
+                violating.add(name)
+
+        def key(k):
+            window.current().handle_key(k)
+            app.processEvents()
+
+        desk = window.open_career(model)
+        look()
+        desk.reimport()
+        look()
+        window.pop()
+        key(Qt.Key.Key_Return)   # the cursor starts on team info
+        info = window.current()
+        info.settle()
+        look()
+        info.players()
+        look()
+        window.pop()
+        info.index = (info.index + 1) % len(info.order)   # another country: its tactics, not the manager's own
+        info.tactics()
+        look()
+        window.pop()
+        window.pop()
+        for option in (2, 3):   # tournament, history
+            desk = window.current()
+            desk.highlight(option)
+            key(Qt.Key.Key_Return)
+            look()
+            key(Qt.Key.Key_Escape)
+        open_squad(window, model)
+        look()
+        key(Qt.Key.Key_T)
+        look()
+        key(Qt.Key.Key_Escape)
+        open_team_tactics(window, model)
+        key(Qt.Key.Key_Return)
+        look()
+        reached = {key_ for key_ in grid_pending.PENDING if "@" not in key_} & set(visited)
+        self.assertGreaterEqual(len(reached), 10, f"visited {visited}")
+        self.assertEqual(sorted(reached - violating), [], "these screens are on the grid with no card now: remove them")
 
     def test_grid_pending_is_empty(self):
         """THE GATE for merging the integration branch `ui/foundation-32` into main [designed: owner, 2026-11-09, #667]:
