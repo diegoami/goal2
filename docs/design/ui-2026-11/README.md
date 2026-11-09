@@ -562,7 +562,9 @@ we can keep the rest"]
     `test_ui_grid_t210.test_grid_pending_is_empty` is the gate for merging `ui/foundation-32` into main.
   - **A screen on the grid** [designed: owner, 2026-11-09, #667; T211] The desk (S06) and the squad (S08) are the first screens laid out
     on the cell, and what they use is the way the others follow (T211b, T212–T214); [designed: T211b] the country, team info and fixtures
-    screens (S04, S07, S11) are the second group, with `goal2/ui/country_parts.py` for the country card's panels and `CellTableRow` for a list. A screen sets `GRID = True` (`goal2/ui/screen.py`)
+    screens (S04, S07, S11) are the second group, with `goal2/ui/country_parts.py` for the country card's panels and `CellTableRow` for a list;
+    [designed: T212] the selection screens (S16 captain and taker, S17 pitch and its saved variant, S19 bench) are the third: S16 and S19 are the squad's card (`GridCard`) and a strip beside it, S19's
+    twenty with rows to spare so that a name followed by a live injury takes two (`WrapStrip`), and S17 is the score, the pitch (64 × 18 cells, its drawing untouched: T179) with the commentary in a frame at its right, the stop box (S18) over it in whole cells. A screen sets `GRID = True` (`goal2/ui/screen.py`)
     and places its panels **by cell** (`goal2/ui/cells.py`): `Cells` puts a child at a column and a row for so many columns and rows,
     `CellLabel` is a line of text one row high whose size is its characters' cells, not the font's line box (a platform's font may
     round the advance or add a pixel to a line: a measured Windows runner did), `CellPara` is a paragraph wrapped at the cells its

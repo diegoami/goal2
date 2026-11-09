@@ -14,8 +14,8 @@ fidelity-review.md §3, goal2/ui/cells.py): the title bar is one row, the page h
 are placed by cell, separated by one empty cell), a key of the bottom bar is its caption and its word joined (`F1help`, no box),
 the bar is as many rows as its keys need (never fewer than `KEY_ROWS`, so the page does not move when the Enter hint changes),
 and an option is a bordered box of two rows or a line of one. The country, team info and fixtures screens (S04, S07, S11) are on
-it too (T211b). The other screens keep the layout they were drawn with until they are reflowed (T212-T214); `GRID` goes when
-the last one is.
+it too (T211b), and the captain, taker, pitch and bench screens (S16, S17, S19: T212). The other screens keep the layout they were drawn
+with until they are reflowed (T212b-T214, T216); `GRID` goes when the last one is.
 
 Keys and the mouse take one path: a key's binding, a click on an option, on a key of the bottom bar or on the Enter
 hint all call `Binding.run` or `Screen.activate`, and so the same handler. [designed: owner, 2026-11-03, #526: "the

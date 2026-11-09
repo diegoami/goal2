@@ -37,14 +37,16 @@ WAIT_MS = 10_000   # [confirmed: F030, 0791:CC7B wait_or_key(1000) of 10 nominal
 ROLES = {1: "captain", 2: "corner", 3: "penalty", 4: "free kick", 5: "goal kick"}   # [confirmed: F030, DS:0A29]
 
 # [designed: T212; docs/design/ui-2026-11/proposal/README.md, s08-squad] S16 on the 16 x 32 grid, in the squad's cells (90 columns, the 25
-# rows between the title row and the two key rows): what the match waits for across the top (the headline and up to three rows
-# of its words), a row between, then the card (69 x 18, the squad's) with the eleven in a frame at its right, a cell apart, and
-# under them the penalty order's line.
+# rows between the title row and the two key rows): what the match waits for across the top (the headline and up to three rows of its
+# words), then the card (69 x 18, the squad's) with the eleven in a frame at its right, a cell apart and level with the card's foot (the
+# original's list is lower right too, and no region of the page is left empty), and under them the penalty order's lines.
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
-WAIT_ROWS = 4
-CARD_AT = WAIT_ROWS + 1
+WAIT_AT, WAIT_ROWS = 0, 4
+CARD_AT = WAIT_AT + WAIT_ROWS
 STRIP_COLS = 20
+STRIP_ROWS = 12   # its rule and the eleven
 STRIP_AT = BODY_COLS - STRIP_COLS
+STRIP_ROW = CARD_AT + GridCard.ROWS - STRIP_ROWS
 ORDER_AT = CARD_AT + GridCard.ROWS
 
 
@@ -86,13 +88,15 @@ class ChooseScreen(Screen):
         self.area = body
         # what the match waits for, across the top, in the cells the squad gives its pick's words
         self.main_layout.removeWidget(self.wait_box)
-        body.put(self.wait_box, 0, 0, BODY_COLS, WAIT_ROWS)
+        body.put(self.wait_box, 0, WAIT_AT, BODY_COLS, WAIT_ROWS)
+        self.wait_box.layout().addStretch(1)   # a headline over two rows of words is not spread over the four rows the box has
+        colour(self.wait_detail, theme.TEXT_BRIGHT)   # the words are what the screen is for: bright, not the normal text's grey
         self.card = GridCard()
         body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
         self.strip = GridStrip(STRIP_COLS, count=11)
         self.strip.chosen.connect(self.click)
-        body.put(self.strip, STRIP_AT, CARD_AT, STRIP_COLS, 12)
-        # the order so far: the picks wrap in the two rows under the card (eleven picks of the longest names fit)
+        body.put(self.strip, STRIP_AT, STRIP_ROW, STRIP_COLS, STRIP_ROWS)
+        # the order so far: the picks wrap in the rows under the words (eleven picks of the longest names fit)
         self.order_label = CellPara("", "sub")
         colour(self.order_label, theme.VALUE)
         body.put(self.order_label, 0, ORDER_AT, BODY_COLS, BODY_ROWS - ORDER_AT)

@@ -166,7 +166,7 @@ class ChooseOnTheGrid(Base):
         self.assertEqual(screen.findChildren(QLabel, "kbd"), [], "no boxed key cap on a grid screen")
 
     def test_the_card_the_strip_and_the_wait_are_where_the_cells_put_them(self):
-        """The wait across the top (4 rows), the card (69 x 18) and the strip (20 wide, its twelve rows) a cell apart."""
+        """The wait (4 rows) across the top, the card (69 x 18) and the strip (20 wide, its twelve rows) under it a cell apart."""
         window, screen = self.canonical(self.make)
         cell, row = cells.cell_w(screen), cells.row_px(screen)
         self.assertEqual(round(screen.card.width() / cell), GridCard.COLS)
@@ -177,6 +177,9 @@ class ChooseOnTheGrid(Base):
         self.assertEqual(round(gap / cell), 1, "one empty cell separates")
         self.assertEqual(screen.wait_box.height(), row * 4)
         self.assertEqual(screen.wait_box.width(), window.page.width())
+        self.assertLessEqual(screen.wait_box.y() + screen.wait_box.height(), screen.card.y(), "the words are over the card")
+        self.assertEqual(screen.strip.y() + screen.strip.height(), screen.card.y() + screen.card.height(),
+                         "the eleven is level with the card's foot (no region of the page is left empty)")
         self.assertEqual(len(screen.strip.shown_texts()), 11)
 
     def test_each_mode_says_what_the_match_waits_for_in_the_rows_it_has(self):
@@ -357,7 +360,7 @@ class PitchOnTheGrid(Base):
             self.assertNotIn("SavedPitchScreen", lists)
 
     def test_the_score_the_pitch_and_the_commentary_are_where_the_cells_put_them(self):
-        """The score in four rows, the pitch 64 x 18 under it, the commentary's frame at its right a cell apart, down to the foot."""
+        """The score in three rows, the pitch 64 x 18 under it, the commentary's frame at its right a cell apart and a row lower."""
         from goal2.ui.s17_pitch import COMMENTARY_COLS, HEAD_ROWS, PITCH_COLS, PITCH_ROWS
         window, screen = self.canonical(self.make)
         cell, row = cells.cell_w(screen), cells.row_px(screen)
@@ -368,7 +371,7 @@ class PitchOnTheGrid(Base):
         self.assertEqual(round(frame.width() / cell), COMMENTARY_COLS)
         gap = frame.x() - (screen.pitch.x() + screen.pitch.width())
         self.assertEqual(round(gap / cell), 1, "one empty cell separates")
-        self.assertEqual(frame.y(), screen.pitch.y(), "level with the pitch")
+        self.assertEqual(frame.y() - screen.pitch.y(), row, "a row under the pitch's top")
         self.assertEqual(frame.x() + frame.width(), window.page.width())
         self.assertEqual(grid_check.cards(window), [])
 
@@ -484,8 +487,7 @@ LONG_REASON = ("This player has already been substituted and cannot return; choo
 @BENCH
 class BenchOnTheGrid(Base):
     """S19 in each mode it has (make substitutions now, request, view, refused) and each state of its words: the pair chosen, the
-    engine's reports, the longest names. The one thing that does not fit is an injured player's row in the strip: see
-    `test_an_injured_players_row_is_why_the_bench_is_still_pending`."""
+    engine's reports, the longest names, up to three players the match has injured (each name then takes two rows of the strip)."""
 
     mode = "now"
     injured = ()
@@ -537,14 +539,14 @@ class BenchOnTheGrid(Base):
             # in the request mode no pair is made (no legal stop), so what is said there is the request's line, the original's
             # refusal of the eleven and the screen's own message
             if self.mode == "request":
-                screen.answer.refused = "two goalkeepers are selected, and the original does not allow the eleven"
+                screen.answer.refused = "Y Yyyyyyyyyy has too many goalkeepers"   # the original's own kind of message (214B:1765)
                 screen.message = "Substitution request cancelled."
             else:
                 screen.feedback_report = dict(made=[[self.off, self.on]], refused=[[self.off, self.on, LONG_REASON]], requested=[])
             screen.refresh()
 
         def refused_eleven(screen):
-            screen.answer.refused = "two goalkeepers are selected, and the original does not allow the eleven"
+            screen.answer.refused = "Y Yyyyyyyyyy has too many goalkeepers"   # the original's own kind of message (214B:1765)
             screen.refresh()
 
         def pending(screen):
@@ -564,15 +566,19 @@ class BenchOnTheGrid(Base):
             screen.answer.friendly = True
             screen.refresh()
 
-        def card_of_the_injured(screen):
-            """The bench's own words on the card of a player the match has injured: "INJURED — live match" (20 characters)."""
-            screen.answer.injured.add(self.off)
-            screen.row = screen.answer.words().index(self.off)
-            screen.refresh()
+        def injured(count):
+            def put(screen):
+                words = screen.answer.words()
+                screen.answer.injured.update(words[1:1 + count])
+                screen.row = 1
+                screen.refresh()
+            return put
 
         return (("default", lambda screen: None), ("a pair", self.pair), ("a mark", marked), ("long words", long_message),
                 ("the original's refused eleven", refused_eleven), ("waiting for the reply", pending), ("longest names", longest),
-                ("unlimited", unlimited))
+                ("unlimited", unlimited), ("one injured", injured(1)), ("three injured", injured(3)),
+                ("three injured with the longest names", lambda screen: (self.long_names(screen), injured(3)(screen))),
+                ("three injured and a pair", lambda screen: (injured(3)(screen), self.pair(screen))))
 
     def test_make_substitutions_now_fits_at_every_size_and_is_on_the_grid(self):
         self.mode = "now"
@@ -590,11 +596,10 @@ class BenchOnTheGrid(Base):
         self.mode = "refused"
         self.every_state_fits()
 
-    def test_it_is_not_on_the_grid_pending_list(self):
-        """It was listed until T212: it is on the grid with no card (T210's check); `reflow_pending` keeps it for one reason."""
+    def test_it_is_not_on_either_pending_list(self):
+        """It was listed (reflow_pending, grid_pending) until T212: the helpers now hold it to fitting and to the grid."""
         from goal2.ui.s19_bench import BenchScreen
-        self.assertNotIn("BenchScreen", grid_pending.PENDING)
-        self.assertTrue(BenchScreen.GRID)
+        self.not_pending("BenchScreen", BenchScreen)
 
     def test_its_panels_are_frames_and_the_card_is_the_squads(self):
         window, screen = self.canonical(self.make)
@@ -605,21 +610,25 @@ class BenchOnTheGrid(Base):
         self.assertEqual(screen.findChildren(QLabel, "kbd"), [], "no boxed key cap on a grid screen")
 
     def test_the_header_the_card_the_feedback_and_the_twenty_are_where_the_cells_put_them(self):
-        """The mode over the match's words (two rows), the card (69 x 18) and the twenty (20 wide, 22 rows) a cell apart, the
-        substitution's words in a frame of five rows under the card, the budget at the right of the title row."""
+        """The mode over the match's words (two rows), the card (69 x 18) under them and the substitution's words in a frame of five rows
+        under the card (the budget at the right of its first row), the twenty (20 wide, down to the foot) at the right a cell apart."""
         from goal2.ui.s19_bench import FEEDBACK_ROWS, HEAD_ROWS
         window, screen = self.canonical(self.make)
         cell, row = cells.cell_w(screen), cells.row_px(screen)
         self.assertEqual(round(screen.card.width() / cell), GridCard.COLS)
         self.assertEqual(round(screen.card.height() / row), GridCard.ROWS)
         self.assertEqual(round(screen.strip.width() / cell), 20)
-        self.assertEqual(round(screen.strip.height() / row), GridStrip.PAGE + 2)
+        self.assertEqual(round(screen.strip.height() / row), 25, "down to the foot of the body")
         self.assertEqual(round((screen.strip.x() - screen.card.x() - screen.card.width()) / cell), 1, "one empty cell separates")
         top = screen.mode_label.mapTo(screen, screen.mode_label.rect().topLeft()).y()
         self.assertEqual(screen.card.mapTo(screen, screen.card.rect().topLeft()).y(), top + HEAD_ROWS * row)
         feedback = screen.note.parentWidget().parentWidget()
+        bottom = screen.card.mapTo(screen, screen.card.rect().bottomLeft()).y() + 1
+        self.assertEqual(feedback.mapTo(screen, feedback.rect().topLeft()).y(), bottom)
         self.assertEqual(round(feedback.height() / row), FEEDBACK_ROWS)
-        self.assertEqual(screen.counter.mapTo(screen, screen.counter.rect().topLeft()).y(), 0, "in the title row")
+        self.assertIs(screen.counter.parentWidget(), screen.note.parentWidget(), "the budget is in the substitution's frame")
+        self.assertLess(screen.counter.y(), screen.note.y(), "on its first row")
+        self.assertEqual(screen.counter.x() + screen.counter.width(), screen.note.x() + screen.note.width(), "at its right")
         self.assertEqual(screen.counter.text(), "substitutions: unlimited (friendly)" if screen.answer.friendly else "substitutions left 5")
 
     def test_the_mode_is_left_of_its_button_whatever_it_says(self):
@@ -631,11 +640,11 @@ class BenchOnTheGrid(Base):
         self.assertLess(screen.mode_label.geometry().right(), screen.request_button.geometry().left())
         self.assertGreaterEqual(screen.mode_label.width(), 34 * round(cells.cell_w(screen)) - 1)
 
-    def test_the_note_takes_four_rows_the_longest_refusal_included(self):
+    def test_the_note_takes_three_rows_the_longest_refusal_included(self):
         self.mode = "refused"
         window, screen = self.canonical(self.make)
         rows = screen.note.height() // cells.row_px(screen)
-        self.assertEqual(rows, 4)
+        self.assertEqual(rows, 3)
         self.assertIn(LONG_REASON, screen.note.text())
         self.assertLessEqual(len(screen.note.lines()), rows)
 
@@ -660,13 +669,9 @@ class BenchOnTheGrid(Base):
             self.assertEqual(screen.key_bar.height(), rows, screen.enter_hint_text())
             self.assertEqual(screen.body.height(), window.page.height() - cells.row_px(screen) - rows)
 
-    def test_an_injured_players_row_is_why_the_bench_is_still_pending(self):
-        """[designed: T212] A live injury is said in the strip's row (" · INJURED", S19's own words, T188b): the name cell then needs
-        the cells of its text, and the 20-cell strip (the page's 90 less the card's 69 and the cell between) has 16 for it. The card cannot
-        be narrower (its skills and characteristics are 32 and 35 cells: 68) and the page has no more rows, so this is the one thing the
-        bench does not fit. It is why `BenchScreen` is still on `reflow_pending.PENDING`: when a decision (the owner's) fixes it, this test
-        fails and the entry goes."""
-        self.injured = (1,)
+    def shown(self, injured):
+        """The bench on a shown window at the page's own size, with `injured` (indices in the squad) said injured by the match."""
+        self.injured = injured
         window = self.window()
         screen = self.make(window)
         window.resize(*theme.PICTURE)
@@ -676,17 +681,32 @@ class BenchOnTheGrid(Base):
         self.settle(screen)
         for _ in range(3):
             self.app.processEvents()
-        found = fixed_page.problems(window)
-        self.assertEqual(len(found), 2, found)
-        self.assertTrue(all(("listRow" in text or "rowCell" in text) and "squeezed below" in text for text in found), found)
+        return window, screen
+
+    def test_an_injured_players_name_takes_two_rows_and_the_rows_under_it_move_down(self):
+        """[designed: T212] A live injury is said in the strip's row (" · INJURED", S19's own words, T188b): the name and the word are more
+        than the 16 cells the 20-cell strip leaves its name, so the row takes a second row, the paragraph of its name wrapped at the cells,
+        and the rows under it move down. The text is whole (`texts()[-1]` has INJURED), nothing is squeezed."""
+        window, screen = self.shown((1,))
+        self.assertEqual(fixed_page.problems(window), [])
         row = screen.strip.rows[1]
         self.assertIn("INJURED", row.texts()[-1])
-        need = row.cells[-1].cols()
-        have = round(row.cells[-1].width() / cells.cell_w(screen))
-        self.assertGreater(need, have, f"the name cell needs {need} cells and has {have}")
-        self.assertIn("BenchScreen", reflow_pending.PENDING)
-        # nothing else of the screen is squeezed: the grid has no card and the widgets are on the cells
+        unit = cells.row_px(screen)
+        self.assertEqual(row.height(), 2 * unit)
+        self.assertEqual(len(row.cells[-1].lines()), 2)
+        self.assertEqual(screen.strip.rows[2].y(), row.y() + 2 * unit, "the next row is under the two")
+        self.assertEqual(screen.strip.rows[0].height(), unit)
         self.assertEqual(grid_check.violations(window), [])
+
+    def test_three_injured_players_fit_and_a_fourth_is_where_the_strip_runs_out_of_rows(self):
+        """The strip has three rows more than the twenty and the gap need: three names that take two rows fit. A fourth is more than the
+        page has rows for, and `fixed_page.problems` says so (nothing is hidden): the limit of the layout, stated."""
+        window, screen = self.shown((1, 2, 3))
+        self.assertEqual(fixed_page.problems(window), [])
+        self.assertEqual([row.height() // cells.row_px(screen) for row in screen.strip.rows[:5]], [1, 2, 2, 2, 1])
+        window, screen = self.shown((1, 2, 3, 4))
+        self.assertNotEqual(fixed_page.problems(window), [], "four names of two rows are 24 rows, the strip has 23 for the players")
+
 
 
 if __name__ == "__main__":

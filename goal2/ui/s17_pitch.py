@@ -62,21 +62,21 @@ from goal2.ui.squad_card import colour
 TICK_MS = 4            # the controller's poll; the fastest speed shows 240 samples a second [designed: T166]
 COMMENTARY_ROWS = 15   # the lines the commentary box shows [designed: s17-pitch.png, the box's height]
 # [designed: T212; docs/design/ui-2026-11/proposal/README.md, s17-pitch] S17 on the 16 x 32 grid, in cells (90 columns, the 25 rows between the
-# title row and the two key rows): the score across the top (four rows: the two sides and their goals, the minute and the kind of
-# match, the last two events beside them), the pitch under it (64 x 18 cells: 1024 x 576, the mockup's 1000 x 560 to the cell; its
-# drawing is T179's and is not touched), the commentary in a frame at its right (25 columns, a cell apart, down to the foot) and under
-# the pitch the speed and the display, then what the bench or a key said. The reading pause's banner takes the score's rows.
+# title row and the two key rows): the score across the top (three rows: the two sides and their goals and the minute at the left, at
+# the right the frame of the kind of match with the last two events in it), the pitch under it (64 x 18 cells: 1024 x 576, the mockup's
+# 1000 x 560 to the cell; its drawing is T179's and is not touched) and the commentary in a frame at its right (25 columns, a cell
+# apart: the commentary, the speed and the display, your side's colour) and, under the pitch, what the bench or a key said. The reading
+# pause's banner takes the score's rows.
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
-HEAD_ROWS = 4
+HEAD_ROWS = 3             # the two sides and the minute, and at the right the frame of the kind of match: its rule and the last two events
 PITCH_COLS, PITCH_ROWS = 64, 18
 PITCH_AT = HEAD_ROWS
 SIDE_COLS = 15            # a country's name: the longest is 15 characters
+KIND_AT = 40              # the frame of the kind of match starts where the original's does (t156-045-kick-off.png: column 42 of 80)
 DIGIT_COLS = 3
-KIND_COLS = 41            # the fixture kind's label is at most 40 characters (match_view `_identity`)
 COMMENTARY_AT = PITCH_COLS + 1
 COMMENTARY_COLS = BODY_COLS - COMMENTARY_AT
-STATUS_AT = PITCH_AT + PITCH_ROWS
-NOTE_ROWS = BODY_ROWS - STATUS_AT - 1
+COMMENT_ROWS = 13   # the commentary's rows: more would put the speed and your side lower, and leave the middle of the column empty before a match has said much
 HANG_ON = "HANG ON A TICK"   # [confirmed: t156-267-quick-hang-on.png, "HANG ON"; T156-R1 step 2's full words]
 NO_SOUND = "F9: goal2 has no sound, so the key does nothing."
 REQUESTED = "Bench requested: the bench opens when the original stops for it."
@@ -586,12 +586,16 @@ class PitchScreen(Screen):
             self.goals.append(digit.text)
         self.minute = CellLabel("0′", "h1")
         head.put(self.minute, 0, 2, 5)
-        self.kind = CellLabel(self.controller.display.kind.upper(), "sub")
-        head.put(self.kind, 6, 2, KIND_COLS)
+        # The original's frame of the kind of match, its label on the rule (`-friendly----`) and the last two events inside it
+        # [confirmed: docs/original-game/images/t156-045-kick-off.png; designed: T212, the grammar of the frame].
+        self.kind = Frame(self.controller.display.kind, "red")
+        shown = Cells(BODY_COLS - KIND_AT, HEAD_ROWS - 1, "recentRows")
+        self.kind.add(shown, 1)
         self.recent = [Excerpt(), Excerpt()]
         for number, widget in enumerate(self.recent):
             widget.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-            head.put(widget, SIDE_COLS + DIGIT_COLS + 3, number, BODY_COLS - SIDE_COLS - DIGIT_COLS - 3)
+            shown.put(widget, 0, number, shown.cols)
+        head.put(self.kind, KIND_AT, 0, shown.cols, HEAD_ROWS)
         self.score_head = head
         body.put(head, 0, 0, BODY_COLS, HEAD_ROWS)
         # The reading pause's banner (`wait_for`) is on the score's rows: the score hides while it shows.
@@ -603,20 +607,24 @@ class PitchScreen(Screen):
         body.put(self.pitch, 0, PITCH_AT, PITCH_COLS, PITCH_ROWS)
         managed = self.controller.display.managed
         frame = Frame("commentary", "red")
-        inner = Cells(COMMENTARY_COLS, BODY_ROWS - PITCH_AT - 1, "commentaryRows")
+        inner = Cells(COMMENTARY_COLS, COMMENT_ROWS + 3, "commentaryRows")
         frame.add(inner, 1)
         self.commentary = CellPara("", "value")
-        inner.put(self.commentary, 0, 0, COMMENTARY_COLS, inner.rows - 1)
+        inner.put(self.commentary, 0, 0, COMMENTARY_COLS, COMMENT_ROWS)
+        # Under the commentary, as the original's page and the proposal have them: the speed and the display (two rows) and your
+        # side's colour (one).
+        self.status = CellPara("", "sub")
+        inner.put(self.status, 0, COMMENT_ROWS, COMMENTARY_COLS, 2)
         side = self.kits.name(managed) if managed is not None else "none"
         self.side_tag = CellLabel(f"YOUR SIDE: {side}", "tag")
-        inner.put(self.side_tag, 0, inner.rows - 1, COMMENTARY_COLS)
-        body.put(frame, COMMENTARY_AT, PITCH_AT, COMMENTARY_COLS, BODY_ROWS - PITCH_AT)
-        # Under the pitch: the speed and the display, then what the bench or a key said.
-        self.status = CellLabel("", "sub")
-        body.put(self.status, 0, STATUS_AT, PITCH_COLS)
+        inner.put(self.side_tag, 0, COMMENT_ROWS + 2, COMMENTARY_COLS)
+        # a row under the pitch's top: the commentary's first lines are then in the page's second band (and the pitch's surround, its first
+        # row of dots, is not beside a rule)
+        body.put(frame, COMMENTARY_AT, PITCH_AT + 1, COMMENTARY_COLS, COMMENT_ROWS + 4)
+        # Under the pitch, across its 64 cells: what the bench or a key said (four rows: a pair is thirty characters, eight fit).
         self.note = CellPara("", "note")
         colour(self.note, theme.VALUE)
-        body.put(self.note, 0, STATUS_AT + 1, PITCH_COLS, NOTE_ROWS)
+        body.put(self.note, 0, PITCH_AT + PITCH_ROWS, PITCH_COLS, BODY_ROWS - PITCH_AT - PITCH_ROWS)
 
     # The poll and what is shown.
     def display(self):

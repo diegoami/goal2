@@ -402,6 +402,12 @@ def play_saved(window, model, record):
             super().__init__(window, model, SavedController())
             self.set_enter('Match menu', self.escape)
             self.pitch.marks = record['data'].get('marks', self.pitch.marks)
+            # [designed: T212] a saved goal has no commentary: its column says what the record holds (the minute and the scorer, the score)
+            data = record['data']
+            names = data['countries']
+            from goal2.ui.pitch import HOME
+            self.lines = [f"{data['minute']}′ {data['scorer']} scores",
+                          f"{names[HOME]} {data['score'][HOME]} - {data['score'][1 - HOME]} {names[1 - HOME]}"]
             self.start_replay(record['data']['frames'], self.completed)
             self.set_enter('Match menu', self.escape)
 

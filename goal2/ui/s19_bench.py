@@ -20,7 +20,7 @@ from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtWidgets import QPushButton
 
 from goal2.ui import cells, theme
-from goal2.ui.cell_parts import GridCard, GridStrip
+from goal2.ui.cell_parts import GridCard, GridStrip, WrapStrip
 from goal2.ui.cells import CellLabel, CellPara, Cells
 from goal2.ui.frame import Frame
 from goal2.ui.live_cards import player_snapshot, card_state
@@ -44,18 +44,22 @@ OFF, ON, MARKED = " v", " ^", " *"              # [designed: T102] the strip's m
 TIMES = {"half_time": "half time", "substitution": "substitution opportunity", "pause": "during play",
          "extra_time": "before extra time"}
 # [designed: T212; docs/design/ui-2026-11/proposal/README.md, s08-squad] S19 on the 16 x 32 grid, in the squad's cells (90 columns, the 25 rows
-# between the title row and the two key rows): the mode and its button on the first row, the match's words on the second (the budget
-# of substitutions is at the right of the title row, as the squad's hint is); under them the card (69 x 18, the squad's) with the
-# twenty in a frame at its right, a cell apart, and under the card the substitution's own words in a frame of four rows.
+# between the title row and the two key rows): at the left the mode and its button on the first row and the match's words on the
+# second, under them the card (69 x 18, the squad's) and under the card the substitution's own words in a frame of five rows (the
+# budget of substitutions at the right of its first row, the words under it); at the right, a cell apart and down to the foot, the
+# twenty in a frame of 25 rows (the twenty, the gap, and three rows more: a name followed by a live injury takes two).
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
 HEAD_ROWS = 2
 CARD_AT = HEAD_ROWS
+LEFT_COLS = 69
 STRIP_COLS = 20
 STRIP_AT = BODY_COLS - STRIP_COLS
+STRIP_SPARE = BODY_ROWS - (GridStrip.PAGE + 2)
 MODE_COLS = 34          # "NO SUBSTITUTIONS BEFORE EXTRA TIME", the longest of the modes
 BUTTON_AT, BUTTON_COLS = MODE_COLS + 1, 22   # "Request substitution", a cell in from each side
+COUNTER_COLS = 35       # "substitutions: unlimited (friendly)", the longest of the budget's words
 FEEDBACK_AT = CARD_AT + GridCard.ROWS
-FEEDBACK_ROWS = BODY_ROWS - FEEDBACK_AT   # its rule and four rows of words
+FEEDBACK_ROWS = BODY_ROWS - FEEDBACK_AT   # its rule, the budget's row and three rows of words
 
 
 class BenchAnswer:
@@ -338,23 +342,25 @@ class BenchScreen(Screen):
             f"QPushButton:focus,QPushButton:hover {{color:{theme.GROUND};background-color:{theme.HIGHLIGHT};border-color:{theme.VALUE};}}")
         self.request_button.clicked.connect(self.toggle_request)
         body.put(self.request_button, BUTTON_AT, 0, BUTTON_COLS)
-        self.counter = CellLabel("", "benchCounter")
-        self.name_label.parentWidget().layout().addWidget(self.counter)   # at the right of the title row
         self.context = CellPara("", "benchMetadata")
-        body.put(self.context, 0, 1, BODY_COLS)
+        body.put(self.context, 0, 1, LEFT_COLS)
         self.card = GridCard()
         body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
         feedback = Frame("substitution", "red")
         feedback.setObjectName("benchFeedback")
         inner = Cells(GridCard.COLS, FEEDBACK_ROWS - 1, "benchFeedbackRows")
         feedback.add(inner, 1)
+        # the budget at the right of the frame's first row, the substitution's words under it
+        self.counter = CellLabel("", "benchCounter")
+        self.counter.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        inner.put(self.counter, GridCard.COLS - COUNTER_COLS, 0, COUNTER_COLS)
         self.note = CellPara("", "benchFeedbackText")
         colour(self.note, theme.VALUE)
-        inner.put(self.note, 0, 0, GridCard.COLS, inner.rows)
+        inner.put(self.note, 0, 1, GridCard.COLS, inner.rows - 1)
         body.put(feedback, 0, FEEDBACK_AT, GridCard.COLS, FEEDBACK_ROWS)
-        self.strip = GridStrip(STRIP_COLS)
+        self.strip = WrapStrip(STRIP_COLS, STRIP_SPARE)
         self.strip.chosen.connect(self.click_row)
-        body.put(self.strip, STRIP_AT, CARD_AT, STRIP_COLS, GridStrip.PAGE + 2)
+        body.put(self.strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS)
 
     # What is shown.
     def current(self):
