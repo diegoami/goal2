@@ -367,3 +367,5 @@ operational status.
 - [T205](T205.md): show the original's layout grammar as a drawn proposal (#666).
 
 - [T206](T206.md): `artifacts.py pull NAME` writes the file under its own name (#683).
+
+- [T208](T208.md): a density check: fail a screen that has a dead region (#672).
