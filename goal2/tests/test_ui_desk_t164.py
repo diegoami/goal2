@@ -19,6 +19,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -190,8 +191,7 @@ class App(unittest.TestCase):
 
     def fits(self, window):
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
-
+        assert_fits(self, window)
     def to_country_screen(self, window):
         window.start()
         self.key(window, Qt.Key.Key_N)

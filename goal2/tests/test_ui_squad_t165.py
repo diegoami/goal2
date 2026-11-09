@@ -17,6 +17,7 @@ import unittest
 from pathlib import Path
 
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -171,7 +172,7 @@ class Screens(unittest.TestCase):
     def squad(self):
         screen = open_squad(self.win, self.model)
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(self.win), [])
+        assert_fits(self, self.win)
         return screen
 
     def to_row(self, screen, index):
@@ -298,7 +299,7 @@ class Screens(unittest.TestCase):
         self.key(Qt.Key.Key_T)
         tactics = self.win.current()
         self.assertIsInstance(tactics, PlayerTacticsScreen)
-        self.assertEqual(fixed_page.problems(self.win), [])
+        assert_fits(self, self.win)
         lines = tactics.lines()
         self.assertEqual([name for name, _ in lines], ["position", "possession", "passing", "tackling"])
         self.assertNotIn("mark", [name for name, _ in lines])
@@ -322,7 +323,7 @@ class Screens(unittest.TestCase):
     def test_s10_each_of_the_eight_lines_is_the_models_change(self):
         screen = open_team_tactics(self.win, self.model)
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(self.win), [])
+        assert_fits(self, self.win)
         self.assertEqual([name for name, *_ in screen.lines()], [name for name, _ in TEAM_LINES])
         for index, (name, element) in enumerate(TEAM_LINES):
             while screen.line < index:

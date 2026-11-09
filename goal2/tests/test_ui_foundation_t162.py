@@ -17,6 +17,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -149,9 +150,7 @@ class Look(App):
                       "32 px text, stretched 1.2, at half the page size")
         window.resize(1440, 900)
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
-
-
+        assert_fits(self, window)
 class Probe(Screen):
     """A test screen: two options, one with its own key, recording what their handler did."""
     title = "probe"
@@ -267,8 +266,7 @@ class ImportData(App):
             self.assertIn(name, texts)
             self.assertEqual(screen.check_text(name), "not checked yet")
         self.assertIn("the original's help (F1), optional", texts)
-        self.assertEqual(fixed_page.problems(window), [])
-
+        assert_fits(self, window)
     def test_a_folder_missing_goal_dat_shows_it_missing_and_does_not_continue(self):
         window = self.window()
         screen = self.screen(window)
@@ -282,8 +280,7 @@ class ImportData(App):
         self.assertIn("GOAL.DAT is missing", screen.message, "data_setup's plain words are kept")
         self.assertTrue(screen.error.isVisible())
         self.assertFalse(self.target.root.exists(), "nothing is copied from a refused folder")
-        self.assertEqual(fixed_page.problems(window), [])
-
+        assert_fits(self, window)
     def test_a_complete_folder_imports_and_continues(self):
         window = self.window()
         self.screen(window)
@@ -348,7 +345,7 @@ class Help(App):
         self.assertEqual(bar.value(), line + bar.pageStep())
         self.key(window, Qt.Key.Key_Up)
         self.assertEqual(bar.value(), bar.pageStep())
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window)
         self.key(window, Qt.Key.Key_Escape)
         self.assertIs(window.current(), probe)
         self.assertEqual(window.stack, [home, probe])

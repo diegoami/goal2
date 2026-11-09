@@ -43,7 +43,7 @@ class Window(QMainWindow):
         self.stack = []
         self.career = None   # the open career, a DesktopModel, once S02 or S04 opened one
         self.leaving = False   # the player chose to quit: closing asks nothing more [designed: T168]
-        self.resize(fixed_page.WIDTH, fixed_page.HEIGHT)
+        self.resize(*theme.PICTURE)   # [designed: owner, 2026-11-09, #667] opens at the 4:3 page's own size: no side bars
 
     def _font(self):
         return theme.text_font(self.family)

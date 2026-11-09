@@ -13,7 +13,10 @@ that none re-sets its own font without it.
 Overflow is not asserted here: a screen that does not fit the 28 rows or 90 columns at 32 px is a finding of the task,
 reported by `fixed_page.problems` (tools/ui_readability_screenshots.py), never hidden.
 """
+import os
 import re
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -26,6 +29,7 @@ from PySide6.QtWidgets import QApplication, QLabel, QScrollBar, QWidget  # noqa:
 
 from goal2.desktop import data_setup, fixed_page  # noqa: E402
 from goal2.ui import theme  # noqa: E402
+from goal2.tests.reflow_pending import PENDING  # noqa: E402
 from goal2.ui.home import HomeScreen  # noqa: E402
 from goal2.ui.window import Window  # noqa: E402
 
@@ -69,6 +73,35 @@ class Cell(unittest.TestCase):
     def body(self, window):
         """A label of the home screen: any text-bearing widget has the page's one font."""
         return next(w for w in window.current().findChildren(QLabel) if w.isVisible() and w.text())
+
+    def test_a_new_window_opens_at_the_4_3_page_with_no_side_bars(self):
+        """[designed: owner, 2026-11-09, #667] The default size is 1440x1080: the page fills it exactly, scale 1."""
+        import tempfile
+        tmp = tempfile.mkdtemp(prefix="goal2-t209-")
+        self.addCleanup(__import__("shutil").rmtree, tmp, True)
+        window = Window(data_setup.Paths(Path(tmp) / "goal2"))   # no resize: its own default
+        window.show()
+        window.replace_home(HomeScreen(window))
+        self.addCleanup(lambda: (window.close(), window.deleteLater(), self.app.processEvents()))
+        self.settle(window)
+        self.assertEqual((window.width(), window.height()), (1440, 1080))
+        self.assertEqual(window.page.geometry().getRect(), (0, 0, 1440, 1080), "no side bars, no letterbox")
+        self.assertEqual(window.frame.scale, 1.0)
+
+    def test_the_pending_list_only_shrinks(self):
+        """[designed: owner, 2026-11-09, #667] `assert_fits`: a screen not listed must fit; a listed one must still overflow."""
+        from unittest import mock
+        from goal2.tests import reflow_pending
+        window = self.window()
+        reflow_pending.assert_fits(self, window)   # Home fits and is not listed
+        with mock.patch.dict(reflow_pending.PENDING, {"HomeScreen": "test"}):
+            with self.assertRaises(AssertionError, msg="listed, yet it fits: it must be removed"):
+                reflow_pending.assert_fits(self, window)
+            with mock.patch.object(fixed_page, "problems", return_value=["screen 1x1 squeezed below 2x2"]):
+                reflow_pending.assert_fits(self, window)   # listed and still overflowing: passes
+        with mock.patch.object(fixed_page, "problems", return_value=["screen 1x1 squeezed below 2x2"]):
+            with self.assertRaises(AssertionError, msg="not listed and overflowing: fails"):
+                reflow_pending.assert_fits(self, window)
 
     def test_the_font_is_one_cell_wide_and_32_high(self):
         self.assertEqual((theme.CELL_W, theme.CELL_H), (16, 32))
@@ -163,20 +196,29 @@ class Cell(unittest.TestCase):
 
 @requires.need(slow=True, modules=("pygame",), **requires.HALFTIME)   # plays a friendly under PyPy, as the journey does
 class EveryScreen(unittest.TestCase):
-    """The whole screenshot journey (goal2/ui/__main__.py `screenshots`, the one list of the window's screens) at 1440x900."""
+    """The whole screenshot journey (goal2/ui/__main__.py `screenshots`, the one list of the window's screens) and the squad
+    tool's pictures (S08 to S10), at 1440x1080, taken once for the tests below."""
 
-    def test_every_widget_of_every_screen_has_the_one_text_size(self):
+    @classmethod
+    def setUpClass(cls):
         import tempfile
         from goal2.ui.__main__ import screenshots
-
+        sys.path.insert(0, str(ROOT / "tools"))
+        try:
+            import ui_squad_screenshots
+        finally:
+            sys.path.remove(str(ROOT / "tools"))
         app = QApplication.instance() or QApplication([])
         font_before = app.font()
-        seen, wrong = [], []
+        cls.seen, cls.wrong, cls.overflowing = [], [], set()
         original = Window.grab
 
         def grab(window, *values):
             screen = window.current()
-            seen.append(type(screen).__name__)
+            name = type(screen).__name__
+            cls.seen.append(name)
+            if fixed_page.problems(window):
+                cls.overflowing.add(name)
             scale = window.frame.scale
             want = round(theme.TEXT * theme.STRETCH * scale)
             stretch = theme.stretch_percent(scale)
@@ -185,24 +227,63 @@ class EveryScreen(unittest.TestCase):
                     continue
                 font = widget.font()
                 if font.pixelSize() != want or font.stretch() != stretch:
-                    wrong.append(f"{seen[-1]} {widget.objectName() or type(widget).__name__}: "
-                                 f"{font.pixelSize()} px stretch {font.stretch()}, wanted {want} px stretch {stretch}")
+                    cls.wrong.append(f"{name} {widget.objectName() or type(widget).__name__}: "
+                                     f"{font.pixelSize()} px stretch {font.stretch()}, wanted {want} px stretch {stretch}")
                 if hasattr(widget, "type_at"):
                     drawn = widget.type_at(theme.TEXT)
                     if drawn.pixelSize() != round(theme.TEXT * widget.scale_y()) or drawn.stretch() != stretch:
-                        wrong.append(f"{seen[-1]} {type(widget).__name__}.type_at: {drawn.pixelSize()} px, stretch "
-                                     f"{drawn.stretch()}")
+                        cls.wrong.append(f"{name} {type(widget).__name__}.type_at: {drawn.pixelSize()} px, stretch "
+                                         f"{drawn.stretch()}")
             return original(window, *values)
 
         Window.grab = grab
         try:
             with tempfile.TemporaryDirectory(prefix="goal2-t209-journey-") as out:
-                screenshots(Path(out))
+                screenshots(Path(out) / "journey")
+                ui_squad_screenshots.screenshots(Path(out) / "squad")
         finally:
             Window.grab = original
             app.setFont(font_before)
-        self.assertGreater(len(set(seen)), 15, f"the journey reached {sorted(set(seen))}")
-        self.assertEqual(wrong, [])
+
+    def test_every_widget_of_every_screen_has_the_one_text_size(self):
+        self.assertGreater(len(set(self.seen)), 15, f"the journey reached {sorted(set(self.seen))}")
+        self.assertEqual(self.wrong, [])
+
+    def test_every_pending_screen_the_journey_reaches_still_overflows(self):
+        """[designed: owner, 2026-11-09, #667] A screen that now fits must leave `PENDING`. (A screen the journey does not
+        reach is held to the same rule where the tests that open it call `assert_fits`.)"""
+        reached = {key for key in PENDING if "@" not in key} & set(self.seen)   # a size-keyed entry is held by its own test
+        self.assertGreater(len(reached), 10, "the journey reaches most of the pending screens")
+        fits = sorted(name for name in reached if name not in self.overflowing)
+        self.assertEqual(fits, [], "these screens fit now: remove them from reflow_pending.PENDING")
+
+
+def target_branch():
+    """The branch this run is for: the pull request's base in CI, else the pushed branch, else the checked-out one."""
+    base = os.environ.get("GITHUB_BASE_REF") or os.environ.get("GITHUB_REF_NAME")
+    if base:
+        return base
+    done = subprocess.run(["git", "branch", "--show-current"], cwd=ROOT, capture_output=True, text=True)
+    return done.stdout.strip()
+
+
+class PendingReflow(unittest.TestCase):
+    def test_every_entry_is_a_ui_screen_with_a_reason(self):
+        source = "\n".join(path.read_text(encoding="utf-8") for path in sorted((ROOT / "goal2" / "ui").glob("*.py")))
+        for key, reason in PENDING.items():
+            with self.subTest(key=key):
+                name = key.split("@")[0]
+                self.assertRegex(key, r"^[A-Za-z]+(@\d+x\d+)?$")
+                self.assertIn(f"class {name}(", source, "a screen class of goal2/ui")
+                self.assertTrue(reason.strip(), "the reason: what the screen needs")
+
+    def test_pending_reflow_is_empty(self):
+        """THE GATE for merging the integration branch `ui/foundation-32` into main [designed: owner, 2026-11-09, #667]:
+        it fails while `reflow_pending.PENDING` is not empty. On the integration branch and on the task branches that
+        target it, the list is the tolerated overflow (docs/tasks/T209.md, Done-when 6) and this is skipped."""
+        if target_branch() != "main":
+            self.skipTest("ui/foundation-32 only: the list must be empty before this branch reaches main")
+        self.assertEqual(PENDING, {}, "every screen must be reflowed to the 90 x 28 grid before this reaches main")
 
 
 if __name__ == "__main__":

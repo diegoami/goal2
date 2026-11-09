@@ -122,7 +122,7 @@ def install(app) -> str:
 
 
 def stylesheet(family: str = FONT_FAMILY) -> str:
-    """The window's style sheet, composed for the 1440x900 page; the page scales every px length with the window
+    """The window's style sheet, composed for the 1440x896 page (90 x 28 cells); the page scales every px length with the window
     (goal2/desktop/fixed_page.py). The sizes and colours are the mockups' (docs/design/ui-2026-11/mockups/style.css):
     [designed: owner, 2026-11-03, #526]."""
     return f"""

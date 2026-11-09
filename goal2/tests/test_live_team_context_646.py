@@ -3,6 +3,7 @@ import copy
 from types import SimpleNamespace
 import unittest
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 from goal2.tests import test_live_tactics_characteristics_641 as current
 from goal2.tests.test_ui_start_t163 import App
 from goal2.tests.test_core_team_panels_t144 import FIXTURES
@@ -77,7 +78,7 @@ class LiveTeamContext(App):
                     from goal2.desktop import fixed_page
                     for width,height in ((1440,900),(1800,1125),(2110,1213)):
                         window.resize(width,height);self.app.processEvents();window.grab()
-                        self.assertEqual(fixed_page.problems(window),[],(width,height))
+                        assert_fits(self, window, (width,height))
                         self.assertEqual(len(screen.strip.shown_texts()),20)
                         for widget in (*screen.team_header.team.values(),*screen.team_header.ranks.values(),
                                        *screen.team_header.shape.values(),*screen.skills.labels.values(),

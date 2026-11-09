@@ -3,6 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 @requires.need(modules=('PySide6',), **requires.HALFTIME)
 class CardTable(unittest.TestCase):
@@ -43,8 +44,7 @@ class CardTable(unittest.TestCase):
                 self.assertEqual(view.positions.values['club position'].text(),data['club_position'])
                 self.assertEqual(view.positions.values['cards'].text(),', '.join(data['cards']) or 'none')
                 self.assertEqual(len([r for r in self.screen.strip.rows if r.isVisible()]),20)
-                self.assertEqual(fixed_page.problems(self.window),[],(row,width,height))
-
+                assert_fits(self, self.window, (row,width,height))
     def test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels(self):
         from PySide6.QtGui import QColor
         from goal2.ui import theme
@@ -88,7 +88,7 @@ class CardTable(unittest.TestCase):
             for width,height in ((1440,900),(1800,1125),(2110,1213)):
                 self.window.resize(width,height);self.app.processEvents()
                 self.assertIn('performance',screen.card.facts.labels)
-                self.assertEqual(fixed_page.problems(self.window),[],(mode,width,height))
+                assert_fits(self, self.window, (mode,width,height))
             QTest.keyClick(self.window,Qt.Key.Key_Down)
             QTest.keyClick(self.window,Qt.Key.Key_Return);self.app.processEvents()
             self.assertEqual(chosen,[words[1]])
@@ -110,8 +110,7 @@ class BenchTable(unittest.TestCase):
             self.assertIn('cards',self.bench.card.positions.labels)
             self.assertIn('INJURED',self.bench.card.readiness.text())
             self.assertEqual(len([r for r in self.bench.strip.rows if r.isVisible()]),20)
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
-
+            assert_fits(self, self.window, (width,height))
     def test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened(self):
         from goal2.desktop import fixed_page
         # Declared UI-only extreme-field fixture; no natural game state is claimed.
@@ -128,6 +127,5 @@ class BenchTable(unittest.TestCase):
             self.assertEqual(self.bench.card.positions.values['cards'].text(),'carried booking, booked, sent off')
             self.assertEqual(self.bench.card.positions.values['position'].text(),'defensive midfielder')
             self.assertEqual(self.bench.card.facts.values['foot'].text(),'two footed')
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
-
+            assert_fits(self, self.window, (width,height))
 if __name__=='__main__':unittest.main()

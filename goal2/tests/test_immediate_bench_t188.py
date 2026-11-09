@@ -3,6 +3,7 @@ import copy
 import unittest
 from types import SimpleNamespace
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 @requires.need(modules=('PySide6','pygame'),**requires.HALFTIME)
 class ImmediateBench(unittest.TestCase):
@@ -180,7 +181,7 @@ class ImmediateBench(unittest.TestCase):
         for width,height in ((1440,900),(2110,1213)):
             self.window.resize(width,height)
             for _ in range(3):self.app.processEvents()
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+            assert_fits(self, self.window, (width,height))
             self.assertEqual(len(self.bench.strip.shown_texts()),20)
 
 
@@ -242,7 +243,7 @@ class ActualImmediateBench(unittest.TestCase):
                     test.assertTrue(controller.stop.data.get('edited'))
                     test.assertIn('Made:',screen.note.text())
                     verify_bench(test,screen,controller,card_receipts,'after-swap')
-                    test.assertEqual(fixed_page.problems(self.window),[])
+                    assert_fits(test, self.window)
                     self.out.setdefault('pairs',[]).append([target,on])
                     self.out.setdefault('put_on',[]).append(on)
                     self.out.setdefault('taken_off',[]).append(target)

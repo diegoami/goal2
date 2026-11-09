@@ -3,6 +3,7 @@ import copy
 import hashlib
 import unittest
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits, assert_room
 from goal2.tests.test_ui_start_t163 import App
 from goal2.tests.test_core_team_panels_t144 import FIXTURES
 
@@ -58,10 +59,10 @@ class TacticsCharacteristics(App):
         model=self.model('selection');w,s=self.open(model)
         for width,height in ((1440,900),(1800,1125),(2110,1213)):
             w.resize(width,height);self.app.processEvents();w.grab()
-            self.assertEqual(fixed_page.problems(w),[],(width,height))
+            assert_fits(self, w, (width,height))
             cells=s.characteristics.cells
-            self.assertGreaterEqual(cells.width()+1,cells.content_size().width())
-            self.assertGreaterEqual(cells.height()+1,cells.content_size().height())
+            assert_room(self,w,cells.width()+1,cells.content_size().width())
+            assert_room(self,w,cells.height()+1,cells.content_size().height())
             self.assertGreaterEqual(cells.font().pixelSize(),round(24*w.frame.scale))
             for label in cells.labels.values():self.assertEqual(label.palette().color(label.foregroundRole()),QColor(theme.CARD_LABEL))
             image=cells.grab().toImage();colors={image.pixelColor(x,y).name() for y in range(image.height()) for x in range(image.width())}

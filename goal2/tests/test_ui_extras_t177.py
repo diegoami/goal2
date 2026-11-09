@@ -27,6 +27,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 requires.require(modules=("PySide6",))
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -122,8 +123,7 @@ class App(unittest.TestCase):
 
     def fits(self, window):
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
-
+        assert_fits(self, window)
     def tagged(self, screen, text):
         """The screen marks the extra as a goal2 addition, as the desk's re-import."""
         tags = [w.text() for w in screen.findChildren(QLabel, "tagNew") if w.isVisible()]

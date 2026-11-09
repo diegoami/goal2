@@ -2,6 +2,7 @@
 import unittest
 from types import SimpleNamespace
 from goal2.tests import requires
+from goal2.tests.reflow_pending import assert_fits
 
 @requires.need(modules=('PySide6','pygame'), **requires.HALFTIME)
 class Readable(unittest.TestCase):
@@ -48,8 +49,7 @@ class Readable(unittest.TestCase):
         for width,height in ((1440,900),(2110,1213),(2880,1800),(702,439),(720,450)):
             self.window.resize(width,height)
             for _ in range(3): self.app.processEvents()
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
-
+            assert_fits(self, self.window, (width,height))
     def test_refusal_is_honest_and_names_on_then_off_once(self):
         from goal2.ui.s19_bench import BenchScreen
         from goal2.ui.squad_card import full_name
@@ -89,7 +89,7 @@ class Readable(unittest.TestCase):
             self.window.resize(width,height)
             for _ in range(3):
                 self.app.processEvents();self.pitch.refresh()
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+            assert_fits(self, self.window, (width,height))
             self.assertIn(last,self.pitch.commentary.text())
             self.assertLessEqual(self.pitch.commentary.heightForWidth(self.pitch.commentary.width()),
                                  self.pitch.commentary.height())
@@ -112,7 +112,7 @@ class Readable(unittest.TestCase):
             for _ in range(3):self.app.processEvents();self.pitch.refresh()
             self.assertTrue(self.pitch.wait_head.isVisible())
             self.assertIn('PAUSED',self.pitch.wait_head.text())
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+            assert_fits(self, self.window, (width,height))
         QTest.keyClick(self.window,Qt.Key.Key_Space)
         self.app.processEvents()
         self.assertTrue(self.pitch.home.isVisible())
@@ -129,7 +129,7 @@ class Readable(unittest.TestCase):
         for width,height in ((1440,900),(2110,1213)):
             self.window.resize(width,height)
             for _ in range(3):self.app.processEvents();self.pitch.refresh()
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+            assert_fits(self, self.window, (width,height))
             self.assertIn(text,self.pitch.commentary.text())
             for label in self.pitch.recent:
                 self.assertLessEqual(label.fontMetrics().horizontalAdvance(label.text()),label.width())
@@ -141,6 +141,5 @@ class Readable(unittest.TestCase):
         for width,height in ((702,439),(720,450),(1440,900)):
             self.window.resize(width,height)
             for _ in range(3):self.app.processEvents()
-            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
-
+            assert_fits(self, self.window, (width,height))
 if __name__=='__main__': unittest.main()
