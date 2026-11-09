@@ -29,6 +29,20 @@ def join(remote: str, name: str) -> str:
     return f"{remote}{name}" if remote.endswith(":") else f"{remote}/{name}"
 
 
+def pull_commands(cfg: dict, names: list[str]) -> list[list[str]]:
+    """The rclone arguments a pull runs.
+
+    A named pull copies each file to `localDir/<its own name>`. The source is the remote-joined
+    path, and a drive remote ends with ':' ("goal2drive:NAME"), which holds no path separator, so
+    the destination must come from the name the caller gave, never from the joined source: that is
+    what left files called `.cache/goal2drive:NAME` behind (#683).
+    """
+    if not names:
+        return [["copy", cfg["remote"], str(cfg["localDir"])]]
+    return [["copyto", join(cfg["remote"], name), str(cfg["localDir"] / Path(name).name)]
+            for name in names]
+
+
 def rclone(cfg: dict) -> str:
     exe = shutil.which("rclone")
     if not exe or not cfg["remote"]:
@@ -50,10 +64,8 @@ def main(argv: list[str]) -> int:
     exe = rclone(cfg)
     cfg["localDir"].mkdir(parents=True, exist_ok=True)
     if command == "pull":
-        sources = [join(cfg["remote"], n) for n in names] or [cfg["remote"]]
-        for src in sources:
-            dest = cfg["localDir"] if not names else cfg["localDir"] / Path(src).name
-            subprocess.run([exe, "copy" if not names else "copyto", src, str(dest)], check=True)
+        for arguments in pull_commands(cfg, names):
+            subprocess.run([exe, *arguments], check=True)
         return 0
     if not names:
         sys.exit("push needs at least one file")

@@ -365,3 +365,5 @@ operational status.
 
 - [T204](T204.md): a manual of the build as it ships, with its own screenshots (#664).
 - [T205](T205.md): show the original's layout grammar as a drawn proposal (#666).
+
+- [T206](T206.md): `artifacts.py pull NAME` writes the file under its own name (#683).
