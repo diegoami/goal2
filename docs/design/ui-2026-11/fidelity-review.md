@@ -189,6 +189,18 @@ magick docs/original-game/images/manager-menu.png -colorspace Gray \
     -crop 25x25% -format '%[fx:mean*100]\n' info:-
 ```
 
+**The density check** (§2.2, T208, #672) — the same measure as a command, with no ImageMagick needed (the
+PNG is decoded in Python). It takes screens or folders of them, prints the 4×4 table of each screen that has
+a tile under the floor (default 1.5 %, `--floor` to override for a deliberate exception) and exits non-zero:
+
+```sh
+python3 docs/design/ui-2026-11/check_density.py docs/design/ui-2026-11/T178-screens/s06-desk.png
+```
+
+It agrees with the `magick` command above to 0.05 percentage points on a committed screen
+(`goal2/tests/test_density_check_672.py`). [designed: owner, 2026-11-08] No gate runs it yet; #667 wires the
+floor into the UI tasks' Done-when lines.
+
 **The grid** (§2.1) — `goal2/ui/theme.py`'s `CELL`, `TEXT` and `HEADING_SIZE`, and the row pitch of
 a list measured from the horizontal projection of its column.
 
