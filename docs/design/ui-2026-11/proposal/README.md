@@ -30,7 +30,7 @@ Every rule in the backlog, in one place, so the whole grammar can be seen workin
 
 | | |
 | --- | --- |
-| **The cell** (#667) | 16 × 32, twice the original's 8 × 16; text at 32 px. Today `goal2/ui/theme.py` has `CELL = 16`, `TEXT = 24`, `HEADING_SIZE = 32` (the owner's #598 raised the text from 16 to 24), so the page is about 90 × 37 lines against the original's 80 × 25. At 16 × 32 it is 90 × 28, and the original's layouts transfer almost one for one. |
+| **The cell** (#667) | 16 × 32, twice the original's 8 × 16; text at 32 px. On 2026-11-08 `goal2/ui/theme.py` had `CELL = 16`, `TEXT = 24`, `HEADING_SIZE = 32` (the owner's #598 raised the text from 16 to 24), so the page was about 90 × 37 lines against the original's 80 × 25. At 16 × 32 it is 90 × 28, and the original's layouts transfer almost one for one. |
 | **The grid** (#668) | Every edge, gutter, row and bar is a whole number of cells. No padding, no floating card. |
 | **One text size** (#669) | Every glyph on every screen is the same size. Hierarchy is colour, frame and position. |
 | **The frame** (#670) | A rule with the label sitting on it, lowercase, brown or red: `-name------`, `-rankings-`, `-characteristics-`. |

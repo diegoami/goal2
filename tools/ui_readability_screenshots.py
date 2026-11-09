@@ -67,25 +67,32 @@ def main():
         records.append(entry)
         return base
     Window.grab=grab
+    written=[]
     try:
-        screenshots(args.output/'journey')
+        written=screenshots(args.output/'journey')
     finally:
         Window.grab=original
+        # The journey takes one picture (one `grab`) per name, in order: each capture says which picture it belongs to.
+        if len(records)==len(written):
+            for record,path in zip(records,written):record['journey']=path.name
         (args.output/'layout-report.json').write_text(json.dumps(records,indent=2)+'\n')
     bad=[(r['screen'],r['phase'],s['width'],s['height'],s['problems']) for r in records for s in r['sizes'] if s['problems']]
-    if not args.no_docs:publish(args.output,records,theme.TEXT)
+    if not args.no_docs:publish(args.output,records,[path.name for path in written],theme.TEXT)
     print(json.dumps(dict(captures=len(records)*len(DIMENSIONS),problems=bad),indent=2))
     return bool(bad)
 
-def publish(output,records,text):
-    """Regenerate the design's receipt and its eight pictures from the capture just made."""
+def publish(output,records,journey_names,text):
+    """Regenerate the design's receipt and its eight pictures from the capture just made. A picture taken twice under one
+    name is the last one, which is the file the journey leaves."""
     picture,large=DIMENSIONS[0],DIMENSIONS[-1]
+    if len(records)!=len(journey_names):
+        raise SystemExit(f'{len(records)} captures for {len(journey_names)} journey pictures: they no longer pair up')
+    entries=dict(zip(journey_names,records))
     selected=[]
     for journey,name in SELECTED.items():
-        digest=sha(output/'journey'/journey)
-        entry=next((r for r in records for s in r['sizes'] if (s['width'],s['height'])==picture and s['sha256']==digest),None)
+        entry=entries.get(journey)
         if entry is None:
-            raise SystemExit(f'the journey picture {journey} matches no capture at {picture}: its screen was not visited')
+            raise SystemExit(f'the journey picture {journey} was not taken: its screen was not visited')
         for size,folder in ((picture,'images'),(large,'images/t186-large')):
             capture=next(s for s in entry['sizes'] if (s['width'],s['height'])==size)
             target=DESIGN/folder/f'{name}.png'
@@ -94,8 +101,8 @@ def publish(output,records,text):
                                  path=str(target.relative_to(ROOT)).replace('\\','/'),sha256=capture['sha256']))
     commit=subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,capture_output=True,text=True).stdout.strip()
     report=output/'layout-report.json'
-    problems=[dict(screen=r['screen'],phase=r['phase'],width=s['width'],height=s['height'],count=len(s['problems']),
-                   first=s['problems'][:3]) for r in records for s in r['sizes'] if s['problems']]
+    problems=[dict(picture=r['journey'],screen=r['screen'],phase=r['phase'],width=s['width'],height=s['height'],
+                   count=len(s['problems']),first=s['problems'][:3]) for r in records for s in r['sizes'] if s['problems']]
     receipt=dict(source_commit=commit,normal_text_px=text,
                  capture_environment='Qt offscreen on this computer; native Windows/package checks separate',
                  dimensions=[list(d) for d in DIMENSIONS],captures=len(records)*len(DIMENSIONS),
