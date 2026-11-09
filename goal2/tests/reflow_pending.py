@@ -31,8 +31,6 @@ PENDING = {
     "NewGameScreen": "box 900x793 squeezed below 903x537",
     "PlayersScreen": "screen 1440x1080 squeezed below 1132x1119",
     "CountryScreen": "screen 1440x1080 squeezed below 1688x1176",
-    "DeskScreen": "screen 1440x1080 squeezed below 1531x1203",
-    "SquadScreen": "screen 1440x1080 squeezed below 1281x1232",
     "TeamInfoScreen": "screen 1440x1080 squeezed below 1337x1229",
     "FixturesScreen": "screen 1440x1080 squeezed below 1274x1222",
     "TournamentScreen": "screen 1440x1080 squeezed below 1456x938",

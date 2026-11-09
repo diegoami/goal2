@@ -377,7 +377,9 @@ class PendingReflow(unittest.TestCase):
         key(Qt.Key.Key_Return)
         look()
         reached = {key_ for key_ in PENDING if "@" not in key_} & set(visited)
-        self.assertGreaterEqual(len(reached), 10, f"visited {visited}")
+        # [designed: T211] The list shrinks as screens are reflowed, so the walk's reach is its own screens (the ten it opens),
+        # not how many of them are still listed.
+        self.assertGreaterEqual(len(set(visited)), 10, f"visited {visited}")
         self.assertEqual(sorted(reached - overflowing), [], "these screens fit at 1440x1080 now: remove them from PENDING")
 
     def test_the_help_viewer_still_falls_short_at_720x450(self):

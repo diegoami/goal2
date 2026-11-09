@@ -373,7 +373,8 @@ operational status.
 - [T170d](T170d.md): the Core oracle for one sealed round, and its terminal step (#566).
 - [T209](T209.md): the foundation, part 1: a 16 × 32 cell, one text size, 4:3 (#667).
 - [T210](T210.md): the foundation, part 2: the frame as a rule with its label, and a grid check (#667).
-- [T211](T211.md): reflow the management screens: desk, squad, country, team info, fixtures (#667).
+- [T211](T211.md): reflow the management screens, part 1: desk and squad (#667).
+- [T211b](T211b.md): reflow the management screens, part 2: country, team info, fixtures (#667).
 - [T212](T212.md): reflow the selection screens: bench, captain, taker, tactics, pitch (#667).
 - [T213](T213.md): reflow the match-day flow (#667).
 - [T214](T214.md): reflow the start flow: import, start, friendly, new game, players (#667).

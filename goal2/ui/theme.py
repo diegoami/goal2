@@ -152,11 +152,20 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #h1, #h2 {{ color: {TEXT_BRIGHT}; }}
 #tag {{ color: {HEADING}; border: 1px solid {HEADING}; padding: 2px 8px; }}
 #tagNew {{ color: {GOALKEEPER}; border: 1px solid {GOALKEEPER}; padding: 2px 8px; }}
+#screen[grid="true"] #tagNew {{ color: {GOALKEEPER}; border: none; padding: 0px; }}
 #error {{ color: {BAD}; }}
 #field {{ background: {GROUND}; border: 2px solid {FRAME}; }}
 #option {{ background: {GROUND}; border: 1px solid {FRAME_DARK}; }}
 #option[on="true"] {{ background: {HIGHLIGHT}; border: 1px solid {HIGHLIGHT}; }}
 #option[on="true"] QLabel {{ color: {ON_HIGHLIGHT}; }}
+#keyCap {{ color: {TEXT_BRIGHT}; }}
+#enterBar {{ background: {HIGHLIGHT}; }}
+#enterBar #enterText, #enterBar #keyCap {{ color: {ON_HIGHLIGHT}; background: transparent; }}
+#gridOption, #gridLine {{ background: {GROUND}; }}
+#gridOption QLabel {{ color: {HEADING}; }}
+#gridLine QLabel {{ color: {GOALKEEPER}; }}
+#gridOption[on="true"], #gridLine[on="true"] {{ background: {HIGHLIGHT}; }}
+#gridOption[on="true"] QLabel, #gridLine[on="true"] QLabel {{ color: {ON_HIGHLIGHT}; }}
 #waitBox {{ background: {GROUND}; border: 1px solid {HIGHLIGHT}; }}
 #waitHead {{ color: {VALUE}; }}
 #dialog {{ background: {GROUND}; border: 2px solid {HEADING}; }}

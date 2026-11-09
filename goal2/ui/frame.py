@@ -21,7 +21,7 @@ from PySide6.QtGui import QColor, QFont, QPainter
 from PySide6.QtWidgets import QSizePolicy, QVBoxLayout, QWidget
 
 from goal2.desktop import fixed_page
-from goal2.ui import theme
+from goal2.ui import cells, theme
 
 DASH = "-"
 # [confirmed: docs/design/ui-2026-11/README.md §3 palette table: "card labels, brown" `#aa5500`, "card headings, red"
@@ -40,7 +40,7 @@ def rule_text(label: str, cols: int) -> str:
 
 
 class FrameRule(QWidget):
-    """The one-row rule of a frame, drawn at the cell. Its height is one cell row (a length the page scales)."""
+    """The one-row rule of a frame, drawn at the cell. Its height is one cell row (`cells.row_px`)."""
 
     def __init__(self, label: str, kind: str = "brown", parent: QWidget | None = None):
         super().__init__(parent)
@@ -48,9 +48,13 @@ class FrameRule(QWidget):
             raise ValueError(f"a frame is {' or '.join(KINDS)}, not {kind!r}")
         self.setObjectName("frameRule")
         self.label, self.kind = label.lower(), kind
+        # One row. [designed: T211] Its height is the page's row (`cells.row_px`, the cell rounded down) by the size hint of a fixed
+        # policy, not a pair of recorded lengths that `fixed_page.apply` rounds to nearest: 28 rows must never exceed the page (at the
+        # scale 0.98 a clamped Windows window has, a cell is 37.65 pixels and the nearest is 38).
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.setMinimumHeight(theme.CELL_H)   # one row; apply() scales it with the page's vertical scale
-        self.setMaximumHeight(theme.CELL_H)
+        # [designed: T211] The widget's colour is its label's, so what reads a widget's colour (the palette) reads the rule's
+        # (the style sheet's `*` rule would otherwise make it white).
+        self.setStyleSheet(f"color: {self.label_colour()};")
 
     def cell_width(self) -> float:
         """A cell's width in pixels as this page draws it (16 at scale 1)."""
@@ -68,7 +72,8 @@ class FrameRule(QWidget):
         return KINDS[self.kind]
 
     def minimumSizeHint(self) -> QSize:
-        return QSize(round((len(self.label) + 2) * self.cell_width()), self.minimumHeight())
+        # floor: a rounded edge never squeezes it
+        return QSize(int((len(self.label) + 2) * self.cell_width()), cells.row_px(self))
 
     def sizeHint(self) -> QSize:
         return self.minimumSizeHint()
@@ -108,6 +113,12 @@ class Frame(QWidget):
     @property
     def label(self) -> str:
         return self.rule.label
+
+    def set_label(self, label: str) -> None:
+        """A new label on the rule (a panel whose title is its content: a strip's country). [designed: T211]"""
+        self.rule.label = label.lower()
+        self.rule.updateGeometry()
+        self.rule.update()
 
     def add(self, widget: QWidget, stretch: int = 0) -> QWidget:
         """Put `widget` in the panel under the rule."""
