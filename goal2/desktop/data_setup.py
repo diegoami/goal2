@@ -267,7 +267,8 @@ def make_dialog(target, choose=None):
             self.choose_button.clicked.connect(self.choose_and_import);self.quit_button.clicked.connect(self.reject)
             row.addWidget(self.choose_button);row.addStretch(1);row.addWidget(self.quit_button)
             layout.addLayout(row)
-            self.choose = choose or (lambda: QFileDialog.getExistingDirectory(self, "The folder with GOAL.EXE and GOAL.DAT") or None)
+            self.choose = choose or (lambda: QFileDialog.getExistingDirectory(
+                self, "The folder with GOAL.EXE and GOAL.DAT") or None)
             self.resize(760, 260)
 
         def choose_and_import(self):
