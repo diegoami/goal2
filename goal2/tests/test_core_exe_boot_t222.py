@@ -344,6 +344,7 @@ class FirstWatchedMatch(unittest.TestCase):
     def play(self, wait):
         from goal2.core import views
         driver = new_game(wait)
+        driver.trail = None          # a watched match's thousands of waits each hold a memory snapshot
         got = {}
         finish = driver.finish
 
