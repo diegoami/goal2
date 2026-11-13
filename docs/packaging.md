@@ -8,6 +8,9 @@ which a frozen .exe cannot run; bundled interpreters run them unchanged. Nothing
 (CLAUDE.md rule 14): the player's own data comes in through T153. No installer, signing or updates. [designed: owner,
 2026-11-13, #705] v0.1 is published as this build's ZIP, for a player with their own GOAL.EXE and GOAL.DAT
 ([its release notes](releases/v0.1.0.md)); the package workflow itself makes no release, tag or publication.
+[designed: T229] A release is published by hand with `.github/workflows/release.yml` (workflow_dispatch: the run id of a
+green Package run on `main`, the tag, the notes file): it attaches that run's own ZIP, as smoked, with its SHA-256, at
+the run's commit, after `check-zip` again; it refuses any other run and an existing tag.
 
 ## The folder
 
