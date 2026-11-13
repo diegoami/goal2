@@ -204,13 +204,14 @@ def main(argv=None) -> int:
         time.sleep(.002)
     wall = round(time.monotonic() - started, 1)
     from goal2.core import views
-    board = views.board(model.state) if model.core.stopped is None else None
+    settled = model.core.stopped is None and model.core.wait is not None   # [T227] a raise can leave a step running
+    board = views.board(model.state) if settled else None
     steps["watched_match"] = {
         "pass": model.core.stopped is None and not raised and "full-time" in stops and live[0] > 100 and bool(viewers)
-                and not model.in_round and model.core.wait.kind == "manager-menu"
+                and settled and not model.in_round and model.core.wait.kind == "manager-menu"
                 and ("match-live", ord("r")) not in model.driver.log,
         "match_wall_s": wall, "live_poses": live[0], "stops": stops, "viewers": len(viewers),
-        "at": model.core.wait.kind, "stopped": model.core.stopped, "status": window.status.text(),
+        "at": model.core.wait.kind if model.core.wait is not None else None, "stopped": None if model.core.stopped is None else str(model.core.stopped), "status": window.status.text(),
         "clicked": clicked[-40:], "score": (board or {}).get("score")}
     window.close()
     app.processEvents()
