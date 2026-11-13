@@ -5,8 +5,9 @@ as a folder that bundles its Pythons instead of freezing goal2: the official emb
 PyPy 3.11 runs the match workers (CLAUDE.md, owner 2026-10-29). The workers and the pitch viewer start as
 `python -m ...` subprocesses (`goal2/game/engine_python.py`, `goal2/desktop/jobs.py`, `goal2/desktop/watched.py`),
 which a frozen .exe cannot run; bundled interpreters run them unchanged. Nothing of the original game ships
-(CLAUDE.md rule 14): the player's own data comes in through T153. No installer, signing or updates; no release is
-made from this build yet.
+(CLAUDE.md rule 14): the player's own data comes in through T153. No installer, signing or updates. [designed: owner,
+2026-11-13, #705] v0.1 is published as this build's ZIP, for a player with their own GOAL.EXE and GOAL.DAT
+([its release notes](releases/v0.1.0.md)); the package workflow itself makes no release, tag or publication.
 
 ## The folder
 
@@ -20,11 +21,13 @@ made from this build yet.
 | `pypy/` | the PyPy 3.11 Windows release | the match workers, about four times CPython's speed [confirmed: goal2-archaeology #620, CLAUDE.md 2026-10-29] |
 | `pypy/Lib/site-packages/goal2/` | goal2 from the same wheel, nothing else | the workers import only goal2's pure-Python modules; PyPy never sees the UI's packages |
 | `pypy/vcruntime140*.dll` | copied from the CPython | [derived: T147, the pinned archive's file list and `pypy.exe`'s import table] `pypy.exe` imports `VCRUNTIME140.dll` but PyPy does not ship it; without it a machine without the Visual C++ runtime cannot start a match |
-| `goal2.cmd`, `goal2-new.cmd`, `goal2_launch.py` | the launchers: today's desktop (the default) and the new window | below |
-| `portable-files.json` | every file of the folder and its source: `cpython`, `pypy`, `wheels`, `goal2`, `launcher` | the original-file checks |
+| `goal2.cmd`, `goal2_launch.py` | the launcher: today's desktop over the core route | below |
+| `goal2-new.cmd` | a development build's only (`--development`): the new window's launcher | below |
+| `README.txt` | the player's README (`tools/portable/README.txt`, with Windows line ends): what goal2 is, the files needed and where they come from, how to start, where saves live, v0.1's limits | [designed: T225] |
+| `portable-files.json` | every file of the folder and its source (`cpython`, `pypy`, `wheels`, `goal2`, `launcher`, `readme`), and the build's kind, `release` or `development` | the original-file and launcher checks |
 
 pip's console-script launchers (`Scripts/`, `bin/` under each site-packages) are left out: they are bound to the
-building interpreter's path, and the launchers are `goal2.cmd` and `goal2-new.cmd`.
+building interpreter's path, and the launcher is `goal2.cmd`.
 
 ## Pinned downloads
 
@@ -36,12 +39,15 @@ version and a hash. Updating an interpreter or a wheel means changing its versio
 
 ## The launchers
 
-The folder has two launchers, one per window:
-
-| Launcher | Starts | |
+| Launcher | Starts | In |
 |---|---|---|
-| `goal2.cmd` | today's desktop, `goal2.desktop` (docs/desktop-management.md) | **the default**: the one this page and the player start with |
-| `goal2-new.cmd` | the new window, `goal2.ui` (docs/ui.md) | beside it, for the owner's playtest |
+| `goal2.cmd` | today's desktop, `goal2.desktop` (docs/desktop-management.md) | every build: the one this page and the player start with |
+| `goal2-new.cmd` | the new window, `goal2.ui` (docs/ui.md) | a development build only (`build --development`), for the owner's playtest |
+
+[designed: main session, 2026-11-13, T225; the owner may overrule on #705] The release build, the default and v0.1's
+ZIP, ships `goal2.cmd` only: `goal2-new.cmd`'s first start asks for the Python route's template
+`e010-r0008-halftime.sav`, a recorded emulator state no player has, so it would fail for every player. `check-zip`
+refuses it in a release ZIP.
 
 [designed: owner, 2026-11-03, T169, docs/design/ui-2026-11 §6 item 17] `goal2.cmd` stays the default until the
 Python route plays a whole season (T170): no build plays less than the one before it, and the new window, beside it,
@@ -76,7 +82,9 @@ launcher, and the folder must hold exactly the files its record lists. `build_po
 
 `.github/workflows/package.yml` runs on the hosted Windows runner, on PRs that touch packaging, on `main` and on
 dispatch. It builds the folder and the ZIP, then runs the packaged smoke (`tools/portable/smoke.py`) from the ZIP
-unpacked in a folder with spaces and a non-ASCII letter, with only `System32` and its `Wbem` on PATH (no Python, no Git):
+unpacked in a folder with spaces and a non-ASCII letter, with only `System32` and its `Wbem` on PATH (no Python, no Git).
+Before the smoke, `check-zip` checks the ZIP against `.cache/` (no original-game file, no `goal2-new.cmd` in the
+release ZIP) and writes its file list, kept in the run's evidence. The smoke:
 
 1. `goal2.cmd --help` exits 0;
 2. the bundled PyPy answers as PyPy 3.11, imports goal2 from its own site-packages when started where a worker is,
@@ -84,15 +92,27 @@ unpacked in a folder with spaces and a non-ASCII letter, with only `System32` an
 3. one watched match played by the bundled CPython with the launcher's environment, its worker under the bundled
    PyPy, equals the same match played from the source tree (`smoke_match.py`); it uses the original files the
    workflow pulls into `.cache/`, outside the folder that gets zipped;
-4. `goal2-new.cmd --help` exits 0;
-5. the new window (`smoke_window.py`), offscreen under the bundled CPython with the launcher's environment, on a fresh
+4. [designed: owner, 2026-11-13, #705; T225] the player's path (`smoke_core.py`), offscreen under the bundled CPython
+   with the launcher's environment, on a fresh per-user folder: the first start's import dialog
+   (`_player_defaults`, what `goal2.cmd` with no argument runs) answered with a stand-in for the player's goal install
+   (GOAL.EXE and GOAL.DAT copied from `.cache/` into the work folder, outside the build); a new career on Launch, the
+   original's new game booted from the imported GOAL.EXE; then *play next game*, the original's own captain and
+   Watch, the match in the pitch window (the bundled pygame-ce, SDL's dummy driver) to full time, each stop answered
+   by the round page's own controls, back to the manager menu. An exception in a Qt slot fails it. The match is not
+   paced (`CoreModel.pacing` off; T223's wait is the window's, a whole match of wall time a smoke does not need);
+
+and, for a development build only (it has `goal2-new.cmd`):
+
+5. `goal2-new.cmd --help` exits 0;
+6. the new window (`smoke_window.py`), offscreen under the bundled CPython with the launcher's environment, on a fresh
    per-user folder: S01 first, a stand-in data folder (GOAL.DAT and the template copied from `.cache/` into the work
    folder, outside the build) imported through S01, then S02 Start; then a new career's first friendly played on S17
    to full time, its worker the bundled PyPy.
 
-It also records whether a worker started from `pythonw.exe` gets a console window. Then `check-zip` checks the ZIP
-against `.cache/`, and the ZIP is uploaded as the run artifact `goal2-win64-zip`; the measurements (ZIP size, build
-time, the packaged matches' times) as `package-evidence`, kept in `measurements/T147/`.
+It also records whether a worker started from `pythonw.exe` gets a console window. The ZIP is uploaded as the run
+artifact `goal2-win64-zip`; the measurements (ZIP size, build time, the packaged matches' times) and the ZIP's file
+list as `package-evidence`, kept in `measurements/T147/`. `python3 -m unittest goal2.tests.test_package_t147`'s
+`CorePath` runs `smoke_core.py` from the source tree (`GOAL2_SLOW=1`, GOAL.EXE and GOAL.DAT in `.cache/`).
 
 ## Building it yourself
 
@@ -103,7 +123,7 @@ python -m pip wheel --no-deps -w dist/wheel .
 python tools/build_portable.py build --wheel dist/wheel/goal2-<version>-py3-none-any.whl
 ```
 
-The folder and the ZIP land in `dist/`.
+The folder and the ZIP land in `dist/`. `--development` adds `goal2-new.cmd`.
 
 ## The player's data folder
 
