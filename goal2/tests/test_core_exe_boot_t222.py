@@ -145,6 +145,12 @@ class AtTheDateCall(unittest.TestCase):
         booted = Image.from_memory_component(call.header + call.memory)
         self.assertEqual((booted.load, booted.build_problems()), (call.load, []))
         self.assertEqual(call.stack_top, STACK_TOP)
+        # DOS's block for the program: the recording's MCB and PSP top, by the header's rule (exeboot.block_paragraphs).
+        size = exeboot.block_paragraphs(exeboot.header(cache(EXE)))
+        psp = call.load - 0x10
+        for mem in (ref, call.memory):
+            self.assertEqual(struct.unpack_from("<BHH", mem, (psp - 1) * 16), (0x4D, psp, size))
+            self.assertEqual(struct.unpack_from("<H", mem, psp * 16 + 2)[0], psp + size)
         # Only the requests the task lists, in the numbers the probe saw.
         counts = {}
         for number, ax in call.requests:

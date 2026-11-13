@@ -14,7 +14,7 @@ the game.
 Evidence (goal2-archaeology static/goal-exe at 7fbfd2e9 unless named; the listing's addresses are paragraphs of the
 load module):
 - [confirmed: goal2/engine/original_match/build.py:3] The registered GOAL.EXE: packed SHA-256 a6928b0b...d3664. Its MZ
-  header: LZEXE 0.91 (`LZ91` at offset 28), no relocation entries, entry 000E:15F1, stack 2DE7:0080, 2 header
+  header: LZEXE 0.91 (`LZ91` at offset 28), no relocation entries, entry CS:IP 15F1:000E, stack 2DE7:0080, 2 header
   paragraphs, 181 pages, maxalloc 6990h.
 - [confirmed: e039-r0005-date-call.sav's DOS memory blocks, read by tests/test_core_exe_boot_t222.py] DOSBox-X loaded
   the program at segment 0823 (PSP 0813, its memory block 'M' at 0812 owned by 0813, named GOAL, of 803Eh paragraphs,
@@ -69,10 +69,9 @@ BDA_TICKS = 0x46C
 # (214B:0688) for the watched match's sounds (0791:94E8). `bios_ticks` is the count when GOAL.EXE starts; the BIOS
 # counts 1,193,182 / 65,536 ticks a second from midnight, so `ticks_at(time)` gives it for a time of day.
 PIT_HZ, PIT_DIVISOR = 1193182, 65536
-# [derived: the recording's FLAGS 7206h at the date call carry IOPL 3 and NT, which the program never sets; DOSBox's
-# EXEC enters a program by IRET with flags 7202h] The flags, and the registers as DOS's EXEC leaves them (MS-DOS's
-# convention, which DOSBox follows: AX the FCB drives' validity (0), BX 0, CX 00FFh, DX the PSP, SI the entry IP,
-# DI the entry SP, BP 091Ch).
+# [designed: T222; derived: the recording's FLAGS at the date call, 7206h, carry IOPL 3 and NT, bits the program never
+# sets: the flags it was started with] The flags 7202h, and the registers as DOS's EXEC leaves them (MS-DOS's
+# convention: AX the FCB drives' validity (0), BX 0, CX 00FFh, DX the PSP, SI the entry IP, DI the entry SP, BP 091Ch).
 ENTRY_FLAGS = 0x7202
 BUDGET = 100 * TICK            # [designed] instructions to the date call (it needs about 3 ticks)
 HEADER = bytes(0x78)            # [designed] the Memory component's header: no DOSBox-X state made it; nothing reads it
