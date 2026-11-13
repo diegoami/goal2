@@ -34,7 +34,9 @@ playtest blockers #455 (apparent freeze after shots), #454 (in-match tactics) an
 work on the Unicorn path is allowed for this release). It is published as the portable Windows ZIP, with the
 player supplying their own GOAL.EXE and GOAL.DAT: the core boots from the player's GOAL.EXE, not from the
 owner's recorded date-call state, which never ships (rule 14). After v0.1, m3 and the standalone engine stay
-the direction; nothing else of the 2026-10-27/11-03 decisions changes. Milestone #705.
+the direction; nothing else of the 2026-10-27/11-03 decisions changes. Milestone #705. v0.1.0 is published as soon
+as its tasks are merged and the package run is green; its milestone review and playtest follow publication (owner,
+2026-11-13), for v0.1 only.
 
 ## Resuming authorised work
 
