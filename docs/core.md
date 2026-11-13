@@ -337,6 +337,52 @@ driver.pages                           # the screens passed: (kind, view), read 
 - A round takes 35 to 60 s under Unicorn (each half of the quick result about 17 s, the other fixtures up to 14 s), so
   the desktop runs each step as a background job (`CoreJobs`).
 
+## Tactics in a match (T224, #454)
+
+[designed: owner, 2026-11-13, #705; T224] v0.1 fixes #454: the manager changes tactics during a match by the
+original's own route. What the original offers, and where, was found by pressing its keys under the core
+[confirmed: T224's probe of E006-r0001's round 1 watched (Denmark v Sweden, the managed side DS:9B36), its first
+half's live play, its half time, the match menu before the kick-off, and E010-r0001's half time after five
+substitutions; `goal2/tests/test_core_in_match_tactics_t224.py` replays each; named/seg_0791_13.c in_match_menu ED8A,
+select_team_screen E44F; seg_1771_02.c 1981; seg_1771_04.c 4B61, 49B8]:
+
+- **Team tactics.** The match menu's item 1 (6 for the other side) opens 1771:1981 for its side, editable for the
+  managed country (`team-tactics`), before the kick-off, at the pause of live play (Enter in play: ED8A from 945B), at
+  half time; [derived: the same ED8A, not probed] at a stoppage and the extra-time intervals (ED8A from 8100, 9B42,
+  9B70). Enter toggles
+  the row's element of the country's +0x2D, the byte the manager menu's route edits; Esc returns to the same menu.
+  ED8A sets DS:9B55 when the byte changed.
+- **A player's own tactics and marking.** The menu's players (E949 -> E44F) list the squad; Up and Down move its
+  cursor DS:0C1B (E44F's last branch) and T opens 1771:4B61 for the highlighted player whenever DS:0C20 is clear: before
+  the kick-off `own-tactics` (SELECT YOUR TEAM), at half time or a stoppage with substitutions now kinds.tsv's
+  `squad-substitution-tactic`, at a pause (substitution-request or -requested) or with none left goal2's
+  `match-own-tactics`. Enter on rows 1..4 cycles the team's, his own clear, his own set (the player's +0xF, as from the
+  manager menu); row 5, the marking, is offered (a row count of 5) only with the match set up and for an available
+  outfield player (+6 >= 2) of the squad list: the goalkeeper and the sweeper see four rows. Its Enter (1771:49B8)
+  cycles the team's marking (status element 7 clear), a protected zone (element 7 set, no man), then the opposing
+  squad's slots 2..11 it finds available, writing the marking word DS:9A3E + 0x28 b + 2 slot (b for the side
+  DS:9B36) and rebuilding the others (set_marking_words). The card then shows the marked man's name, with "P" for
+  his own choice (1771:3BD3). 4B61 sets DS:9B55 at each Enter in a match. None of these keys touches the substitution
+  request DS:9B40 or the substitutions left DS:9B3A: only Enter on E44F does, which the route never presses.
+- **When it takes effect.** After the menu's play, live play resumes at the next poll, at the same minute and score;
+  the tick loop 0791:97D0 takes DS:9B55 at its next iteration (the snapshot 15B9, then clears it: routines.tsv
+  97D0, seen in the probe); [derived] the match reads the changed records from then on. During an action replay (DS:0C20 set) 1981 only shows and E44F's T
+  does nothing: the window offers no change then. After the full-time menu the match is over: no route is offered.
+
+[designed: T224] The driver's actions start at one of those menus, or at a live poll, where they press Enter for the
+pause first and the menu's play after; they write no byte and use no manager-menu route:
+
+```python
+driver.match_tactic(element, on)                 # team tactics, the row, Enter, Esc (and play, from live play)
+driver.match_own_tactic(player, element, value)  # players, Up/Down to him, T, the row, Enter cycles, Esc, Esc
+driver.match_marking(player, target)             # row 5: None the team's, 0 a protected zone, a man's word, "next"
+views.marking(state, player)                     # {"own": status element 7, "opponent": his marking word}
+```
+
+`CoreModel.tactics_offer()` says where the original offers them for the window (docs/desktop-management.md). The
+original offers no more than this: no route changes tactics without the match menu, and the match menu is reached
+from live play only by its pause.
+
 ## Original round pause (T115, #308's G13e)
 
 [confirmed: F030 at archaeology 53d7ef5; named/seg_000E_05.c simulate_fixture 6970,

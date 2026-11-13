@@ -375,7 +375,7 @@ class Driver:
         if rows < 5:
             raise DriverError(f"the original's own tactics show {rows} rows here: man-marking (row 5) is offered only "
                               f"with a match set up (1771:4B61), so {player} cannot mark {opponent} from the menu")
-        raise DriverError("man-marking in a match is the match flow's (G14)")
+        raise DriverError("in a match man-marking is match_marking's, by the match menu (T224)")
 
     def rename(self, player, text):
         """F2's new name (1771:4859): the line editor 214B:1086 takes the typed characters (the first replaces the
