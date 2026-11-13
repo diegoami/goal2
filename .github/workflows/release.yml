@@ -1,0 +1,70 @@
+# [designed: owner, 2026-11-13, #705; T229] Publish a release from a green Package run's own ZIP. Started by hand
+# (workflow_dispatch) by the main session once the package workflow passes on main (T225 item 6). Nothing is rebuilt:
+# the run's `goal2-win64-zip` artifact is attached as it was smoked. The run must be the Package workflow's, on a push
+# to main, successful, and at the commit the tag names; check-zip runs again on the ZIP before publication. No
+# original-game file is in the ZIP (check-zip and the package workflow's upload guard, CLAUDE.md rule 14).
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "The green Package run on main whose ZIP is published"
+        required: true
+      tag:
+        description: "The release tag, e.g. v0.1.0"
+        required: true
+      notes:
+        description: "The release notes file, e.g. docs/releases/v0.1.0.md"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: The run is a green Package run on main
+        id: run
+        run: |
+          set -euo pipefail
+          gh api "repos/${{ github.repository }}/actions/runs/${{ inputs.run_id }}" \
+            --jq '[.name, .event, .head_branch, .conclusion, .head_sha] | @tsv' > run.tsv
+          IFS=$'\t' read -r name event branch conclusion sha < run.tsv
+          echo "run: $name $event $branch $conclusion $sha"
+          [ "$name" = Package ] && [ "$event" = push ] && [ "$branch" = main ] && [ "$conclusion" = success ] \
+            || { echo "run ${{ inputs.run_id }} is not a green Package run on main; refusing"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.run.outputs.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          name: goal2-win64-zip
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: zip
+      - name: check-zip, and the tag is free
+        run: |
+          set -euo pipefail
+          ls -la zip
+          zip=$(ls zip/goal2-*-win64.zip)
+          python tools/build_portable.py check-zip "$zip"
+          sha256sum "$zip" | tee zip/SHA256SUMS.txt
+          [ -f "${{ inputs.notes }}" ] || { echo "no notes file ${{ inputs.notes }}"; exit 1; }
+          if gh release view "${{ inputs.tag }}" > /dev/null 2>&1; then echo "release ${{ inputs.tag }} exists; refusing"; exit 1; fi
+      - name: Publish
+        run: |
+          set -euo pipefail
+          zip=$(ls zip/goal2-*-win64.zip)
+          gh release create "${{ inputs.tag }}" "$zip" zip/SHA256SUMS.txt \
+            --target "${{ steps.run.outputs.sha }}" --title "goal2 ${{ inputs.tag }}" \
+            --notes-file "${{ inputs.notes }}"
+          gh release view "${{ inputs.tag }}" --json url,assets --jq '.url, (.assets[] | [.name, .size] | @tsv)'
