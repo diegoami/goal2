@@ -122,12 +122,13 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `title-tune` | polls `1771:0723`, `1771:0782` (1771:06F3, the title's tune) | E039's traces (T106) | "THE international soccer management game" "Do you want to load a saved game? (Y/N)" |
 | `select-squad` | `0791:E61F` (0791:E44F from main_menu_loop 000E:771A or 7620, or from E949 before a match's kick-off, DS:0C1F clear, `[bp-5]` 1) | E006-r0001, the manager menu's select squad (T107); the match menu's players before the kick-off (T108) | "SELECT YOUR TEAM" "Hit Ins for assistant's recommended 20" |
 | `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" |
-| `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107) | "↓↑←→-select" "◄┘-alter tactic" |
+| `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107); T on the match menu's players before the kick-off (T224) | "SELECT YOUR TEAM" "↓↑←→-select" "◄┘-alter tactic" |
+| `match-own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T in a match, DS:0C1F set, E44F offering no substitution now: DS:9B41 clear or DS:9B3A + side 0) | E006-r0001's round 1 watched, Enter in play, players, T (T224); E010-r0001's half time after five substitutions, players, T (T224) | "tactics and" "◄┘-alter tactic" |
 | `player-name-entry` | polled `214B:0DB9`, read `214B:112B` (the editor 214B:1086 from 1771:4859, return 1771:48A0, from E44F's F2, return 0791:E700) | E006-r0001, F2 on select squad (T107) | "Type in characters (maximum 12)" "◄┘-accept Esc-abort" |
 | `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | not visited: no kept state is in a finals or tour window (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
 | `fixture-result` | `000E:6A89` (simulate_fixture 000E:6970, a fixture marked to watch and declined: its first byte 0xFE) | E006-r0001's round 3, N at the watch prompt (T108) | "location:" "hit any key" |
 | `tournament-table` | `214B:157C` from `1771:9022` (8E9A under 1771:958D with its mode byte `[bp+10]` 0, from 0791:E929 after a fixture) | E006-r0001's round 2, after the own qualifier (T108) | "P W D L" "hit any key" |
-| `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "Esc-exit" |
+| `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "T-tactics" "Esc-exit" |
 | `eleven-refused` | `214B:098A` (the box 214B:04F8 under 214B:1765, from 0791:EA09 at EB7D or EBD2: return EB82/EBD7, or EC22/ECEB) | E006-r0001's round 10 and half-time keeper case (T108); T114's real no-keeper and excessive-position inputs | "location:" "PRESS ANY KEY" |
 
 [T108] SELECT YOUR TEAM's hint line reads "◄┘-move player" until a player is marked and "◄┘-put here" after, so its
@@ -163,8 +164,8 @@ near-called by welcome_new_manager 000E:68A4 and announce_stage_to_manager 000E:
 title's tune ends it (06F3 returns at a key) and the title's read takes it; `Core.boot`'s `title_key` queues one so.
 
 **Not reached yet**, so not in the table:
-- The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
-  `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
+- The other kinds.tsv screens no tour met (`match-commentary`, `file-not-found-prompt`; `squad-substitution-tactic`
+  is mapped and reached by T224's tactics in a match) and the other cases of the shared sites stop with `UnknownScreen`
   until a screen task maps them: the other players' screen of E949 (another country's, 1771:50F1), E022's other
   message ("There is no player here" E062) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
@@ -197,8 +198,9 @@ of that prompt.
 22 player updates. The watched desktop reads the complete pose at the last poll, before advancing, and Enter
 opens the pause menu. Its Players screen, with DS:9B41 clear, accepts Enter to request a substitution (DS:9B40),
 or cancel the request; it does not select a pair. At the next substitution opportunity the original offers the
-bench that makes the pair. Goal2's `substitution-request` kind names this screen, and accepts only its printed
-Enter and Esc. `Core.advance()` answers one poll with no key, keeping the next poll as a wait; `release()` retains
+bench that makes the pair. Goal2's `substitution-request` kind names this screen, and accepts its printed Enter,
+Esc and T (a player's own tactics, T224) and the Up and Down that E44F's last branch reads for its cursor; the driver
+never presses Enter there for a tactics change. `Core.advance()` answers one poll with no key, keeping the next poll as a wait; `release()` retains
 its T108 meaning of passing the screen. These are manager inputs, with no guest-memory patch.
 
 [designed: T116; confirmed: the same 9571–9708 poll loop] `with core.live_frames():` batches intermediate
@@ -334,6 +336,52 @@ driver.pages                           # the screens passed: (kind, view), read 
   half time, and the desktop's round (docs/desktop-management.md).
 - A round takes 35 to 60 s under Unicorn (each half of the quick result about 17 s, the other fixtures up to 14 s), so
   the desktop runs each step as a background job (`CoreJobs`).
+
+## Tactics in a match (T224, #454)
+
+[designed: owner, 2026-11-13, #705; T224] v0.1 fixes #454: the manager changes tactics during a match by the
+original's own route. What the original offers, and where, was found by pressing its keys under the core
+[confirmed: T224's probe of E006-r0001's round 1 watched (Denmark v Sweden, the managed side DS:9B36), its first
+half's live play, its half time, the match menu before the kick-off, and E010-r0001's half time after five
+substitutions; `goal2/tests/test_core_in_match_tactics_t224.py` replays each; named/seg_0791_13.c in_match_menu ED8A,
+select_team_screen E44F; seg_1771_02.c 1981; seg_1771_04.c 4B61, 49B8]:
+
+- **Team tactics.** The match menu's item 1 (6 for the other side) opens 1771:1981 for its side, editable for the
+  managed country (`team-tactics`), before the kick-off, at the pause of live play (Enter in play: ED8A from 945B), at
+  half time; [derived: the same ED8A, not probed] at a stoppage and the extra-time intervals (ED8A from 8100, 9B42,
+  9B70). Enter toggles
+  the row's element of the country's +0x2D, the byte the manager menu's route edits; Esc returns to the same menu.
+  ED8A sets DS:9B55 when the byte changed.
+- **A player's own tactics and marking.** The menu's players (E949 -> E44F) list the squad; Up and Down move its
+  cursor DS:0C1B (E44F's last branch) and T opens 1771:4B61 for the highlighted player whenever DS:0C20 is clear: before
+  the kick-off `own-tactics` (SELECT YOUR TEAM), at half time or a stoppage with substitutions now kinds.tsv's
+  `squad-substitution-tactic`, at a pause (substitution-request or -requested) or with none left goal2's
+  `match-own-tactics`. Enter on rows 1..4 cycles the team's, his own clear, his own set (the player's +0xF, as from the
+  manager menu); row 5, the marking, is offered (a row count of 5) only with the match set up and for an available
+  outfield player (+6 >= 2) of the squad list: the goalkeeper and the sweeper see four rows. Its Enter (1771:49B8)
+  cycles the team's marking (status element 7 clear), a protected zone (element 7 set, no man), then the opposing
+  squad's slots 2..11 it finds available, writing the marking word DS:9A3E + 0x28 b + 2 slot (b for the side
+  DS:9B36) and rebuilding the others (set_marking_words). The card then shows the marked man's name, with "P" for
+  his own choice (1771:3BD3). 4B61 sets DS:9B55 at each Enter in a match. None of these keys touches the substitution
+  request DS:9B40 or the substitutions left DS:9B3A: only Enter on E44F does, which the route never presses.
+- **When it takes effect.** After the menu's play, live play resumes at the next poll, at the same minute and score;
+  the tick loop 0791:97D0 takes DS:9B55 at its next iteration (the snapshot 15B9, then clears it: routines.tsv
+  97D0, seen in the probe); [derived] the match reads the changed records from then on. During an action replay (DS:0C20 set) 1981 only shows and E44F's T
+  does nothing: the window offers no change then. After the full-time menu the match is over: no route is offered.
+
+[designed: T224] The driver's actions start at one of those menus, or at a live poll, where they press Enter for the
+pause first and the menu's play after; they write no byte and use no manager-menu route:
+
+```python
+driver.match_tactic(element, on)                 # team tactics, the row, Enter, Esc (and play, from live play)
+driver.match_own_tactic(player, element, value)  # players, Up/Down to him, T, the row, Enter cycles, Esc, Esc
+driver.match_marking(player, target)             # row 5: None the team's, 0 a protected zone, a man's word, "next"
+views.marking(state, player)                     # {"own": status element 7, "opponent": his marking word}
+```
+
+`CoreModel.tactics_offer()` says where the original offers them for the window (docs/desktop-management.md). The
+original offers no more than this: no route changes tactics without the match menu, and the match menu is reached
+from live play only by its pause.
 
 ## Original round pause (T115, #308's G13e)
 

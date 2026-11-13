@@ -40,7 +40,13 @@ ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
                  'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue',
                  'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight', 'replay',
-                 'replay_timeout')
+                 'replay_timeout', 'match_tactic', 'match_own_tactic', 'match_marking')
+# [designed: T224, #454] The tactics a match offers, by the original's own route (Driver.match_tactic and the rest):
+# from its match menu before the kick-off, at a pause, a stoppage or an interval, or from live play (the pause first).
+TACTICS_ACTIONS = ('match_tactic', 'match_own_tactic', 'match_marking')
+TACTICS_MENUS = {'before': 'before the kick-off', 'pause': 'at the pause', 'stoppage': 'at the stoppage',
+                 'half-time': 'at half time', 'extra-time-start': 'before extra time',
+                 'extra-time-half': 'at the extra-time interval'}
 # [designed: T223] The round's steps outside the watched match (the other fixtures, the end of the round) and the
 # replay question's timeout, whose wait the window has already counted down (core_replay.py): never paced.
 UNPACED = ('round_start', 'round_continue', 'finish', 'summary_done', 'replay_timeout')
@@ -230,7 +236,7 @@ class CoreModel:
             self.hold(delays, started)
         position_refused = result['refused'] if isinstance(result, dict) and set(result)=={'refused'} else None
         if position_refused is not None:self.refused=position_refused
-        elif name!='round_position':self.refused=None
+        elif name not in ('round_position',) + TACTICS_ACTIONS:self.refused=None
         state = self.round_state()
         if name == 'substitute':
             state['substitution'] = result
@@ -262,6 +268,26 @@ class CoreModel:
 
     def resume_hold(self):
         self._cancel_hold.clear()
+
+    def tactics_offer(self):
+        """[designed: T224; confirmed: T224's probe, docs/core.md "Tactics in a match (T224)"] Whether the original
+        offers its tactics where the round waits, and where or why not: (True, where) at its match menu before the
+        kick-off, at a pause, a stoppage or an interval, and in live play (Enter opens the pause); (False, reason)
+        elsewhere in the round. Outside a round the manager menu's routes serve them (None)."""
+        wait = self.core.wait
+        if not self.in_round:
+            return None
+        if wait.kind == 'match-live':
+            if views.Memory(self.state).ds_byte(0x0C20):
+                return False, 'During an action replay the original shows tactics for viewing only.'
+            return True, 'in live play (the original pauses at its match menu, then plays on)'
+        context = wait.view.get('context') if wait.kind in ('match-menu', 'match-menu-halftime',
+                                                             'match-menu-extra-time',
+                                                             'match-menu-extra-halftime') else None
+        if context in TACTICS_MENUS:
+            return True, TACTICS_MENUS[context]
+        return False, ('The original offers tactics in a match from live play and at its match menu (before the '
+                       'kick-off, a pause, a stoppage, half time); not here.')
 
     @presented
     def round_state(self):

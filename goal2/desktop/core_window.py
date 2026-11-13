@@ -246,7 +246,9 @@ class CoreWindow(QMainWindow):
             self.status.setText('The original is still busy with the last action');return False
         self.core_jobs.start(name, *args)
         self.save.setEnabled(False)
-        for widget in self.core_actions:widget.setEnabled(False)
+        # [designed: T224] a pose of live play keeps the match's tactics offered: a change queues for the next one
+        keep = [row for _, row in self.tactics] + self.own_tactics + [self.own_marking] if name == 'live_step' else []
+        for widget in self.core_actions:widget.setEnabled(widget in keep and widget.isEnabled())
         self.status.setText('Asking the assistant…' if name=='suggest_pool' else 'The original is pressing its own keys…')
         from goal2.desktop.pool_page import core_suggestion_controls
         core_suggestion_controls(self)
@@ -299,16 +301,59 @@ class CoreWindow(QMainWindow):
         self.sound_note = sound
         self.status.setText(f'The original plays its {sound} (not heard here) and waits for it to end…')
 
+    # [designed: T224, #454] What waits in a match on the Team and Pool pages, and why: only the tactics go to the
+    # original during a match (its match menu, Driver.match_tactic and the rest); the bench owns positions and
+    # substitutions; names and the pool wait for the manager menu.
+    MATCH_WAITS = {'reposition': 'In a match, positions are set on the bench (Fixtures page, R/C)',
+                   'clubPosition': 'In a match, positions are set on the bench (Fixtures page, R/C)',
+                   'renamePlayer': 'Renaming waits for the manager menu after the match',
+                   'poolMove': 'The pool waits for the manager menu; in a match the bench makes substitutions',
+                   'poolSwitch': 'The pool waits for the manager menu; in a match the bench makes substitutions',
+                   'play next game': 'The round is under way'}
+
     def refresh_round_controls(self):
-        """[T108] While a round waits (the match menu, half time) the manager menu's routes and the team edits wait."""
+        """[T108] While a round waits (the match menu, half time) the manager menu's routes and the team edits wait.
+        [designed: T224] In a match the tactics stay where the original offers them (CoreModel.tactics_offer), sent
+        by its own match route; every other team edit is disabled with its reason (tooltip, and the Team page's
+        note)."""
         busy = self.core_jobs.busy
         in_round = self.model.in_round
         for widget in self.core_actions:
             widget.setEnabled(not busy and not self.model.in_save_name)
+        tactics = [row for _, row in self.tactics] + self.own_tactics + [self.own_marking]
+        routes = [self.core_team_buttons['teamTacticsRoute'], self.core_team_buttons['teamOwnRoute']]
+        waits = [self.core_team_buttons['reposition'], self.core_team_buttons['clubPosition'], self.rename,
+                 self.pool_move, self.pool_switch, self.core_routes['play next game']]
+        if not hasattr(self, '_tooltips'):
+            self._tooltips = {id(w): w.toolTip() for w in tactics + routes + waits}
+        for widget in tactics + routes + waits:
+            widget.setToolTip(self._tooltips[id(widget)])
+        # the core's wait is the job thread's while a step runs: keep the offer read when the last step ended
+        if not busy:
+            self._tactics_offer = self.model.tactics_offer() if in_round and not self.model.in_save_name else None
+        offer = getattr(self, '_tactics_offer', None)
+        live = bool(self.core_round.state) and self.core_round.state.get('stop') == 'live'
+        self.core_match_note.setVisible(offer is not None)
         if in_round or self.model.in_save_name:
             for widget in [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move, self.pool_switch] + \
-                    [row for _, row in self.tactics] + self.own_tactics + [self.own_marking, self.core_routes['play next game']]:
+                    tactics + [self.core_routes['play next game']]:
                 widget.setEnabled(False)
+            name = lambda w: 'play next game' if w is self.core_routes['play next game'] else w.objectName()
+            for widget in waits:
+                widget.setToolTip(self.MATCH_WAITS[name(widget)])
+        if offer is not None:
+            offered, where = offer
+            for widget in routes:
+                widget.setEnabled(True)
+            for widget in tactics:
+                # [designed: T224] in live play a change waits for the running pose (core_match_action)
+                widget.setEnabled(offered and (not busy or live))
+                if not offered:
+                    widget.setToolTip(where)
+            self.core_match_note.setText(
+                (f'In the match: the team tactics, a player\'s own tactics and his marking go to the original by its '
+                 f'match menu, {where}. ' if offered else where + ' ') +
+                'Positions and substitutions are on the bench; renaming and the pool wait for the manager menu.')
         self.core_round.refresh_shootout_controls()
         self.core_round.takers.refresh_controls()
         from goal2.desktop.pool_page import core_comparison_controls
