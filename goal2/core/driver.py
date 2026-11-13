@@ -707,6 +707,17 @@ class Driver:
             self._press_poll('n')
         return self._pass(self.STOPS + ('match-menu-fulltime',))
 
+    def replay_timeout(self):
+        """[confirmed: F030; code/seg_0791_02.asm 0B7C-0C08, code/seg_0791_20.asm CC2E-CC70; designed: T223] Let the
+        replay question end by itself, as the original does when no key comes: no key at the rest of wait_or_key's
+        polls (CC54, each followed by 214B:1E09(10)) and at 0B7C's last poll (0BE1), which then answers N. At the
+        save-goal question it is N there too: the replay plays without a file."""
+        if self.wait.kind not in self.REPLAY_KINDS or not self.wait.poll:
+            raise UnexpectedScreen(self.REPLAY_KINDS, self.wait)
+        self._stop("substitution-notice", _screens.TAKER_SELECT)
+        self._release()
+        return self._pass(self.STOPS + ('match-menu-fulltime',))
+
     def summary_done(self):
         """[designed: T109] Decline the original's DOS summary file; the desktop owns exporting its summary.
         [confirmed: code/seg_0791_23.asm F331-F347] N skips 0791:0A6B's disk writer and continues the round."""

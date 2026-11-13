@@ -814,7 +814,7 @@ class CoreRound:
             try:
                 if not self.watch_suspended:
                     self.resume_viewer()
-                    if name=='replay':self.show_match()
+                    if name in ('replay','replay_timeout'):self.show_match()
             except (OSError, ValueError) as exc:
                 self.stop_viewer(str(exc))
         elif stop == 'summary-save':
