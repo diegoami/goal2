@@ -1,7 +1,7 @@
 """[designed: owner, 2026-11-02, T147] The portable Windows build: a folder `goal2-<version>-win64/` and its ZIP.
 
-    python tools/build_portable.py build --wheel dist/goal2-<version>-py3-none-any.whl [--downloads DIR] [--out DIR] [--stats FILE]
-    python tools/build_portable.py check-zip ZIP [--originals DIR]
+    python tools/build_portable.py build --wheel dist/goal2-<version>-py3-none-any.whl [--development] [--downloads DIR] [--out DIR] [--stats FILE]
+    python tools/build_portable.py check-zip ZIP [--originals DIR] [--list FILE]
 
 The folder (docs/packaging.md):
 - `python/`: the official embeddable CPython 3.13, its `._pth` file listing `Lib\\site-packages` and running
@@ -10,16 +10,21 @@ The folder (docs/packaging.md):
 - `pypy/`: the PyPy 3.11 Windows release, with goal2 from the same wheel in its own `Lib\\site-packages` (the match
   workers import only goal2's pure-Python modules) and the CPython's `vcruntime140*.dll` beside `pypy.exe`, which
   imports `VCRUNTIME140.dll` but does not ship it (a DLL missing only on a clean machine, T147's hazard).
-- `goal2.cmd`, `goal2-new.cmd` and `goal2_launch.py` (tools/portable/): the launchers, today's desktop (the default)
-  and the new window.
-- `portable-files.json`: every file of the folder and where it came from (cpython, pypy, wheels, goal2, launcher).
+- `goal2.cmd` and `goal2_launch.py` (tools/portable/): the launcher, today's desktop over the core route.
+  [designed: main session, 2026-11-13, T225; #705] A development build (`--development`) also has `goal2-new.cmd`, the
+  new window's launcher, which needs the Python route's recorded template no player has; the release build (v0.1's
+  ZIP, the default) ships `goal2.cmd` only.
+- `README.txt` (tools/portable/README.txt): the player's README [designed: T225].
+- `portable-files.json`: every file of the folder and where it came from (cpython, pypy, wheels, goal2, launcher,
+  readme), and whether the build is `release` or `development`.
 
 Every download is pinned by version and SHA-256 (tools/portable/manifest.json; the wheels by pip --require-hashes),
 and a file whose SHA-256 differs is refused. Nothing of the original game may ship (CLAUDE.md rule 14): a file with an
 original-game file type (check_premerge.FORBIDDEN, the extensions the workflows refuse to upload) is accepted only
 from the pinned third-party downloads (the interpreters' .exe files, Qt's .dat files), never from goal2's wheel or
-the launcher, and no file may be absent from the record. check-zip applies the same rules to the ZIP and, with
---originals, refuses an entry whose bytes equal any original-game file found there (the workflow's `.cache/`).
+the launcher, and no file may be absent from the record. check-zip applies the same rules to the ZIP, refuses a
+development launcher in a release ZIP and, with --originals, refuses an entry whose bytes equal any original-game file
+found there (the workflow's `.cache/`); --list writes the ZIP's file list (the run's evidence).
 """
 from __future__ import annotations
 
@@ -39,7 +44,12 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parents[1]
 PORTABLE = ROOT / "tools" / "portable"
 MANIFEST = PORTABLE / "manifest.json"
-LAUNCHER = ("goal2.cmd", "goal2-new.cmd", "goal2_launch.py")
+LAUNCHER = ("goal2.cmd", "goal2_launch.py")
+# [designed: main session, 2026-11-13, T225; the owner may overrule on #705] goal2-new.cmd starts the new window, whose
+# first start asks for the Python route's template (e010-r0008-halftime.sav), a recorded emulator state no player has:
+# it would fail for every player, so only a development build has it.
+DEVELOPMENT_LAUNCHER = ("goal2-new.cmd",)
+README = "README.txt"          # [designed: T225] the player's README, tools/portable/README.txt
 RECORD = "portable-files.json"
 THIRD_PARTY = {"cpython", "pypy", "wheels"}
 VCRUNTIME = ("vcruntime140.dll", "vcruntime140_1.dll")
@@ -161,8 +171,9 @@ def check_folder(folder: Path) -> dict:
 
 
 def build(out: Path, wheel: Path, downloads: Path, manifest_path: Path = MANIFEST, run=subprocess.run,
-          python: str = sys.executable, name: str | None = None) -> tuple[Path, Path, dict]:
-    """Lay out the folder from the manifest's downloads and `wheel`, check it, zip it: (folder, zip, stats)."""
+          python: str = sys.executable, name: str | None = None, development: bool = False) -> tuple[Path, Path, dict]:
+    """Lay out the folder from the manifest's downloads and `wheel`, check it, zip it: (folder, zip, stats). The
+    release build (the default) has goal2.cmd only; a `development` one also goal2-new.cmd."""
     started = time.monotonic()
     manifest = json.loads(manifest_path.read_text())
     name = name or f"goal2-{version()}-win64"
@@ -207,12 +218,14 @@ def build(out: Path, wheel: Path, downloads: Path, manifest_path: Path = MANIFES
                 for rel in [r for r in sources if r.startswith(f"{(target / scripts).relative_to(folder).as_posix()}/")]:
                     del sources[rel]
                 shutil.rmtree(target / scripts)
-    for launcher in LAUNCHER:
-        text = (PORTABLE / launcher).read_text()
-        if launcher.endswith(".cmd"):           # cmd.exe reads its batch files with CRLF line ends
+    for launcher in LAUNCHER + (DEVELOPMENT_LAUNCHER if development else ()) + (README,):
+        text = (PORTABLE / launcher).read_text(encoding="utf-8")
+        if not launcher.endswith(".py"):        # cmd.exe reads its batch files with CRLF line ends; Notepad the README
             text = text.replace("\r\n", "\n").replace("\n", "\r\n")
-        step("launcher", lambda t=text, n=launcher: (folder / n).write_bytes(t.encode()))
-    record = {"name": name, "cpython": manifest["cpython"], "pypy": manifest["pypy"],
+        step("readme" if launcher == README else "launcher",
+             lambda t=text, n=launcher: (folder / n).write_bytes(t.encode("utf-8")))
+    record = {"name": name, "build": "development" if development else "release",
+              "cpython": manifest["cpython"], "pypy": manifest["pypy"],
               "requirements": requirements_hashed(requirements), "goal2_wheel": wheel.name,
               "files": dict(sorted(sources.items()))}
     (folder / RECORD).write_text(json.dumps(record, indent=1) + "\n")
@@ -250,6 +263,12 @@ def check_zip(archive: Path, originals: Path | None = None) -> dict:
             raise BuildError(f"{archive.name}: entries outside the record: {sorted(inside - set(record['files']))[:10]}; "
                              f"recorded but missing: {sorted(set(record['files']) - inside)[:10]}")
         check_files(record["files"], archive.name)
+        # [designed: T225] a release ZIP (v0.1's) holds no development launcher; a record without `build` is older
+        # than the distinction and is taken as a release
+        kind = record.get("build", "release")
+        stray = sorted(set(DEVELOPMENT_LAUNCHER) & inside) if kind != "development" else []
+        if stray:
+            raise BuildError(f"{archive.name}: the release ZIP holds the development launcher {', '.join(stray)}")
         compared = 0
         if originals is not None:
             known = originals_in(originals)
@@ -263,8 +282,15 @@ def check_zip(archive: Path, originals: Path | None = None) -> dict:
                 if (info.file_size, h) in known:
                     raise BuildError(f"{archive.name}: {info.filename} is the original-game file {known[(info.file_size, h)]}")
             compared = len(known)
-    return {"entries": len(names), "originals_compared": compared,
+    return {"entries": len(names), "build": kind, "top_level": sorted(r for r in inside if "/" not in r),
+            "originals_compared": compared,
             "forbidden_type_entries": sum(PurePosixPath(r).suffix.lower() in FORBIDDEN for r in record["files"])}
+
+
+def zip_list(archive: Path) -> list[str]:
+    """Every file entry of the ZIP, with its size: the run's evidence of what the ZIP holds."""
+    with zipfile.ZipFile(archive) as zf:
+        return [f"{i.file_size:>12} {i.filename}" for i in zf.infolist() if not i.is_dir()]
 
 
 def main(argv=None) -> int:
@@ -275,18 +301,23 @@ def main(argv=None) -> int:
     b.add_argument("--downloads", type=Path, default=ROOT / ".cache" / "portable-downloads")
     b.add_argument("--out", type=Path, default=ROOT / "dist")
     b.add_argument("--stats", type=Path)
+    b.add_argument("--development", action="store_true", help="also goal2-new.cmd (not for players)")
     c = sub.add_parser("check-zip")
     c.add_argument("zip", type=Path)
     c.add_argument("--originals", type=Path)
+    c.add_argument("--list", type=Path, help="write the ZIP's file list here")
     args = parser.parse_args(argv)
     try:
         if args.command == "build":
-            folder, archive, stats = build(args.out, args.wheel, args.downloads)
+            folder, archive, stats = build(args.out, args.wheel, args.downloads, development=args.development)
             print(f"built {folder} and {archive} ({stats['zip_bytes']} bytes, {stats['build_s']} s)", flush=True)
             if args.stats:
                 args.stats.write_text(json.dumps(stats, indent=1) + "\n")
         else:
-            print(f"PASS {args.zip.name}: {json.dumps(check_zip(args.zip, args.originals))}", flush=True)
+            summary = check_zip(args.zip, args.originals)
+            if args.list:
+                args.list.write_text("\n".join(zip_list(args.zip)) + "\n", encoding="utf-8")
+            print(f"PASS {args.zip.name}: {json.dumps(summary)}", flush=True)
     except BuildError as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)
         return 1

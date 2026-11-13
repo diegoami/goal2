@@ -1,4 +1,4 @@
-"""[designed:T120; confirmed:T88/T89] Original role2/5 choice controls over immutable wait data."""
+"""[designed:T120; confirmed:T88/T89, T131/T220] Original CC7B taker choice controls (roles 2-5) over immutable wait data."""
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton
 from goal2.desktop.roster import RosterView
@@ -16,6 +16,17 @@ class TakerRoster(RosterView):
             event.accept()
         else:
             super().keyPressEvent(event)
+
+# [designed: T120, T226] The window's titles for the CC7B taker roles the catalogue recognises [confirmed: T88/T89 roles
+# 2 and 5 (T120), T131 roles 3 and 4 (T220)].
+TAKER_TITLES = {2: 'CORNER TAKER', 3: 'PENALTY TAKER', 4: 'FREE KICK TAKER', 5: 'GOAL KICK TAKER'}
+
+
+def taker_title(role):
+    if role not in TAKER_TITLES:
+        raise ValueError(f'taker role {role} is not one the catalogue recognises')
+    return TAKER_TITLES[role]
+
 
 class TakerPages:
 
@@ -82,7 +93,7 @@ class TakerPages:
         self.data = state
         if state['stop'] == 'taker':
             choice = state['taker']
-            label = {2: 'CORNER TAKER', 5: 'GOAL KICK TAKER'}[choice['role']]
+            label = taker_title(choice['role'])
             self.title.setText(f"{label} / {choice['name'].upper()}")
             self.roster.marked = {choice['stored']}
             from goal2.desktop.core_roles import role_code

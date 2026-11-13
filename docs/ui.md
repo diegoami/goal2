@@ -3,6 +3,7 @@
 The rebuilt UI of [the design](design/ui-2026-11/README.md), in PySide6 widgets ([the technology](design/technology-2026-11/README.md),
 the owner's decision D1, #527). It is built beside today's window, `goal2/desktop`, which stays the shipped window
 and the portable build's default until T169 switches over. [designed: owner, 2026-11-03, #526, #527, #536]
+[designed: T225] Its launcher `goal2-new.cmd` is in development builds only, not in v0.1's ZIP (docs/packaging.md).
 
     python -m goal2.ui [--data-root DIR] [--import FOLDER]
     QT_QPA_PLATFORM=offscreen python -m goal2.ui --screenshot DIR
