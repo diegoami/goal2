@@ -16,7 +16,9 @@ from goal2.desktop import data_setup
 from goal2.desktop import __main__ as entry
 from goal2.tests import requires
 
-STAND_IN = {"GOAL.DAT": b"stand-in data file\n", "e039-r0005-date-call.sav": b"stand-in date-call state\n"}
+STAND_IN = {"GOAL.DAT": b"stand-in data file\n", "GOAL.EXE": b"MZ stand-in program file\n"}
+RECORDED = "e039-r0005-date-call.sav"   # [T222] the recorded state the import no longer takes
+SHIPPED_MANIFEST = data_setup.MANIFEST  # the committed manifest, before a case replaces it with the stand-in one
 STAND_IN_MANIFEST = tuple((name, hashlib.sha256(raw).hexdigest()) for name, raw in STAND_IN.items())
 
 
@@ -64,10 +66,23 @@ class ImportCases(Case):
         source = self.source(files={"GOAL.DAT": STAND_IN["GOAL.DAT"]})
         with self.assertRaises(data_setup.ImportRefused) as caught:
             data_setup.import_folder(source, self.target)
-        self.assertEqual(caught.exception.problems, [("e039-r0005-date-call.sav", "missing")])
-        self.assertIn("e039-r0005-date-call.sav is missing", str(caught.exception))
+        self.assertEqual(caught.exception.problems, [("GOAL.EXE", "missing")])
+        self.assertIn("GOAL.EXE is missing", str(caught.exception))
         self.assertNotIn("GOAL.DAT", str(caught.exception))
         self.assertFalse(self.target.root.exists(), "nothing is copied from a refused folder")
+
+    def test_a_folder_with_only_the_recorded_state_is_refused_by_name(self):
+        """[T222] The recorded date-call state no longer stands in for GOAL.EXE: such a folder lacks GOAL.EXE, by
+        the stand-in manifest and by the committed one."""
+        source = self.source(files={"GOAL.DAT": STAND_IN["GOAL.DAT"], RECORDED: b"stand-in date-call state\n"})
+        with self.assertRaises(data_setup.ImportRefused) as caught:
+            data_setup.import_folder(source, self.target)
+        self.assertEqual(caught.exception.problems, [("GOAL.EXE", "missing")])
+        self.assertIn("GOAL.EXE is missing", str(caught.exception))
+        self.assertFalse(self.target.root.exists(), "nothing is copied from a refused folder")
+        shipped = data_setup.problems(source, SHIPPED_MANIFEST)
+        self.assertIn(("GOAL.EXE", "missing"), shipped)
+        self.assertNotIn(RECORDED, [name for name, _ in shipped])
 
     def test_a_wrong_hash_is_refused_naming_it(self):
         source = self.source(files=dict(STAND_IN, **{"GOAL.DAT": b"an edited data file\n"}))
@@ -76,12 +91,11 @@ class ImportCases(Case):
         self.assertEqual(caught.exception.problems, [("GOAL.DAT", "wrong")])
         self.assertIn("GOAL.DAT in", str(caught.exception))
         self.assertIn("not the right file", str(caught.exception))
-        self.assertNotIn("e039", str(caught.exception))
+        self.assertNotIn("GOAL.EXE", str(caught.exception))
         self.assertFalse(self.target.root.exists(), "nothing is copied from a refused folder")
 
     def test_a_name_in_other_case_is_found(self):
-        source = self.source(files={"goal.dat": STAND_IN["GOAL.DAT"],
-                                    "E039-R0005-DATE-CALL.SAV": STAND_IN["e039-r0005-date-call.sav"]})
+        source = self.source(files={"goal.dat": STAND_IN["GOAL.DAT"], "Goal.Exe": STAND_IN["GOAL.EXE"]})
         data_setup.import_folder(source, self.target)
         self.assertEqual(sorted(p.name for p in self.target.data.iterdir()), sorted(STAND_IN))
 
@@ -123,9 +137,11 @@ class PlaceCases(unittest.TestCase):
         for name, digest in data_setup.MANIFEST:
             self.assertRegex(digest, r"^[0-9a-f]{64}$")
             self.assertNotIn("/", name)
-        self.assertEqual([name for name, _ in data_setup.MANIFEST], ["GOAL.DAT", "e039-r0005-date-call.sav"])
+        self.assertEqual([name for name, _ in data_setup.MANIFEST], ["GOAL.DAT", "GOAL.EXE"])
+        from goal2.core import exeboot
+        self.assertEqual(dict(data_setup.MANIFEST)["GOAL.EXE"], exeboot.SHA256)
 
-    @requires.need(files=("GOAL.DAT", "e039-r0005-date-call.sav"))
+    @requires.need(files=("GOAL.DAT", "GOAL.EXE"))
     def test_the_manifest_matches_the_owners_data_folder(self):
         self.assertEqual(data_setup.problems(requires.CACHE), [])
 
@@ -165,6 +181,7 @@ class EntryCases(Case):
         status, seen = self.start([], self.refuse)
         self.assertEqual((status, len(seen)), (0, 1))
         self.assertEqual((seen[0].data, seen[0].core_boot), (target.goal_dat, target.boot))
+        self.assertEqual(target.boot.name, "GOAL.EXE", "the default start boots from the imported GOAL.EXE")
 
     def test_closing_the_dialog_starts_nothing(self):
         status, seen = self.start([], lambda target: False)
@@ -195,7 +212,7 @@ class DialogCases(Case):
         dialog = data_setup.make_dialog(self.target, choose=lambda: str(offered.pop(0)))
         self.assertIn(str(self.target.data), dialog.intro.text())
         self.assertFalse(dialog.choose_and_import())
-        self.assertIn("e039-r0005-date-call.sav is missing", dialog.status.text())
+        self.assertIn("GOAL.EXE is missing", dialog.status.text())
         self.assertTrue(dialog.choose_and_import())
         self.assertEqual(dialog.result(), QDialog.DialogCode.Accepted)
         self.assertTrue(data_setup.complete(self.target.data))

@@ -420,9 +420,10 @@ def dos_year(start_year):
 class CoreNewGame:
     """[designed: T106] The original's new game for Launch's New career on the core route.
 
-    `browse(start_year)` boots the core from the date-call state (e039-r0005-date-call.sav) with the DOS date of
-    that start year, presses N while the title's tune plays (`Core.boot`'s title_key) and Enter on the player count
-    (one manager), and keeps the core at the country browser, one per start year. `countries`, `card` and `campaign`
+    `browse(start_year)` boots the core with the DOS date of that start year, from the player's GOAL.EXE
+    (`Core.boot_exe`, T222) or, for developers and the tests, from the recorded date-call state
+    (e039-r0005-date-call.sav, `Core.boot`): `boot_path` names either, told apart by its content. It presses N
+    while the title's tune plays (the boot's title_key) and Enter on the player count (one manager), and keeps the core at the country browser, one per start year. `countries`, `card` and `campaign`
     read that core's memory (goal2/core/views.py). `start` plays the rest of the new game by the driver and returns
     the CoreModel at the first manager menu with the bulletins the original showed on the way."""
 
@@ -436,9 +437,13 @@ class CoreNewGame:
         from goal2.core.screens import RETURN
         if start_year not in self._drivers:
             try:
+                from goal2.core.exeboot import is_exe
                 state = self.boot_path.read_bytes()
-                wait = Core.boot(state, (dos_year(start_year),) + BOOT_MONTH_DAY, goal_dat=self.data_path,
-                                 title_key='n')
+                date = (dos_year(start_year),) + BOOT_MONTH_DAY
+                if is_exe(state):     # a refused GOAL.EXE is named by its path
+                    wait = Core.boot_exe(self.boot_path, date, goal_dat=self.data_path, title_key='n')
+                else:
+                    wait = Core.boot(state, date, goal_dat=self.data_path, title_key='n')
                 driver = Driver(wait.core)
                 if wait.kind == 'title-player-count':
                     driver.press(RETURN, expect=('country-select',))

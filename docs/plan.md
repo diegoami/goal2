@@ -54,9 +54,14 @@ and the P0–P7 table, is in this file's git history (`git log -- docs/plan.md`)
 | --- | --- | --- |
 | m1 Core first playable | Reviewed at `044f7bcb`, never tagged; superseded by m2 | #415 (open: close it or tag it) |
 | m2 Standalone engine | Tagged `m2-standalone-engine` at `e4991d94`, 2026-11-02 | #507 |
+| **v0.1 the core route, shipped** | Today's `goal2/desktop` over the original under Unicorn, booted from the player's own GOAL.EXE; only #455, #454 and #428 fixed; the portable ZIP published [designed: owner, 2026-11-13] | #705 |
 | **m3 GOAL.EXE out entirely** | No code path needs Unicorn or the recorded boot state | #509 |
 | UI fidelity | The 32 px reflow reaches `main` only through T215: milestone review and the owner's Windows playtest | #666, branch `ui/foundation-32` |
 | Autonomous showcase | A country followed through a whole cycle, published as web demos; queued, displaces nothing | #648 |
+
+**v0.1 first** [designed: owner, 2026-11-13, #705]: a scoped exception to "no Unicorn match path" and "no Unicorn
+performance work" for this one release. Its order: T222 (boot from the player's GOAL.EXE), #455, #454, #428, then the
+release. m3's list below resumes after it.
 
 **What m3 still needs** [derived: #471, 2026-11-09]:
 

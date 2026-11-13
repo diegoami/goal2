@@ -28,6 +28,16 @@ build. Same code, same results (E034-03's drive and F40 identical, T79's 700 mat
 PyPy: goal2-archaeology #620, #290), about 4 times CPython's speed. A Rust engine is developed in
 parallel in diegoami/goal2rust; this repository stays on the Python port until that one is equal.
 
+[designed: owner, 2026-11-13] **v0.1 ships the core route now**, a scoped exception for v0.1 only. The
+release is today's `goal2/desktop` window over the core route (the original under Unicorn), fixing only the
+playtest blockers #455 (apparent freeze after shots), #454 (in-match tactics) and #428 (match speed; pacing
+work on the Unicorn path is allowed for this release). It is published as the portable Windows ZIP, with the
+player supplying their own GOAL.EXE and GOAL.DAT: the core boots from the player's GOAL.EXE, not from the
+owner's recorded date-call state, which never ships (rule 14). After v0.1, m3 and the standalone engine stay
+the direction; nothing else of the 2026-10-27/11-03 decisions changes. Milestone #705. v0.1.0 is published as soon
+as its tasks are merged and the package run is green; its milestone review and playtest follow publication (owner,
+2026-11-13), for v0.1 only.
+
 ## Resuming authorised work
 
 [designed: owner handover, 2026-10-29] Continue in the owner's selected fresh Claude

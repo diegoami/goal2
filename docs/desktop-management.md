@@ -117,10 +117,14 @@ The core pitch transports Enter/Left/Right in order with bounded, checked input 
 its existing presentation-rate controls. No calibration, speed or substitution byte is patched directly.
 
 [designed: owner, 2026-10-22; T106, #308's G10] **A new career on the core route.** `--core-boot` opens Launch
-over the original's own new game, booted from the state at the program's DOS date call (`e039-r0005-date-call.sav`,
-docs/core.md "Booting at the DOS date call"); GOAL.DAT is read at run time from `--data`:
+over the original's own new game, booted to the program's DOS date call (docs/core.md "Booting at the DOS date
+call"); GOAL.DAT is read at run time from `--data`. [designed: owner, 2026-11-13, #705; T222] `--core-boot` takes the
+player's GOAL.EXE, which the core runs from its first instruction to the date call (`Core.boot_exe`; the desktop's
+default start, from the imported data folder), or the recorded state there (`e039-r0005-date-call.sav`, `Core.boot`),
+which developers and the tests keep using; the file's content tells them apart:
 
 ```sh
+python3 -m goal2.desktop --core-boot .cache/GOAL.EXE --data .cache/GOAL.DAT --save .cache/desktop.g2core
 python3 -m goal2.desktop --core-boot .cache/e039-r0005-date-call.sav --data .cache/GOAL.DAT --save .cache/desktop.g2core
 ```
 

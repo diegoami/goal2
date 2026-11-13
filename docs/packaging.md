@@ -109,11 +109,11 @@ The folder and the ZIP land in `dist/`.
 
 [designed: owner, 2026-11-02, T153] The ZIP holds nothing of the original game; its files come in through a first-run
 import (`goal2/desktop/data_setup.py`). The desktop's default start is the core route's new career (`--core-boot`,
-docs/desktop-management.md), which needs two of the owner's private files: the recorded emulator state at the DOS date
-call, `e039-r0005-date-call.sav`, which holds GOAL.EXE in memory (docs/core.md), and `GOAL.DAT` [confirmed: F032]. A
-player's own goal install cannot produce the recorded state, so the import takes the owner's data folder, the one
-`tools/artifacts.py pull` fills (docs/artifacts.md). Distribution to other players waits for GOAL.EXE to be out
-entirely (long-term, m3).
+docs/desktop-management.md). [designed: owner, 2026-11-13, #705; T222] It needs two files of the player's own copy of
+goal (version 2): `GOAL.EXE`, from which the core boots the original to its DOS date call (docs/core.md, "The new
+game"), and `GOAL.DAT` [confirmed: F032]. Each is checked against the released file's SHA-256. The recorded emulator
+state at the date call (`e039-r0005-date-call.sav`), which the import took before T222, is no longer asked for: a
+folder that holds it instead of GOAL.EXE is refused, naming GOAL.EXE.
 
 | Path | What |
 |---|---|
@@ -128,8 +128,8 @@ beside its final name, checked again and then moved over it. A refused folder is
 writes only into the data folder: never the folder offered, the saves or the working directory, so a re-import cannot
 overwrite a career. [designed: owner, 2026-11-03, #526] The original's help file, `GOAL.HLP`, is taken too when the
 folder has it (`data_setup.OPTIONAL`, for the redesigned UI's F1): a wrong one is refused by name like the others, and a
-folder without it still imports. Then the desktop starts as with `--core-boot <data>\e039-r0005-date-call.sav --data
-<data>\GOAL.DAT --save <saves>\desktop.g2core`; a second start goes straight in. Every path is absolute.
+folder without it still imports. Then the desktop starts as with `--core-boot <data>\GOAL.EXE --data <data>\GOAL.DAT
+--save <saves>\desktop.g2core`; a second start goes straight in. Every path is absolute.
 
 Explicit arguments still win: `--data` bypasses the import (developers' `.cache/` runs and their `.cache/` default
 saves are unchanged), `--save` names another save, and `--resume`, `--core` or `--template` without `--data` take

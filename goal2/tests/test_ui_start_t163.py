@@ -483,8 +483,9 @@ class ImportManifest(App):
     def test_s01_needs_the_template_and_not_the_boot_state(self):
         self.assertEqual(data_setup.MANIFEST, (
             ("GOAL.DAT", "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"),
-            ("e039-r0005-date-call.sav", "0d9c683023c7327f17bfc29900f2eff4e703641d21d3f353693f09654688494b"),
-        ), "the old window's manifest is unchanged")
+            # [designed: owner, 2026-11-13, #705; T222] the old window boots from the player's GOAL.EXE now
+            ("GOAL.EXE", "a6928b0bb7cda0303ac8daf8690efc56ef1792dddaccb5c6f3d85af1f68d3664"),
+        ), "the old window's manifest is its own")
         self.assertEqual(data_setup.WINDOW_MANIFEST, (
             ("GOAL.DAT", "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"),
             ("e010-r0008-halftime.sav", "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949"),

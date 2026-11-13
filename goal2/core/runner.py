@@ -371,26 +371,53 @@ class Core:
         state = bytes(state)
         image = _image(state)
         regs = cpu_state(state)
+        memory = bytearray(image.memory)
+        memory[TEXT_PAGE:TEXT_PAGE + ROWS * COLS * 2] = text_page(state)
+        return cls._boot_at_date_call(memory[:MEM_SIZE], image.load, regs, image.header, bytes(image.memory[MEM_SIZE:]),
+                                      hashlib.sha256(state).hexdigest(), date, budget=budget, dos_time=dos_time,
+                                      goal_dat=goal_dat, title_key=title_key)
+
+    @classmethod
+    def boot_exe(cls, exe, date, *, budget=DEFAULT_BUDGET, dos_time=DEFAULT_DOS_TIME, goal_dat=None, title_key=None,
+                 bios_ticks=None):
+        """The third entry kind (T222): `boot`, from the player's own GOAL.EXE (`exe`: its path or bytes) instead of
+        a recorded state. GOAL.EXE is refused (CoreError naming it) unless it is the registered one, before any of
+        its instructions runs; it is then run from its MZ entry in a bare machine to its date call
+        (goal2/core/exeboot.py, docs/core.md "The new game"), and continues as `boot` does. The boot's DOS and BIOS
+        answers end at the date call. The core save's `template_sha256` is 'goal-exe:' and GOAL.EXE's digest.
+
+        `bios_ticks`: the BIOS's tick count when GOAL.EXE starts, an input like the date (exeboot.py: the program
+        keeps its low word as a random seed, DS:8336). [designed: T222] By default the count at `dos_time`."""
+        _need_unicorn()
+        from goal2.core import exeboot
+        data, _ = exeboot.read_exe(exe)
+        call = exeboot.date_call(data, exeboot.ticks_at(_dos_time(dos_time)) if bios_ticks is None else bios_ticks)
+        return cls._boot_at_date_call(bytearray(call.memory), call.load, call.regs, call.header, b"",
+                                      exeboot.digest_id(data), date, budget=budget, dos_time=dos_time,
+                                      goal_dat=goal_dat, title_key=title_key)
+
+    @classmethod
+    def _boot_at_date_call(cls, memory, load, regs, header, tail, template_id, date, *, budget, dos_time, goal_dat,
+                           title_key):
+        """`boot`'s run from the machine stopped at the date call (`memory`, its `load` segment and `regs`)."""
         year, month, day = (int(x) for x in date)
         if not DOS_YEARS[0] <= year <= DOS_YEARS[1]:
             raise ValueError(f"DOS answers the years {DOS_YEARS[0]}..{DOS_YEARS[1]}, not {year} (NG-9)")
-        seg = (image.load + int(DATE_CALL[0], 16)) & 0xFFFF
+        seg = (load + int(DATE_CALL[0], 16)) & 0xFFFF
         at = seg * 16 + DATE_CALL[1]
-        if (regs["CS"], regs["EIP"] & 0xFFFF) != (seg, DATE_CALL[1]) or bytes(image.memory[at:at + 2]) != b"\xcd\x21" \
+        if (regs["CS"], regs["EIP"] & 0xFFFF) != (seg, DATE_CALL[1]) or bytes(memory[at:at + 2]) != b"\xcd\x21" \
                 or (regs["EAX"] >> 8) & 0xFF != GET_DATE:
             raise CoreError(f"the state is not stopped at the date call {DATE_CALL[0]}:{DATE_CALL[1]:04X} (int 21h, "
                             f"AH 2Ah; NG-10): CPU at {regs['CS']:04X}:{regs['EIP'] & 0xFFFF:04X}, AX "
                             f"{regs['EAX'] & 0xFFFF:04X}")
-        m = Machine(image.memory, image.load)
-        m.write(TEXT_PAGE, text_page(state))
+        m = Machine(memory, load)
         for name in REGS:
             if name in regs:
                 m.set_reg(name, regs[name])
         for name, value in date_registers(regs, (year, month, day)).items():
             m.set_reg(name, value)
         m.set_reg("eip", DATE_RETURN)
-        core = cls(m, image.header, bytes(image.memory[MEM_SIZE:]), budget, [], hashlib.sha256(state).hexdigest(),
-                   dos_time=dos_time, date=(year, month, day), data=goal_dat)
+        core = cls(m, header, tail, budget, [], template_id, dos_time=dos_time, date=(year, month, day), data=goal_dat)
         if title_key is not None:
             core.queue("title-tune", title_key)
         core._run()
