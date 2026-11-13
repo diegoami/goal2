@@ -145,6 +145,10 @@ class CoreWindow(QMainWindow):
         # [designed: T107, T65's pattern] Team actions run off the window's thread; a timer collects the result.
         from PySide6.QtCore import QTimer
         self.core_jobs = CoreJobs(model)
+        # [designed: T223] The window's watched match waits the original's delays in wall time (CoreModel.hold);
+        # the core and every headless model run at full speed.
+        model.pacing = True
+        self.sound_note = None
         self.core_timer = QTimer(self);self.core_timer.setInterval(30);self.core_timer.timeout.connect(self.poll_core)
         self.core_actions = [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move,
                                                                             self.pool_switch] + \
@@ -257,8 +261,11 @@ class CoreWindow(QMainWindow):
             answer = self.core_jobs.poll()
         except Exception as exc:              # the core stopped: say so, never guess
             answer = ('stopped', str(exc).split('\n')[0])
-        if answer is None:return None
+        if answer is None:
+            self.show_sound_note()
+            return None
         self.core_timer.stop()
+        self.sound_note = None
         self.save.setEnabled(True)
         for widget in self.core_actions:widget.setEnabled(True)
         kind, value = answer
@@ -283,6 +290,15 @@ class CoreWindow(QMainWindow):
         self.refresh_round_controls()
         return answer
 
+    def show_sound_note(self):
+        """[designed: T223] While the original waits for a sound (a whistle's jingle, a tune), say so: no sound is
+        played (#431), and a stop must not look frozen. The note goes when the step ends (poll_core)."""
+        sound = self.model.sounding
+        if sound is None or sound == self.sound_note:
+            return
+        self.sound_note = sound
+        self.status.setText(f'The original plays its {sound} (not heard here) and waits for it to end…')
+
     def refresh_round_controls(self):
         """[T108] While a round waits (the match menu, half time) the manager menu's routes and the team edits wait."""
         busy = self.core_jobs.busy
@@ -302,12 +318,14 @@ class CoreWindow(QMainWindow):
     def closeEvent(self, event):
         """[designed: T109] Stop scheduling polls, finish the bounded owned step, then reap the pitch viewer."""
         self.core_round.viewer_timer.stop()
+        self.model.cancel_hold()               # [T223] a paced wait ends now; the original's step is complete
         try:
             self.core_jobs.wait(60)
             if self.core_round.viewer is not None:
                 self.core_round.viewer.close()
             self.core_jobs.pool.shutdown(wait=True)
         except Exception as exc:
+            self.model.resume_hold()
             self.status.setText(f'Cannot close yet: {exc}');event.ignore();return
         event.accept()
 

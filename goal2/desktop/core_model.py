@@ -39,7 +39,14 @@ ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
                  'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue',
-                 'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight', 'replay')
+                 'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight', 'replay',
+                 'replay_timeout')
+# [designed: T223] The round's steps outside the watched match (the other fixtures, the end of the round) and the
+# replay question's timeout, whose wait the window has already counted down (core_replay.py): never paced.
+UNPACED = ('round_start', 'round_continue', 'finish', 'summary_done', 'replay_timeout')
+# [designed: T223] A sound whose delay lasts this long is named in the window while it runs; shorter ones (the 1 ms
+# beep of a kick, 214B:1EA1) would only flicker.
+NOTE_MS = 200
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
                'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order',
@@ -62,6 +69,14 @@ class CoreModel:
         self.refused = None           # [T108] the original's last refusal of the eleven, while the round waits on it
         self.commentary_cursor = 0
         self.pitch_sequence = 0
+        # [designed: T223] Wall-time pacing of the watched match (the window turns it on): after a step, the
+        # milliseconds the original's delays asked for are waited, in order; `sounding` names the sound whose delay
+        # is being waited ('whistle', 'tune', 'beep') or is None. Headless models never wait.
+        from threading import Event
+        self.pacing = False
+        self.sounding = None
+        self.waited = []              # the last paced step's delays: [[sound or None, ms], ...] in order
+        self._cancel_hold = Event()
         if core.wait.kind not in ROUND_WAITS + ('save-game-name-entry',):
             self.driver.to_menu()
 
@@ -184,6 +199,17 @@ class CoreModel:
             # [confirmed: F029 at53d7ef5] 0C65 restores7FBbytes from8439 to7C3E,
             # including the commentary index80EE. Resume from that snapshot's index.
             self.commentary_cursor = views.Memory(self.state).ds_word(0x8439 + 0x80EE - 0x7C3E)
+        import time
+        started = time.monotonic()
+        delays = []
+
+        def asked(ms, sound):
+            # [designed: T223] The delays the step asks for, in order (consecutive ones of the same sound merged).
+            if delays and delays[-1][0] == sound:
+                delays[-1][1] += ms
+            else:
+                delays.append([sound, ms])
+        listening, self.core.on_delay = self.core.on_delay, asked
         try:
             # [designed: T116; confirmed: 0791:9571–9708] All original polls execute; only complete poses need
             # a kept snapshot/text page. Reads and manager decisions retain their immediate stops.
@@ -197,6 +223,11 @@ class CoreModel:
             if self.core.stopped is not None:
                 raise
             raise ValueError(str(exc).split('\n')[0]) from exc
+        finally:
+            self.core.on_delay = listening
+        if self.pacing and name not in UNPACED and self.driver.watching:
+            self.waited = delays
+            self.hold(delays, started)
         position_refused = result['refused'] if isinstance(result, dict) and set(result)=={'refused'} else None
         if position_refused is not None:self.refused=position_refused
         elif name!='round_position':self.refused=None
@@ -208,6 +239,30 @@ class CoreModel:
             state['position_refused'] = position_refused
         return state
 
+    def hold(self, delays, started):
+        """[designed: T223] Make the step that began at `started` (time.monotonic) last, in wall time, the
+        milliseconds of its `delays` ([[sound or None, ms], ...], in order): the original's own pacing, which the
+        core served without waiting (goal2/core/delay.py). The step's own emulation counts toward the wait, so its
+        pace does not depend on the emulator's speed while the delays are the longer (a whistle takes its 1.7 s).
+        Runs on the job's thread; `cancel_hold()` ends it early (the window closing)."""
+        import time
+        due = started
+        try:
+            for sound, ms in delays:
+                due += ms / 1000
+                self.sounding = sound if sound is not None and ms >= NOTE_MS else None
+                left = due - time.monotonic()
+                if left > 0 and self._cancel_hold.wait(left):
+                    return
+        finally:
+            self.sounding = None
+
+    def cancel_hold(self):
+        self._cancel_hold.set()
+
+    def resume_hold(self):
+        self._cancel_hold.clear()
+
     @presented
     def round_state(self):
         """Where the round is, read from memory: `at` the wait's kind; at the match menu before the kick-off the
@@ -218,8 +273,10 @@ class CoreModel:
         out = {'at': wait.kind, 'stop': 'menu', 'pages': list(self.driver.pages), 'refused': self.refused,
                'captain': None, 'bench': None, 'board': None, 'notice': None}
         if wait.kind in ('action-replay-prompt','save-goal-prompt'):
+            # [designed: T223] `countdown_ms`: the delay the question still asks for before it ends by itself
+            from goal2.core.delay import timed_left_ms
             out.update(stop='replay' if wait.kind == 'action-replay-prompt' else 'replay-save',
-                       board=views.board(self.state))
+                       board=views.board(self.state), countdown_ms=timed_left_ms(self.core))
         elif wait.kind == 'shootout-announcement':
             out.update(stop='shootout-announcement',message=wait.view['message'],board=views.board(self.state))
         elif wait.kind == 'shootout-order':

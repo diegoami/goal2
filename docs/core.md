@@ -36,7 +36,8 @@ core = Core.load(blob)       # at the same wait: core.wait
 - [designed] **A poll answers "no key"** unless a key is queued for its screen (T103, below). [confirmed: F030] A
   timed prompt is a count of polls with the calibrated delay `214B:1E09` between them, so it advances by itself on
   the original's own clock (the image's `DS:A9FF`, never rewritten): the captain prompt passes after its 1000 polls
-  (`KeyWait.polls` counts them per poll site, `0791:CC54` for `wait_or_key`).
+  (`KeyWait.polls` counts them per poll site, `0791:CC54` for `wait_or_key`). The delay is served at its entry and
+  its milliseconds reported (`KeyWait.delay_ms`; "The delay, served", below).
 - A read with the pushed-back flag `DS:79AE` set is not a wait: 08DD returns without reading (08E3-08EF), so the
   guest's own code runs.
 
@@ -787,11 +788,47 @@ arbitrary-byte patch loader or edited vendor file; raw native inputs retain the 
 The genuine before-kickoff inputs, source hashes and private readbacks are recorded in
 [evidence metadata](evidence/T122/artifacts.json).
 
+## The delay, served (T223)
+
+[confirmed: `static/goal-exe/code/seg_214B_04.asm` 1E09-1E57, 1DA7-1E08] `214B:1E09(n)` is the game's own calibrated
+delay: for each of n milliseconds it counts a dword up from 0 to the calibration `DS:AA01:DS:A9FF` (the passes of one
+BIOS tick / 55, stored by 214B:1DA7 at the boot; 4279 in the recording and the GOAL.EXE boot, T222). It reads no clock,
+port or interrupt, so no caller can rely on the BIOS tick ending it early; under the core the tick does not advance
+after the boot anyway (goal2/core/exeboot.py). Executed under Unicorn, its wall time is the emulator's speed, not the
+milliseconds it asks for (#428, and #455's pause after a wide shot: [confirmed: #455 comment 2026-10-27T09:15:47Z]
+22 calls of 214B:1E09(2) from match_delay 0791:043B, one 214B:1E09(1) of a beep and 1,708 of the whistle's notes from
+214B:1F81, `play_note` in `play_jingle` under match_whistle 0791:0441).
+
+[designed: T223] `goal2/core/delay.py` serves it at its entry: it writes what the loop would leave (AX = n, DX = ES =
+the count's high word, the flags of the final equal `cmp`, the saved BP and the four locals below SP) and returns as
+`retf 2` does. The core counts the milliseconds asked since the last wait in `KeyWait.delay_ms` and tells
+`Core.on_delay(ms, sound)`, when set, each delay with the sound it times, read from the original's frames:
+`whistle` (a note of match_whistle's jingle), `tune` (another note: the title, a bulletin), `beep` (214B:1EA1, a
+kick or a foul) or None. The core never waits: headless runs (tests, quick results, the round's other fixtures, the
+season) run at full speed. `Core.delays_served = False` executes the loop instead; neither attribute is saved.
+`goal2/tests/test_core_delay_t223.py` plays the same watched stretches both ways (the wide shot's transition, a goal
+and its replay question; a whole first half at each speed 0..5 under `GOAL2_SLOW=1`) and finds the same waits, text
+pages, pitch, commentary, registers and memory, and checks the served routine against its loop call by call.
+
+[designed: T223] The wall-time wait is the watched window's: `CoreWindow` turns on `CoreModel.pacing`, and after each
+step of the watched match (not the round's other fixtures or its end) the model makes the step last, from its start,
+the milliseconds its delays asked for, in their order, on the job's thread (the step's own emulation counts toward
+the wait, so the pace does not depend on the emulator's speed while the delays are the longer: the wide shot's whistle
+takes its 1.7 s); `CoreModel.sounding` names the sound being waited while it
+lasts 200 ms or more, and the window's status line says so ("The original plays its whistle (not heard here)…"): no
+sound is played (#431). The step's pose is shown after its wait (a pose is the state at the step's last poll, after all its delays).
+Speeds 0..5 keep their meaning: 0 has no match delay (match_delay and match_whistle return at once). The replay
+question after a goal counts down its own 600 polls x 10 ms on the main window (`round_state()['countdown_ms']`,
+read from wait_or_key's locals); a choice before then is pressed at the current poll (T140), and at the end
+`Driver.replay_timeout()` lets the original's remaining polls run with no key, so the original answers N itself.
+Measured on Linux: `measurements/T223/`.
+
 ## Requirements and cost
 
 `import goal2.core` needs the standard library only; `Core.start` needs `unicorn` (`pip install -e
 '.[watched]'`) and says so when it is missing. Menu keys take milliseconds; pressing **play** runs the captain
-prompt and a whole first half at the image's own delay calibration, about 110 s under the instruction count.
+prompt and a whole first half at the image's own delay calibration, about 110 s under the instruction count (T100,
+before T223 served the delay at its entry: "The delay, served").
 `python3 -m unittest goal2.tests.test_core_runner_t100 -v` checks all of this on E006-r0001, and
 `python3 -m unittest goal2.tests.test_core_screens_t103 -v` the screen table; both need `.cache/` and the
 goal2-archaeology checkout, and skip without them. [designed: #316] The tests that run the original past its first
@@ -896,7 +933,8 @@ are retained as manager decisions. `Driver.replay(True)` answers original Y then
 without writing a highlight file. `replay(False)` answers N to continue live. A resumed
 `save-goal-prompt` accepts `replay(True)` to continue the already-requested replay without
 saving. Scripted `play_round` callers supply `on_replay(driver, wait)` returning that explicit
-boolean; absent a callback the driver refuses rather than silently answering. Original replay
+boolean; absent a callback the driver refuses rather than silently answering. [designed: T223]
+`Driver.replay_timeout()` is the question's own end with no key (N), which the desktop's countdown reaches. Original replay
 restoration and goal/RNG evolution run unchanged. The desktop marks replay frames through
 causal viewer events, and the commentary cursor resumes from the restored snapshot's index.
 

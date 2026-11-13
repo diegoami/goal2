@@ -1,0 +1,60 @@
+{
+ "head": "d8db70aea33637b67d98a74e795b3cd06ae08d7e",
+ "script_sha256": "706fbebbfc5efb24466f45156bd2a01dbe1fe30868c3b0065cf87b1d07ce10c4",
+ "core_sha256": "ad04633c5787a470e870cdeabe4062b1b7c176c51fec8313fef2f1942e981147",
+ "python": "3.13.18",
+ "platform": "Linux-6.18.44-fc-v445-x86_64-with-glibc2.39",
+ "runs": {
+  "executed": [
+   {
+    "wall_s": 2.185,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   },
+   {
+    "wall_s": 2.084,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   },
+   {
+    "wall_s": 2.082,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   }
+  ],
+  "served": [
+   {
+    "wall_s": 0.439,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   },
+   {
+    "wall_s": 0.384,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   },
+   {
+    "wall_s": 0.531,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   }
+  ],
+  "served-waited": [
+   {
+    "wall_s": 1.755,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   },
+   {
+    "wall_s": 1.755,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   },
+   {
+    "wall_s": 1.755,
+    "asked_ms": 1753,
+    "memory_sha256": "9c336e0c61a8534a6aa465caecff5556db3b4358b23f26ded8b7834306493387"
+   }
+  ]
+ }
+}
