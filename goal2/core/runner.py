@@ -289,7 +289,8 @@ class KeyWait:
     view: dict = field(default_factory=dict, hash=False)
     passed: tuple = ()
     poll: bool = False          # [T108] the original is at a poll of a kind the core stops at (Core.stop_at)
-    delay_ms: int = 0           # [T223] the milliseconds the original's delay 214B:1E09 asked for since the last wait
+    # [T223] the milliseconds the original's delay 214B:1E09 asked for since the last wait (0 for a loaded core's wait)
+    delay_ms: int = field(default=0, compare=False)
 
 
 class Core:

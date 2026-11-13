@@ -199,6 +199,8 @@ class CoreModel:
             # [confirmed: F029 at53d7ef5] 0C65 restores7FBbytes from8439 to7C3E,
             # including the commentary index80EE. Resume from that snapshot's index.
             self.commentary_cursor = views.Memory(self.state).ds_word(0x8439 + 0x80EE - 0x7C3E)
+        import time
+        started = time.monotonic()
         delays = []
 
         def asked(ms, sound):
@@ -225,7 +227,7 @@ class CoreModel:
             self.core.on_delay = listening
         if self.pacing and name not in UNPACED and self.driver.watching:
             self.waited = delays
-            self.hold(delays)
+            self.hold(delays, started)
         position_refused = result['refused'] if isinstance(result, dict) and set(result)=={'refused'} else None
         if position_refused is not None:self.refused=position_refused
         elif name!='round_position':self.refused=None
@@ -237,12 +239,14 @@ class CoreModel:
             state['position_refused'] = position_refused
         return state
 
-    def hold(self, delays):
-        """[designed: T223] Wait, in wall time, the milliseconds of `delays` ([[sound or None, ms], ...]) one after
-        the other, from now: the original's own pacing, which the core served without waiting (goal2/core/delay.py).
+    def hold(self, delays, started):
+        """[designed: T223] Make the step that began at `started` (time.monotonic) last, in wall time, the
+        milliseconds of its `delays` ([[sound or None, ms], ...], in order): the original's own pacing, which the
+        core served without waiting (goal2/core/delay.py). The step's own emulation counts toward the wait, so its
+        pace does not depend on the emulator's speed while the delays are the longer (a whistle takes its 1.7 s).
         Runs on the job's thread; `cancel_hold()` ends it early (the window closing)."""
         import time
-        due = time.monotonic()
+        due = started
         try:
             for sound, ms in delays:
                 due += ms / 1000
