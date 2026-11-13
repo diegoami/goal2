@@ -378,3 +378,6 @@ operational status.
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
+- [T223](T223.md): the original's delay at the time it asks for, #428 and #455, v0.1 (#705).
+- [T224](T224.md): tactics during a match by the original's own route, #454, v0.1 (#705).
+- [T225](T225.md): the v0.1 portable ZIP for a player with their own GOAL.EXE and GOAL.DAT (#705).
