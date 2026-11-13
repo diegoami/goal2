@@ -280,9 +280,11 @@ class CoreModel:
             for sound, ms in delays:
                 due += ms / 1000
                 self.sounding = sound if sound is not None and ms >= NOTE_MS else None
-                left = due - time.monotonic()
-                if left > 0 and self._cancel_hold.wait(left):
-                    return
+                # [designed: T228] A timed wait can end a little early (Windows' coarse timer: 1.750 s for 1.753 s
+                # asked, CI run 43461361162), so wait again until the clock has reached the due time.
+                while (left := due - time.monotonic()) > 0:
+                    if self._cancel_hold.wait(left):
+                        return
         finally:
             self.sounding = None
 

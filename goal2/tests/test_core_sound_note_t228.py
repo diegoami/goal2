@@ -62,5 +62,24 @@ class SlowHost(unittest.TestCase):
         self.assertEqual(seen, [None]);self.assertIsNone(m.sounding)
 
 
+class EarlyWait(unittest.TestCase):
+    """[confirmed: Windows CI run 43461361162] A timed wait can end a little early; the hold lasts the time asked."""
+
+    def test_the_hold_lasts_the_milliseconds_asked_when_a_wait_ends_early(self):
+        import threading
+        from types import SimpleNamespace
+        from goal2.desktop.core_model import CoreModel
+        event = threading.Event()
+
+        def early(left):                     # Windows' coarse timer: the wait returns 20 ms before it is due
+            time.sleep(max(0.0, left - 0.02))
+            return False
+        model = SimpleNamespace(sounding=None, _cancel_hold=SimpleNamespace(wait=early, set=event.set))
+        started = time.monotonic()
+        CoreModel.hold(model, [[None, 22], ["whistle", 300]], started)
+        self.assertGreaterEqual(time.monotonic() - started, 0.322)
+        self.assertIsNone(model.sounding)
+
+
 if __name__ == '__main__':
     unittest.main()
