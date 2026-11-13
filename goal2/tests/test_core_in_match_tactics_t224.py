@@ -178,8 +178,15 @@ class LivePlay(unittest.TestCase, Oracle):
         self.assertEqual(views.team_tactics(d.wait.state)['byte'], byte ^ 0x20)
         self.assertEqual(d.wait.kind, 'match-live')
         self.assertEqual((clock(d.wait), flags(d.wait)), (before, held))
+        # when it takes effect: ED8A marks the change (DS:9B55) at the pause ...
+        from goal2.core.screens import RETURN
+        d.live_step(RETURN)
+        d.match_tactic(6, not view['byte'] >> 5 & 1)
         self.assertEqual(views.Memory(d.wait.state).ds_byte(CHANGED), 1)
-        # [confirmed: routines.tsv 0791:97D0] the tick loop's next iteration snapshots the state and clears 9B55
+        self.assertEqual(views.team_tactics(d.wait.state)['byte'], byte)
+        d.match_tactic(6, not byte >> 5 & 1)
+        d.play_on()
+        # ... and [confirmed: routines.tsv 0791:97D0] the tick loop's next iteration snapshots the state and clears it
         for _ in range(400):
             if not views.Memory(d.wait.state).ds_byte(CHANGED):
                 break

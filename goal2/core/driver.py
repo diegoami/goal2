@@ -814,6 +814,176 @@ class Driver:
         self.press(ESCAPE, expect=('match-menu',))
         return views.bench(self.wait.state)['requested']
 
+    # -- tactics in a match (T224, #454) ----------------------------------------------------------------------------
+    # [confirmed: T224's probe of E006-r0001's round 1 watched, docs/core.md "Tactics in a match (T224)";
+    # named/seg_0791_13.c in_match_menu ED8A, select_team_screen E44F; seg_1771_02.c 1981; seg_1771_04.c 4B61, 49B8]
+    # The match menu offers its team tactics (item 1/6: 1771:1981, editable for the managed side with DS:0C20 clear)
+    # and its players (E949 -> E44F, whose T opens 1771:4B61 for the highlighted player) before the kick-off, at a
+    # pause of live play (Enter: ED8A from 945B), at a stoppage, at half time and at the extra-time intervals. A
+    # change sets DS:9B55, which the tick loop 97D0 takes at its next iteration. [designed: T224] Each action starts
+    # at one of those menus, or at a live poll, where it presses Enter for the pause first and the menu's play after,
+    # so live play goes on at the same minute and score; it never presses Enter on E44F (a substitution request
+    # there) and never uses a manager-menu route.
+    TACTICS_CONTEXTS = ("before", "pause", "stoppage", "half-time", "extra-time-start", "extra-time-half")
+    MATCH_SQUAD = ("select-squad", "substitution-request", "substitution-requested", "squad-substitution-take-off",
+                   "squad-substitution-put-on", "substitutions-used")
+    MATCH_OWN = ("own-tactics", "squad-substitution-tactic", "match-own-tactics")
+
+    def _tactics_home(self):
+        """The match menu the tactics action starts from and returns to: at a live poll, Enter opens the pause
+        (ED8A from 945B); returns (the menu's kind, whether live play resumes after)."""
+        wait = self.core.wait
+        if wait.kind == "match-live" and wait.poll:
+            from goal2.core import views
+            if views.Memory(wait.state).ds_byte(0x0C20):
+                raise DriverError("during an action replay the original shows tactics for viewing only (DS:0C20)")
+            self._press_poll(RETURN)
+            wait = self.core.wait
+            if wait.kind != "match-menu" or wait.view.get("context") != "pause":
+                raise UnexpectedScreen(("match-menu (pause)",), wait)
+            return wait.kind, True
+        if wait.kind in self.MATCH_MENU_KINDS and wait.view.get("context") in self.TACTICS_CONTEXTS:
+            return wait.kind, False
+        raise DriverError(f"the original offers tactics in a match at its match menu or from live play, not at "
+                          f"{wait.kind}")
+
+    def _in_match(self, route):
+        """Run `route(home)` from the match menu `home` (_tactics_home), then back to live play by the menu's play
+        (as play_on) when it started there. A route that stops with the original back at `home` (a refusal) still
+        resumes play before the refusal is raised; any other stop is raised where it is."""
+        home, live = self._tactics_home()
+        try:
+            result = route(home)
+        except DriverError:
+            if live and self.core.wait.kind == home:
+                self.play_on()
+            raise
+        if live:
+            back = self.play_on()
+            if isinstance(back, dict):
+                raise DriverError(f"the original refuses the eleven: {back['refused']}")
+        return result
+
+    def match_tactic(self, element, on):
+        """Set element 1..8 of the managed country's team tactics +0x2D in a match: the match menu's team tactics
+        (the managed side's item), Enter (1771:1981), Up and Down to DS:6BBF's row, Enter toggles it, Esc back to
+        the menu (and play, from live play). Returns the team tactics read after."""
+        from goal2.core import views
+        if element not in range(1, 9):
+            raise DriverError(f"a tactic element is 1..8, not {element}")
+
+        def route(home):
+            self._menu_item("team tactics")
+            wait = self.press(RETURN, expect=("team-tactics", "team-tactics-view"))
+            if wait.kind != "team-tactics":
+                self.press(RETURN, expect=(home,))
+                raise DriverError("the original shows the team tactics for viewing only here")
+            country = wait.view["country"]
+            target = next(r["row"] for r in views.team_tactics(wait.state, country)["rows"] if r["element"] == element)
+            for _ in range(MAX_MOVES):
+                if wait.view["row"] == target:
+                    break
+                wait = self._move(wait.view["row"], target, expect=("team-tactics",))
+            if bool(views.team_tactics(wait.state, country)["byte"] >> (element - 1) & 1) != bool(on):
+                self.press(RETURN, expect=("team-tactics",))
+            self.press(ESCAPE, expect=(home,))
+        self._in_match(route)
+        return views.team_tactics(self.core.wait.state)
+
+    def _match_own(self, player, home):
+        """From the match menu `home`: its players, the cursor to `player` by Up and Down (never Enter), T; returns
+        4B61's wait."""
+        from goal2.core import views
+        squad = self._team()
+        if player not in squad:
+            raise DriverError(f"player {player} is not in the managed squad")
+        self._menu_item("players")
+        wait = self.press(RETURN, expect=self.MATCH_SQUAD)
+        if wait.kind == SQUAD:
+            self._to_player(player)
+        else:
+            target = squad.index(player) + 1
+            for _ in range(MAX_MOVES):
+                if wait.view["slot"] == target:
+                    break
+                wait = self.press(DOWN if wait.view["slot"] < target else UP, expect=(wait.kind,))
+            if wait.view["player"] != player:
+                raise DriverError(f"the list shows player {wait.view['player']} where {player} was read")
+        squad_kind = self.core.wait.kind
+        wait = self.press("t", expect=self.MATCH_OWN)
+        if wait.view["player"] != player:
+            raise DriverError(f"the original's own tactics show player {wait.view['player']}, not {player}")
+        return squad_kind, wait
+
+    def _match_own_leave(self, squad_kind, home):
+        self.press(ESCAPE, expect=(squad_kind,))
+        self.press(ESCAPE, expect=(home,))
+
+    def match_own_tactic(self, player, element, value):
+        """Set `player`'s own setting of tactic `element` 1..4 to `value` (True, False, or None for the team's) in a
+        match: players, the player, T (1771:4B61), the row, Enter cycles the team's, his own clear, his own set;
+        Esc, Esc back to the menu (and play, from live play). Returns his card read after."""
+        from goal2.core import views
+        if element not in (1, 2, 3, 4) or value not in (None, False, True):
+            raise DriverError(f"own tactics are elements 1..4 set to True, False or None, not {element}={value!r}")
+
+        def state(w):
+            r = views.player_card(w.state, player)["own_tactics"]
+            return None if not r >> (element + 3) & 1 else bool(r >> (element - 1) & 1)
+
+        def route(home):
+            squad_kind, wait = self._match_own(player, home)
+            for _ in range(MAX_MOVES):
+                if wait.view["row"] == element:
+                    break
+                wait = self._move(wait.view["row"], element, expect=(wait.kind,))
+            for _ in range(3):
+                if state(wait) == value:
+                    break
+                wait = self.press(RETURN, expect=(wait.kind,))
+            self._match_own_leave(squad_kind, home)
+            if state(self.core.wait) != value:
+                raise DriverError(f"own tactic {element} did not reach {value!r}")
+        self._in_match(route)
+        return views.player_card(self.core.wait.state, player)
+
+    def match_marking(self, player, target):
+        """Set whom `player` marks in a match on his own tactics' row 5 (1771:4B61 calls 49B8 at Enter): `target`
+        None for the team's marking (his status element 7 clear), 0 for a protected zone, an opposing player's word
+        for that man, or "next" for one Enter (49B8's next step: the team's, the zone, the opposing squad's slots
+        2..11 the original finds available). 4B61 offers the row only for an available outfield player of the eleven
+        with the match set up; where it shows four rows the driver leaves by Esc and refuses with the original's row
+        count. Returns his card read after."""
+        from goal2.core import views
+
+        def reached(w):
+            m = views.marking(w.state, player)
+            return (not m["own"]) if target is None else (m["own"] and m["opponent"] == target)
+
+        def route(home):
+            squad_kind, wait = self._match_own(player, home)
+            rows = wait.view["rows"]
+            if rows < 5:
+                self._match_own_leave(squad_kind, home)
+                raise DriverError(f"the original's own tactics show {rows} rows for player {player}: it offers "
+                                  f"man-marking (row 5) only to an available outfield player of the eleven (1771:4B61)")
+            for _ in range(MAX_MOVES):
+                if wait.view["row"] == 5:
+                    break
+                wait = self._move(wait.view["row"], 5, expect=(wait.kind,))
+            if target == "next":
+                self.press(RETURN, expect=(wait.kind,))
+            else:
+                for _ in range(13):            # 49B8's cycle: the team's, the zone, ten opposing slots
+                    if reached(wait):
+                        break
+                    wait = self.press(RETURN, expect=(wait.kind,))
+            self._match_own_leave(squad_kind, home)
+            if target != "next" and not reached(self.core.wait):
+                raise DriverError(f"the original's marking cycle did not offer {target!r} for player {player}")
+        self._in_match(route)
+        return views.player_card(self.core.wait.state, player)
+
     def _to_slot(self, slot):
         wait = self.core.wait
         for _ in range(MAX_MOVES):

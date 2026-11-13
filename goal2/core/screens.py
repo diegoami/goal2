@@ -141,10 +141,24 @@ KINDS = {k.name: k for k in (
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
     Kind("match-summary-save-prompt", _YES_NO, polled=True, evidence=_CAT),
-    Kind("substitution-request", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+    # [designed: T224; confirmed: named/seg_0791_13.c select_team_screen 0791:E44F, T224's probe] T is printed on
+    # these screens ('T-tactics') and opens a player's own tactics (1771:4B61) while DS:0C20 is clear; Up and Down go
+    # to E44F's last branch, the cursor DS:0C1B (u214b_menu_move_word_wrap(0x14, 0xC1B)). Neither touches DS:9B40.
+    Kind("substitution-request", keys(("◄┘", "Return"), ("Esc", "Escape"), ("T", "t"), ("↑↓", "Up Down")),
+         designed=True,
          evidence="[confirmed: named/seg_0791_12.c E44F; DS:4760/4812, E006 live Enter] request or cancel substitution"),
-    Kind("substitution-requested", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+    Kind("substitution-requested", keys(("◄┘", "Return"), ("Esc", "Escape"), ("T", "t"), ("↑↓", "Up Down")),
+         designed=True,
          evidence="[confirmed: named/seg_0791_12.c E44F, DS:4812] Enter cancels DS:9B40's request"),
+    # [confirmed: catalogue.tsv's screen rows, E015-r0007 state 150; T224's probe] a player's own tactics in a match
+    # with substitutions now (E44F's T at half time or a stoppage)
+    Kind("squad-substitution-tactic", keys(("Esc", "Escape"), ("↑↓←→", "Up Down Left Right"), ("◄┘", "Return")),
+         evidence=_CAT),
+    Kind("match-own-tactics", keys(("↓↑←→", "Up Down Left Right"), ("◄┘", "Return"), ("Esc", "Escape")),
+         designed=True,
+         evidence="[designed: T224; confirmed: named/seg_1771_04.c 4B61, T224's probe] a player's own tactics in a "
+                  "match from E44F's T where E44F offers no substitution now (a pause's request, or none left): "
+                  "'tactics and', '↓↑←→-select', '◄┘-alter tactic', 'Esc-exit'"),
     Kind("substitution-refused", keys(("any key", "(any)")), designed=True,
          evidence="[confirmed: named/seg_0791_12.c E022, return E167] incoming player cannot play"),
     Kind("championship-bracket", keys(("any key", "(any)")), designed=True,
@@ -214,7 +228,9 @@ KINDS = {k.name: k for k in (
     Kind("tournament-table", keys(("any key", "(any)")), designed=True,
          evidence="[designed] one pass of the group table after a fixture (1771:958D with its mode byte 0, from "
                   "0791:E929): 'P W D L', 'hit any key'"),
-    Kind("substitutions-used", keys(("F2", "F2"), ("R,C", "r c"), ("T", "t"), ("Esc", "Escape")), designed=True,
+    # [T224] ↑↓: E44F's last branch moves the cursor here too (named/seg_0791_13.c E44F; T224's probe)
+    Kind("substitutions-used", keys(("F2", "F2"), ("R,C", "r c"), ("T", "t"), ("Esc", "Escape"), ("↑↓", "Up Down")),
+         designed=True,
          evidence="[designed] SELECT TEAM in a match with no substitution left (0791:E44F draws DS:2538): 'no more "
                   "substitutes', 'F2-new name R,C-reposition T-tactics', 'Esc-exit'"),
     Kind("eleven-refused", keys(("any key", "(any)")), designed=True,
@@ -632,11 +648,23 @@ def _select_view(f):
 def _own_tactics(f):
     # [confirmed: named/seg_1771_04.c 1771:4B61 edit_own_tactics] its key read is u214b_menu_read_key_and_move, far-
     # called at 1771:4C05 (return 4C0A); 4B61's own caller is SELECT YOUR TEAM's T (0791:E758, return E75D). Outside a
-    # match (DS:0C1F clear) it is own-tactics; in a match it is kinds.tsv's squad-substitution-tactic (no entry yet).
+    # match (DS:0C1F clear) it is own-tactics.
+    # [T224; confirmed: named/seg_0791_13.c E44F, T224's probe] In a match (DS:0C1F set) E44F (its frame the one above
+    # 4B61's, called from E949 at E99C) leaves its own box drawn under 4B61's screen: with substitutions now (DS:9B41
+    # and DS:9B3A + side [bp-3]) "make substitutions now", kinds.tsv's squad-substitution-tactic; else (a pause's
+    # request DS:4760/4812, or "no more substitutes" DS:2538) goal2's match-own-tactics. E44F's T does nothing while
+    # DS:0C20 is set, so no such frame is met then; nor with DS:066D set, which no route has reached (None).
     up = f.up(f.bp)
-    if f.far_caller(up) != "0791:E75D" or f.ds_byte(MATCH_MENU_USED):
+    if f.far_caller(up) != "0791:E75D":
         return None
-    return "own-tactics"
+    if not f.ds_byte(MATCH_MENU_USED):
+        return "own-tactics"
+    select = f.up(up)
+    if f.ds_byte(SUMMARY_FILE) or f.ds_byte(VIEW_ONLY) or f.far_caller(select) != SELECT_FROM_MATCH:
+        return None
+    if f.ds_byte(SUBS_ALLOWED) and f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(select, -3)):
+        return "squad-substitution-tactic"
+    return "match-own-tactics"
 
 
 def _own_view(f):
