@@ -383,3 +383,4 @@ operational status.
 - [T225](T225.md): the v0.1 portable ZIP for a player with their own GOAL.EXE and GOAL.DAT (#705).
 - [T226](T226.md): the window offers the penalty and free-kick taker decisions (#705).
 - [T227](T227.md): the window reads no wait from a step that is still running (#705).
+- [T228](T228.md): the sound's note shows on a host slower than the original's pacing (#705, #455).

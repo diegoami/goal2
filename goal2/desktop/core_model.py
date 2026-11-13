@@ -219,6 +219,7 @@ class CoreModel:
         import time
         started = time.monotonic()
         delays = []
+        paced = self.pacing and name not in UNPACED and self.driver.watching
 
         def asked(ms, sound):
             # [designed: T223] The delays the step asks for, in order (consecutive ones of the same sound merged).
@@ -226,6 +227,11 @@ class CoreModel:
                 delays[-1][1] += ms
             else:
                 delays.append([sound, ms])
+            # [designed: T228] The sound is named as soon as the core serves its delay, not only once the hold
+            # waits: on a host slower than the original's pacing the step's own emulation outlasts the delays,
+            # the hold has nothing left to wait, and the stop would show no note (Windows CI, run 43452154768).
+            if paced and sound is not None and delays[-1][1] >= NOTE_MS:
+                self.sounding = sound
         listening, self.core.on_delay = self.core.on_delay, asked
         try:
             # [designed: T116; confirmed: 0791:9571–9708] All original polls execute; only complete poses need
@@ -237,12 +243,18 @@ class CoreModel:
                 else:
                     result = getattr(self.driver, name)(*args)
         except CoreError as exc:
+            self.sounding = None
             if self.core.stopped is not None:
                 raise
             raise ValueError(str(exc).split('\n')[0]) from exc
+        except BaseException:
+            self.sounding = None
+            raise
         finally:
             self.core.on_delay = listening
-        if self.pacing and name not in UNPACED and self.driver.watching:
+        if not (self.pacing and name not in UNPACED and self.driver.watching):
+            self.sounding = None
+        else:
             self.waited = delays
             self.hold(delays, started)
         position_refused = result['refused'] if isinstance(result, dict) and set(result)=={'refused'} else None

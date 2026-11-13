@@ -863,7 +863,8 @@ step of the watched match (not the round's other fixtures or its end) the model 
 the milliseconds its delays asked for, in their order, on the job's thread (the step's own emulation counts toward
 the wait, so the pace does not depend on the emulator's speed while the delays are the longer: the wide shot's whistle
 takes its 1.7 s); `CoreModel.sounding` names the sound being waited while it
-lasts 200 ms or more, and the window's status line says so ("The original plays its whistle (not heard here)…"): no
+lasts 200 ms or more ([designed: T228] from the moment the core serves its delay, so a host slower than the original's
+pacing, whose step outlasts the delays and leaves nothing to wait, still names it), and the window's status line says so ("The original plays its whistle (not heard here)…"): no
 sound is played (#431). The step's pose is shown after its wait (a pose is the state at the step's last poll, after all its delays).
 Speeds 0..5 keep their meaning: 0 has no match delay (match_delay and match_whistle return at once). The replay
 question after a goal counts down its own 600 polls x 10 ms on the main window (`round_state()['countdown_ms']`,
