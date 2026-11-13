@@ -381,3 +381,4 @@ operational status.
 - [T223](T223.md): the original's delay at the time it asks for, #428 and #455, v0.1 (#705).
 - [T224](T224.md): tactics during a match by the original's own route, #454, v0.1 (#705).
 - [T225](T225.md): the v0.1 portable ZIP for a player with their own GOAL.EXE and GOAL.DAT (#705).
+- [T226](T226.md): the window offers the penalty and free-kick taker decisions (#705).
