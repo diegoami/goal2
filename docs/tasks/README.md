@@ -376,3 +376,5 @@ operational status.
 - [T170e](T170e.md): the 1992 season, stage 2 to its terminal boundary, compared to Core (#566).
 
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
+
+- [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
