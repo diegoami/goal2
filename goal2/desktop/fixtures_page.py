@@ -686,6 +686,7 @@ class CoreRound:
         self.watch_suspended = False
         self.pending_inputs = []
         self.pending_stop = None
+        self.pending_action = None     # [T224] a tactics change asked for in live play, run before the next pose
         self.interval_attention = None
         from goal2.desktop.core_takers import TakerPages
         self.takers=TakerPages(self)
@@ -733,6 +734,17 @@ class CoreRound:
     def finished(self, name, answer):
         """A round step's job ended: show the stop the original is at (CoreModel.round_state's `stop`)."""
         kind, value = answer
+        from goal2.desktop.core_model import TACTICS_ACTIONS
+        if name in TACTICS_ACTIONS:
+            # [designed: T224] A tactics change from the Team page leaves the original where it was (its match menu,
+            # or live play after the pause): the page stays; live play shows its next pose in the pitch window.
+            if kind == 'done':
+                self.state = value
+                self.drop_dead_viewer()
+                if value['stop'] == 'live' and self.viewer is not None and not self.watch_suspended:
+                    self.resume_viewer()
+            self.refresh_match_button()
+            return
         if kind != 'done':
             self.bench.message = value;self.bench.refresh();return
         state = self.state = value
@@ -1014,6 +1026,11 @@ class CoreRound:
                     and self.pending_inputs and not self.window.core_jobs.busy):
                 if self.window.run_core('taker_key',self.pending_inputs[0]):
                     self.pending_inputs.pop(0)
+                return
+            if (self.state and self.state['stop'] == 'live' and self.viewer.drained
+                    and not self.window.core_jobs.busy and self.pending_action is not None):
+                (name, args), self.pending_action = self.pending_action, None
+                self.window.run_core(name, *args)       # [T224] the pause, the change, play on
                 return
             if (self.state and self.state['stop'] == 'live' and self.viewer.drained
                     and not self.window.core_jobs.busy):

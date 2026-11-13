@@ -331,6 +331,13 @@ class Window(unittest.TestCase):
         self.assertIn('tactics', w.core_match_note.text())
         self.assertFalse(w.core_match_note.isHidden())
 
+    def resumed(self, w, before):
+        """The original back where it was: at half time the same menu and clock; in live play the window shows the
+        next complete pose (T116: the 22nd player poll), one pose after the one paused at, with the same score."""
+        minute, score = clock(w.model.core.wait)
+        self.assertEqual(score, before[1])
+        self.assertIn(minute - before[0], (0, 1) if w.model.core.wait.kind == 'match-live' else (0,))
+
     def act(self, w, home):
         from goal2.core import views
         before = clock(w.model.core.wait)
@@ -340,24 +347,54 @@ class Window(unittest.TestCase):
         self.assertEqual(w.finish_core()[0], 'done')
         self.assertEqual(w.model.team_tactics()['byte'], byte ^ 0x10)
         self.assertEqual(w.model.core.wait.kind, home)
-        self.assertEqual(clock(w.model.core.wait), before)
+        self.resumed(w, before)
         player = outfield(w.model.core.wait)
         w.team_roster.set_current([r[0] for r in w.team_roster.rows].index(player))
         was = own(w.model.card(player), 1)
+        before = clock(w.model.core.wait)
         w.own_tactics[0].click()
         self.assertEqual(w.finish_core()[0], 'done')
         self.assertEqual(own(w.model.card(player), 1), {None: False, False: True, True: None}[was])
         self.assertEqual(w.model.core.wait.kind, home)
+        self.resumed(w, before)
+        before = clock(w.model.core.wait)
         w.own_marking.click()
         self.assertEqual(w.finish_core()[0], 'done')
         self.assertTrue(views.marking(w.model.state, player)['own'])
-        self.assertEqual(clock(w.model.core.wait), before)
+        self.resumed(w, before)
         self.check_controls(w)
 
     def test_live_play(self):
         w = self.window('live')
         self.check_controls(w)
         self.act(w, 'match-live')
+
+    def test_a_change_asked_for_during_a_pose_waits_for_it(self):
+        """In live play the window keeps the core stepping poses; a tactics click while a step runs is kept and sent
+        before the next pose (CoreRound.pending_action)."""
+        from types import SimpleNamespace
+        w = self.window('live')
+        byte = w.model.team_tactics()['byte']
+        from unittest.mock import PropertyMock
+        row = dict(w.tactics)[6]
+        with patch.object(type(w.core_jobs), 'busy', new_callable=PropertyMock, return_value=True):
+            w.refresh_round_controls()                                # a pose's step is running
+            self.assertTrue(row.isEnabled())
+            self.assertFalse(w.rename.isEnabled())
+            row.click()
+        self.assertEqual(w.core_round.pending_action, ('match_tactic', (6, not byte >> 5 & 1)))
+        self.assertIsNone(w.core_jobs.name if w.core_jobs.busy else None)
+        self.assertEqual(w.model.team_tactics()['byte'], byte)        # not sent yet
+        r = w.core_round
+        r.viewer = SimpleNamespace(poll=lambda: None, closed=False, drained=True, released=False,
+                                   pose=lambda *a, **k: None, decision=lambda *a: None, process=None)
+        r.poll_viewer()
+        self.assertIsNone(r.pending_action)
+        self.assertEqual(w.core_jobs.name, 'match_tactic')
+        self.assertEqual(w.finish_core()[0], 'done')
+        self.assertEqual(w.model.team_tactics()['byte'], byte ^ 0x20)
+        self.assertEqual(w.model.core.wait.kind, 'match-live')
+        r.viewer = None
 
     def test_half_time(self):
         w = self.window('half')
