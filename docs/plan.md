@@ -33,8 +33,9 @@ and the P0–P7 table, is in this file's git history (`git log -- docs/plan.md`)
 - **Data**: no original asset is committed except the two engine tables (CLAUDE.md rule 14).
   GOAL.DAT is read from the player's own install first and replaced by goal2's own data later
   [designed: owner, 2026-11-02, #509].
-- **Delivery**: a portable Windows ZIP with the PyPy runtime inside, built with Nuitka in an
-  isolated environment ([packaging.md](packaging.md), #432).
+- **Delivery**: a portable Windows folder, zipped, that bundles its interpreters instead of freezing
+  goal2: the embeddable CPython 3.13 for the UI and PyPy 3.11 for the match workers. This supersedes
+  the Nuitka build [designed: owner, 2026-11-02, T147; [packaging.md](packaging.md)].
 
 ## Rules of play that differ from the original, or settle an open point
 
