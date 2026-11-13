@@ -2,11 +2,11 @@
 player's data folder").
 
 The portable build ships nothing of the original game (CLAUDE.md rule 14). The desktop's default start, the core
-route's new career (`--core-boot`, docs/desktop-management.md), needs two of the owner's private files: the recorded
-emulator state at the DOS date call, which holds GOAL.EXE in memory (docs/core.md), and GOAL.DAT, the only file the
-original's new game opens [confirmed: F032] (goal2/core/runner.py `DATA_NAME`). A player's own goal install cannot
-produce the recorded state, so the import takes the owner's data folder, the one `tools/artifacts.py pull` fills
-(docs/artifacts.md).
+route's new career (`--core-boot`, docs/desktop-management.md), needs two files of the player's own copy of goal
+(version 2): GOAL.EXE, which the core boots from its first instruction to the program's DOS date call [designed:
+owner, 2026-11-13, #705; T222] (goal2/core/exeboot.py, docs/core.md "The new game"), and GOAL.DAT, the only file the
+original's new game opens [confirmed: F032] (goal2/core/runner.py `DATA_NAME`). The recorded emulator state the
+core booted from before T222 (e039-r0005-date-call.sav) is not asked for: a player cannot make it.
 
 Where the files go [designed: owner, 2026-11-02, T153]: a per-user folder, `%LOCALAPPDATA%\\goal2\\data` on Windows and
 `~/.local/share/goal2/data` elsewhere; the desktop's saves go to `saves` beside it. Both are absolute, never relative
@@ -26,11 +26,11 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 
 # MANIFEST: the names and SHA-256 digests of the original-game files the desktop's default start needs. It holds no
 # byte of those files, only what each must hash to; the files themselves come from the player's data folder at run
-# time and never enter the repository. [confirmed: goal2/core/cycle_evidence.py's `boot` and `data`, the same two
-# digests; GOAL.DAT's is the released file's, goal2/core/runner.py's check]
+# time and never enter the repository. [confirmed: GOAL.DAT's is the released file's, goal2/core/runner.py's check;
+# GOAL.EXE's the registered one's, goal2/engine/original_match/build.py:3, goal2/core/exeboot.py SHA256]
 MANIFEST = (
     ("GOAL.DAT", "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"),
-    ("e039-r0005-date-call.sav", "0d9c683023c7327f17bfc29900f2eff4e703641d21d3f353693f09654688494b"),
+    ("GOAL.EXE", "a6928b0bb7cda0303ac8daf8690efc56ef1792dddaccb5c6f3d85af1f68d3664"),
 )
 DATA_NAME, BOOT_NAME = (name for name, _ in MANIFEST)
 # WINDOW_MANIFEST: what the new window (goal2/ui, docs/ui.md) needs instead. [designed: owner, 2026-11-03, #527, D2;
@@ -234,7 +234,7 @@ def ensure(target=None, dialog=None):
     return target if run(target) and complete(target.data) else None
 
 
-INTRO = ("goal2 needs two files from your data folder (the folder tools/artifacts.py pull fills): {names}.\n"
+INTRO = ("goal2 needs two files of your copy of goal (version 2): {names}.\n"
          "It also takes the original's help file, {help}, when the folder has it.\n"
          "Choose the folder that holds them. goal2 checks each and copies it to\n{data}\n"
          "Your saved careers, in {saves}, are never touched.")
@@ -267,7 +267,7 @@ def make_dialog(target, choose=None):
             self.choose_button.clicked.connect(self.choose_and_import);self.quit_button.clicked.connect(self.reject)
             row.addWidget(self.choose_button);row.addStretch(1);row.addWidget(self.quit_button)
             layout.addLayout(row)
-            self.choose = choose or (lambda: QFileDialog.getExistingDirectory(self, "The folder with GOAL.DAT") or None)
+            self.choose = choose or (lambda: QFileDialog.getExistingDirectory(self, "The folder with GOAL.EXE and GOAL.DAT") or None)
             self.resize(760, 260)
 
         def choose_and_import(self):

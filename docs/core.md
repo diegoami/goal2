@@ -564,7 +564,8 @@ screen to the byte (its record's digest `18190236…`).
   10,000,000,000; a watched first half needs between 3e9 and 4e9, measured T100) without a key read raises
   `BudgetExceeded`, naming the PC (listing address and CS:IP) and the text page. It never presses a key for the
   original.
-- [designed] **Interrupts**: the core serves only the new game's (T106, "The new game" below). Any other INT the
+- [designed] **Interrupts**: the core serves only the new game's (T106, "The new game" below); a GOAL.EXE boot's own
+  DOS and BIOS answers end at the date call (T222). Any other INT the
   guest calls, or any other request through `Intr`/`MsDos`, stops the run with
   `InterruptError` (its number, AX, the PC and the text page). The menus, the match menu and a whole watched
   first half called none; quitting (F10, Y, N) calls INT 10h and then DOS, and stops there.
@@ -579,8 +580,11 @@ start year is the original's and the seed its own:
 ```python
 from goal2.core import Core
 from goal2.core.driver import Driver
+wait = Core.boot_exe(".cache/GOAL.EXE", (1990, 10, 4),
+                     dos_time=(10, 0, 20, 95), goal_dat=".cache/GOAL.DAT")   # the title's read, 1771:085F
+# or, from the recorded state at the date call (developers and the tests):
 wait = Core.boot(open(".cache/e039-r0005-date-call.sav", "rb").read(), (1990, 10, 4),
-                 dos_time=(10, 0, 20, 95), goal_dat=".cache/GOAL.DAT")   # the title's read, 1771:085F
+                 dos_time=(10, 0, 20, 95), goal_dat=".cache/GOAL.DAT")
 driver = Driver(wait.core)
 driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arrows, the name, Enter on each bulletin
 ```
@@ -633,6 +637,60 @@ driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arro
   and stage), `views.country_card` (a country as the browser's panel shows it, in the desktop card's shape) and
   `views.bulletin` (each story's masthead and lines, read from the page buffer [DS:A96E] that 000E:070B, 062F and
   075F compose and 000E:05F6 moves to the screen; the template's filler rows of ≡ and ░ are left out).
+
+### Booting from GOAL.EXE (T222)
+
+[designed: owner, 2026-11-13, #705] v0.1's player supplies GOAL.EXE and GOAL.DAT; the recorded state never ships
+(CLAUDE.md rule 14). `Core.boot_exe(exe, date, ...)`, the core's third entry kind, makes the date-call state from
+GOAL.EXE's bytes alone (`goal2/core/exeboot.py`) and then continues exactly as `Core.boot` does. The desktop's default
+start and the first-run import use it (docs/packaging.md); `--core-boot` takes either file, told apart by its
+content.
+
+- **Refused before it runs** [designed: T222]: a GOAL.EXE whose SHA-256 is not the registered one's
+  (`a6928b0b…d3664`, [confirmed: goal2/engine/original_match/build.py:3]) raises `CoreError` naming the file and its
+  digest, before any instruction runs.
+- **The machine** [designed: T222]: 1 MiB and the HMA, an IVT whose vector n points to `F000:4n` holding `int n;
+  iret`, a BIOS data area of a VGA in mode 3 (80x25, page 0, cursor 0,0, 16 points, 25 rows, 640 KiB), a cleared
+  screen (space, attribute 07h), an environment block, the program's memory block `M` named GOAL owned by the PSP,
+  then a free block to A000h. The program is placed at the recording's load segment 0823 (PSP 0813), so the two
+  memories compare at the same addresses. [confirmed: the recording's MCB 0812, 803Eh paragraphs] DOS sizes the block
+  as the PSP, the header's 181 pages less the 2 header paragraphs, and maxalloc 6990h; its top, the PSP's word +2,
+  becomes DS:7B4A (23E4:002B-0032). The registers are those DOS's EXEC leaves (AX, BX 0, CX 00FFh, DX the PSP, SI and
+  DI the entry IP and SP, BP 091Ch) and the flags 7202h [derived: the recording's flags 7206h at the date call carry
+  IOPL 3 and NT, which the program never sets]. The core save's `template_sha256` is `goal-exe:` and GOAL.EXE's
+  digest; its header (the Memory component's 0x78 bytes) is zero and its tail above MEM_SIZE empty: no DOSBox-X
+  state made it, and nothing reads either.
+- **The answers** [confirmed: seg_23E4_01.asm 0035-0071, seg_2382_01.asm 0030-012E and 0608; derived: the
+  feasibility probe, #705]: from the MZ entry to the date call the program asks INT 21h AH=35h ×18 (ES:BX the
+  vector), 25h ×5 (the vector set to DS:DX), 44h AL 0 ×1 (handle 1, the console: DX 80D3h; 23E4:14D4 tests DL's
+  bit 7), and INT 10h AH=0Fh ×2 (mode, columns and page from the BIOS data area), 1130h BH 0 ×1 (ES:BP INT 1Fh's
+  vector, CX the points, DL the rows less one: the CRT unit's DS:AAAF is then 0, no snow checking), 08h ×1 (the
+  character and attribute at the cursor, read from the screen: DS:AAB2 and DS:AABC take 07h) and 02h ×2 (the cursor
+  in the BIOS data area, through Intr from 214B:0661). Any other request stops the boot with `InterruptError`. The
+  boot runs on an engine of its own, dropped at the date call: the core's refusals hold after it unchanged.
+- **The tick is an input** [derived: goal2-archaeology E039 derive.py (4f4bf358), which made the recording]: the
+  BIOS tick 0040:006C advances by one every 1,647,750 instructions, a tick at the recording's fixed `cycles=30000`.
+  The CRT unit's calibration then gives DS:AAB8 = 04A7h (its 65,535 passes see no advance) and the game's 214B:1DA7
+  gives DS:A9FF = 10B7h (4279), the recording's. The count itself, `bios_ticks`, is an input like the date: the
+  unit start-up 0791:F3F2 keeps its low word at DS:8336, the seed of the random numbers 0791:94C9 draws for the
+  watched match's sounds [confirmed: seg_0791_24.asm F43F-F447, datarefs.tsv]. By default it is the count at
+  `dos_time`; E039's is 655,435 (derive-r0005.json: 655,438 at the date call, less the 3 ticks served).
+- **Equal to the recording** [derived: measured by goal2/tests/test_core_exe_boot_t222.py]: at the date call the
+  load module equals the recording's byte for byte and the build guard finds no difference; the data segment and
+  the live stack (SS:SP to SS:4000, the program's SP at its entry 0000:0000) equal it but for the bytes below. From
+  both starts the same new game, at both E039 dates, passes the same waits and screens to the same manager menu, and
+  the first watched match ends with the same result and data segment, but for the first two rows below.
+
+| Bytes | The boot | The recording | Why the game does not read it |
+|---|---|---|---|
+| DS:86CC–86DB | LZEXE's stack (SS load+2DE7, SP 0080): its stub's push of 002Bh at SS:007A, zeros | an interrupt frame (IP FEAF, CS F000, flags 7206h) and others DOSBox-X's hardware interrupts pushed while LZEXE ran; the boot models none | data the program has not written by the manager menu; replaced by FFh it changes nothing there, nor (with the recording's bytes) the first watched match |
+| DS:ACC0–AD07 | the 18 vectors 23E4:0035-004E saves: F000:4n, the boot's stubs | DOSBox-X's BIOS and DOS addresses, a property of its ROM, not producible | read only by the program's exit 23E4:0141, which restores them; the core stops before it (quitting stops at INT 10h AH=02h) |
+| SS:3DC2–3DD5 (DS:EAD2–EAE5) | Intr's (235C:000B-0048) pushes for INT 10h AH=02h | zeros: E039's derivation served Intr at its entry and ran none of it | below SS:SP |
+| SS:3DF2–3DF3 | 7202h, the flags Intr's return path stored in 214B:0661's record | 296Eh, the request's word | 214B:1C63's local for the day: GetDate writes it at 235C:007E right after the date call |
+| SS:3FCD–3FE1 | zeros: the program writes none of it before the date call | what DOSBox-X's own interrupt code left on the program's stack before E039's catch | overwritten by the manager menu; replaced by FFh it changes nothing there |
+
+  At the date call BX (00AAh, the record's BX Intr loaded, against 3D6Fh), ES (loaded by GetDate at 235C:0075), AL,
+  CX and DX (DOS's answer) differ too.
 
 ### TEAM card labels and manager text
 
