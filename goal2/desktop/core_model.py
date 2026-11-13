@@ -187,9 +187,20 @@ class CoreModel:
 
 
     # -- the round (T108) -------------------------------------------------------------------------------------------
+    # [designed: T227] The core's wait is None while a step runs on the job thread (Core._run clears it first). The
+    # window refreshes its controls then too (poll_core, as the next step starts), so these answer from the last wait
+    # read, the one the running step started from, instead of raising. One read of `core.wait`, never two.
+    _settled_kind = None
+
+    def _wait_kind(self):
+        wait = self.core.wait
+        if wait is not None:
+            self._settled_kind = wait.kind
+        return self._settled_kind
+
     @property
     def in_round(self):
-        return self.core.wait.kind in ROUND_WAITS
+        return self._wait_kind() in ROUND_WAITS
 
     def round_step(self, name, *args):
         """[designed: T108] Run the round's step `name` (ROUND_ACTIONS) by the original's keys; returns round_state().
@@ -208,6 +219,7 @@ class CoreModel:
         import time
         started = time.monotonic()
         delays = []
+        paced = self.pacing and name not in UNPACED and self.driver.watching
 
         def asked(ms, sound):
             # [designed: T223] The delays the step asks for, in order (consecutive ones of the same sound merged).
@@ -215,6 +227,11 @@ class CoreModel:
                 delays[-1][1] += ms
             else:
                 delays.append([sound, ms])
+            # [designed: T228] The sound is named as soon as the core serves its delay, not only once the hold
+            # waits: on a host slower than the original's pacing the step's own emulation outlasts the delays,
+            # the hold has nothing left to wait, and the stop would show no note (Windows CI, run 43452154768).
+            if paced and sound is not None and delays[-1][1] >= NOTE_MS:
+                self.sounding = sound
         listening, self.core.on_delay = self.core.on_delay, asked
         try:
             # [designed: T116; confirmed: 0791:9571–9708] All original polls execute; only complete poses need
@@ -226,12 +243,18 @@ class CoreModel:
                 else:
                     result = getattr(self.driver, name)(*args)
         except CoreError as exc:
+            self.sounding = None
             if self.core.stopped is not None:
                 raise
             raise ValueError(str(exc).split('\n')[0]) from exc
+        except BaseException:
+            self.sounding = None
+            raise
         finally:
             self.core.on_delay = listening
-        if self.pacing and name not in UNPACED and self.driver.watching:
+        if not (self.pacing and name not in UNPACED and self.driver.watching):
+            self.sounding = None
+        else:
             self.waited = delays
             self.hold(delays, started)
         position_refused = result['refused'] if isinstance(result, dict) and set(result)=={'refused'} else None
@@ -257,9 +280,11 @@ class CoreModel:
             for sound, ms in delays:
                 due += ms / 1000
                 self.sounding = sound if sound is not None and ms >= NOTE_MS else None
-                left = due - time.monotonic()
-                if left > 0 and self._cancel_hold.wait(left):
-                    return
+                # [designed: T228] A timed wait can end a little early (Windows' coarse timer: 1.750 s for 1.753 s
+                # asked, CI run 43461361162), so wait again until the clock has reached the due time.
+                while (left := due - time.monotonic()) > 0:
+                    if self._cancel_hold.wait(left):
+                        return
         finally:
             self.sounding = None
 
@@ -365,7 +390,7 @@ class CoreModel:
     # -- saving ----------------------------------------------------------------------------------------------
     @property
     def in_save_name(self):
-        return self.core.wait.kind == 'save-game-name-entry'
+        return self._wait_kind() == 'save-game-name-entry'
 
     def begin_save_name(self):
         """[confirmed: T121 original F7 probe] Enter the original save decision only from management."""
