@@ -11,7 +11,8 @@ SOURCE = "7fbfd2e9272f371e070b123d8b2fc4c08b76ebd7"
 # [designed: T170a] Reviewed m10 route closure, without public assistant wrapper
 # or campaign activation. Keep696screens and accepted698match as overrides;
 # all source/export/hash/ancestry guards remain unchanged.
-SOURCE_OVERRIDES = {'runtime/original_match/screens.py': 'c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4'}
+SOURCE_OVERRIDES = {'runtime/original_match/README.md': '0f9f87f405282ce2a0461679ac71395d35e76e3a',
+                   'runtime/original_match/screens.py': 'c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4'}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
