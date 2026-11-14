@@ -385,3 +385,4 @@ operational status.
 - [T227](T227.md): the window reads no wait from a step that is still running (#705).
 - [T228](T228.md): the sound's note shows on a host slower than the original's pacing (#705, #455).
 - [T229](T229.md): publish a release from a green Package run's own ZIP (#705).
+- [T230](T230.md): T100's budget test keeps its delay loop under T223 (#705).
