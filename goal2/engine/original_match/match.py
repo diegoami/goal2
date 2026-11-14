@@ -382,7 +382,52 @@ class Match:
         self.end_lin=self.m.lin(RUN_MATCH_RETURN);self.st['fresh']=True
         if self.m.read(0,MEM_SIZE)!=bytes(data[:MEM_SIZE]) or any(self.m.reg(k)!=v for k,v in regs.items()):
             raise MatchError('route entry initialization changed incoming memory/CPU')
+        self._route_entry = (self, self.m, tuple((k, self.m.reg(k)) for k in REGS),
+                             hashlib.sha256(self.m.read(0, MEM_SIZE)).digest(),
+                             json.loads(json.dumps(self.opts)))
+        self._route_entry_configured = False
         return self
+
+    def configure_route_entry(self, *, captain=None, substitutions=None, ticks=False,
+                              record_draws=False, set_piece=False, live_players=False,
+                              substitution_control=False):
+        """Configure this actual held route Match exactly once, before events run.
+
+        Configuration changes no guest memory, CPU, fixture, setup or RNG. The
+        existing captain/prompt and play-entry hooks apply these inputs later.
+        A failed validation consumes nothing. Ordinary/loaded Match objects and
+        entries whose execution/replay has begun cannot be configured this way.
+        """
+        entry = getattr(self, '_route_entry', None)
+        if (type(self) is not Match or entry is None or entry[0] is not self
+                or self.m is not entry[1] or getattr(self, '_route_entry_configured', False)
+                or not self.st['fresh'] or self.over or self.st['waiting'] is not None
+                or getattr(self, '_replay_origin', None) is not None
+                or self.opts != entry[4]
+                or any(self.m.reg(k) != v for k, v in entry[2])
+                or hashlib.sha256(self.m.read(0, MEM_SIZE)).digest() != entry[3]):
+            raise ValueError('route entry is foreign, configured, changed or already started')
+        flags = dict(ticks=ticks, record_draws=record_draws, set_piece=set_piece,
+                     live_players=live_players, substitution_control=substitution_control)
+        if any(type(value) is not bool for value in flags.values()):
+            raise ValueError('route entry flags must be booleans')
+        if captain is not None and (type(captain) is not int or not 1 <= captain <= 3060
+                or self.side is None or captain not in self._squad(self.opts['managed'])[:11]):
+            raise ValueError('route entry captain must belong to the current managed eleven')
+        budget = None
+        if substitutions is not None:
+            budget = ([substitutions, substitutions] if type(substitutions) is int else
+                      list(substitutions) if type(substitutions) in (list, tuple) else [])
+            if len(budget) != 2 or any(type(v) is not int or not 0 <= v <= 255 for v in budget):
+                raise ValueError('route entry substitutions: budget0..255 or two such budgets')
+        # All validation precedes any configuration/listener mutation.
+        options = dict(self.opts, captain=captain, substitutions=budget,
+                       ticks=ticks, record_draws=record_draws)
+        options.update({k: v for k, v in flags.items() if v and k not in ('ticks', 'record_draws')})
+        self.opts = options
+        if record_draws:
+            self._install_draw_recorder()
+        self._route_entry_configured = True
 
     def _install_proof(self, prove):
         """The proof mode (T59, port/prove.py): the ports' calls from the draw `prove` on, side by side."""
@@ -768,18 +813,26 @@ class Match:
         m.watch(ds + MINUTE, 2, self._on_minute)
         m.watch(ds + S.SUBS_LEFT, 2, self._on_subs_left)
         if self.opts["record_draws"]:
-            lin = m.DS * 16 + SEED
+            self._install_draw_recorder()
 
-            def seed_write(address, size, value):     # a guest write or a port's (Machine.on_write)
-                if not self.st["recording"]:
-                    return
-                old = m.word_at(lin)
-                raw = bytearray(old.to_bytes(2, "little"))
-                for i in range(size):
-                    if 0 <= address + i - lin < 2:
-                        raw[address + i - lin] = (value >> (8 * i)) & 0xFF
-                self.st["draws"].append([m.rd(MINUTE), m.rd(SUBTICK), old, int.from_bytes(raw, "little")])
-            m.on_write(lin, lin + 1, seed_write)
+    def _install_draw_recorder(self):
+        """Install the original recorder once; do not reinstall unrelated hooks."""
+        if getattr(self, '_draw_recorder_installed', False):
+            return
+        m = self.m
+        lin = m.DS * 16 + SEED
+
+        def seed_write(address, size, value):     # a guest write or a port's (Machine.on_write)
+            if not self.st["recording"]:
+                return
+            old = m.word_at(lin)
+            raw = bytearray(old.to_bytes(2, "little"))
+            for i in range(size):
+                if 0 <= address + i - lin < 2:
+                    raw[address + i - lin] = (value >> (8 * i)) & 0xFF
+            self.st["draws"].append([m.rd(MINUTE), m.rd(SUBTICK), old, int.from_bytes(raw, "little")])
+        m.on_write(lin, lin + 1, seed_write)
+        self._draw_recorder_installed = True
 
     def _fail(self, message):
         raise GuestError(message + "\n" + self.screen_text())

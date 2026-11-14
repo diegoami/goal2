@@ -377,6 +377,8 @@ operational status.
 
 - [T170g](T170g.md): settle the pre-kick-off held-Match seam: the accepted S08/S10 edits after the S14 prefix, preserved on the same held Match (#718; upstream request goal2-archaeology #709).
 
+- [T170h](T170h.md): vendor the held-Match configuration (T127), DEA6 pool selection (T128) and play_action (T130) at 7fbfd2e9, without activation (#718).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).

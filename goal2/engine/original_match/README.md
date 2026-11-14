@@ -230,6 +230,62 @@ event of every kind a run yields, at every decision before and after its answer 
 scenarios (two fixtures, goal2 managing the other country, an injury run, a run with sendings off, a pause with
 every kind of answer and a refused eleven, a quick result with `tick` events).
 
+### Independent requests and timed opportunities (#695)
+
+`Match(..., substitution_control=True)` is one strict boolean opt-in. Default or
+explicit false keeps the legacy options/checkpoint/event shapes and queued-pair
+behavior below unchanged. It composes with `live_players=True`; the latter then
+adds all20 current records to these decisions too. No game/record is changed by
+reading this metadata. This profile applies to the normal Match constructor.
+
+At an ordinary `pause` with `substitutions_now=False`, call
+`answer(request_substitution=True, edit_only=True)` to request the next legal
+opportunity, or false to cancel. These are desired states: SELECT TEAM's real
+Enter is used only when its current request byte differs. Repeating a desired
+state does not toggle it accidentally. No off/on pair is fabricated or queued,
+no budget is spent, and the clock/RNG do not advance during the edit. The next
+still-paused decision has `edited=True` and the authoritative boolean
+`request_substitution`. A zero budget can leave it false; the original refuses
+to set the latch. `answer()` subsequently chooses Play. This new operation is
+not accepted at half-time, a legal substitution menu, extra time or a taker;
+request/cancel must be a stopped edit without player pairs/play-on inputs.
+
+With the profile enabled, the actual next notice first yields
+`context="substitution_opportunity"`, before choosing any substitute. It includes
+`keeper_unavailable`, `timeout_polls`, `poll_ms`, `substitutions_now` and the
+actual `request_substitution`. Its answer must explicitly be one of:
+
+- `answer(opportunity="accept")`: the original Enter key;
+- `answer(opportunity="dismiss")`: literal original Esc;
+- `answer(opportunity="timeout")`: no key; let the original wait expire.
+
+These are the only inputs at that context. The legacy shorthand that an omitted
+answer plays on does not apply to this opted-in intermediate opportunity.
+An ordinary Esc/timeout skips the menu; the request remains set until a later
+actual cancellation or original swap/housekeeping. A keeper's unavailable branch
+can force a menu even after Esc/timeout. Only when original8062 actually enters
+ED8A does a fresh `substitution` decision follow. Choose the pair there, including
+`edit_only=True` for its immediate confirmed swap before Play. No pair is chosen
+merely by accepting the notice. `substitutions_now` remains the actual permission,
+not an inference from seeing a keeper menu or a pending request.
+
+[confirmed: original7FCF/CC2E, DS087C table; #695 opcode/port proof] Ordinary
+notices use400polls and keeper notices1000. Every no-key poll calls214B1E09(10):
+4000/10000 **nominal calibrated milliseconds**, not a measured two-second timer.
+A frontend can hold the opportunity while presenting its timer, then send the
+explicit response. Its clock/frame remains stopped until the response.
+Literal original Esc is a dismissing key. The owner's requested new-window Esc
+shortcut maps to accepting Enter as a **designed2026-11-08 UI adaptation**, not
+literal-key equivalence. Upstream exposes both operations distinctly.
+
+Static and bounded rendered attributes: DS5B30 row25, columns1–26 has black-on-gray
+attribute0x70 and ` SUBSTITUTION OPPORTUNITY `; columns66–80 has `press any key  `
+with0x8D (blinking bright magenta on black). The ordinary headline's source
+attribute itself does not blink. The keeper template DS5B66 uses0x0B cyan and
+`HAS NO GOALKEEPER`, with the same hint. See
+[the source-bound proof notes](../../experiments/E036-match-port/out/fix695/README.md)
+for exact scope, prepared keeper control and default compatibility.
+
 **Decisions** (where the original itself stops for the manager) and what an answer does there:
 
 | context | when | substitutions | other answers |
