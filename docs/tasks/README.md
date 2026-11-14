@@ -379,6 +379,8 @@ operational status.
 
 - [T170h](T170h.md): vendor the held-Match configuration (T127), DEA6 pool selection (T128) and play_action (T130) at 7fbfd2e9, without activation (#718).
 
+- [T170i](T170i.md): the window's pre-kick-off edits over the held-Match seam — the consumer mapping of #718 onto archaeology #711's pre-match decision and answers (#718).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
