@@ -181,6 +181,9 @@ class TimedPromptAndBudget(unittest.TestCase):
     def test_a_run_past_the_budget_stops_with_the_pc_and_the_text_page(self):
         from goal2.core import Core, CoreError, BudgetExceeded
         core = Core.start(template(), budget=50_000_000).core
+        # [derived: goal2/core/delay.py, T223] The budget is spent in the prompt's own delay loop (1000 polls of
+        # 214B:1E09(10)); a core serving the delays at their entry plays past the prompt within it, so the loop runs.
+        core.delays_served = False
         for k in self.TO_PLAY:
             core.press(k)
         with self.assertRaises(BudgetExceeded) as caught:
