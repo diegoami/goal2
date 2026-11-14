@@ -6,7 +6,12 @@ CC7B taker roles 2 (corner), 3 (penalty), 4 (free kick) and 5 (goal kick). The t
 """
 import unittest
 
+from goal2.tests import requires
 
+
+# [designed: #715] The module under test imports PySide6 at its top; declared so a Python without the desktop
+# extra skips these with the reason instead of erroring (goal2/tests/requires.py's rule).
+@requires.need(modules=("PySide6",))
 class Titles(unittest.TestCase):
 
     def test_each_recognised_taker_role_has_its_title(self):
