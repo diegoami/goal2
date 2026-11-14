@@ -260,10 +260,28 @@ class Window(unittest.TestCase):
 
     def test_a_headless_model_does_not_wait(self):
         from goal2.desktop.core_model import CoreModel
-        m = CoreModel(load(at_pose(WIDE - 1)), requires.CACHE / "GOAL.DAT", scratch())
-        t = time.monotonic()
-        m.round_step("live_step")
-        self.assertLess(time.monotonic() - t, WHISTLE_MS / 1000)
+        from goal2.core.runner import Core
+        from goal2.core import delay as _delay
+        # [designed: #716] The proof is structural, not a wall-clock race with the host's emulation speed: the
+        # Windows slow runner failed 2.36 s against the whistle's 1.708 s under full-suite load (run 43597084867)
+        # although no wait happened. The whistle's delays are counted as the core serves them (the core never
+        # waits; the hook is registered at the core's construction, so the count is patched in before the load),
+        # and the wait itself must never run: the hold is not called, nothing is waited, no sound is named.
+        asked, holds = [], []
+        real = Core._on_delay
+
+        def counted(core, replay):
+            asked.append(_delay.asked(core.m))
+            return real(core, replay)
+        with patch.object(Core, '_on_delay', counted):
+            m = CoreModel(load(at_pose(WIDE - 1)), requires.CACHE / "GOAL.DAT", scratch())
+            self.assertFalse(m.pacing)
+            m.hold = lambda delays, started: holds.append((delays, started))
+            m.round_step("live_step")
+        self.assertGreaterEqual(sum(asked), WHISTLE_MS)
+        self.assertEqual(holds, [])
+        self.assertEqual(m.waited, [])
+        self.assertIsNone(m.sounding)
 
     def test_the_whistle_is_waited_and_named(self):
         m, w = self.window(at_pose(WIDE - 1))
