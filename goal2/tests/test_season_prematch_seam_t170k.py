@@ -1,15 +1,16 @@
-"""[designed: T170k/#726] The window's pre-kick-off sequence over the held-Match seam.
+"""[designed: T170k/T170m, #726] The window's pre-kick-off sequence over the held-Match seam.
 
 T170i's mapping (#718): on the SeasonSession's held pending route Match, the window's
-S10 tactic value, S08 within-twenty swap, declared captain and play map onto T132 part
-1's pre-match decision answers, and the pool exchange stays a named refusal until the
-pool arm is vendored. Mock-only controls here check the translation; the real proof is
-the source-bound PyPy control: the exact window sequence through the seam equals the
-same answers given directly on a second session built from the same accepted state.
+S10 tactic value, S08 within-twenty swap, pool exchange, declared captain and play map
+onto T132's pre-match decision answers. The pool arm is live in the kit since T170l
+(archaeology #713 at e02711cb), so [T170m] the exchange is a real answer; T170k's named
+refusal retired with it. Mock-only controls here check the translation; the real proof is
+the source-bound PyPy control: the exact window sequence through the seam equals the same
+answers given directly on a second session built from the same accepted state.
 """
 import unittest
 
-from goal2.game.prematch_seam import PrematchSeam, POOL_EXCHANGE_NOT_VENDORED
+from goal2.game.prematch_seam import PrematchSeam
 
 
 class _StubMatch:
@@ -40,19 +41,12 @@ class SeamMapping(unittest.TestCase):
         seam = PrematchSeam(m)
         seam.set_team_tactic(8, True)
         seam.swap(121, 131)
+        seam.exchange(122, 2561)                     # [T170m] the pool control is the same answer
         seam.play()
         self.assertEqual(m.answers, [{'edit_only': True, 'tactics': {8: True}},
                                      {'edit_only': True, 'substitutions': [[121, 131]]},
+                                     {'edit_only': True, 'substitutions': [[122, 2561]]},
                                      {}])
-
-    def test_the_pool_exchange_is_a_named_refusal_that_answers_nothing(self):
-        m = _StubMatch()
-        seam = PrematchSeam(m)
-        with self.assertRaises(ValueError) as caught:
-            seam.exchange(121, 2561)
-        self.assertIn(POOL_EXCHANGE_NOT_VENDORED, str(caught.exception))
-        self.assertIn('2561', str(caught.exception))       # the refused pair is named, not dropped
-        self.assertEqual(m.answers, [])
 
 
 def seam_sequence(raw, element=8, budget=2):
@@ -80,7 +74,7 @@ def seam_sequence(raw, element=8, budget=2):
     from goal2.engine.original_match.machine import MEM_SIZE, Uc
     from goal2.game import engine_tables
     from goal2.game.season import SeasonSession
-    from goal2.game.prematch_seam import PrematchSeam, POOL_EXCHANGE_NOT_VENDORED
+    from goal2.game.prematch_seam import PrematchSeam
     assert Uc is None
     tables = engine_tables.load()
     value = Image.from_bytes(raw).state(tables)
@@ -100,18 +94,18 @@ def seam_sequence(raw, element=8, budget=2):
                     return ev.data
             raise AssertionError('no pre_match decision')
 
-        def seam_or_direct(**answer):
+        def seam_or_direct(exchange=False, **answer):
             if via_seam:
                 if 'tactics' in answer:
                     seam.set_team_tactic(element, answer['tactics'][element])
                 elif 'substitutions' in answer:
                     off, on = answer['substitutions'][0]
-                    seam.swap(off, on)
+                    (seam.exchange if exchange else seam.swap)(off, on)
                 else:
                     seam.play()
             else:
-                # [confirmed: archaeology #711] the same answers given directly: edits are
-                # edit_only answers, play is the empty answer.
+                # [confirmed: archaeology #711/#713] the same answers given directly: edits are
+                # edit_only answers (the pool word included, at a pre-match edit), play is empty.
                 match.answer(edit_only=bool(answer), **answer)
 
         if via_seam:
@@ -129,15 +123,14 @@ def seam_sequence(raw, element=8, budget=2):
         on = next(w for w in second['bench'] if w and pos.get(w) == pos[off])
         seam_or_direct(substitutions=[[off, on]])
         third = decision()
+        # [T170m] the pool exchange: a made-pool word in, the same position out (EA09's rule at
+        # play; the pool is published in the decision beside the bench).
+        from goal2.engine.original_match.match import PLAYER_POSITION
+        pool_off = third['eleven'][-1]
+        pool_word = next(w for w in third['pool'] if match._player(w, PLAYER_POSITION) == pos[pool_off])
+        seam_or_direct(exchange=True, substitutions=[[pool_off, pool_word]])
+        fourth = decision()
         stop_hash = hashlib.sha256(match.m.read(0, MEM_SIZE)).hexdigest()
-        pool_refused = None
-        if via_seam:
-            try:
-                seam.exchange(off, 2561)
-            except ValueError as exc:
-                pool_refused = POOL_EXCHANGE_NOT_VENDORED in str(exc)
-            if pool_refused is not True:
-                raise AssertionError('the pool exchange was not refused by its named reason')
         seam_or_direct()                                 # play: the empty answer
         kinds = []
         for ev in match.events():
@@ -146,8 +139,9 @@ def seam_sequence(raw, element=8, budget=2):
                 break
         keep = ('context', 'eleven', 'bench', 'tactics')
         strip = lambda d: {k: d.get(k) for k in keep} | {'edited': d.get('edited')}
-        return dict(captain=captain, off=off, on=on, want=want,
-                    first=strip(first), second=strip(second), third=strip(third),
+        return dict(captain=captain, off=off, on=on, want=want, pool_off=pool_off, pool_word=pool_word,
+                    first=strip(first), second=strip(second), third=strip(third), fourth=strip(fourth),
+                    pool_keeps_off=pool_off in fourth['pool'], pool_loses_word=pool_word not in fourth['pool'],
                     stop_hash=stop_hash, kinds=kinds, minute=match.st['minute'],
                     substitution_events=len(match.st['log']['substitutions']))
 
@@ -172,9 +166,13 @@ class ActualSeamSequence(unittest.TestCase):
             self.assertEqual((path['first']['context'], path['first'].get('edited')), ('pre_match', None))
             self.assertEqual(path['second']['edited'], True)
             self.assertEqual(path['third']['edited'], True)
+            self.assertEqual(path['fourth']['edited'], True)
             self.assertIn(path['on'], path['third']['eleven'])
             self.assertNotIn(path['off'], path['third']['eleven'])
-            self.assertEqual(bool(path['third']['tactics'] >> (receipt['element'] - 1) & 1), path['want'])
+            self.assertIn(path['pool_word'], path['fourth']['eleven'])
+            self.assertNotIn(path['pool_off'], path['fourth']['eleven'])
+            self.assertTrue(path['pool_keeps_off'] and path['pool_loses_word'])   # the word-list exchange
+            self.assertEqual(bool(path['fourth']['tactics'] >> (receipt['element'] - 1) & 1), path['want'])
             self.assertIn('commentary', path['kinds'])
             self.assertIn('minute', path['kinds'])
             self.assertGreaterEqual(path['minute'], 1)
