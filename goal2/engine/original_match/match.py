@@ -987,7 +987,12 @@ class Match:
                 return S.ESC
             self.st["answer"] = None
             self._extras(answer)
-            self._menu = self._new_plan(answer)
+            # [fix, found by goal2 T170m] An edit-only answer continuing inside SELECT TEAM (the
+            # plan kept it open between edits) must build the pre-match plan again: without the
+            # menu context a chained pre-match edit fell to the squad-only MenuPlan, whose flow
+            # pressed past a pool exchange and silently made nothing. Other contexts build the
+            # same MenuPlan as before.
+            self._menu = self._new_plan(answer, self.st["menu_context"])
             self._menu.steps = ["select", "play"]
             self._menu.in_screen = "select"
         if site == SITE_SELECT and self._menu is not None:
