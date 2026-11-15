@@ -22,16 +22,8 @@ def loaded(index):
     return Driver(Core.load(raw, goal_dat=requires.CACHE / 'GOAL.DAT'))
 
 
-def fix_eleven(d, message):
-    """[designed: T111 test policy] Pick a ready same-line replacement; the original decides legality."""
-    from goal2.core import views
-    m=views.Memory(d.wait.state);rows=views.team(d.wait.state)['squad']
-    cards={r['player']:views.player_card(d.wait.state,r['player']) for r in rows}
-    off=next(r for r in rows if r['eleven'] and cards[r['player']]['readiness']!=m.code_str(0x1771,0x42A6))
-    on=next(r for r in reversed(rows) if not r['eleven'] and r['line']==off['line']
-            and cards[r['player']]['readiness']==m.code_str(0x1771,0x42AF))
-    if d.wait.kind=='match-menu' and not d.stoppage():d.prematch_swap(off['player'],on['player'])
-    else:d.substitute(off['player'],on['player'])
+from goal2.tests.eleven_repair import fix_eleven   # [fix #698] the shared policy: this file's own
+# match-menu arm (unchanged behavior); the manager menu's arm is eleven_repair.repair_eleven.
 
 
 def check_groups(case, wait, view):
