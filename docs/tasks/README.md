@@ -389,6 +389,8 @@ operational status.
 
 - [T170m](T170m.md): vendor #714's pre-match continuation fix at ca3bf5d7 (#726).
 
+- [T170n](T170n.md): the seam's pool exchange becomes the real pool answer — the chained sequence proven (#726).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
