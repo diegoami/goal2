@@ -233,8 +233,8 @@ class LaunchWindow(QMainWindow):
         # [designed: owner, 2026-10-21] As the original's country selection: Space shows the players.
         self.to_players = QPushButton('Players (Space) >');self.to_players.setObjectName('launchPlayers')
         self.to_players.clicked.connect(self.show_players);body.addWidget(self.to_players)
-        # [designed: T106] The core route's players page arrives with the player card over the core (G12).
-        self.to_players.setVisible(self.core_new is None)
+        # [designed: T106; fix #684] The core route's players page reads the core's own memory
+        # at the country browser (the same state the preview reads), so the key works on both routes.
         self.country_list.installEventFilter(self)
         layout.addWidget(left, 2)
         # [designed: T89] The original's country card. [designed: T101] The fixed page gives it its
@@ -318,13 +318,25 @@ class LaunchWindow(QMainWindow):
     def show_players(self):
         from PySide6.QtGui import QColor
         from goal2.desktop.player_card import LINE
-        from goal2.game.player_card import card
         country, year = self.selection()
         if country is None:return
         if getattr(self, 'previewed', None) != (country, year):self.preview()
-        state = self.browser.state
-        self.cards = [card(state, word, self.browser.goaldat) for word in state.managed_squad]
-        self.players_heading.setText(self.browser.goaldat.country_names[country].upper() + ' / PLAYERS')
+        if self.core_new is not None:
+            # [fix #684] The core route: the twenty and their cards read the core's own memory at
+            # the country browser (views.squad/views.player_card, as the preview's card does), not
+            # a template preview; the original's own country browser offers exactly this on Space.
+            from goal2.core import views
+            from goal2.desktop.player_card import core_card
+            state = self.core_new.browse(year).wait.state
+            rows = views.squad(views.Memory(state), country)
+            self.cards = [core_card(views.player_card(state, r['player'])) for r in rows]
+            name = next(c['name'] for c in views.country_select(state)['countries'] if c['country'] == country)
+            self.players_heading.setText(name.upper() + ' / PLAYERS')
+        else:
+            from goal2.game.player_card import card
+            state = self.browser.state
+            self.cards = [card(state, word, self.browser.goaldat) for word in state.managed_squad]
+            self.players_heading.setText(self.browser.goaldat.country_names[country].upper() + ' / PLAYERS')
         self.player_list.clear()
         for i, c in enumerate(self.cards):
             if i == 11:
@@ -340,9 +352,8 @@ class LaunchWindow(QMainWindow):
 
     def eventFilter(self, watched, event):
         from PySide6.QtCore import QEvent
-        if watched is self.country_list and event.type() == QEvent.Type.KeyPress and event.key() == Qt.Key.Key_Space \
-                and self.core_new is None:
-            self.show_players();return True
+        if watched is self.country_list and event.type() == QEvent.Type.KeyPress and event.key() == Qt.Key.Key_Space:
+            self.show_players();return True       # [fix #684] both routes: the core's own memory too
         return super().eventFilter(watched, event)
 
     # Review ----------------------------------------------------------------------------
