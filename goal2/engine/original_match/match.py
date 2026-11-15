@@ -137,7 +137,8 @@ class Event:
     data: dict = field(default_factory=dict)
 
     def __str__(self):
-        extra = " ".join(f"{k}={v}" for k, v in self.data.items() if k not in ("players", "eleven", "bench", "positions"))
+        extra = " ".join(f"{k}={v}" for k, v in self.data.items()
+                         if k not in ("players", "eleven", "bench", "positions", "pool"))
         return f"[{self.minute:3d}' {self.score[0]}-{self.score[1]}] {self.kind} {extra}"
 
 
@@ -398,10 +399,10 @@ class Match:
         A failed validation consumes nothing. Ordinary/loaded Match objects and
         entries whose execution/replay has begun cannot be configured this way.
         pre_match_edits [T132, #709]: the pre-match team menu publishes a
-        `pre_match` decision the consumer answers (tactics and within-twenty
-        swap pairs, edit_only=True, or an empty answer to play) instead of the
-        harness playing it unseen; the swaps are pressed through the original's
-        own DEA6 route (route_team.PreMatchPlan).
+        `pre_match` decision the consumer answers (tactics, within-twenty
+        swap pairs and pool exchanges, edit_only=True, or an empty answer
+        to play) instead of the harness playing it unseen; the swaps are
+        pressed through the original's own DEA6 route (route_team.PreMatchPlan).
         """
         entry = getattr(self, '_route_entry', None)
         if (type(self) is not Match or entry is None or entry[0] is not self
@@ -492,6 +493,30 @@ class Match:
     def _squad(self, c):
         raw = self.m.read(self._country(c), 40)
         return [int.from_bytes(raw[2 * i:2 * i + 2], "little") for i in range(20)]
+
+    def _pool(self):
+        """[confirmed: named seg_0791_12.c:806 (T129p); DDCB and 1771:5532 sort_pool (T128); F011] The
+        current manager's pool list, as the SELECT TEAM screen's pool view draws it: the manager byte at +1
+        of the game block (the far pointer DS:A923), the manager's base word at DS:6D18 + 2*manager (F011's
+        1-indexed table; manager 1's base 1), then the eighty words A927[base + i] (the far pointer DS:A927).
+        F011: only the managed manager's block is made (0xA01..0xA50 for manager 1); the words past a made
+        block are zero and returned as zero, like _squad's raw twenty. Read-only; the screen's own state
+        (scroll +0x52, cursor +0x5E, game-block words of the manager) is the plan's to drive."""
+        m = self.m
+        game = m.far(0xA923)
+        manager = m.read(game + 1, 1)[0]
+        base = m.word_at(m.DS * 16 + 0x6D18 + 2 * manager)
+        return [m.word_at(m.far(0xA927) + 2 * (base + i)) for i in range(80)]
+
+    def _pool_state(self):
+        """[confirmed: T128's prepare, 0791:DDCB] The SELECT screen's pool-pane state words of the
+        current manager: the scroll word at game + 2*manager + 0x52 and the cursor word at +0x5E.
+        DEA6's selected pool word is the list entry scroll + cursor - 2 (T128: index = base+4+3-2
+        with scroll 4, cursor 3). Read-only; the plan drives them with the pane's own keys."""
+        m = self.m
+        o = m.far(0xA923)
+        o += 2 * m.read(o + 1, 1)[0]
+        return m.word_at(o + 0x52), m.word_at(o + 0x5E)
 
     def _tactics(self):
         return self.m.read(self._country(self.opts["managed"]) + TACTICS, 1)[0]
@@ -640,8 +665,9 @@ class Match:
                               and not (substitutions or positions or marking or own_tactics))
             legal_bench = context in ("half_time", "substitution") and self.m.rd(S.SUBS_ALLOWED, 1)
             # [T132, #709] A configured pre-match decision takes the team tactics and/or
-            # within-twenty swap pairs (the generic validation below checks the squad
-            # membership); DEA6's pre-play swaps have no budget gate and are not deferred.
+            # swap pairs within the twenty or out of the made pool (the generic validation
+            # below checks the squad-or-pool membership); DEA6's pre-play swaps have no
+            # budget gate and are not deferred.
             pre_match = (context == "pre_match" and self.opts.get("pre_match_edits")
                          and (tactics is not None or substitutions)
                          and not (positions or marking or own_tactics))
@@ -684,10 +710,14 @@ class Match:
         if speed is not None and not 0 <= speed <= 5:
             raise ValueError("speed is 0..5")
         squad = self._squad(self.opts["managed"])
+        # [T132, #709] At a configured pre-match edit the incoming player may also be a made-pool
+        # word (F011): DEA6 exchanges squad and pool word-list entries outside a match.
+        pool = self._pool() if (edit_only and self.st["waiting"]["context"] == "pre_match") else []
         subs = [[int(a), int(b)] for a, b in substitutions]
         for off, on in subs:
-            if off not in squad[:11] or on not in squad[11:]:
-                raise ValueError(f"substitution ({off}, {on}): the first must be in the eleven, the second on the bench")
+            if off not in squad[:11] or (on not in squad[11:] and on not in pool):
+                raise ValueError(f"substitution ({off}, {on}): the first must be in the eleven, the second "
+                                 "on the bench or, at a pre-match edit, in the pool")
         positions = {int(p): int(c) for p, c in (positions or {}).items()}
         if any(p not in squad or not 0 <= c <= 13 for p, c in positions.items()):
             raise ValueError("positions: {player of the managed squad: position code 0..13}")
@@ -961,10 +991,15 @@ class Match:
             self._menu.steps = ["select", "play"]
             self._menu.in_screen = "select"
         if site == SITE_SELECT and self._menu is not None:
-            key = self._menu.select_key({
-                "cursor": m.rd(S.SELECT_CURSOR), "squad": self._squad(self.opts["managed"]),
-                "allowed": m.rd(S.SUBS_ALLOWED, 1), "request": m.rd(S.SUBS_REQUEST, 1),
-                "subs_left": m.rd(S.SUBS_LEFT + self.side, 1), "position": lambda p: self._player(p, PLAYER_POSITION)})
+            state = {"cursor": m.rd(S.SELECT_CURSOR), "squad": self._squad(self.opts["managed"]),
+                     "allowed": m.rd(S.SUBS_ALLOWED, 1), "request": m.rd(S.SUBS_REQUEST, 1),
+                     "subs_left": m.rd(S.SUBS_LEFT + self.side, 1), "position": lambda p: self._player(p, PLAYER_POSITION)}
+            if getattr(self._menu, "pool_pane", None) is not None:
+                # [T132] a pre-match plan drives the pool pane too; MenuPlan ignores the keys,
+                # and surgical controls with stub machines never reach here.
+                pool_scroll, pool_cursor = self._pool_state()
+                state.update(pool=self._pool(), pool_scroll=pool_scroll, pool_cursor=pool_cursor)
+            key = self._menu.select_key(state)
             if key == S.ESC and getattr(self._menu, "edit_only", False):
                 # Keep SELECT TEAM open between edits: leaving/reentering it runs original
                 # housekeeping again. The next answer continues at this same key read.
@@ -1024,10 +1059,10 @@ class Match:
                 self._menu = S.MenuPlan(1)
             elif context == "pre_match" and self.side is not None and self.opts.get("pre_match_edits"):
                 # [T132, #709] The pre-match menu is a decided context on a configured entry:
-                # a `pre_match` decision the consumer answers (tactics and/or within-twenty
-                # swap pairs edit_only, or an empty answer to play on). The plan presses the
-                # original's own keys (PreMatchPlan); swaps are made now (DEA6 has no budget
-                # gate), never deferred to a stoppage.
+                # a `pre_match` decision the consumer answers (tactics and/or swap pairs
+                # within the twenty or out of the pool, edit_only, or an empty answer to
+                # play on). The plan presses the original's own keys (PreMatchPlan); swaps
+                # are made now (DEA6 has no budget gate), never deferred to a stoppage.
                 if st["answer"] is None:
                     self._decide(context, pre_match=True, refused=st.get("refused"))
                     return None
@@ -1143,6 +1178,10 @@ class Match:
         positions = [[w, self.m.read(base + PLAYER_SIZE * w + PLAYER_POSITION, 1)[0]] for w in squad if w]
         data.update(context=context, eleven=squad[:11], bench=squad[11:], injured=injured, positions=positions,
                     substitutions_left=self.m.rd(S.SUBS_LEFT + self.side, 1), tactics=self._tactics())
+        if context == "pre_match":
+            # [T132, #709; F011] The made pool of the current manager: the incoming words a
+            # pre-match exchange can draw from, published beside the bench.
+            data["pool"] = self._pool()
         if self.opts.get("substitution_control", False):
             data["request_substitution"] = bool(self.m.rd(S.SUBS_REQUEST, 1))
         if self.opts.get("live_players", False):

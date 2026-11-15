@@ -385,6 +385,8 @@ operational status.
 
 - [T170k](T170k.md): the window's pre-kick-off sequence over the held-Match seam — T170i's mapping driven and proven equal to direct answers, pool-disabled (#726).
 
+- [T170l](T170l.md): vendor T132's pool arm at e02711cb without activation (#726).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
