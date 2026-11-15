@@ -7,7 +7,7 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = "e02711cb0e9e82171697415cfd03598ef12801a4"
+SOURCE = "ca3bf5d70eddc0c25ab5c38819ae1ab23cd5abff"
 # [designed: T170a] Reviewed m10 route closure, without public assistant wrapper
 # or campaign activation. Keep696screens and accepted698match as overrides;
 # all source/export/hash/ancestry guards remain unchanged.
