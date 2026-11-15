@@ -52,6 +52,10 @@ class TakerPages:
         columns.addLayout(left)
         self.roster = TakerRoster('FIRST ELEVEN', toggles=False, grouped=False, marks=False, capacity=11)
         self.roster.setFixedWidth(300)
+        # [fix #682] The taker roster holds the first eleven only (11 rows, XI 11, bench 0), so the
+        # counts are constants; at this width the counted heading clipped mid-word. The caption
+        # (T95's fixed-caption path) holds the whole heading.
+        self.roster.caption = 'FIRST ELEVEN'
         left.addWidget(self.roster)
         actions = QGridLayout()
         left.addLayout(actions)
