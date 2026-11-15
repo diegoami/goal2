@@ -48,6 +48,12 @@ class RosterView(QWidget):
         from goal2.desktop.fixed_page import scale_of
         return scale_of(self)
 
+    def heading(self):
+        """[fix #682] The heading the paint draws: the fixed caption when one is set (T95), else the
+        squad counts. Exposed so a view can choose a heading its width holds whole."""
+        xi = sum(1 for r in self.rows if r[4])
+        return self.caption or f'{self.title} {len(self.rows)} / XI {xi} / BENCH {len(self.rows) - xi}'
+
     def full_height(self):
         return TOP + self.capacity * ROW + 12 + (RULE if self.grouped else 0)
 
@@ -137,9 +143,8 @@ class RosterView(QWidget):
         painter.drawRect(1, 1, round(width) - 3, round(height) - 3)
         font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
         font.setPixelSize(20);font.setBold(True);painter.setFont(font);metrics = QFontMetrics(font)
-        xi = sum(1 for r in self.rows if r[4])
         painter.setPen(QColor(CYAN));title = QFont(font);title.setPixelSize(17);painter.setFont(title)
-        painter.drawText(14, 30, self.caption or f'{self.title} {len(self.rows)} / XI {xi} / BENCH {len(self.rows) - xi}')
+        painter.drawText(14, 30, self.heading())
         painter.setFont(font);code_x = round(width) - 64
         if self.grouped:
             rule = self.baseline(self.eleven()) - 20 - RULE // 2
