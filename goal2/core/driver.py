@@ -285,6 +285,10 @@ class Driver:
         if a == b or a not in squad or b not in squad:
             raise DriverError(f"swap needs two different players of the managed squad, not {a} and {b}")
         self._open_squad()
+        # [fix #697] The screen re-sorts the country record on entry, so the slot it marks a player
+        # at is the order it shows now — not the manager menu's snapshot order, which an injury may
+        # have left unsorted (the mark is the original's own either way; only the check was wrong).
+        squad = self._team()
         self._to_player(a)
         wait = self.press(RETURN, expect=(SQUAD,))
         if wait.view["marked"] != (1, squad.index(a) + 1):
