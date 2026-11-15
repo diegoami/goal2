@@ -390,13 +390,18 @@ class Match:
 
     def configure_route_entry(self, *, captain=None, substitutions=None, ticks=False,
                               record_draws=False, set_piece=False, live_players=False,
-                              substitution_control=False):
+                              substitution_control=False, pre_match_edits=False):
         """Configure this actual held route Match exactly once, before events run.
 
         Configuration changes no guest memory, CPU, fixture, setup or RNG. The
         existing captain/prompt and play-entry hooks apply these inputs later.
         A failed validation consumes nothing. Ordinary/loaded Match objects and
         entries whose execution/replay has begun cannot be configured this way.
+        pre_match_edits [T132, #709]: the pre-match team menu publishes a
+        `pre_match` decision the consumer answers (tactics and within-twenty
+        swap pairs, edit_only=True, or an empty answer to play) instead of the
+        harness playing it unseen; the swaps are pressed through the original's
+        own DEA6 route (route_team.PreMatchPlan).
         """
         entry = getattr(self, '_route_entry', None)
         if (type(self) is not Match or entry is None or entry[0] is not self
@@ -408,7 +413,8 @@ class Match:
                 or hashlib.sha256(self.m.read(0, MEM_SIZE)).digest() != entry[3]):
             raise ValueError('route entry is foreign, configured, changed or already started')
         flags = dict(ticks=ticks, record_draws=record_draws, set_piece=set_piece,
-                     live_players=live_players, substitution_control=substitution_control)
+                     live_players=live_players, substitution_control=substitution_control,
+                     pre_match_edits=pre_match_edits)
         if any(type(value) is not bool for value in flags.values()):
             raise ValueError('route entry flags must be booleans')
         if captain is not None and (type(captain) is not int or not 1 <= captain <= 3060
@@ -633,9 +639,16 @@ class Match:
             paused_tactics = (context in ("pause", "extra_time") and tactics is not None
                               and not (substitutions or positions or marking or own_tactics))
             legal_bench = context in ("half_time", "substitution") and self.m.rd(S.SUBS_ALLOWED, 1)
-            if (not (legal_bench or paused_tactics or request_substitution is not None) or quick or speed is not None
-                    or taker is not None or shootout_order is not None):
-                raise ValueError("edit_only needs a legal stopped bench or a tactics-only paused menu, without play-on inputs")
+            # [T132, #709] A configured pre-match decision takes the team tactics and/or
+            # within-twenty swap pairs (the generic validation below checks the squad
+            # membership); DEA6's pre-play swaps have no budget gate and are not deferred.
+            pre_match = (context == "pre_match" and self.opts.get("pre_match_edits")
+                         and (tactics is not None or substitutions)
+                         and not (positions or marking or own_tactics))
+            if (not (legal_bench or paused_tactics or pre_match or request_substitution is not None) or quick
+                    or speed is not None or taker is not None or shootout_order is not None):
+                raise ValueError("edit_only needs a legal stopped bench, a tactics-only paused menu "
+                                 "or a configured pre-match edit, without play-on inputs")
         if self.st["waiting"]["context"] == "set_piece":
             if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None or shootout_order is not None:
                 raise ValueError("the set-piece prompt takes taker only")
@@ -699,10 +712,17 @@ class Match:
                                                 "quick": bool(quick), "speed": speed, **edit}})
         self.st["waiting"] = None
 
-    def _new_plan(self, answer):
-        plan = S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
-                          positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"),
-                          request_substitution=answer.get("request_substitution"))
+    def _new_plan(self, answer, context=None):
+        if context == "pre_match":
+            # [T132, #709] DEA6's own pre-play route for the swaps (route_team.PreMatchPlan:
+            # marks the incoming player first, validates each swap the original made), the
+            # shared tactics step and Play for the menu itself; no budget gate, no requests.
+            from .route_team import PreMatchPlan
+            plan = PreMatchPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"))
+        else:
+            plan = S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
+                              positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"),
+                              request_substitution=answer.get("request_substitution"))
         plan.edit_only = bool(answer.get("edit_only"))
         return plan
 
@@ -990,7 +1010,9 @@ class Match:
         if plan is not None and plan.steps == ["play"] and plan.in_screen is None and plan.menu_reads_after_play:
             # "play" was pressed and the menu is read again: 0791:EA09 refused the eleven (its message is kept)
             refusal = st.get("message") or "the original refused the managed eleven"
-            if st["menu_context"] not in DECIDED_AT_MENU + ("substitution",):
+            if st["menu_context"] not in DECIDED_AT_MENU + ("substitution",) and not (
+                    st["menu_context"] == "pre_match" and self.side is not None
+                    and self.opts.get("pre_match_edits")):
                 raise MatchError(f"the original refuses goal2's eleven: {refusal}")
             st["refused"], st["message"], self._menu = refusal, None, None
             plan = None
@@ -1000,6 +1022,19 @@ class Match:
                 # run_match still visits its menu for two computer sides. Keep
                 # its sorting/validation and choose play, with no human answer.
                 self._menu = S.MenuPlan(1)
+            elif context == "pre_match" and self.side is not None and self.opts.get("pre_match_edits"):
+                # [T132, #709] The pre-match menu is a decided context on a configured entry:
+                # a `pre_match` decision the consumer answers (tactics and/or within-twenty
+                # swap pairs edit_only, or an empty answer to play on). The plan presses the
+                # original's own keys (PreMatchPlan); swaps are made now (DEA6 has no budget
+                # gate), never deferred to a stoppage.
+                if st["answer"] is None:
+                    self._decide(context, pre_match=True, refused=st.get("refused"))
+                    return None
+                answer, st["answer"], st["refused"] = st["answer"], None, None
+                self._extras(answer)
+                st["editing_menu"] = False
+                self._menu = self._new_plan(answer, "pre_match")
             elif context in DECIDED_AT_MENU or st.get("editing_menu") or (context == "substitution" and (st.get("refused") or self.opts.get("substitution_control"))):
                 if st["answer"] is None:
                     self._decide(context, substitutions_now=bool(self.m.rd(S.SUBS_ALLOWED, 1)),
@@ -1427,6 +1462,12 @@ class Match:
                 self._emit(kind, minute, score, **card)
         for team in (0, 1):            # a scorer row or an eleven change without its counter's write: not guessed
             if rows[team] or swaps[team]:
+                # [T132, #709] The pre-match menu changes the managed line-up by DEA6's own swaps,
+                # before play: no substitution event or counter write exists for them (T124t; the
+                # route harness's swaps precede the first flush's baseline for the same reason).
+                if (swaps[team] and not rows[team] and st["menu_context"] == "pre_match"
+                        and self.side is not None and team == self.side):
+                    continue
                 self._fail(f"team {team}: scorer rows {rows[team]} or eleven changes {swaps[team]} without the "
                            "score or substitutions-left write that makes them events")
         st["candidates"] = {}

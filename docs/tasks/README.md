@@ -381,6 +381,8 @@ operational status.
 
 - [T170i](T170i.md): the window's pre-kick-off edits over the held-Match seam — the consumer mapping of #718 onto archaeology #711's pre-match decision and answers (#718).
 
+- [T170j](T170j.md): vendor T132 part 1, the pre-match team input, at 39a84174 without activation (#718).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
