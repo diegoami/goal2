@@ -158,5 +158,53 @@ class Launch(unittest.TestCase):
         self.assertEqual(self.opened[0].state.managed_country, 7)
 
 
+@requires.need(modules=('unicorn', 'PySide6'), files=('e039-r0005-date-call.sav', 'GOAL.DAT'))
+class CoreRoutePlayers(unittest.TestCase):
+    """[fix #684] Space on the country list opens the twenty on the core route too, reading the
+    core's own memory at the browser (the recorded date-call state is the tests' own boot path)."""
+
+    @classmethod
+    def setUpClass(cls):
+        from PySide6.QtWidgets import QApplication
+        import tempfile
+        cls.app = QApplication.instance() or QApplication([])
+        cls.folder = tempfile.TemporaryDirectory()
+        cls.save = Path(cls.folder.name) / 'desktop.g2core'
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.folder.cleanup()
+
+    def test_space_opens_the_twenty_from_the_cores_own_memory(self):
+        from PySide6.QtCore import Qt
+        from goal2.desktop.launch import LaunchWindow
+        w = LaunchWindow(DATA, None, self.save, lambda model: None,
+                         core_boot=requires.CACHE / 'e039-r0005-date-call.sav')
+        self.addCleanup(w.close)
+        w.new_career.click()
+        self.assertEqual(w.pages.currentIndex(), 1)
+        w.country_list.setCurrentRow(6)
+        w.country_list.setFocus()
+        QTest.keyClick(w.country_list, Qt.Key.Key_Space)
+        self.assertEqual(w.pages.currentIndex(), 3)
+        self.assertIs(w.focusWidget(), w.player_list)
+        year = w.start_year.currentData()
+        number, name = w.core_new.countries(year)[6][:2]
+        self.assertEqual(w.players_heading.text(), name.upper() + ' / PLAYERS')
+        from goal2.core import views
+        from goal2.desktop.player_card import core_card
+        state = w.core_new.browse(year).wait.state
+        expected = [core_card(views.player_card(state, r['player']))
+                    for r in views.squad(views.Memory(state), number)]
+        items = [w.player_list.item(i) for i in range(w.player_list.count())]
+        players = [i for i in items if i.data(Qt.ItemDataRole.UserRole) is not None]
+        self.assertEqual(len(items), 21, 'twenty players and the rule after the eleven')
+        self.assertEqual([i.text() for i in players], [f"{c['role']}  {c['full_name']}" for c in expected])
+        QTest.keyClick(w.player_list, Qt.Key.Key_Down)
+        self.assertEqual(w.player_card.card, expected[1], 'the card reads the core\'s own memory')
+        QTest.keyClick(w.player_list, Qt.Key.Key_Escape)
+        self.assertEqual(w.pages.currentIndex(), 1)
+
+
 if __name__ == '__main__':
     unittest.main()
