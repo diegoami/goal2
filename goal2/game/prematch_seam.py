@@ -1,22 +1,17 @@
-"""[designed: T170i/T170k, #718/#726] The window's pre-kick-off edits over the held-Match seam.
+"""[designed: T170i/T170k/T170m, #718/#726] The window's pre-kick-off edits over the held-Match seam.
 
 The adapter owns no Match lifecycle and no policy: the SeasonSession holds the pending
 route Match (T170b), and this maps the window's S10/S08 pre-kick-off actions one answer
-at a time onto T132 part 1's pre-match decision (archaeology #711 at 39a84174, vendored
-by T170h/T170j) — the original itself makes every edit through its own DEA6 route.
+at a time onto T132's pre-match decision (archaeology #711/#713 at e02711cb, vendored by
+T170h/T170j/T170l) — the original itself makes every edit through its own DEA6 route.
 
 [confirmed: vendored match.py, configure_route_entry] Configuration is exactly once,
 before any event runs; a failed validation consumes nothing. [confirmed: archaeology
-tests/test_route_prematch_input_t132.py] The pre-match decision takes tactics and/or
-within-twenty swap pairs edit_only, an empty answer plays, and an edited answer returns
-a fresh `pre_match` decision. The pool exchange stays a named refusal until upstream
-T132's pool arm is vendored (T170i scope 4: never a silent drop).
+tests/test_route_prematch_input_t132.py] The pre-match decision takes tactics and/or swap
+pairs within the twenty or out of the made pool edit_only, an empty answer plays, and an
+edited answer returns a fresh `pre_match` decision. [T170m] The pool exchange is the seam's
+own answer now that T170l vendored the pool arm; T170k's named refusal retired with it.
 """
-
-# [designed: T170i scope 4] The named refusal the pool control shows while the seam's
-# second half (upstream T132's pool arm, archaeology #709) is not vendored into the kit.
-POOL_EXCHANGE_NOT_VENDORED = ('the pool exchange has no seam arm yet: archaeology T132\'s pool '
-                              'arm is not vendored (upstream #709; never a silent drop)')
 
 
 class PrematchSeam:
@@ -39,8 +34,10 @@ class PrematchSeam:
         self.match.answer(edit_only=True, substitutions=[[int(outgoing), int(incoming)]])
 
     def exchange(self, outgoing, incoming):
-        """[T170i scope 4] The pool control: a named refusal until the pool arm is vendored."""
-        raise ValueError(f'{POOL_EXCHANGE_NOT_VENDORED} (exchange {outgoing}, {incoming} refused)')
+        """[T170m, T170i scope 4] The pool control: a squad player out, a made-pool word in —
+        the kit's pre-match arm accepts a pool word as the incoming (archaeology #713's DEA6
+        pool pane route; the pool is published in the decision beside the bench)."""
+        self.match.answer(edit_only=True, substitutions=[[int(outgoing), int(incoming)]])
 
     def play(self):
         """[T170i scope 3] Kick-off: the empty answer; the declared captain already stands."""
