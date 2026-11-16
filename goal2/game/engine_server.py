@@ -223,6 +223,8 @@ class Server:
         self.out = out
         self.inbox: queue.Queue = queue.Queue()
         self.game = None
+        from goal2.game.season_worker import SeasonWorker
+        self.season = SeasonWorker()
         self.lock = threading.Lock()   # the reader thread reports a malformed request too
         self.reader = threading.Thread(target=self._read, args=(stdin,), name="goal2-engine-requests", daemon=True)
 
@@ -259,7 +261,9 @@ class Server:
             header, payload = item
             op = header.get("op")
             try:
-                if op == "open":
+                if op == "season":
+                    self._season(header, payload)
+                elif op == "open":
                     self._open(payload)
                     self.send("opened")
                 elif op == "match":
@@ -280,7 +284,41 @@ class Server:
 
     def _open(self, payload):
         from goal2.game.session_save import decode
+        if self.season.session is not None:
+            raise ValueError('discard the held season before opening a legacy game')
         self.game = decode(payload)
+
+    def _season(self, header, payload):
+        """[designed: T170o] One explicit operation on the child-owned continuation."""
+        from goal2.game.season_worker import SeasonRequestError
+        request = header.get('request')
+        try:
+            header = dict(header)
+            header.pop('size', None)
+            if header.get('action') == 'open':
+                if 'state' in header or 'keys' in header:
+                    raise SeasonRequestError('season open uses its JSON payload')
+                value = json.loads(payload.decode('utf8'))
+                if not isinstance(value, dict) or set(value) != {'state', 'keys'}:
+                    raise SeasonRequestError('invalid season open payload')
+                header.update(value)
+            elif payload:
+                raise SeasonRequestError('unexpected season payload')
+            result = self.season.dispatch(header)
+            if header['action'] == 'open':
+                self.game = None
+            # The detached state/2 can exceed the header bound; it is binary JSON payload.
+            state = result.pop('state', None)
+            data = b'' if state is None else json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
+            self.send('season', result, data)
+        except Exception as exc:
+            # Only our pre-engine guards promise a pure rejection. A backend failure
+            # may have advanced private memory: invalidate, never continue that session.
+            lost = not isinstance(exc, SeasonRequestError)
+            if lost:
+                from goal2.game.season_worker import SeasonWorker
+                self.season = SeasonWorker()
+            self.send('season_error', {'request': request, 'error': f'{type(exc).__name__}: {exc}', 'lost': lost})
 
     def _match(self, header):
         import copy
@@ -288,6 +326,8 @@ class Server:
         from goal2.game.watched_match import _drive_match
         if self.game is None:
             raise ValueError("no game is open")
+        if self.season.session is not None:
+            raise ValueError('discard the held season before playing a legacy match')
         kind, frames, bench = header.get("kind"), header.get("frames", False), header.get("bench", False)
         prompts = header.get("prompts", False)
         live_players = header.get("live_players",False)
