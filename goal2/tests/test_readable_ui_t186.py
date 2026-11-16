@@ -30,8 +30,13 @@ class Readable(unittest.TestCase):
         self.bench.row=1
         self.bench.refresh()
         row=self.bench.strip.rows[1]
-        self.assertIn('INJURED',row.texts()[-1])
-        self.assertEqual(row.cells[-1].palette().color(row.cells[-1].foregroundRole()),QColor(theme.BAD))
+        # [designed: owner playtest, #754] Status is separate so names and all twenty baselines stay aligned.
+        self.assertIn('I',row.cells[1].text())
+        self.assertIn('I injured',self.bench.strip.legend.text())
+        self.assertIn('INJURED',row.accessibleName())
+        self.assertIn('INJURED',self.bench.card.readiness.text())
+        for cell in row.cells:
+            self.assertEqual(cell.palette().color(cell.foregroundRole()),QColor(theme.BAD))
         self.assertIn('injur',self.answer.card(self.off)['health'].lower())
 
     def test_pair_feedback_is_large_and_below_the_card(self):
