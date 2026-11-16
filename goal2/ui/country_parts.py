@@ -203,6 +203,44 @@ class CellFactsLine(Cells):
         return None   # a value is as many cells as it needs, never a wrap of the font's
 
 
+class CellTeamHeader(Cells):
+    """[designed: T212b, #667] S10's complete TEAM header in eleven rows, retaining TeamHeader's public values."""
+    COLS, ROWS = 34, 11
+
+    def __init__(self, family):
+        super().__init__(self.COLS, self.ROWS, "teamHeader")
+        self.family = family
+        frame, inner = framed("team", self.COLS, 10)
+        self.put(frame, 0, 0, self.COLS, self.ROWS)
+        self.name = inner.text("", "h1", 0, 0, self.COLS)
+        self.first = CellLabel(parent=self)
+        self.first.hide()
+        self.team, self.shape, self.ranks = {}, {}, {}
+        for row, (store, key) in enumerate((("team", "status"), ("team", "manager"), ("shape", "skill"),
+                                           ("shape", "formation"), ("shape", "strips")), 1):
+            caption = inner.text(key, "cardLabel", 0, row, 9)
+            value = CellStripGlyphs(family) if key == "strips" else CellLabel("", "value")
+            inner.put(value, 10, row, self.COLS - 10)
+            value.caption = caption
+            getattr(self, store)[key] = value
+        self.strip_view = self.shape["strips"]
+        inner.text("now", "sub", 8, 6, 7)
+        inner.text("top", "sub", 16, 6, 7)
+        for row, key in enumerate(("world", "continental"), 7):
+            caption = inner.text("world" if key == "world" else "", "cardLabel", 0, row, 7)
+            for col, field in ((8, key), (16, "top_" + key)):
+                value = CellLabel("", "value")
+                inner.put(value, col, row, 7)
+                value.caption = caption
+                self.ranks[field] = value
+        self.role_codes = inner.text("", "value", 0, 9, self.COLS)
+        self.role_codes.setTextFormat(Qt.TextFormat.RichText)
+
+    def set_card(self, card):
+        from goal2.ui.country_header import TeamHeader
+        TeamHeader.set_card(self, card)
+
+
 def decoded(widget, text):
     """A value of the card: `text`, or `unknown` (in the normal colour, as `undecoded`) for what the Python route has not decoded."""
     shown = "unknown" if text == NOT_DECODED else text
@@ -210,5 +248,5 @@ def decoded(widget, text):
     widget.setObjectName("undecoded" if shown in (NOT_DECODED, "unknown") else "value")
 
 
-__all__ = ["CellCharacteristics", "CellDescriptorRow", "CellDescriptors", "CellFactsLine", "CellLineBars", "CellStripGlyphs",
+__all__ = ["CellTeamHeader", "CellCharacteristics", "CellDescriptorRow", "CellDescriptors", "CellFactsLine", "CellLineBars", "CellStripGlyphs",
            "decoded", "framed"]

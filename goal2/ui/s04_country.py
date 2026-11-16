@@ -439,7 +439,7 @@ class PlayersScreen(Screen):
     def __init__(self, window, browser, country_name, country=None):
         super().__init__(window)
         from goal2.game.player_card import card
-        from goal2.ui.squad_card import PlayerCard, Strip, squad_rows
+        from goal2.ui.squad_card import squad_rows
         if country is None or country == browser.state.managed_country:
             rows, eleven = squad_rows(browser)
             words = [row["id"] for row in rows]
@@ -457,6 +457,12 @@ class PlayersScreen(Screen):
         self.bindings.remove(esc)
         self.bindings.append(esc)
         self._refresh_bar()
+        self._build_players()
+        self.heading = f"{country_name} · the twenty"
+        self._show()
+
+    def _build_players(self):
+        from goal2.ui.squad_card import PlayerCard, Strip
         row = QHBoxLayout()
         row.setSpacing(18)
         self.card = PlayerCard()
@@ -465,8 +471,6 @@ class PlayersScreen(Screen):
         self.strip.chosen.connect(self.pick)
         row.addWidget(self.strip)
         self.body_layout.addLayout(row, 1)
-        self.heading = f"{country_name} · the twenty"
-        self._show()
 
     def _show(self):
         c = self.cards[self.index]

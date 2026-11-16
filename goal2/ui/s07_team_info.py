@@ -20,7 +20,6 @@ nothing [designed: owner, 2026-11-03, #527 D2].
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 from goal2.game.country_card import card as country_card
 from goal2.ui import theme
@@ -30,8 +29,8 @@ from goal2.ui.country_parts import framed
 from goal2.ui.s04_country import (BODY_COLS, BODY_ROWS, GROUP, LIST_AT, LIST_COLS, PREVIEW_MS, CountryCard, PlayersScreen, averages,
                                   ordered)
 from goal2.ui.s06_desk import next_match
-from goal2.ui.screen import Screen, label, para
-from goal2.ui.squad_card import Row as TableRow, Strip, box as card_box, colour
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import colour
 
 MARK = "next opponent"   # [designed: s07-team-info.html]
 # [designed: T211b] A row of the list: the country's name right-aligned in 15 cells (the longest name is 15 characters), a cell, then the
@@ -204,13 +203,33 @@ class TeamInfoScreen(Screen):
 
 class TeamPlayersScreen(PlayersScreen):
     """S07's Space: the country's twenty, read only, on T165's card."""
+    GRID = True   # [designed: owner, #667; T212b]
     title = "team info · players"
     pre_game = False
 
+    def _build_players(self):
+        """[designed: T212b] S08's cell card, read only, beside its twenty. The pre-game PlayersScreen keeps its own layout."""
+        from goal2.ui.cell_parts import GridCard, GridStrip
+        body = Cells(90, 25, "teamPlayersBody")
+        self.body_layout.addWidget(body, 1)
+        self.players_heading = body.text("", "sub", 0, 21, 69)
+        self.players_heading.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        self.card = GridCard()
+        body.put(self.card, 0, 0, 69, self.card.ROWS)
+        self.strip = GridStrip(cols=20)
+        self.strip.chosen.connect(self.pick)
+        body.put(self.strip, 70, 0, 20, 22)
+
+    def _show(self):
+        super()._show()
+        self.players_heading.setText(self.heading)
+        self.strip.set_label(self.heading.removesuffix(" · the twenty"))
+
 
 class CountryTacticsScreen(Screen):
-    """S07's T on another country: its eight lines, in the original's order, read only, beside its twenty.
-    [confirmed: F010, the team tactics screen's order DS:6BBF; the words of goal2.game.country_card, F008]"""
+    """S07's T: another country's eight lines, read only, beside its twenty."""
+    GRID = True   # [designed: owner, #667; T212b]
+    # [confirmed: F010, the team tactics screen's order DS:6BBF; the words of goal2.game.country_card, F008]
     title = "team info · tactics"
 
     def __init__(self, window, model, country):
@@ -219,41 +238,36 @@ class CountryTacticsScreen(Screen):
         state = model.state
         c = country_card(state, country, model.goaldat)
         tactics = state.countries[country][0x2D]   # [confirmed: F010] the country's tactics +0x2D
-        column = QVBoxLayout()
-        column.setSpacing(14)
-        head, head_layout = card_box()
-        head_row = QHBoxLayout()
-        head_row.setSpacing(28)
-        head_row.addWidget(label(c["name"], "h1"))
-        head_row.addWidget(para(f"formation {c['formation']} · read only: only your own tactics are yours to change",
-                                 "sub"))
-        head_row.addStretch(1)
-        head_layout.addLayout(head_row)
-        column.addWidget(head)
-        table, table_layout = card_box("Team tactics · player defaults")
-        table_layout.setSpacing(0)
-        table_layout.addSpacing(10)
+        from goal2.ui.cell_parts import CellTableRow, GridStrip
+        body = Cells(90, 25, "countryTacticsBody")
+        self.body_layout.addWidget(body, 1)
+        head, inner = framed("team", 69, 2)
+        inner.text(c["name"], "h1", 0, 0, 34)
+        note = CellPara(f"formation {c['formation']} · read only", "sub")
+        inner.put(note, 35, 0, 34, 2)
+        body.put(head, 0, 0, 69, 3)
         self.rows = []
-        for name, element in LINES:
-            clear, set_ = words(state, element)
-            line = TableRow(-1, (200, 0), margins=(8, 6, 8, 6), underline=True)
-            line.set((name, set_ if tactics >> (element - 1) & 1 else clear), (theme.TEXT_BRIGHT, theme.TEXT_BRIGHT))
-            line.setCursor(Qt.CursorShape.ArrowCursor)
-            table_layout.addWidget(line)
-            self.rows.append(line)
-        table_layout.addStretch(1)
-        column.addWidget(table, 1)
-        main = QHBoxLayout()
-        main.setSpacing(18)
-        main.addLayout(column, 1)
-        strip = Strip()
+        for heading, first, count, at in (("team tactics", 0, 3, 5), ("player defaults", 3, 5, 12)):
+            frame, inner = framed(heading, 69, count * 2)
+            for index in range(first, first + count):
+                name, element = LINES[index]
+                clear, set_ = words(state, element)
+                line = CellTableRow(-1, (17, 34), aligns=(None, Qt.AlignmentFlag.AlignHCenter), gaps=(17, 1))
+                line.set((name, set_ if tactics >> (element - 1) & 1 else clear),
+                         (theme.TEXT_BRIGHT, theme.TEXT_BRIGHT))
+                line.setCursor(Qt.CursorShape.ArrowCursor)
+                inner.put(line, 0, 2 * (index - first), 69)
+                self.rows.append(line)
+            body.put(frame, 0, at, 69, count * 2 + 1)
+        footer = body.text("only your own tactics are yours to change", "sub", 0, 24, 69)
+        footer.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        self.strip = GridStrip(cols=20)
         from goal2.game.player_card import card
         cards = [card(state, word, model.goaldat) for word in c["players"]]
-        strip.show_rows(c["name"], [(p["role"], p["line"], p["full_name"]) for p in cards], -1, True)
-        for row in strip.rows:
+        self.strip.show_rows(c["name"], [(p["role"], p["line"], p["full_name"]) for p in cards], -1, True)
+        for row in self.strip.rows:
             row.setCursor(Qt.CursorShape.ArrowCursor)
-        main.addWidget(strip)
-        self.body_layout.addLayout(main, 1)
+        body.put(self.strip, 70, 0, 20, 22)
 
     def lines(self):
         return [tuple(row.texts()) for row in self.rows]

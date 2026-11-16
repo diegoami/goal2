@@ -39,7 +39,8 @@ class TeamTacticsLayout(App):
 
     def test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order(self):
         model=self.model();window,screen=self.open(model)
-        headings=[widget.text().upper() for widget in screen.findChildren(QLabel) if not widget.isHidden()]
+        from goal2.ui.frame import Frame
+        headings=[widget.label.upper() for widget in screen.findChildren(Frame) if widget.isVisibleTo(screen)]
         self.assertIn('TEAM TACTICS',headings)
         self.assertIn('PLAYER DEFAULTS',headings)
         self.assertEqual([row[0] for row in screen.lines()],
