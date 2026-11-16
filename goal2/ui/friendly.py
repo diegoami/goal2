@@ -25,12 +25,10 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
 from goal2.desktop.model import DesktopModel
-from goal2.ui.s04_country import GROUP, LIST_WIDTH, ordered, paths
-from goal2.ui.screen import Screen, label, para, set_para
-from goal2.ui.start_look import Row, box, key_value
+from goal2.ui.s04_country import GROUP, ordered, paths
+from goal2.ui.screen import Screen, set_para
 
 ADDITION = "GOAL2 ADDITION · STANDALONE FRIENDLY"
 NOTE = ("A friendly between any two countries, outside a career; nothing is saved. It plays on the pitch as your own "
@@ -62,6 +60,7 @@ def new_friendly(target, country):
 
 
 class FriendlyScreen(Screen):
+    GRID = True   # [designed: owner, #667; T214]
     title = "standalone friendly"
     pre_game = True
 
@@ -89,43 +88,30 @@ class FriendlyScreen(Screen):
 
     # The screen.
     def _build(self):
-        row = QHBoxLayout()
-        row.setSpacing(18)
-        left_widget = QWidget()
-        left = QVBoxLayout(left_widget)
-        left.setContentsMargins(0, 0, 0, 0)
-        left.setSpacing(14)
-        tag = QHBoxLayout()
-        tag.addWidget(label(ADDITION, "tagNew"))
-        tag.addStretch(1)
-        left.addLayout(tag)
-        match, inner = box("The friendly")
-        rows, self.sides = key_value((("yours", "your country"), ("opponent", "opponent")))
-        inner.addWidget(rows)
-        left.addWidget(match)
-        self.step = label("", "h1")
-        left.addWidget(self.step)
-        self.note = para(NOTE, "sub")
-        left.addWidget(self.note)
-        left.addStretch(1)
-        row.addWidget(left_widget, 1)
-        countries, inner = box()
-        countries.setFixedWidth(LIST_WIDTH)
-        inner.addWidget(label("COUNTRIES · WORLD RANK", "boxHeading"))
-        inner.setSpacing(0)
-        inner.addSpacing(8)
-        self.rows = []
+        """[designed: owner, #667; T214] The same two-country choice and sixteen-country paging, laid out by cell."""
+        from goal2.ui.cells import Cells,CellPara
+        from goal2.ui.cell_parts import CellTableRow,key_values
+        from goal2.ui.country_parts import framed
+        body=Cells(90,25,"friendlyBody")
+        self.body_layout.addWidget(body,1)
+        body.text(ADDITION,"tagNew",0,0,60)
+        frame,inner=framed("the friendly",60,2)
+        rows,self.sides=key_values((("yours","your country"),("opponent","opponent")),60,13)
+        inner.put(rows,0,0,60,2)
+        body.put(frame,0,3,60,3)
+        self.step=body.text("","h1",0,8,60)
+        self.note=CellPara(NOTE,"sub")
+        body.put(self.note,0,12,60,10)
+        frame,inner=framed("countries · world rank",29,18)
+        self.rows=[]
         for i in range(GROUP):
-            r = Row([None, 40], on_click=lambda i=i: self.click_row(i))
-            r.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-            inner.addWidget(r)
-            self.rows.append(r)
-        inner.addSpacing(10)
-        self.group_note = label("", "sub")
-        inner.addWidget(self.group_note)
-        inner.addStretch(1)
-        row.addWidget(countries)
-        self.body_layout.addLayout(row, 1)
+            row=CellTableRow(i,(20,8),aligns=(Qt.AlignmentFlag.AlignRight,Qt.AlignmentFlag.AlignRight),gaps=(0,1))
+            row.chosen.connect(self.click_row)
+            inner.put(row,0,i,29)
+            self.rows.append(row)
+        self.group_note=CellPara("","sub")
+        inner.put(self.group_note,0,16,29,2)
+        body.put(frame,61,3,29,19)
 
     def name(self, number):
         return self.browser.goaldat.country_names[number]

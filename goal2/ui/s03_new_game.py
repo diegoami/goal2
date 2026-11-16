@@ -16,17 +16,16 @@ from __future__ import annotations
 import datetime
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QHBoxLayout
 
 from goal2.desktop.model import STAGES
 from goal2.game.campaign import CampaignError, opening_calendar
-from goal2.ui.screen import Clickable, Screen, label, para, set_para
-from goal2.ui.start_look import LineField, refresh
+from goal2.ui.screen import Clickable, Screen, set_para
+from goal2.ui.start_look import refresh
 
 MANAGERS = 6
 # [confirmed: NG-9] the years DOS's clock answers (AH=2Ah); the original checks none, so goal2 takes the same range
 DOS_YEARS = (1980, 2099)
-BOX_WIDTH = 900   # [designed: s03-new-game.html, the column's `width:900px`]
 WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
 
 
@@ -47,6 +46,7 @@ def first_competition(start: int) -> str:
 
 
 class NewGameScreen(Screen):
+    GRID = True   # [designed: owner, #667; T214]
     title = "new game · step 1 of 3"
     pre_game = True
     escape_text = "back to title"
@@ -67,70 +67,39 @@ class NewGameScreen(Screen):
         self._show()
 
     def _build(self):
-        row = QHBoxLayout()
-        row.addStretch(1)
-        frame = QFrame()
-        frame.setObjectName("box")
-        frame.setFixedWidth(BOX_WIDTH)
-        layout = QVBoxLayout(frame)
-        layout.setContentsMargins(34, 30, 34, 30)
-        layout.setSpacing(0)
-        layout.addWidget(label("NEW GAME", "boxHeading"))
-        layout.addSpacing(14)
-        layout.addWidget(label("How many managers?", "h1"))
-        layout.addSpacing(6)
-        width = BOX_WIDTH - 2 * 34 - 2
-        intro = para("Each manager takes a country of their own; they play in turn at the manager's desk.", "sub")
-        intro.setMinimumWidth(width)
-        layout.addWidget(intro)
-        layout.addSpacing(24)
-        digits = QHBoxLayout()
-        digits.setSpacing(14)
-        self.digits = []
-        for n in range(1, MANAGERS + 1):
-            digit = Clickable("digit")
-            digit.setFixedSize(70, 70)
-            inner = QHBoxLayout(digit)
-            inner.setContentsMargins(0, 0, 0, 0)
-            text = label(str(n), "digitText" if n == 1 else "digitLater")
+        """[designed: owner, #667; T214] Six manager choices and the complete year/availability notes on the cell grid."""
+        from goal2.ui.cells import Cells,CellLabel,CellPara
+        from goal2.ui.cell_parts import CellLineField
+        from goal2.ui.country_parts import framed
+        body=Cells(90,25,"newGameBody")
+        self.body_layout.addWidget(body,1)
+        frame,inner=framed("new game",64,22)
+        inner.text("How many managers?","h1",0,0,64)
+        inner.put(CellPara("Each manager takes a country of their own; they play in turn at the manager's desk.","sub"),0,1,64,2)
+        self.digits=[]
+        for n in range(1,MANAGERS+1):
+            digit=Clickable("digit")
+            digit.setStyleSheet("border: none;")
+            layout=QHBoxLayout(digit)
+            layout.setContentsMargins(0,0,0,0)
+            text=CellLabel(str(n),"digitText" if n==1 else "digitLater")
             text.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            inner.addWidget(text)
-            digit.clicked.connect(lambda n=n: self.choose(n))
-            digits.addWidget(digit)
+            layout.addWidget(text)
+            digit.clicked.connect(lambda n=n:self.choose(n))
+            inner.put(digit,(n-1)*6,4,5,2)
             self.digits.append(digit)
-        digits.addSpacing(10)
-        digits.addWidget(label("2 to 6: coming later", "muted"), 0, Qt.AlignmentFlag.AlignVCenter)
-        digits.addStretch(1)
-        layout.addLayout(digits)
-        layout.addSpacing(24)
-        more = para("One manager is the usual game. With more, the country and name steps repeat for each, and the "
-                    "desk gains next player.", "sub")
-        more.setMinimumWidth(width)
-        layout.addWidget(more)
-        layout.addSpacing(10)
-        year = QHBoxLayout()
-        year.setSpacing(14)
-        year.addWidget(para("Starting year\n(optional)", "muted"))
-        self.year_field = LineField(4, on_click=self.toggle_year)
-        self.year_field.setFixedWidth(160)
-        year.addWidget(self.year_field)
-        self.year_note = para("", "sub")
-        year.addWidget(self.year_note, 1)
-        layout.addLayout(year)
-        layout.addSpacing(18)
-        self.note_box = QFrame()
-        self.note_box.setObjectName("box")
-        note = QHBoxLayout(self.note_box)
-        note.setContentsMargins(16, 14, 16, 14)
-        self.note = para("", "value")
-        self.note.setMinimumWidth(width - 34)
-        note.addWidget(self.note, 1)
-        layout.addWidget(self.note_box)
-        row.addWidget(frame)
-        row.addStretch(1)
-        self.body_layout.addStretch(1)
-        self.body_layout.addLayout(row)
-        self.body_layout.addStretch(1)
+        inner.text("2 to 6: coming later","muted",36,4,28)
+        inner.put(CellPara("One manager is the usual game. With more, the country and name steps repeat for each, and the desk gains next player.","sub"),0,7,64,3)
+        inner.put(CellPara("Starting year\n(optional)","muted"),0,11,14,2)
+        self.year_field=CellLineField(4,on_click=self.toggle_year)
+        inner.put(self.year_field,15,11,7)
+        self.year_note=CellPara("","sub")
+        inner.put(self.year_note,23,11,41,4)
+        self.note_box,note=framed("note",64,5)
+        self.note=CellPara("","value")
+        note.put(self.note,0,0,64,5)
+        inner.put(self.note_box,0,16,64,6)
+        body.put(frame,13,1,64,23)
 
     # What the screen shows.
     def year(self):

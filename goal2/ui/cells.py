@@ -73,7 +73,8 @@ class CellLabel(QLabel):
 
     def cols(self) -> int:
         """The cells the text takes: one per character (the widest line when it has several)."""
-        lines = plain(self.text()).split("\n")
+        text = self.text() if self.textFormat() == Qt.TextFormat.PlainText else plain(self.text())
+        lines = text.split("\n")
         return max(self.reserve, *(len(line) for line in lines))
 
     def sizeHint(self) -> QSize:
@@ -100,7 +101,7 @@ class CellPara(QLabel):
         return max(1, int(width / cell_w(self) + 0.5))
 
     def lines(self, width: int | None = None) -> list[str]:
-        text = plain(self.text())
+        text = self.text() if self.textFormat() == Qt.TextFormat.PlainText else plain(self.text())
         out: list[str] = []
         for part in text.split("\n"):
             out.extend(textwrap.wrap(part, self.columns(width), drop_whitespace=True) or [""] if text else [])

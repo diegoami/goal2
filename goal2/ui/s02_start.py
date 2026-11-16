@@ -20,16 +20,14 @@ its result on this screen, and nothing is saved.
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout, QWidget
 
 from goal2.desktop.model import STAGES, campaign_year
-from goal2.ui import saves
-from goal2.ui.screen import Screen, kbd, label, para, set_para
-from goal2.ui.start_look import KeyItem, Row, box, key_value, refresh
+from goal2.ui import saves, theme
+from goal2.ui.screen import Screen, set_para
+from goal2.ui.start_look import refresh
 
-COLUMNS = (("Name", 300), ("Country", 130), ("Year · stage", 360), ("Next", 240), ("Saved", None))
+COLUMNS = (("Name", 18), ("Country", 16), ("Year · stage", 24), ("Next", 16), ("Saved", 16))
 VISIBLE = 5   # [designed: T163] rows of the list shown at once; the window of rows follows the highlight
-WIDTH = 1360  # [designed: owner #598] complete save metadata at 24px
 
 
 def year_stage(model) -> str:
@@ -41,6 +39,7 @@ def year_stage(model) -> str:
 
 
 class StartScreen(Screen):
+    GRID = True   # [designed: owner, #667; T214]
     title = "title"
     pre_game = True
     escape_text = "quit"
@@ -68,79 +67,54 @@ class StartScreen(Screen):
 
     # The screen.
     def _build(self):
-        column = QWidget()
-        column.setFixedWidth(WIDTH)
-        layout = QVBoxLayout(column)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(18)
-        head = QVBoxLayout()
-        head.setSpacing(4)
-        head.addWidget(label("GOAL2", "titleBrand"), 0, Qt.AlignmentFlag.AlignHCenter)
-        head.addWidget(label("the 1993 international management game · version 2", "sub"), 0,
-                       Qt.AlignmentFlag.AlignHCenter)
-        layout.addLayout(head)
-        top = QHBoxLayout()
-        top.setSpacing(18)
-        self.continue_box, inner = box("Continue")
-        self.continue_item = QFrame()
-        self.continue_item.setObjectName("primary")
-        self.continue_item.setCursor(Qt.CursorShape.PointingHandCursor)
-        row = QHBoxLayout(self.continue_item)
-        row.setContentsMargins(18, 16, 18, 16)
-        row.setSpacing(12)
-        self.continue_text = para("", "primaryText")
-        row.addWidget(self.continue_text, 1)
-        row.addWidget(kbd("Enter"), 0, Qt.AlignmentFlag.AlignVCenter)
-        self.continue_item.mouseReleaseEvent = lambda event: self.press_enter()
-        inner.addWidget(self.continue_item)
-        inner.addSpacing(6)
-        facts, self.facts = key_value((("manager", "manager"), ("next", "next"), ("saved", "saved")))
-        inner.addWidget(facts)
-        inner.addStretch(1)
-        top.addWidget(self.continue_box, 1)
-        self.menu_box, menu = box("Load a saved game?")
-        self.menu_box.setFixedWidth(400)
-        self.load_item = KeyItem("Load another save", "Y", self.press_y)
-        self.new_item = KeyItem("New game", "N", self.press_n)
-        self.quit_item = KeyItem("Quit", "Esc", self.escape)
-        for item in (self.load_item, self.new_item, self.quit_item):
-            menu.addWidget(item)
-        # [designed: owner, §6 item 18; T177] the standalone friendly, under the addition's tag
-        menu.addSpacing(6)
-        tag = QHBoxLayout()
-        tag.addWidget(label("GOAL2 ADDITION", "tagNew"))
-        tag.addStretch(1)
-        menu.addLayout(tag)
-        self.friendly_item = KeyItem("Standalone friendly", "F", self.press_f)
-        menu.addWidget(self.friendly_item)
-        menu.addStretch(1)
-        top.addWidget(self.menu_box)
-        layout.addLayout(top)
-        self.list_box, inner = box("Saved games")
-        heads = Row([w for _, w in COLUMNS])
-        heads.set_cells([h.upper() for h, _ in COLUMNS], ["boxHeading"] * len(COLUMNS))
+        """[designed: owner, #667; T214] Continue and the direct menu over five two-row saves; all metadata is retained."""
+        from goal2.ui.cells import Cells,CellPara
+        from goal2.ui.cell_parts import CellKeyItem,CellTableRow
+        from goal2.ui.country_parts import framed
+        from goal2.ui import theme
+        body=Cells(90,25,"startBody")
+        self.body_layout.addWidget(body,1)
+        body.text("GOAL2","titleBrand",0,0,8)
+        body.text("the 1993 international management game · version 2","sub",10,0,80)
+        self.continue_box,inner=framed("continue",60,6)
+        self.continue_item=CellKeyItem("","Enter",self.press_enter,60,rows=2,primary=True)
+        self.continue_text=self.continue_item.text_label
+        inner.put(self.continue_item,0,0,60,2)
+        self.facts={}
+        for name,row,rows in (("manager",2,1),("next",3,1),("saved",4,2)):
+            inner.text(name,"cardLabel",0,row,7)
+            value=CellPara("","value")
+            value.setTextFormat(Qt.TextFormat.PlainText)
+            inner.put(value,8,row,52,rows)
+            self.facts[name]=value
+        body.put(self.continue_box,0,1,60,7)
+        self.menu_box,menu=framed("load a saved game?",29,6)
+        self.load_item=CellKeyItem("Load another save","Y",self.press_y,29)
+        self.new_item=CellKeyItem("New game","N",self.press_n,29)
+        self.quit_item=CellKeyItem("Quit","Esc",self.escape,29)
+        for row,item in enumerate((self.load_item,self.new_item,self.quit_item)):menu.put(item,0,row,29)
+        menu.text("GOAL2 ADDITION","tagNew",0,3,29)
+        self.friendly_item=CellKeyItem("Standalone friendly","F",self.press_f,29)
+        menu.put(self.friendly_item,0,4,29)
+        body.put(self.menu_box,61,1,29,7)
+        self.list_box,inner=framed("saved games",90,11)
+        widths=tuple(width for _,width in COLUMNS)
+        heads=CellTableRow(-1,widths)
+        heads.set_cells([h.lower() for h,_ in COLUMNS],[theme.CARD_LABEL]*5)
         heads.setCursor(Qt.CursorShape.ArrowCursor)
-        inner.addWidget(heads)
-        self.rows = []
+        inner.put(heads,0,0,90)
+        self.rows=[]
         for i in range(VISIBLE):
-            r = Row([w for _, w in COLUMNS], on_click=lambda i=i: self.click_row(i))
-            r.cells[1].setWordWrap(True)
-            inner.addWidget(r)
-            self.rows.append(r)
-        self.message = para("", "sub")   # what came back to the title: the standalone friendly's result [T177]
+            row=CellTableRow(i,widths,wrap_rows=2,plain=True)
+            row.chosen.connect(self.click_row)
+            inner.put(row,0,1+2*i,90,2)
+            self.rows.append(row)
+        body.put(self.list_box,0,8,90,12)
+        self.message=CellPara("","sub")
         self.message.hide()
-        layout.addWidget(self.message)
-        self.problem = para("", "error")
-        self.problem.setMinimumWidth(WIDTH - 34)
-        inner.addWidget(self.problem)
-        layout.addWidget(self.list_box)
-        outer = QHBoxLayout()
-        outer.addStretch(1)
-        outer.addWidget(column)
-        outer.addStretch(1)
-        self.body_layout.addStretch(1)
-        self.body_layout.addLayout(outer)
-        self.body_layout.addStretch(1)
+        body.put(self.message,0,20,90,5)
+        self.problem=CellPara("","error")
+        body.put(self.problem,0,20,90,5)
 
     def read(self):
         """Read every save again, newest first, and show them."""
@@ -200,7 +174,7 @@ class StartScreen(Screen):
                                saves.when(entry.saved)])
             else:
                 row.set_cells([entry.name, "cannot be opened", "", "", saves.when(entry.saved)],
-                              [None, "bad", None, None, None])
+                              [theme.TEXT_BRIGHT, theme.BAD, theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_BRIGHT])
             row.set_on(index == self.cursor_row)
             row.show()
 

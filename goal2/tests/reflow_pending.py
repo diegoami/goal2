@@ -25,12 +25,6 @@ import sys
 # Screen -> why it does not fit yet. The text is the screen-level problem at 1440x1080: the size the screen needs
 # ("squeezed below WxH") against the page it has.
 PENDING = {
-    "ImportScreen": "box 1260x648 squeezed below 1315x648",
-    "StartScreen": "optionText text needs 76 px, has 42",
-    "FriendlyScreen": "screen 1440x1080 squeezed below 1064x1111",
-    "NewGameScreen": "box 900x793 squeezed below 903x537",
-    "PlayersScreen": "screen 1440x1080 squeezed below 1132x1119",
-    "ReimportScreen": "box 1260x648 squeezed below 1538x648",
     "HelpScreen@720x450": "help viewer 311 px high, 69 % of the 450 px page, under the 70 % it must fill (it fits, with no problems)",
     "SaveScreen@failed-save": "dialog 533x882 squeezed below 587x402; error text needs 432 px, has 346 (the long Windows temp path in the message)",
 }
