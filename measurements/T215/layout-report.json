@@ -36,21 +36,21 @@
         "height": 1080,
         "problems": [],
         "path": "01-ImportScreen-1440x1080.png",
-        "sha256": "27a2946e817374826292c85a119c4eadc4afebafa78fb1fdb7a973c90742bfc2"
+        "sha256": "e269ee4b637a07991885988f28ab693f7268dc9f27f065cb0f0968884a29b5a6"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "01-ImportScreen-1440x900.png",
-        "sha256": "383b8a21376835dfd369f479ec6482effb65ea1e213c6b8abed6cd46e942a071"
+        "sha256": "e3db5b0fb45e59bd39de815af231ad26163607b91b224007f32ab3acb3e4fea1"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "01-ImportScreen-2110x1213.png",
-        "sha256": "fea7c47da592a91036544b59e2165ab2195b748c4a1cad0612b4f3ea21f3a5da"
+        "sha256": "24971e48bffc27514809b93b189c3e459d4ec16f8501abdca2fe8c2653a29266"
       }
     ],
     "journey": "s01-import.png"
@@ -148,21 +148,21 @@
         "height": 1080,
         "problems": [],
         "path": "05-StartScreen-1440x1080.png",
-        "sha256": "88fbf4a0af3d26744a2acfbbf93e88d4f484c0ae350dfffa4fbf64bd4e4d5a85"
+        "sha256": "2a5b72b116864ee93e8cec9904d3b89bbaa62e3def2b21b58132f9d422aa9198"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "05-StartScreen-1440x900.png",
-        "sha256": "a807ddd443aa028b3dd3005272b99e380b5143f7a1ec765c92289d589295f948"
+        "sha256": "eac04f85897e3b1090d9e8050d94dae0e84564767897261ffdd72774457416b0"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "05-StartScreen-2110x1213.png",
-        "sha256": "e791024dee92e7016ade390b57a8a02584246420dcaecc9bc80331b2b967990f"
+        "sha256": "57f1eb21e1bebd5722ca21c8c63e4c27098e3d10acd63cfad4e129e55eebfa54"
       }
     ],
     "journey": "s02-start.png"
@@ -316,21 +316,21 @@
         "height": 1080,
         "problems": [],
         "path": "11-DeskScreen-1440x1080.png",
-        "sha256": "d77c9bcfc677e3d019dc968347fbbfbd14b088935b5b2e73e06253d223a11297"
+        "sha256": "36c5bf8ed505c6ac8eee1a8b244cbdc5bddbc55d7d2c9eb8a286fc2c41940a85"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "11-DeskScreen-1440x900.png",
-        "sha256": "f7c878be3c800625cf1d3d00bdb78a1443ef6c0ce89a998156547ebd7578db81"
+        "sha256": "800629056e76f14fc1ea94f5a7457418ed9ffe39188f5d55d1d6067e708ca3ab"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "11-DeskScreen-2110x1213.png",
-        "sha256": "a377ede3a32c770c6e71d226b6d46ae037fd8a04d0b48ce453622f0195a88870"
+        "sha256": "028b71996c4c5fdbaad30e65dd4534fd0e673e40c6e034801060883b85a783bf"
       }
     ],
     "journey": "s06-desk.png"
@@ -372,21 +372,21 @@
         "height": 1080,
         "problems": [],
         "path": "13-DeskScreen-1440x1080.png",
-        "sha256": "9fdc259d21f43294978ac58a6ea9214d5c422dc78dbec207bcfc11ae77571bc5"
+        "sha256": "e89610150ce2aaf2138a306df146ef37db7e8757f3d6e38fd89b001da07439a7"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "13-DeskScreen-1440x900.png",
-        "sha256": "59d5c947aca7e174e9c0ec18cfde242ec3641cc66e6da264be1f7d3ecf800949"
+        "sha256": "1a57e72f0576d20f77caea85500ebd3835d45275a0e04fa34698ba40685d1abe"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "13-DeskScreen-2110x1213.png",
-        "sha256": "0a6428b4f8e3e3027980b0f87678db953d63b870f40a249803fe6a01c6749b1a"
+        "sha256": "a8369d8a90aa4c6a86859a25a85b46dda5a1c3bf4be246c481eae7229c1e0a9b"
       }
     ],
     "journey": "s06-rename.png"
@@ -1268,21 +1268,21 @@
         "height": 1080,
         "problems": [],
         "path": "45-SaveScreen-1440x1080.png",
-        "sha256": "0f88169f5c631ca366991ccb52e02c252f32cfccc8579c3fc1c4d273e7792b54"
+        "sha256": "0ef1374c4fc2245d44d0cb90c8e0ef7eefee9745245780bded85eab226a01e75"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "45-SaveScreen-1440x900.png",
-        "sha256": "d263469e90ac6072d187ace8d7131a2c429911991ec27e641ebaed624f5735d8"
+        "sha256": "3769b7b1850d15ee5048820e110ac80c8739ec68ca5ada0a2c1df5bc59e9dfec"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "45-SaveScreen-2110x1213.png",
-        "sha256": "d3d34bac0e926addd12ae7af3b22ed04f5dff0e1abaca9ff3dfcfed50d4b7571"
+        "sha256": "f22623463f97804d81e2e6285e3caae12481901568995dc009d56495e953312d"
       }
     ],
     "journey": "s21-save.png"
@@ -1296,21 +1296,21 @@
         "height": 1080,
         "problems": [],
         "path": "46-QuestionScreen-1440x1080.png",
-        "sha256": "f153893c725ce68f45317402afe96c8ba2a5942328fa130bbb702306f1f3b053"
+        "sha256": "2826bb16b611f741662243bb27b0a053d3fc80b81478a8df1dd1d60f8754ff9d"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "46-QuestionScreen-1440x900.png",
-        "sha256": "a0b9f87d055f80e992cd4526d20eb434e52e3f4752c5c43f1244876afef460a5"
+        "sha256": "c6eda6fe038fe5efdde0cf598b7126304470ffa59157f5643db96543c8e9a72c"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "46-QuestionScreen-2110x1213.png",
-        "sha256": "5db84966de5faec3f78f22a98794fdf325c824f4bd0e59a8d25273afb268cf4c"
+        "sha256": "536268e6a21c81cbdd35fbe1dc3e51b27b20a49212727c57d7bea8bd6296fb5b"
       }
     ],
     "journey": "s21-quit.png"
@@ -1324,21 +1324,21 @@
         "height": 1080,
         "problems": [],
         "path": "47-QuestionScreen-1440x1080.png",
-        "sha256": "ef69910121f9cd1775333ab93463dbffe9378985e1254b965bbf684d953569b7"
+        "sha256": "8fb10e22059b2b7051cc06756e4bca8fdf5b5db3f84ee3e38b1429c70e2b0305"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "47-QuestionScreen-1440x900.png",
-        "sha256": "7fce2455119fe3ade11aa64113afe02f89e4754c9ccc6d88b4ac232d06436448"
+        "sha256": "54b7469505d8d35e5ebdc172a4a822213aa151c29ae786145d736efd2f2e5333"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "47-QuestionScreen-2110x1213.png",
-        "sha256": "f73bfea630f577694441e5efda305b245846bbad44d8c4425cc2ce56eed74ccd"
+        "sha256": "62e69b3df0272498913ecb700024e92ec1cb632c9dbdc8bcd192a91bf223cc76"
       }
     ],
     "journey": "s21-save-question.png"
