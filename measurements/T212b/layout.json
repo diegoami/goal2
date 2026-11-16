@@ -1,0 +1,366 @@
+[
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-squad.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-squad.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-squad.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-squad.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-pool.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-pool.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-pool.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-pool.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-put-here.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-put-here.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-put-here.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SquadScreen",
+    "picture": "s08-put-here.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayerTacticsScreen",
+    "picture": "s09-player-tactics.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayerTacticsScreen",
+    "picture": "s09-player-tactics.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayerTacticsScreen",
+    "picture": "s09-player-tactics.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayerTacticsScreen",
+    "picture": "s09-player-tactics.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamTacticsScreen",
+    "picture": "s10-team-tactics.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamTacticsScreen",
+    "picture": "s10-team-tactics.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamTacticsScreen",
+    "picture": "s10-team-tactics.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamTacticsScreen",
+    "picture": "s10-team-tactics.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "CountryTacticsScreen",
+    "picture": "s07-country-tactics.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "CountryTacticsScreen",
+    "picture": "s07-country-tactics.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "CountryTacticsScreen",
+    "picture": "s07-country-tactics.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "CountryTacticsScreen",
+    "picture": "s07-country-tactics.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamPlayersScreen",
+    "picture": "s07-team-players.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamPlayersScreen",
+    "picture": "s07-team-players.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamPlayersScreen",
+    "picture": "s07-team-players.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "TeamPlayersScreen",
+    "picture": "s07-team-players.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  }
+]

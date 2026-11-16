@@ -9,6 +9,8 @@ screens' pictures until T164 puts them on the desk. It needs the career files of
 from __future__ import annotations
 
 import argparse
+import json
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -17,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 
-def screenshots(out: Path, country: int = 20) -> list[Path]:
+def screenshots(out: Path, country: int = 20, *, all_sizes: bool = False) -> list[Path]:
     from PySide6.QtCore import Qt
     from PySide6.QtWidgets import QApplication
     from goal2.desktop import data_setup
@@ -37,6 +39,7 @@ def screenshots(out: Path, country: int = 20) -> list[Path]:
     window.resize(*theme.PICTURE)
     window.show()
     written = []
+    layouts = []
 
     def shot(name):
         for _ in range(3):
@@ -44,6 +47,19 @@ def screenshots(out: Path, country: int = 20) -> list[Path]:
         path = out / name
         window.grab().save(str(path))
         written.append(path)
+        if all_sizes:
+            from goal2.desktop import fixed_page
+            before = window.size()
+            for width, height in ((1440, 1080), (1440, 900), (2110, 1213), (1440, 1061)):
+                window.resize(width, height)
+                for _ in range(3):
+                    app.processEvents()
+                folder = out / f"{width}x{height}"
+                folder.mkdir(exist_ok=True)
+                window.grab().save(str(folder / name))
+                layouts.append(dict(screen=type(window.current()).__name__, picture=name, requested=[width, height],
+                                    actual=[window.width(), window.height()], problems=fixed_page.problems(window)))
+            window.resize(before)
 
     def key(k):
         window.current().handle_key(k)
@@ -65,7 +81,23 @@ def screenshots(out: Path, country: int = 20) -> list[Path]:
     open_team_tactics(window, model)
     key(Qt.Key.Key_Return)
     shot("s10-team-tactics.png")
+    # [designed: T212b, #667] S07's two read-only tactics-family screens, reached through the actual country browser.
+    from goal2.ui.s07_team_info import TeamInfoScreen
+    info = window.push(TeamInfoScreen(window, model))
+    info.index = next(i for i, c in enumerate(info.order) if c[0] != model.state.managed_country)
+    info.settle()
+    info._show()
+    info.tactics()
+    shot("s07-country-tactics.png")
+    key(Qt.Key.Key_Escape)
+    info.players()
+    shot("s07-team-players.png")
     window.close()
+    shutil.rmtree(tmp)
+    if all_sizes:
+        (out / "layout-report.json").write_text(json.dumps(layouts, indent=2) + "\n")
+        if any(row["problems"] for row in layouts):
+            raise RuntimeError("squad/tactics screenshot layout failed; see layout-report.json")
     return written
 
 
@@ -73,8 +105,9 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("out", type=Path)
     parser.add_argument("--country", type=int, default=20, help="the managed country (default 20, the mockups')")
+    parser.add_argument("--all-sizes", action="store_true", help="capture the task sizes and Windows work area; fail on overflow")
     args = parser.parse_args(argv)
-    for path in screenshots(args.out, args.country):
+    for path in screenshots(args.out, args.country, all_sizes=args.all_sizes):
         print(path)
     return 0
 
