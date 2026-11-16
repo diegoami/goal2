@@ -4,6 +4,7 @@ The frame is a rule with its lowercase label; every concrete screen must use the
 [designed: T215] Checks run unconditionally on all platforms. Measurements use never-shown windows where a desktop
 would clamp the requested size. The journey and career walk retain their screen coverage with no pending exemptions.
 """
+from contextlib import contextmanager
 import sys
 import unittest
 from pathlib import Path
@@ -25,6 +26,43 @@ from goal2.ui.home import HomeScreen  # noqa: E402
 from goal2.ui.window import Window  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+@contextmanager
+def canonical_page(window):
+    """[designed: T215] Measure the grid on the canonical page without desktop work-area clamping.
+
+    Fit tests separately exercise shown windows at their actual sizes. Preserve the journey's original window and
+    screenshot; only its grid measurement uses this hidden 1440×1080 layout, as T210's contract requires.
+    """
+    from PySide6.QtWidgets import QLayout
+    app = QApplication.instance()
+    before, frame_before, visible = window.size(), window.centralWidget().size(), window.isVisible()
+
+    def settle(size, frame_size=None):
+        window.resize(size)
+        window.layout().activate()
+        window.centralWidget().resize(frame_size if frame_size is not None else size)
+        window.centralWidget().fit()
+        layouts = window.page.findChildren(QLayout)
+        for _ in range(3):
+            for layout in layouts:
+                layout.invalidate()
+                layout.activate()
+        app.processEvents()
+
+    window.hide()
+    try:
+        from PySide6.QtCore import QSize
+        settle(QSize(*theme.PICTURE))
+        if (window.page.width(), window.page.height()) != theme.PICTURE:
+            raise AssertionError("grid measurement must use the canonical 1440×1080 page")
+        yield
+    finally:
+        settle(before, frame_before)
+        if visible:
+            window.show()
+        app.processEvents()
 
 
 def cell_ink(image, cols):
@@ -236,6 +274,29 @@ class AssertOnGrid(Base):
                 with self.subTest(capture=capture), self.assertRaises(AssertionError):
                     ui_assertions.assert_on_grid(self, window, capture=capture)
 
+    def test_canonical_measurement_preserves_a_clamped_window_and_rejects_off_grid_content(self):
+        window = self.home()
+        window.resize(1440, 1061)   # the hosted Windows desktop's actual work area
+        window.show()
+        for _ in range(3):
+            self.app.processEvents()
+        before = window.size()
+        with canonical_page(window):
+            self.assertFalse(window.isVisible(), "the desktop must not clamp the measurement")
+            self.assertEqual((window.page.width(), window.page.height()), theme.PICTURE)
+            self.assertEqual(window.centralWidget().scale, 1)
+            ui_assertions.assert_on_grid(self, window)
+            bad = QWidget(window.current().body)
+            bad.setObjectName("deliberatelyOffGrid")
+            bad.setGeometry(7, 13, 31, 41)
+            bad.show()
+            with self.assertRaises(AssertionError):
+                ui_assertions.assert_on_grid(self, window)
+            bad.setParent(None)
+            bad.deleteLater()
+        self.assertTrue(window.isVisible())
+        self.assertEqual(window.size(), before, "leave the visible journey at its original size")
+
 
 @requires.need(slow=True, modules=("pygame",), **requires.HALFTIME)   # plays a friendly under PyPy, as the journey does
 class EveryScreen(unittest.TestCase):
@@ -259,10 +320,12 @@ class EveryScreen(unittest.TestCase):
         def grab(window, *values):
             name = type(window.current()).__name__
             cls.seen.append(name)
-            found = grid_check.violations(window)
+            picture = original(window, *values)
+            with canonical_page(window):
+                found = grid_check.violations(window)
             if found:
                 cls.violating.setdefault(name, found)
-            return original(window, *values)
+            return picture
 
         Window.grab = grab
         try:
@@ -324,8 +387,9 @@ class PendingGrid(unittest.TestCase):
                 app.processEvents()
             name = type(window.current()).__name__
             visited.append(name)
-            if grid_check.violations(window):
-                violating.add(name)
+            with canonical_page(window):
+                if grid_check.violations(window):
+                    violating.add(name)
 
         def key(k):
             window.current().handle_key(k)
