@@ -80,7 +80,7 @@ be outstanding at a time; its numbered reply ends that request.
 | `observe` | | Detached current boundary, with empty deltas. |
 | `configure` | optional `captain`, `substitutions` | Configures the actual pending Match exactly once through `PrematchSeam`. |
 | `next` | optional `count`, integer 1..32 (default 32) | At most that many `events` as plain Event records, stopping at every decision; returns `decision` (number or null), `over`, `exhausted`. |
-| `answer` | `decision`, `answer` (Match.answer keyword object) | Answers that still-waiting numbered decision once. JSON element-map keys become integers. |
+| `answer` | `decision`, `answer` (Match.answer keyword object) | Answers that still-waiting numbered decision once. JSON element-map keys become integers. T170p adds `captain` on pre-match Play after edits. |
 | `resume` | | Resumes the same completed Match after all its events have been drained. |
 | `discard` | | Drops the transient session and Match; never publishes them. |
 
@@ -97,12 +97,20 @@ adds `state` to the callback value. Advance/resume deliver their own fixture/new
 deltas exactly once. A held Match is still an incomplete round, never a publishable
 candidate. Event/answer requests retain private Match memory in the child.
 
-A pre-engine request guard replies `season_error` with `lost=false`; an engine or
+A known pure request refusal replies `season_error` with `lost=false`; an engine or
 decode failure invalidates the season (`lost=true`). Worker death clears the
 parent's season holding; subsequent requests refuse until an explicit `season_open`.
 State/2 is never cached for automatic replay, nor is a pending Match serialized.
 `close()` retains its bounded quit/kill behavior. Later leaves wire the window,
 in-match pacing, round publication and save/load policy over these primitives.
+
+[designed: T170p; confirmed: archaeology T133/#715] After accepted pre-match
+edits, `answer={"captain": word}` plays with a current eligible XI member, including
+a pool player just brought in. `captain: null` uses the original default; omission
+keeps initial configuration. A rejected captain answer consumes no decision,
+memory, RNG or replay action, so its named `season_error` has `lost=false` and
+the same decision can be repaired. `PrematchSeam.play(captain=...)` preserves the
+same distinction. The original role-1 prompt receives the choice through keys.
 
 ## The match
 

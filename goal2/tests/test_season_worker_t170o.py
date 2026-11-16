@@ -91,7 +91,7 @@ class Worker(unittest.TestCase):
         self.assertRaises(ValueError, self.ask, 'observe', extra=True)
 
 
-def actual_worker(raw):
+def actual_worker(raw, late_captain=False):
     """Source-bound entry and prematch against direct answers, in a PyPy child."""
     import hashlib
     import sys
@@ -136,12 +136,15 @@ def actual_worker(raw):
     a.answer(edit_only=True, tactics={8: answer['tactics']['8']})
     second = next_decision()
     assert b.waiting == a.waiting and b.waiting['edited']
-    ask('answer', decision=second['decision'], answer={}); a.answer()
+    play_answer = ({'captain': next(w for w in reversed(a.waiting['eleven']) if a._available(w))}
+                   if late_captain else {})
+    ask('answer', decision=second['decision'], answer=play_answer); a.answer(**play_answer)
     observed = ask('next', count=1)
     assert observed['events'] == [asdict(next(stream))]
     assert a.m.read(0, MEM_SIZE) == b.m.read(0, MEM_SIZE)
     assert all(a.m.reg(r) == b.m.reg(r) for r in REGS)
     return {'state': value, 'first': first, 'edited': second, 'after_play': observed,
+            'play_answer': play_answer,
             'entry_equal': True, 'post_play_sha256': hashlib.sha256(b.m.read(0, MEM_SIZE)).hexdigest()}
 
 
@@ -193,12 +196,18 @@ class Pipe(unittest.TestCase):
         self.assertFalse(engine.season_active)
 
     def test_actual_held_entry_and_prematch_are_direct_answers_over_the_pipe(self):
+        self.actual_pipe(False)
+
+    def test_late_captain_crosses_the_actual_pipe_after_the_edits(self):
+        self.actual_pipe(True)
+
+    def actual_pipe(self, late_captain):
         from pathlib import Path
         from goal2.engine.original_match.assets import REFERENCE, reference_image
         from goal2.tests import requires, pypy_engine
         requires.require(files=(REFERENCE['asset'],))
         raw = reference_image(Path(__file__).resolve().parents[2]/'.cache')
-        expected = pypy_engine.call(__name__+':actual_worker', raw)
+        expected = pypy_engine.call(__name__+':actual_worker', raw, late_captain)
         engine = self.make_engine(); engine.season_open(expected['state'])
         ready = self.receive('ready'); self.assertEqual(ready['version'], [3, 11])
         self.receive('season')
@@ -222,7 +231,13 @@ class Pipe(unittest.TestCase):
             if packet['decision'] is not None:
                 break
         self.assertEqual(edited, expected['edited']['events'])
-        engine.season_request('answer', decision=packet['decision'], answer={})
+        if late_captain:
+            engine.season_request('answer', decision=packet['decision'], answer={'captain': True})
+            refused = self.receive('season_error')
+            self.assertIn('available player', refused['error'])
+            self.assertFalse(refused['lost'])
+            self.assertTrue(engine.season_active)
+        engine.season_request('answer', decision=packet['decision'], answer=expected['play_answer'])
         self.receive('season')
         engine.season_request('next', count=1)
         self.assertEqual(self.receive('season')['events'], expected['after_play']['events'])

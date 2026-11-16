@@ -48,12 +48,20 @@ class SeamMapping(unittest.TestCase):
                                      {'edit_only': True, 'substitutions': [[122, 2561]]},
                                      {}])
 
+    def test_late_captain_play_preserves_word_default_and_omission(self):
+        m = _StubMatch()
+        seam = PrematchSeam(m)
+        seam.play(captain=2614)
+        seam.play(captain=None)
+        seam.play()
+        self.assertEqual(m.answers, [{'captain': 2614}, {'captain': None}, {}])
 
-def seam_sequence(raw, element=8, budget=2):
+
+def seam_sequence(raw, element=8, budget=2, late_captain=False):
     """Actual PyPy dispatcher, no original backend fallback: the window's exact pre-kick-off
     sequence through the seam, and the same answers given directly, on two SeasonSessions
     built from one accepted state. The two paths must stop identically after the swap."""
-    import builtins, hashlib, sys
+    import builtins, hashlib, json, sys
     assert sys.implementation.name == 'pypy' and sys.version_info[:2] == (3, 11)
     original_import = builtins.__import__
 
@@ -71,7 +79,7 @@ def seam_sequence(raw, element=8, budget=2):
         raise AssertionError('Unicorn denial inactive')
     from goal2.engine.original_match import route
     from goal2.engine.original_match.image import Image
-    from goal2.engine.original_match.machine import MEM_SIZE, Uc
+    from goal2.engine.original_match.machine import MEM_SIZE, REGS, Uc
     from goal2.game import engine_tables
     from goal2.game.season import SeasonSession
     from goal2.game.prematch_seam import PrematchSeam
@@ -87,6 +95,17 @@ def seam_sequence(raw, element=8, budget=2):
         assert match is not None and not match.over
         squad = match._squad(match.opts['managed'])
         captain = squad[0]                               # the S16 choice: an eligible eleven word
+        accepted_captains = []
+        prompt_role = [False]
+        def prompt(replay):
+            if not replay:
+                prompt_role[0] = match.m.stack_word(2) == 1 and match.m.stack_word(4) == match.side
+        def accepted(replay):
+            if not replay and prompt_role[0]:
+                accepted_captains.append(match.m.reg('ax'))
+                prompt_role[0] = False
+        match.m.at('0791:CC7B', prompt)
+        match.m.at('0791:D010', accepted)
 
         def decision():
             for ev in match.events():
@@ -96,7 +115,9 @@ def seam_sequence(raw, element=8, budget=2):
 
         def seam_or_direct(exchange=False, **answer):
             if via_seam:
-                if 'tactics' in answer:
+                if 'captain' in answer:
+                    seam.play(captain=answer['captain'])
+                elif 'tactics' in answer:
                     seam.set_team_tactic(element, answer['tactics'][element])
                 elif 'substitutions' in answer:
                     off, on = answer['substitutions'][0]
@@ -106,7 +127,7 @@ def seam_sequence(raw, element=8, budget=2):
             else:
                 # [confirmed: archaeology #711/#713] the same answers given directly: edits are
                 # edit_only answers (the pool word included, at a pre-match edit), play is empty.
-                match.answer(edit_only=bool(answer), **answer)
+                match.answer(edit_only=bool(answer) and 'captain' not in answer, **answer)
 
         if via_seam:
             seam = PrematchSeam(match, captain=captain, substitutions=budget)
@@ -131,18 +152,23 @@ def seam_sequence(raw, element=8, budget=2):
         seam_or_direct(exchange=True, substitutions=[[pool_off, pool_word]])
         fourth = decision()
         stop_hash = hashlib.sha256(match.m.read(0, MEM_SIZE)).hexdigest()
-        seam_or_direct()                                 # play: the empty answer
+        seam_or_direct(**({'captain': pool_word} if late_captain else {}))
         kinds = []
         for ev in match.events():
             kinds.append(ev.kind)
             if ev.kind == 'minute':
                 break
         keep = ('context', 'eleven', 'bench', 'tactics')
+        assert accepted_captains == [pool_word if late_captain else captain]
         strip = lambda d: {k: d.get(k) for k in keep} | {'edited': d.get('edited')}
         return dict(captain=captain, off=off, on=on, want=want, pool_off=pool_off, pool_word=pool_word,
                     first=strip(first), second=strip(second), third=strip(third), fourth=strip(fourth),
                     pool_keeps_off=pool_off in fourth['pool'], pool_loses_word=pool_word not in fourth['pool'],
-                    stop_hash=stop_hash, kinds=kinds, minute=match.st['minute'],
+                    stop_hash=stop_hash, play_hash=hashlib.sha256(match.m.read(0, MEM_SIZE)).hexdigest(),
+                    accepted_captains=accepted_captains,
+                    registers={r: match.m.reg(r) for r in REGS},
+                    draws_sha256=hashlib.sha256(json.dumps(match.st['draws']).encode()).hexdigest(),
+                    kinds=kinds, minute=match.st['minute'],
                     substitution_events=len(match.st['log']['substitutions']))
 
     receipt = {'seam': run(True), 'direct': run(False), 'unicorn_denied': True,
@@ -152,6 +178,18 @@ def seam_sequence(raw, element=8, budget=2):
 
 
 class ActualSeamSequence(unittest.TestCase):
+    def test_late_pool_captain_after_all_edits_equals_direct_answers(self):
+        from pathlib import Path
+        from goal2.engine.original_match.assets import REFERENCE, reference_image
+        from goal2.tests import requires, pypy_engine
+        requires.require(files=(REFERENCE['asset'],))
+        raw = reference_image(Path(__file__).resolve().parents[2] / '.cache')
+        receipt = pypy_engine.call(__name__ + ':seam_sequence', raw, late_captain=True)
+        self.assertEqual(receipt['seam'], receipt['direct'])
+        for path in (receipt['seam'], receipt['direct']):
+            self.assertEqual(path['accepted_captains'], [path['pool_word']])
+        print('T170P_LATE_CAPTAIN ' + __import__('json').dumps(receipt, sort_keys=True), flush=True)
+
     def test_the_windows_sequence_through_the_seam_equals_the_same_answers_direct(self):
         import json
         from pathlib import Path

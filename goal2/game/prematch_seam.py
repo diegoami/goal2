@@ -14,6 +14,11 @@ own answer now that T170l vendored the pool arm; T170k's named refusal retired w
 """
 
 
+# [designed: T170p] Explicit None asks for the original default; omission keeps
+# the initial captain configuration. Only plain JSON values cross the worker.
+_UNSET_CAPTAIN = object()
+
+
 class PrematchSeam:
     """The window's pre-kick-off sequence on one held pending route Match."""
 
@@ -39,6 +44,10 @@ class PrematchSeam:
         pool pane route; the pool is published in the decision beside the bench)."""
         self.match.answer(edit_only=True, substitutions=[[int(outgoing), int(incoming)]])
 
-    def play(self):
-        """[T170i scope 3] Kick-off: the empty answer; the declared captain already stands."""
-        self.match.answer()
+    def play(self, *, captain=_UNSET_CAPTAIN):
+        """[T170p/T133] Play after edits: optional current-XI captain, or None for
+        the original default. Omission retains the initial declared captain."""
+        if captain is _UNSET_CAPTAIN:
+            self.match.answer()
+        else:
+            self.match.answer(captain=captain)
