@@ -391,6 +391,8 @@ operational status.
 
 - [T170n](T170n.md): the seam's pool exchange becomes the real pool answer — the chained sequence proven (#726).
 
+- [T170o](T170o.md): retain the season and held Match in the existing PyPy worker (#735); window wiring follows.
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
