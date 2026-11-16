@@ -403,6 +403,8 @@ operational status.
 
 - [T170t](T170t.md): preserve raw news snapshots and provenance across the retained season pipe (#751).
 
+- [T170u](T170u.md): adopt accepted native pre-match R/C position inputs and repairable refusals (#753; upstream T135/#721).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
