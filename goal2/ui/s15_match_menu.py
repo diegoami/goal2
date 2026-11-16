@@ -107,6 +107,8 @@ class MenuScreen(Screen):
             middle.put(players,29+17*column,4,15,3)
         tournament = option("tournament", self.tournament, enter="Tournament")
         stats = option("match stats", self.stats, enter="Match stats")
+        for item in (tournament,stats):
+            item.text_label.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
         middle.put(tournament,29,8,32,2)
         middle.put(stats,29,10,32,2)
         if phase == "full":

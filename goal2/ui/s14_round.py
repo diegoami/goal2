@@ -32,6 +32,25 @@ def score_text(row):
     return "v" if row["score"] is None else f"{row['score'][0]} - {row['score'][1]}"
 
 
+from goal2.ui.cell_parts import CellTableRow
+
+
+class RoundRow(CellTableRow):
+    """[designed: T213, #667] Keep the results table's row separators without a CSS border taking a pixel from its cells."""
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        import math
+        from PySide6.QtGui import QColor, QPainter, QPen
+        from goal2.desktop import fixed_page
+        width = max(1, math.ceil(2 * fixed_page.scale_y_of(self)))
+        painter = QPainter(self)
+        painter.setPen(QPen(QColor(theme.FRAME_DARK), width))
+        y = self.height() - (width + 1) // 2
+        painter.drawLine(0, y, self.width(), y)
+        painter.end()
+
+
 class RoundScreen(Screen):
     """`before`: DesktopModel.round_before(); `after`: round_after(your fixture) once your match is published.
     `onward` is what Enter does."""
@@ -73,7 +92,7 @@ class RoundScreen(Screen):
         self.results_area = inner
         self.rows = []
         for i in range(ROWS + 1):
-            row = CellTableRow(i, (16, 9, 16, 49), aligns=(Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignHCenter,None,None))
+            row = RoundRow(i, (16, 9, 16, 49), aligns=(Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignHCenter,None,None))
             # The last result may name the stage and "your match is next": it has three rows while ordinary results take one.
             old = row.cells[3]
             text = CellPara("", "rowCell")
@@ -87,7 +106,8 @@ class RoundScreen(Screen):
             self.rows.append(row)
         body.put(frame, 0, 0, 90, 20)
         hint = CellPara(HINT, "sub")
-        body.put(hint, 0, 20, 90, 3)
+        hint.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
+        body.put(hint, 0, 21, 90, 3)
         self.state_label = body.text("", "sub", 0, 24, 90)
         colour(self.state_label, theme.VALUE)
         self.timer = QTimer(self)
@@ -102,9 +122,11 @@ class RoundScreen(Screen):
         rows = self.shown_rows[-ROWS:] if self.mine is not None else self.shown_rows[-(ROWS + 1):]
         mine = self.mine
         for i, widget in enumerate(self.rows):
+            widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
             if i < len(rows):
                 r = rows[i]
                 if "note" in r:
+                    widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
                     widget.set((r["home_name"], score_text(r), r["away_name"], f"{r['kind_name']} · {r['note']}"),
                                (theme.VALUE,) * 4)
                 else:
@@ -112,6 +134,7 @@ class RoundScreen(Screen):
                                (theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_NORMAL))
                 widget.show()
             elif i == len(rows) and mine is not None:
+                widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
                 widget.set((mine["home_name"], score_text(mine), mine["away_name"],
                             f"{mine['kind_name']} · {mine['note']}"), (theme.VALUE,) * 4)
                 widget.show()

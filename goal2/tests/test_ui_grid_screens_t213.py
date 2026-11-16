@@ -109,4 +109,23 @@ class MatchDayOnTheGrid(Base):
             self.on_the_grid(window,20)
 
 
+    def test_many_scorers_reflow_into_pairs_without_dropping_a_name_or_minute(self):
+        from goal2.ui.s20_board import board
+        self.kind = BoardScreen
+        self.phase = "full"
+        window,screen = self.canonical(self.make)
+        # The board's renderer, not a claim about the result of an original match.
+        model=window.career
+        fixture=model.state.campaign.next_fixture
+        data=dict(screen.data,scorers=[[(model.state.managed_squad[1],i) for i in range(12)],[]])
+        window.pop()
+        made=window.push(BoardScreen(window,model,["Trinidad/Tobago"]*2,"FRIENDLY","full",data,
+                                     lambda *a:None,for_fixture(model,fixture)))
+        self.relayout(window)
+        from goal2.desktop import fixed_page
+        self.assertEqual(fixed_page.problems(window),[])
+        self.assertEqual(len(made.scorer_texts[1]),12)
+        for i in range(12):self.assertTrue(any(line.endswith(f" {i}′") for line in made.scorer_texts[1]))
+
+
 if __name__=="__main__": unittest.main()

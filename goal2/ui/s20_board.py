@@ -152,6 +152,15 @@ class BoardScreen(Screen):
                 bar_text = inner.text(text,"sub",0,(10 if dense else 13)+row,cols)
                 if row == 1 or cols == 65:
                     bar_text.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        if not dense and not data["quick"]:
+            # [designed: owner, #667; T213] Split the counters at their existing gaps. Repeat the countries at the
+            # discipline section so its columns still name the sides; these are headings, never new match values.
+            from goal2.ui.frame import FrameRule
+            inner.put(FrameRule("goal attempts"),0,4,90)
+            inner.put(FrameRule(names[home]),0,8,17)
+            inner.put(FrameRule("discipline"),18,8,54)
+            inner.put(FrameRule(names[away]),73,8,17)
+            inner.put(FrameRule("possession and territory"),0,12,90)
         body.put(stats,0,4+scorer_rows if dense else 7,90,13 if dense else 16)
         self.note = CellPara("","sub")
         body.put(self.note,0,23,90,2)
