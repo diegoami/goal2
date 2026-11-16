@@ -399,6 +399,8 @@ operational status.
 
 - [T170r](T170r.md): account for every pre-match control and define concrete activation prerequisites (#745).
 
+- [T170s](T170s.md): expose detached current pre-match data from the held season worker (#746).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
