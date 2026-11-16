@@ -65,7 +65,7 @@ progress stays unsaved. `model.save_name` is the name a career was last saved or
 
 | Module | What it holds |
 | --- | --- |
-| `goal2/ui/theme.py` | The palette, one named constant per role of the design's §3 table (`PALETTE` is the table); the vendored font, loaded with `QFontDatabase` from `goal2/ui/fonts/`; the text sizes (16 px, the font's 8×16 cell, and 32 px); the style sheet. |
+| `goal2/ui/theme.py` | The palette, one named constant per role of the design's §3 table (`PALETTE` is the table); the vendored font, loaded with `QFontDatabase` from `goal2/ui/fonts/`; the one 32 px text size over the font's 8×16 source cell; the style sheet. |
 | `goal2/ui/fonts/` | "PxPlus IBM VGA 8x16" (CC BY-SA 4.0) with its `LICENSE.TXT` and `PROVENANCE.md`; package data, so the wheel and the portable build carry the licence beside the font. |
 | `goal2/ui/window.py` | `Window`: one main window holding one screen at a time on a stack. |
 | `goal2/ui/screen.py` | `Screen`, the base class of every screen. |
@@ -156,8 +156,8 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
 
 | Module | What it holds |
 | --- | --- |
-| `goal2/ui/cells.py`, `goal2/ui/cell_parts.py` | [designed: T211] The grid's parts: text and panels placed by cell (`CellLabel`, `CellPara`, `Cells`), and the strip, card, bars and typed line S06 and S08 are made of (S09 and S10 keep `squad_card`'s until they are reflowed). [designed: T211b] `CellTableRow`: a row of a list or a table, its cells at columns, the highlight bar behind them (S04 and S07's lists, S11's rows). |
-| `goal2/ui/country_parts.py` | [designed: T211b] The country card's parts on the grid (S04, S07): the four lines' bars, the strips, the characteristics' rows, the caps and age on a line, a panel as a frame over cells (`framed`). S10 keeps `team_card`'s and `country_header`'s until it is reflowed. |
+| `goal2/ui/cells.py`, `goal2/ui/cell_parts.py` | [designed: T211] The grid's parts: text and panels placed by cell (`CellLabel`, `CellPara`, `Cells`), and the strip, card, bars and typed line S06 and S08 are made of (shared by S09 and S10 after T212b). [designed: T211b] `CellTableRow`: a row of a list or a table, its cells at columns, the highlight bar behind them (S04 and S07's lists, S11's rows). |
+| `goal2/ui/country_parts.py` | [designed: T211b] The country card's parts on the grid (S04, S07): the four lines' bars, the strips, the characteristics' rows, the caps and age on a line, a panel as a frame over cells (`framed`). T212b shares the cell-based header with S10. |
 | `goal2/ui/squad_card.py` | The parts the three share: the player card (every field of `goal2.game.player_card.card`), the strip on the right (the eleven, a gap, the bench; or a page of the pool), bars, label-value lines, table rows, the name line. |
 | `goal2/ui/s08_squad.py` | S08 Squad and pool. [designed: T211] On the 16 × 32 grid: the card (`cell_parts.GridCard`: the name and the facts as rules with their values under them, the skills, the tactics over the characteristics) and the twenty (`GridStrip`) side by side, a cell apart; the pool's filters and the goal2 addition's tag above the card; the message under it and what a pick waits for across the foot. |
 | `goal2/ui/s09_player_tactics.py` | S09 Player tactics. |
