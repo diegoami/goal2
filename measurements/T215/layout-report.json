@@ -1,0 +1,1346 @@
+[
+  {
+    "screen": "ImportScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "00-ImportScreen-1440x1080.png",
+        "sha256": "e95954b9a366391b782bcaf37a220228f3ae049477c5eaffdc54872e9b821f2c"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "00-ImportScreen-1440x900.png",
+        "sha256": "5f5c3441bb6ea670f36d34b61338fe867935df82113800b6c931e94a3cf09c6b"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "00-ImportScreen-2110x1213.png",
+        "sha256": "5e891716c02cfc91cd84929509fdd0260a02565b919d945ccf4e84194f9a174a"
+      }
+    ],
+    "journey": "s01-import-first.png"
+  },
+  {
+    "screen": "ImportScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "01-ImportScreen-1440x1080.png",
+        "sha256": "27a2946e817374826292c85a119c4eadc4afebafa78fb1fdb7a973c90742bfc2"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "01-ImportScreen-1440x900.png",
+        "sha256": "383b8a21376835dfd369f479ec6482effb65ea1e213c6b8abed6cd46e942a071"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "01-ImportScreen-2110x1213.png",
+        "sha256": "fea7c47da592a91036544b59e2165ab2195b748c4a1cad0612b4f3ea21f3a5da"
+      }
+    ],
+    "journey": "s01-import.png"
+  },
+  {
+    "screen": "HomeScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "02-HomeScreen-1440x1080.png",
+        "sha256": "e387ca40f2b1bffa66643f8e6dce57e8ada529f0fd170c980a9f3648e199a1a1"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "02-HomeScreen-1440x900.png",
+        "sha256": "ba6f24c898664bf62029def813403692cce099a5b656e9246a15c8baefdec6b0"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "02-HomeScreen-2110x1213.png",
+        "sha256": "03b023dfb97ebf802e81f6c345957f54802a34c3c6303a38bbfb8f1ccfa334d3"
+      }
+    ],
+    "journey": "home.png"
+  },
+  {
+    "screen": "HelpScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "03-HelpScreen-1440x1080.png",
+        "sha256": "948c3ff3495f173bbf869f4dc61fb530bfd8b22fb1eca031bb0d0d3dbc7b1d84"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "03-HelpScreen-1440x900.png",
+        "sha256": "6ebfd330b16d1c7f96242ced35c272614da0fdcabf9c0f6e7f6d04c3990194fa"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "03-HelpScreen-2110x1213.png",
+        "sha256": "d1bd07f8b96a6ddece5041a4e2632c385d54ebfa4fa8697198e35005fdb9376d"
+      }
+    ],
+    "journey": "s22-help-missing.png"
+  },
+  {
+    "screen": "HelpScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "04-HelpScreen-1440x1080.png",
+        "sha256": "254bcc4911952a0566c9e7c025a6878785c117be39aeb93cb52126259bcc8bc7"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "04-HelpScreen-1440x900.png",
+        "sha256": "971022dde660f0a7932553d257e859a2c854ba5e3fc7913ced068a03e4cdf0e2"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "04-HelpScreen-2110x1213.png",
+        "sha256": "3ef8431794625c8f2330a609f3f05f74a5b5f89abb96f0971ee15dd3b3ccd981"
+      }
+    ],
+    "journey": "s22-help.png"
+  },
+  {
+    "screen": "StartScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "05-StartScreen-1440x1080.png",
+        "sha256": "88fbf4a0af3d26744a2acfbbf93e88d4f484c0ae350dfffa4fbf64bd4e4d5a85"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "05-StartScreen-1440x900.png",
+        "sha256": "a807ddd443aa028b3dd3005272b99e380b5143f7a1ec765c92289d589295f948"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "05-StartScreen-2110x1213.png",
+        "sha256": "e791024dee92e7016ade390b57a8a02584246420dcaecc9bc80331b2b967990f"
+      }
+    ],
+    "journey": "s02-start.png"
+  },
+  {
+    "screen": "FriendlyScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "06-FriendlyScreen-1440x1080.png",
+        "sha256": "4006a9a85fb9e1f5d1a7cc7ae3e06ae85a9f204c12ad38588db7e72e8805cf06"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "06-FriendlyScreen-1440x900.png",
+        "sha256": "99724b6ac866f76e173a88631577f8f05df302c7b8ce16bf4b76c357b27026fc"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "06-FriendlyScreen-2110x1213.png",
+        "sha256": "53244435bffba9c243029a15090789bdeb3f16eb157a9562b0d1fd4ede77ba75"
+      }
+    ],
+    "journey": "s02-friendly.png"
+  },
+  {
+    "screen": "NewGameScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "07-NewGameScreen-1440x1080.png",
+        "sha256": "dd4e9b8b9456f1b0748a5054a3b154abfa61e32f80a5d133da30d4c2a72d800f"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "07-NewGameScreen-1440x900.png",
+        "sha256": "77d2f8859360c39185469e9a9fcda31eed37232d2b692beed96b22e77c55c949"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "07-NewGameScreen-2110x1213.png",
+        "sha256": "16eb2fc06b9ff6fcde460515aef1d119f8927657c0c22132dccfadf650c72403"
+      }
+    ],
+    "journey": "s03-new-game.png"
+  },
+  {
+    "screen": "PlayersScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "08-PlayersScreen-1440x1080.png",
+        "sha256": "2202870369fe4c6f8b20d39d7805e7a46486ba500a7e4c4bf160d0116d632fec"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "08-PlayersScreen-1440x900.png",
+        "sha256": "e8163e13afa1f5182d98ca1ea1f129b42789bac36dd522e357a719bdbd11827f"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "08-PlayersScreen-2110x1213.png",
+        "sha256": "96ddd603e3c524d83259c3cd722c44c51e2e9bc3ead4c2dab158793d2d4e4a6b"
+      }
+    ],
+    "journey": "s04-players.png"
+  },
+  {
+    "screen": "CountryScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "09-CountryScreen-1440x1080.png",
+        "sha256": "ddfcc5c0eb516daf3af326b1584dd8ad567b6ade80aa92711179ecb36262b1f1"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "09-CountryScreen-1440x900.png",
+        "sha256": "c5c0f92efaad031fe34a3a7b7dd4edfa8d3b4796e06f19d30c17f094abe9b7e9"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "09-CountryScreen-2110x1213.png",
+        "sha256": "b7f22dae2525088619dd50c48fcc191839fbd4c7330e26735d0f87306d3d6c41"
+      }
+    ],
+    "journey": "s04-country.png"
+  },
+  {
+    "screen": "BulletinScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "10-BulletinScreen-1440x1080.png",
+        "sha256": "e7b9cd7014234c0edd060c1c91164e1db7b6de4eee78ccc8eb03da319aeb9713"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "10-BulletinScreen-1440x900.png",
+        "sha256": "9340311e1c1edde62bde65beb4e143c554150105f291cea81edabb7efb3ec081"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "10-BulletinScreen-2110x1213.png",
+        "sha256": "da331509d0acc3bd4012d2901e431cf92bc424ca4b0266c6aa585b786cd94510"
+      }
+    ],
+    "journey": "s05-bulletin-stand-in.png"
+  },
+  {
+    "screen": "DeskScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "11-DeskScreen-1440x1080.png",
+        "sha256": "d77c9bcfc677e3d019dc968347fbbfbd14b088935b5b2e73e06253d223a11297"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "11-DeskScreen-1440x900.png",
+        "sha256": "f7c878be3c800625cf1d3d00bdb78a1443ef6c0ce89a998156547ebd7578db81"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "11-DeskScreen-2110x1213.png",
+        "sha256": "a377ede3a32c770c6e71d226b6d46ae037fd8a04d0b48ce453622f0195a88870"
+      }
+    ],
+    "journey": "s06-desk.png"
+  },
+  {
+    "screen": "SquadScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "12-SquadScreen-1440x1080.png",
+        "sha256": "a14e88d0d014b4737226f5224df9ddf4ecac67afbdcd227303e553268f8748f5"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "12-SquadScreen-1440x900.png",
+        "sha256": "97a3014d905d6709345b66021b4cea0533b968cfe0e9b5157335433571d7d6e0"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "12-SquadScreen-2110x1213.png",
+        "sha256": "e4f7f6ca2f30c2d0301cfff2f7578c1b1bdc10fb14f70798127f1f42a79919a9"
+      }
+    ],
+    "journey": "s08-pool-search.png"
+  },
+  {
+    "screen": "DeskScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "13-DeskScreen-1440x1080.png",
+        "sha256": "9fdc259d21f43294978ac58a6ea9214d5c422dc78dbec207bcfc11ae77571bc5"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "13-DeskScreen-1440x900.png",
+        "sha256": "59d5c947aca7e174e9c0ec18cfde242ec3641cc66e6da264be1f7d3ecf800949"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "13-DeskScreen-2110x1213.png",
+        "sha256": "0a6428b4f8e3e3027980b0f87678db953d63b870f40a249803fe6a01c6749b1a"
+      }
+    ],
+    "journey": "s06-rename.png"
+  },
+  {
+    "screen": "TeamInfoScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "14-TeamInfoScreen-1440x1080.png",
+        "sha256": "0f7c7b952c9f6501d84a565052bbc88b4968e980409e6b27363cbc6abeb00212"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "14-TeamInfoScreen-1440x900.png",
+        "sha256": "c35766c5bcbe6610f3b60bd9c7814ef7a24533b39ef7eab8c8d7aa6a9880be18"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "14-TeamInfoScreen-2110x1213.png",
+        "sha256": "ed40ce9ff254142af54322ab79f119f7f0f0316a865813c135fb509097a0cc04"
+      }
+    ],
+    "journey": "s07-team-info.png"
+  },
+  {
+    "screen": "FixturesScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "15-FixturesScreen-1440x1080.png",
+        "sha256": "0370dbac0136d0426dd7335d3434fff73f3ca5f95f0e4aaedf4990080cc3088f"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "15-FixturesScreen-1440x900.png",
+        "sha256": "76ddb126b761f00eaa687d5cc5b54754289ce64394612108735846fff17f4886"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "15-FixturesScreen-2110x1213.png",
+        "sha256": "636f857752e844b4c4a778ec5cfa704b9a719ce55123b70bb43bc1f958fa3310"
+      }
+    ],
+    "journey": "s11-fixtures.png"
+  },
+  {
+    "screen": "TournamentScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "16-TournamentScreen-1440x1080.png",
+        "sha256": "bc30f5d37cd661e05abfe66d6a1d66453ef17ac274d8be28448788c3db7ff593"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "16-TournamentScreen-1440x900.png",
+        "sha256": "a21770f4dbbf6a67d7a16a53e85339f283309bdb4794eda36aa3ddddc3d44a90"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "16-TournamentScreen-2110x1213.png",
+        "sha256": "cea7155075ccae83c9576840eb1e02677e568c3e99a748ee8b65dc92b6166976"
+      }
+    ],
+    "journey": "s12-tournament.png"
+  },
+  {
+    "screen": "HistoryScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "17-HistoryScreen-1440x1080.png",
+        "sha256": "8620c63ee356a6695adaf4ffe12da36a7f2b78280e4581154f5b019c4db5f2e6"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "17-HistoryScreen-1440x900.png",
+        "sha256": "ac319f30f805bf4270778b44a53d33649ab9855500665ea3b2bdc2a7af1ccab4"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "17-HistoryScreen-2110x1213.png",
+        "sha256": "49df726b9dceef78632a30ba829e9e09017c009505e32f9f00a9ddefceb38391"
+      }
+    ],
+    "journey": "s13-history.png"
+  },
+  {
+    "screen": "RoundScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "18-RoundScreen-1440x1080.png",
+        "sha256": "eab9feaa133ef57333106062b8719adf9b67b2145201e748526c30b50b84939c"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "18-RoundScreen-1440x900.png",
+        "sha256": "0c75fc4b65214f349f94474cb9e7f168993451c7e31e11050898ba5ed7e70c8c"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "18-RoundScreen-2110x1213.png",
+        "sha256": "574d328811240a56dd53d3997fdef6cd6e5c32db46efee3ee120441d5753f42c"
+      }
+    ],
+    "journey": "s14-round.png"
+  },
+  {
+    "screen": "MenuScreen",
+    "phase": "before",
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "19-MenuScreen-1440x1080.png",
+        "sha256": "20c601f017cd814613b17b4ea20eb32d3e00e1bfbc499a316dc6861690b5fc41"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "19-MenuScreen-1440x900.png",
+        "sha256": "8aeece372f90b28cb82781fad7d4e6b2c88c3ad1adb86d52e1ef39e2541a1bc3"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "19-MenuScreen-2110x1213.png",
+        "sha256": "5433d2d09fa958fa3f3d534728ea3b808e551c272741b1c741c6e0cd4d10ef91"
+      }
+    ],
+    "journey": "s15-match-menu.png"
+  },
+  {
+    "screen": "ChooseScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "20-ChooseScreen-1440x1080.png",
+        "sha256": "e076f82e54520ddbaad95758523e360b52759c97828b8166eaba82b8f12b5537"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "20-ChooseScreen-1440x900.png",
+        "sha256": "f944ca3483eb65ff237d0619b028398829c63db0f37f42055d2edf1c34b2fff6"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "20-ChooseScreen-2110x1213.png",
+        "sha256": "4093a1059e66e94495be75511feb52be66d88d5ddbb3644863d635ba3ef4b14a"
+      }
+    ],
+    "journey": "s16-captain.png"
+  },
+  {
+    "screen": "PitchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "21-PitchScreen-1440x1080.png",
+        "sha256": "9f96ede2759e2bc0caa071843f21fa14be7c8baa0f41312991c81babc82bfdc8"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "21-PitchScreen-1440x900.png",
+        "sha256": "60775e159474d3a00679d07982dd55dd6ff7eafa2b6768a79315040ec0194a8d"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "21-PitchScreen-2110x1213.png",
+        "sha256": "92bd8a5d8def718e1d019b4889516069afe640324b0269523e3df549569ee869"
+      }
+    ],
+    "journey": "s17-pitch-kickoff.png"
+  },
+  {
+    "screen": "PitchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "22-PitchScreen-1440x1080.png",
+        "sha256": "f859abc4e0508ecb9033238f48295602c08501868c66d8ec1c32fff861c3576a"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "22-PitchScreen-1440x900.png",
+        "sha256": "fdfca4ba234b27e134232c92b003ff436c804d3ba731ed521231598f8095e8e9"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "22-PitchScreen-2110x1213.png",
+        "sha256": "a629efa13f20d03f7034be017e10b105c1d1bcca8200b410afe27a642c2b0190"
+      }
+    ],
+    "journey": "s18-replay-question.png"
+  },
+  {
+    "screen": "PitchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "23-PitchScreen-1440x1080.png",
+        "sha256": "01c21badf63e681a5859b2017eb7705e1ac6db0bbdddb021cf411a1111354bdc"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "23-PitchScreen-1440x900.png",
+        "sha256": "5cbf28b66736c93f06ee2914578a1a2daf8870294d85c13ddc7378bfc5631f26"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "23-PitchScreen-2110x1213.png",
+        "sha256": "970860516e1de2302ee142f8853efbba1eedb895e61189488ef285fa866a438e"
+      }
+    ],
+    "journey": "s17-replay.png"
+  },
+  {
+    "screen": "PitchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "24-PitchScreen-1440x1080.png",
+        "sha256": "584670f9c1398e064b46b4433c1c6713a36ee9e1ce5872724dd4a77a7d77fcab"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "24-PitchScreen-1440x900.png",
+        "sha256": "7970c6dc679d2c23e8bba145233e5b2ad874ebd89d8468bc3cc2296bcbc3c7a6"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "24-PitchScreen-2110x1213.png",
+        "sha256": "99d65cb304b2d52d2a80e2e58910888e2319ce5b3fc7e21bd447cb77d31f47f9"
+      }
+    ],
+    "journey": "s18-save-goal-question.png"
+  },
+  {
+    "screen": "RecordingNameScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "25-RecordingNameScreen-1440x1080.png",
+        "sha256": "cae471045e7066b2899c926a4c27d98aa20c944b58b8e82b1e117834ec20e77f"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "25-RecordingNameScreen-1440x900.png",
+        "sha256": "1e73c73fdcd73cfb011a5e3e40ee14a36ee12648d3062c781b8d6dd4dbbfcde2"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "25-RecordingNameScreen-2110x1213.png",
+        "sha256": "eb3e3d4995232c832c2b9ea016152680e497b77a04ba58c689189f14205aa19b"
+      }
+    ],
+    "journey": "s21-save-goal.png"
+  },
+  {
+    "screen": "ChooseScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "26-ChooseScreen-1440x1080.png",
+        "sha256": "2614972d676180195f8c87afb38571ddb56b9be564b57bee50d6d3408068faec"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "26-ChooseScreen-1440x900.png",
+        "sha256": "6b60daf225708933a2d48c14dd3c31a825f8e29eac820a04ecc540e1964f1602"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "26-ChooseScreen-2110x1213.png",
+        "sha256": "34593f65cb0eb340c8aab72af5658e23e4532b54da3b592fed0d2a29826d0fac"
+      }
+    ],
+    "journey": "s16-taker.png"
+  },
+  {
+    "screen": "PitchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "27-PitchScreen-1440x1080.png",
+        "sha256": "e54c79483452a6932c47161e20cdae841649083aafef413476c2a18a349f61d0"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "27-PitchScreen-1440x900.png",
+        "sha256": "a8fe4d4defa1e3574713592a7cdc6b49688cc99f01b3c708102a4f8814426f69"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "27-PitchScreen-2110x1213.png",
+        "sha256": "9c67d74abc9c0528cd93bd1bdbf801ee138001e31aba760cd35909e612fe5a6e"
+      }
+    ],
+    "journey": "s17-pitch.png"
+  },
+  {
+    "screen": "BoardScreen",
+    "phase": "half",
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "28-BoardScreen-1440x1080.png",
+        "sha256": "bf179efa8678c6a8549aeedcfe354db62fe098aff7b095689533f6f93f494ea4"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "28-BoardScreen-1440x900.png",
+        "sha256": "ad6f877396872fb59095e1636521e7a82175a1da91a5232ff682d270db9aba90"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "28-BoardScreen-2110x1213.png",
+        "sha256": "cb06971fc464e33458385c64d860f20164be76c9c161e7367a8ba0ebb0429bff"
+      }
+    ],
+    "journey": "s20-board-half.png"
+  },
+  {
+    "screen": "MenuScreen",
+    "phase": "half",
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "29-MenuScreen-1440x1080.png",
+        "sha256": "5cd7a0ba225959b9d9ebfb32ec0be33ae4d04fb40221529958b2e634512abeb3"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "29-MenuScreen-1440x900.png",
+        "sha256": "ad74b42bb75835d81185bff2b3f1c07c549a2f993b1b87e71e35ba3f6f274f30"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "29-MenuScreen-2110x1213.png",
+        "sha256": "eeb819da066c177f88a6d2e3e54c60a23473db8ed87c32b067d7bd0355e4df96"
+      }
+    ],
+    "journey": "s15-match-menu-half.png"
+  },
+  {
+    "screen": "BoardScreen",
+    "phase": "full",
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "30-BoardScreen-1440x1080.png",
+        "sha256": "762f4397fc5c6833879e01253147d35f1370e6f8dbebc9dc9bf9cfeabc2e65de"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "30-BoardScreen-1440x900.png",
+        "sha256": "a09ce59d40f6692d8a9a4119a79db1b4fb7629c6a819c10602aa11098ba80db5"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "30-BoardScreen-2110x1213.png",
+        "sha256": "dfad538856ae2ade3ab7f2633f62683a7ff6eea87dbc13b4fba23bbc1cd78a5b"
+      }
+    ],
+    "journey": "s20-board-full.png"
+  },
+  {
+    "screen": "BoardScreen",
+    "phase": "full",
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "31-BoardScreen-1440x1080.png",
+        "sha256": "762f4397fc5c6833879e01253147d35f1370e6f8dbebc9dc9bf9cfeabc2e65de"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "31-BoardScreen-1440x900.png",
+        "sha256": "a09ce59d40f6692d8a9a4119a79db1b4fb7629c6a819c10602aa11098ba80db5"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "31-BoardScreen-2110x1213.png",
+        "sha256": "dfad538856ae2ade3ab7f2633f62683a7ff6eea87dbc13b4fba23bbc1cd78a5b"
+      }
+    ],
+    "journey": "s20-save-summary-question.png"
+  },
+  {
+    "screen": "RecordingNameScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "32-RecordingNameScreen-1440x1080.png",
+        "sha256": "2ca7b9806620b3358837854d6da9234f0fed96e7870e434f4952dfa27abc5de6"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "32-RecordingNameScreen-1440x900.png",
+        "sha256": "358d914a58811346bb8f79bf6e446781029e11b788de1bba88cfbd88958abbd8"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "32-RecordingNameScreen-2110x1213.png",
+        "sha256": "b961610bd0d640ccb0c22e56d2b5a1673a8c06c4fffaf677282bb9099b912739"
+      }
+    ],
+    "journey": "s21-save-summary.png"
+  },
+  {
+    "screen": "RoundScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "33-RoundScreen-1440x1080.png",
+        "sha256": "9edf9eb7d79d0ceedc51ad1e28543897d01854ac0446f286bcd8d78c94387f77"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "33-RoundScreen-1440x900.png",
+        "sha256": "ef0120eafa1f68ebc7d7932f18feae311de21988a82526b97922dd41215bf722"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "33-RoundScreen-2110x1213.png",
+        "sha256": "9908859c4de5b48d6bbbb3d6c6f5d61d52a8e19a16e88d9387393245f9f608b3"
+      }
+    ],
+    "journey": "s14-round-after.png"
+  },
+  {
+    "screen": "RecordingsScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "34-RecordingsScreen-1440x1080.png",
+        "sha256": "781953383165adf038bc02b5ceb6e3e34f8415f65ec6ba7520e3ddb37220cc3a"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "34-RecordingsScreen-1440x900.png",
+        "sha256": "542f8ccd5035a55283355ccde8cc43c1689da87a5517cca10485ebd978ced34b"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "34-RecordingsScreen-2110x1213.png",
+        "sha256": "89552148d90d8202d9f6a9d34ab9844f5e9a52c1e7843afbccec8606d83e62dc"
+      }
+    ],
+    "journey": "s21-saved-goals.png"
+  },
+  {
+    "screen": "SavedGoalMenu",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "35-SavedGoalMenu-1440x1080.png",
+        "sha256": "f5498930840e0cbb62117c68919db159f4ca4e3e42741b4a94132f0ffa66152e"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "35-SavedGoalMenu-1440x900.png",
+        "sha256": "735230e9c6fcb9d1eb9a71614ee4d84b938d9f180be1de6b5e28c73d95fac562"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "35-SavedGoalMenu-2110x1213.png",
+        "sha256": "04f3ef20f578809776af1c1b3e1822b4ba12130177dda082b1aa490e4c9fe467"
+      }
+    ],
+    "journey": "s15-saved-goal-menu.png"
+  },
+  {
+    "screen": "SavedPitchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "36-SavedPitchScreen-1440x1080.png",
+        "sha256": "a7558f15ba93dab2cddea088142f91909d33004e584cfbd68161a0aea5200b8f"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "36-SavedPitchScreen-1440x900.png",
+        "sha256": "908c3bb38a9c0fb7b51bf48502af18cd12368783152e2601ca0365545f73e0cc"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "36-SavedPitchScreen-2110x1213.png",
+        "sha256": "47bda731f3fcc5c306a2656902079f2be30c1abe4214773c9f6a5216465ea402"
+      }
+    ],
+    "journey": "s17-saved-goal-replay.png"
+  },
+  {
+    "screen": "RecordingsScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "37-RecordingsScreen-1440x1080.png",
+        "sha256": "e52fd1c88b73058d86a2e4a7dfceda4f6cfd0215b0d0bdb7b3f0db9200391f01"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "37-RecordingsScreen-1440x900.png",
+        "sha256": "05cb51a08da1107cddc9040c5344db03f9da737717bf5905f3934c68a4e1c8d9"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "37-RecordingsScreen-2110x1213.png",
+        "sha256": "a6514de1080208227c65c43ee3b4026a241aeca3661cd7056ab7685753b2865f"
+      }
+    ],
+    "journey": "s21-saved-summaries.png"
+  },
+  {
+    "screen": "BoardScreen",
+    "phase": "full",
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "38-BoardScreen-1440x1080.png",
+        "sha256": "0a71714c8b00d4a3ac2943a76e4ec9f8eddb0eb05c52d649ef14cdf82ba8daf1"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "38-BoardScreen-1440x900.png",
+        "sha256": "140df28b9003ba4779309a6e3b2d5c0243cc89a1187bb3e885c6d75ef90befb9"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "38-BoardScreen-2110x1213.png",
+        "sha256": "9043a345a2c369ca7f308939b923e31f9acd13a4c8b35134e0bbc213a5722ce8"
+      }
+    ],
+    "journey": "s20-saved-summary.png"
+  },
+  {
+    "screen": "PitchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "39-PitchScreen-1440x1080.png",
+        "sha256": "be2a5c89b95f59805c4da6535ba0872fce8976d0605f314baedaf6a11e924365"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "39-PitchScreen-1440x900.png",
+        "sha256": "9dff7143368ef0f11958cde6e6b59de11764842765c3a3702fe5406b4b6b032f"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "39-PitchScreen-2110x1213.png",
+        "sha256": "bcd63d0416fe60225227382999cf57fe43ae24727faea9a656e8f580122a41da"
+      }
+    ],
+    "journey": "s18-match-stop.png"
+  },
+  {
+    "screen": "BenchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "40-BenchScreen-1440x1080.png",
+        "sha256": "0855c4ccce38b467172b278dd9f8ef75184c385572145f8c1fca6339e6c4a20a"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "40-BenchScreen-1440x900.png",
+        "sha256": "f27a531444624984ef9a2b05453e499af030e37aa47bedfbd8d5839510959c6b"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "40-BenchScreen-2110x1213.png",
+        "sha256": "a25107977e1fafa84aa9b469d08f58fb0cd63d46b4b70f2c6ff9ee30dc43b06e"
+      }
+    ],
+    "journey": "s19-bench.png"
+  },
+  {
+    "screen": "BenchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "41-BenchScreen-1440x1080.png",
+        "sha256": "1f888a787e13a687c9cf9ca3252d1532335adb56750441c2132b45227acca48b"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "41-BenchScreen-1440x900.png",
+        "sha256": "0478aae85770fb01dca12b69e4a3af47ac9d2476213e1283ba894f08941678fd"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "41-BenchScreen-2110x1213.png",
+        "sha256": "3730db34ab684b335e793617b2f4fcd44f3223550a6f37ebace59611cbe88cb9"
+      }
+    ],
+    "journey": "s19-bench-refused.png"
+  },
+  {
+    "screen": "BenchScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "42-BenchScreen-1440x1080.png",
+        "sha256": "1f888a787e13a687c9cf9ca3252d1532335adb56750441c2132b45227acca48b"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "42-BenchScreen-1440x900.png",
+        "sha256": "9b77d22d92706f8a5ca6fae70107f323fb32b82d8eb85723fc3b1ed527fda57c"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "42-BenchScreen-2110x1213.png",
+        "sha256": "934399d1448b3c54a953b8281db4b4db266c804514c51f94a222f5cd8fa0d12f"
+      }
+    ],
+    "journey": "s19-bench-refused.png"
+  },
+  {
+    "screen": "FixturesScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "43-FixturesScreen-1440x1080.png",
+        "sha256": "a525215e8fea385ddb514c02537553d1063e1717fa02194d10e2a59a01c68bab"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "43-FixturesScreen-1440x900.png",
+        "sha256": "8769ebe383db571ed4810d348d9a471e6cd16f4930c35806dfc3c717abe41d02"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "43-FixturesScreen-2110x1213.png",
+        "sha256": "78638ff64b7b673008f81e7efd16b64b7c90a2648d100c95e58629cfb8b81079"
+      }
+    ],
+    "journey": "s11-fixtures-round2.png"
+  },
+  {
+    "screen": "HistoryScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "44-HistoryScreen-1440x1080.png",
+        "sha256": "d8ba413b202eceef83059d9dd30ff9e41c4c3a581a0e29afecb15efc0efe7c03"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "44-HistoryScreen-1440x900.png",
+        "sha256": "1858dad9e9fbcdf9c4653ac3a42711faf24c06e17096ac179aa9306833bd24e5"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "44-HistoryScreen-2110x1213.png",
+        "sha256": "5971b2d714763e7a322be4962972a0b20752c3a4bb7acbc54d0768a9f5e0f4ed"
+      }
+    ],
+    "journey": "s13-history-round2.png"
+  },
+  {
+    "screen": "SaveScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "45-SaveScreen-1440x1080.png",
+        "sha256": "0f88169f5c631ca366991ccb52e02c252f32cfccc8579c3fc1c4d273e7792b54"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "45-SaveScreen-1440x900.png",
+        "sha256": "d263469e90ac6072d187ace8d7131a2c429911991ec27e641ebaed624f5735d8"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "45-SaveScreen-2110x1213.png",
+        "sha256": "d3d34bac0e926addd12ae7af3b22ed04f5dff0e1abaca9ff3dfcfed50d4b7571"
+      }
+    ],
+    "journey": "s21-save.png"
+  },
+  {
+    "screen": "QuestionScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "46-QuestionScreen-1440x1080.png",
+        "sha256": "f153893c725ce68f45317402afe96c8ba2a5942328fa130bbb702306f1f3b053"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "46-QuestionScreen-1440x900.png",
+        "sha256": "a0b9f87d055f80e992cd4526d20eb434e52e3f4752c5c43f1244876afef460a5"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "46-QuestionScreen-2110x1213.png",
+        "sha256": "5db84966de5faec3f78f22a98794fdf325c824f4bd0e59a8d25273afb268cf4c"
+      }
+    ],
+    "journey": "s21-quit.png"
+  },
+  {
+    "screen": "QuestionScreen",
+    "phase": null,
+    "sizes": [
+      {
+        "width": 1440,
+        "height": 1080,
+        "problems": [],
+        "path": "47-QuestionScreen-1440x1080.png",
+        "sha256": "ef69910121f9cd1775333ab93463dbffe9378985e1254b965bbf684d953569b7"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "problems": [],
+        "path": "47-QuestionScreen-1440x900.png",
+        "sha256": "7fce2455119fe3ade11aa64113afe02f89e4754c9ccc6d88b4ac232d06436448"
+      },
+      {
+        "width": 2110,
+        "height": 1213,
+        "problems": [],
+        "path": "47-QuestionScreen-2110x1213.png",
+        "sha256": "f73bfea630f577694441e5efda305b245846bbad44d8c4425cc2ce56eed74ccd"
+      }
+    ],
+    "journey": "s21-save-question.png"
+  }
+]
