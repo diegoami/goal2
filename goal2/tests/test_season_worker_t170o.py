@@ -1,6 +1,7 @@
 """[designed: T170o/#735] Stateful worker contract; actual port runs only in PyPy."""
 import json
 import queue
+import tempfile
 import time
 import unittest
 from dataclasses import asdict
@@ -148,11 +149,39 @@ def actual_worker(raw, late_captain=False):
             'entry_equal': True, 'post_play_sha256': hashlib.sha256(b.m.read(0, MEM_SIZE)).hexdigest()}
 
 
+# [designed: T170p] Read-only test observer in the real PyPy pipe child. The
+# original D010 return is the accepted captain, not a copied request value.
+CAPTAIN_PROBE = '''
+import json,sys
+from pathlib import Path
+from goal2.game.season_worker import SeasonWorker
+dispatch = SeasonWorker.dispatch
+def observed(self, header):
+    result = dispatch(self, header)
+    if header.get('action') == 'configure':
+        match = self.session.pending_match
+        active = [False]
+        def prompt(replay):
+            if not replay:
+                active[0] = match.m.stack_word(2) == 1 and match.m.stack_word(4) == match.side
+        def accepted(replay):
+            if not replay and active[0]:
+                Path(sys.argv[1]).write_text(json.dumps({'captain': match.m.reg('ax')}))
+                active[0] = False
+        match.m.at('0791:CC7B', prompt)
+        match.m.at('0791:D010', accepted)
+    return result
+SeasonWorker.dispatch = observed
+from goal2.game.engine_server import main
+main()
+'''
+
+
 class Pipe(unittest.TestCase):
-    def make_engine(self):
+    def make_engine(self, command=None):
         from goal2.game.engine_process import EngineProcess
         self.replies = queue.Queue()
-        engine = EngineProcess(lambda kind, value: self.replies.put((kind, value)))
+        engine = EngineProcess(lambda kind, value: self.replies.put((kind, value)), command=command)
         self.addCleanup(engine.close)
         return engine
 
@@ -208,7 +237,14 @@ class Pipe(unittest.TestCase):
         requires.require(files=(REFERENCE['asset'],))
         raw = reference_image(Path(__file__).resolve().parents[2]/'.cache')
         expected = pypy_engine.call(__name__+':actual_worker', raw, late_captain)
-        engine = self.make_engine(); engine.season_open(expected['state'])
+        command = None
+        if late_captain:
+            from goal2.game.engine_python import engine_python
+            folder = tempfile.TemporaryDirectory(prefix='goal2-captain-probe-')
+            self.addCleanup(folder.cleanup)
+            report = Path(folder.name) / 'accepted.json'
+            command = [engine_python(), '-c', CAPTAIN_PROBE, str(report)]
+        engine = self.make_engine(command); engine.season_open(expected['state'])
         ready = self.receive('ready'); self.assertEqual(ready['version'], [3, 11])
         self.receive('season')
         engine.season_request('advance'); self.receive('season')
@@ -241,6 +277,14 @@ class Pipe(unittest.TestCase):
         self.receive('season')
         engine.season_request('next', count=1)
         self.assertEqual(self.receive('season')['events'], expected['after_play']['events'])
+        if late_captain:
+            from goal2.desktop.worker import read_json
+            deadline = time.monotonic()+2
+            accepted = read_json(report)
+            while accepted is None and time.monotonic() < deadline:
+                time.sleep(.01)
+                accepted = read_json(report)
+            self.assertEqual(accepted, expected['play_answer'])
         print('T170O_ENTRY '+json.dumps({'entry_equal': expected['entry_equal'],
               'post_play_sha256': expected['post_play_sha256'], 'pipe_pypy': ready}), flush=True)
 
