@@ -780,7 +780,13 @@ def player_card(state, w):
         own = bool(_bit(r[0x0F], e + 4))
         bit = _bit(r[0x0F] if own else team_tactics, e)
         tactics.append((name, tactic_word(mem, e, bit, keeper=position == 0), own))
-    if position < 2:
+    marked = _marking_word(mem, country, slot) if set_up and slot else 0
+    if marked:
+        # [confirmed: named/seg_1771_03.c 3BD3 (draw_tactics_panel) at its end; T224's probe] with a match set up
+        # and the player's marking word set, the name of the man he marks, and "P" when he marks by his own
+        # (status element 7, 214B's 3BD1); else the mark row 1771:3B3F
+        mark = mem.player_name(marked) + (" P" if _bit(status, 7) else "")
+    elif position < 2:
         mark = ""
     elif _bit(status, 7):
         mark = mem.code_str(0x1771, 0x3B30)
@@ -800,6 +806,26 @@ def player_card(state, w):
             "cards": cards, "readiness": readiness, "performance": bucket, "skills": skills,
             "characteristics": characteristics, "tactics": tactics, "mark": mark,
             "own_tactics": r[0x0F], "status": status, "slot": slot}
+
+
+MARKING = 0x9A3E             # [confirmed: named/seg_1771_03.c 3BD3, 3EF8; seg_1771_04.c 49B8] the marking words
+
+
+def _marking_word(mem, country, slot):
+    """The word of the man the player in squad `slot` (1..20) of `country` marks: DS:9A3E + 0x28 b + 2 slot, b set
+    for the match's second side DS:9B36 (1771:49B8, 1771:3BD3); 0 for none."""
+    return mem.ds_word(MARKING + 0x28 * (country == mem.ds_word(TEAM_WORDS + 2)) + 2 * slot)
+
+
+def marking(state, w):
+    """[confirmed: named/seg_1771_04.c 1771:49B8 cycle_player_marking; T224's probe] Player `w`'s own marking in a
+    match: `own` his status +0x10 element 7 (set by 49B8 for a protected zone or a man of his choice; clear, the
+    team's marking, +0x2D element 8), `opponent` the word of the man he marks (0 for none: with `own`, the
+    protected zone)."""
+    mem = Memory(state)
+    r = _player(mem, w)
+    slot = next((s + 1 for s in range(20) if mem.country(r[0], 2 * s, 2) == w), 0)
+    return {"own": bool(_bit(r[0x10], 7)), "opponent": _marking_word(mem, r[0], slot) if slot else 0}
 
 
 def _div(a, b):

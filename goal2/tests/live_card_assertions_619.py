@@ -151,9 +151,12 @@ def verify_original_decisions(test, controller, fixture, template, receipts):
         from goal2.game.competitive_match import prepare_competitive
         image = prepare_competitive(state, template, fixture)
         budget = (5, 5)
+    # [designed: #714] The bridge requests substitution_control (match_day_policy.play_through_bridge, as the
+    # window's MatchController does), so the reference Match needs the same opt-in: #640's timed natural
+    # opportunities are a distinct original operation (upstream #695), not the plain substitution decision.
     original = Match(image, fixture, managed=state.managed_country, captain=state.captain or None,
         delay_byte=0, record_draws=True, substitutions=budget, set_piece=True,
-        engine='original', live_players=True)
+        engine='original', live_players=True, substitution_control=True)
     choices = list(controller.choices)
     expected = [event for event in controller.outcome.events if event.kind == 'decision']
     seen = []

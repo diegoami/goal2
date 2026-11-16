@@ -381,3 +381,33 @@ operational status.
 - [T214](T214.md): reflow the start flow: import, start, friendly, new game, players (#667).
 - [T216](T216.md): reflow the small screens: home, bulletin, question, recordings, help, save (#667).
 - [T215](T215.md): land the 32 px foundation: both lists empty, the branch reaches main (#667).
+
+- [T170e](T170e.md): the 1992 season, stage 2 to its terminal boundary, compared to Core (#566).
+
+- [T170g](T170g.md): settle the pre-kick-off held-Match seam: the accepted S08/S10 edits after the S14 prefix, preserved on the same held Match (#718; upstream request goal2-archaeology #709).
+
+- [T170h](T170h.md): vendor the held-Match configuration (T127), DEA6 pool selection (T128) and play_action (T130) at 7fbfd2e9, without activation (#718).
+
+- [T170i](T170i.md): the window's pre-kick-off edits over the held-Match seam — the consumer mapping of #718 onto archaeology #711's pre-match decision and answers (#718).
+
+- [T170j](T170j.md): vendor T132 part 1, the pre-match team input, at 39a84174 without activation (#718).
+
+- [T170k](T170k.md): the window's pre-kick-off sequence over the held-Match seam — T170i's mapping driven and proven equal to direct answers, pool-disabled (#726).
+
+- [T170l](T170l.md): vendor T132's pool arm at e02711cb without activation (#726).
+
+- [T170m](T170m.md): vendor #714's pre-match continuation fix at ca3bf5d7 (#726).
+
+- [T170n](T170n.md): the seam's pool exchange becomes the real pool answer — the chained sequence proven (#726).
+
+- [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
+
+- [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
+- [T223](T223.md): the original's delay at the time it asks for, #428 and #455, v0.1 (#705).
+- [T224](T224.md): tactics during a match by the original's own route, #454, v0.1 (#705).
+- [T225](T225.md): the v0.1 portable ZIP for a player with their own GOAL.EXE and GOAL.DAT (#705).
+- [T226](T226.md): the window offers the penalty and free-kick taker decisions (#705).
+- [T227](T227.md): the window reads no wait from a step that is still running (#705).
+- [T228](T228.md): the sound's note shows on a host slower than the original's pacing (#705, #455).
+- [T229](T229.md): publish a release from a green Package run's own ZIP (#705).
+- [T230](T230.md): T100's budget test keeps its delay loop under T223 (#705).

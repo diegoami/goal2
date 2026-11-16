@@ -4,8 +4,11 @@ From given inputs (fake interpreter archives served by file:// URLs, a fake goal
 unpacks what it is asked to install) the build lays out `python/`, `pypy/` and the launcher, records where every file
 came from and zips it; it refuses a download whose SHA-256 differs from the manifest, an unhashed requirement and an
 original-game file; the launcher gives the workers the bundled PyPy and passes its arguments through, and
-goal2-new.cmd starts the new window with the same environment (T169). The real build and its packaged smoke run on
-Windows in .github/workflows/package.yml."""
+goal2-new.cmd starts the new window with the same environment (T169). [designed: T225] The release build (v0.1's ZIP,
+the default) ships goal2.cmd and the player's README only, check-zip refuses goal2-new.cmd in it, and only a
+development build has goal2-new.cmd. The real build and its packaged smoke run on Windows in
+.github/workflows/package.yml; `CorePath` runs the smoke's player path (tools/portable/smoke_core.py) from the source
+tree under GOAL2_SLOW=1."""
 import hashlib
 import json
 import os
@@ -16,6 +19,8 @@ import unittest
 import zipfile
 from pathlib import Path
 from unittest.mock import patch
+
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -107,8 +112,13 @@ class Layout(unittest.TestCase):
         for rel in ("python/python.exe", "python/pythonw.exe", "python/Lib/site-packages/goal2/__init__.py",
                     "python/Lib/site-packages/PySide6/Qt6Core.dll", "pypy/pypy.exe", "pypy/Lib/os.py",
                     "pypy/Lib/site-packages/goal2/__init__.py", "pypy/vcruntime140.dll", "pypy/vcruntime140_1.dll",
-                    "goal2.cmd", "goal2_launch.py", bp.RECORD):
+                    "goal2.cmd", "goal2_launch.py", "README.txt", bp.RECORD):
             self.assertTrue((folder / rel).is_file(), rel)
+        # [designed: T225] the release build: no development launcher; the README with Windows line ends
+        self.assertFalse((folder / "goal2-new.cmd").exists())
+        readme = (folder / "README.txt").read_bytes()
+        self.assertEqual(readme, (ROOT / "tools/portable/README.txt").read_text(encoding="utf-8")
+                         .replace("\n", "\r\n").encode("utf-8"))
         # the archive prefix is stripped; PyPy gets goal2 only, never the UI's wheels; no console-script launchers
         self.assertFalse((folder / "pypy" / PREFIX).exists())
         self.assertFalse((folder / "pypy/Lib/site-packages/PySide6").exists())
@@ -142,6 +152,8 @@ class Layout(unittest.TestCase):
         self.assertEqual(record["files"]["python/Lib/site-packages/PySide6/designer.exe"], "wheels")
         self.assertEqual(record["files"]["pypy/Lib/site-packages/goal2/__init__.py"], "goal2")
         self.assertEqual(record["files"]["goal2.cmd"], "launcher")
+        self.assertEqual(record["files"]["README.txt"], "readme")
+        self.assertEqual(record["build"], "release")
         # the ZIP: one folder, the same files, and its own check passes
         with zipfile.ZipFile(archive) as zf:
             names = {n for n in zf.namelist() if not n.endswith("/")}
@@ -327,19 +339,109 @@ class NewWindowLauncher(unittest.TestCase):
         self.assertIn("goal2's new window", r.stdout)
         self.assertIn("--data-root", r.stdout)
 
-    def test_it_is_in_the_launchers_the_record_and_the_zip(self):
-        self.assertIn("goal2-new.cmd", bp.LAUNCHER)
+    def test_it_is_in_a_development_build_s_launchers_record_and_zip(self):
+        # [designed: T225] only a development build has it; the release build (v0.1's ZIP) has goal2.cmd only
+        self.assertNotIn("goal2-new.cmd", bp.LAUNCHER)
+        self.assertIn("goal2-new.cmd", bp.DEVELOPMENT_LAUNCHER)
         tmp = Path(tempfile.mkdtemp(prefix="goal2 t169 "))
         self.addCleanup(__import__("shutil").rmtree, tmp, True)
-        folder, archive, _ = Inputs(tmp).build()
+        inputs = Inputs(tmp)
+        folder, archive, _ = bp.build(inputs.out, inputs.wheel, inputs.downloads, inputs.manifest, run=inputs.pip,
+                                      python="host-python", name="goal2-0.1.0-win64", development=True)
         data = (folder / "goal2-new.cmd").read_bytes()
         self.assertEqual(data, (ROOT / "tools/portable/goal2-new.cmd").read_text().replace("\n", "\r\n").encode())
         record = json.loads((folder / bp.RECORD).read_text())
         self.assertEqual(record["files"]["goal2-new.cmd"], "launcher")
         self.assertEqual(record["files"]["goal2.cmd"], "launcher")
+        self.assertEqual(record["build"], "development")
         with zipfile.ZipFile(archive) as zf:
             self.assertEqual(zf.read("goal2-0.1.0-win64/goal2-new.cmd"), data)
-        bp.check_zip(archive)
+        self.assertEqual(bp.check_zip(archive)["build"], "development")
+
+
+class Release(unittest.TestCase):
+    """[designed: main session, 2026-11-13, T225; #705] v0.1's ZIP: goal2.cmd only, the player's README, its file list."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="goal2 t225 "))
+        self.addCleanup(__import__("shutil").rmtree, self.tmp, True)
+
+    def test_the_release_zip_has_goal2_cmd_only_and_its_check_says_so(self):
+        _, archive, _ = Inputs(self.tmp).build()
+        summary = bp.check_zip(archive)
+        self.assertEqual(summary["build"], "release")
+        self.assertEqual(summary["top_level"], ["README.txt", "goal2.cmd", "goal2_launch.py"])
+        listed = bp.zip_list(archive)
+        self.assertEqual(len(listed), summary["entries"])
+        self.assertFalse([line for line in listed if line.endswith("/goal2-new.cmd")])
+        self.assertTrue([line for line in listed if line.endswith(" goal2-0.1.0-win64/goal2.cmd")])
+
+    def test_check_zip_refuses_the_development_launcher_in_a_release_zip(self):
+        _, archive, _ = Inputs(self.tmp).build()
+        tampered = self.tmp / "tampered.zip"
+        with zipfile.ZipFile(archive) as src, zipfile.ZipFile(tampered, "w") as dst:
+            for info in src.infolist():
+                data = src.read(info)
+                if info.filename.endswith("/" + bp.RECORD):
+                    record = json.loads(data)
+                    record["files"]["goal2-new.cmd"] = "launcher"
+                    data = json.dumps(record).encode()
+                dst.writestr(info, data)
+            dst.writestr("goal2-0.1.0-win64/goal2-new.cmd", b"@echo off\r\n")
+        with self.assertRaisesRegex(bp.BuildError, "release ZIP holds the development launcher goal2-new.cmd"):
+            bp.check_zip(tampered)
+
+    def test_check_zip_writes_the_file_list(self):
+        _, archive, _ = Inputs(self.tmp).build()
+        listing = self.tmp / "zip-files.txt"
+        self.assertEqual(bp.main(["check-zip", str(archive), "--list", str(listing)]), 0)
+        self.assertEqual(listing.read_text(encoding="utf-8").splitlines(), bp.zip_list(archive))
+
+    def test_the_readme_says_what_the_player_needs_where_it_goes_and_the_limits(self):
+        from goal2.desktop import data_setup
+        text = (ROOT / "tools/portable/README.txt").read_text(encoding="utf-8")
+        self.assertIn(f"goal2 {bp.version()} for Windows", text)
+        for name, _ in data_setup.MANIFEST + data_setup.OPTIONAL:
+            self.assertIn(name, text)
+        self.assertNotIn(data_setup.TEMPLATE_NAME, text)           # the development window's file, no player's
+        self.assertIn("goal2 contains no file of the original game", text)
+        self.assertIn("Double-click goal2.cmd", text)
+        self.assertNotIn("goal2-new.cmd", text)
+        # the folders data_setup uses on Windows, and the default save's name
+        target = data_setup.paths(data_setup.user_root({"LOCALAPPDATA": "C:\\L"}, "win32"))
+        self.assertEqual([p.name for p in (target.root, target.data, target.saves)], ["goal2", "data", "saves"])
+        self.assertEqual(target.root.parent.name, "L")
+        self.assertIn("%LOCALAPPDATA%\\goal2\\data", text)
+        self.assertIn("%LOCALAPPDATA%\\goal2\\saves", text)
+        self.assertIn(data_setup.SAVE_NAME, text)
+        self.assertIn("No sound", text)
+        self.assertTrue(all(ord(c) < 128 for c in text), "the README is plain ASCII for Notepad")
+
+
+@requires.need(modules=("unicorn", "PySide6", "pygame"), files=("GOAL.EXE", "GOAL.DAT"), slow=True)
+class CorePath(unittest.TestCase):
+    """[designed: T225, item 4] The packaged smoke's player path (tools/portable/smoke_core.py), from the source tree:
+    the first start's import of GOAL.EXE and GOAL.DAT, a new career booted from that GOAL.EXE, one watched match in
+    the pitch window to full time."""
+
+    def test_the_player_path_from_goal_exe_to_full_time(self):
+        tmp = Path(tempfile.mkdtemp(prefix="goal2 t225 core "))
+        self.addCleanup(__import__("shutil").rmtree, tmp, True)
+        out = tmp / "core.json"
+        env = dict(os.environ, PYTHONPATH=str(ROOT), QT_QPA_PLATFORM="offscreen", SDL_VIDEODRIVER="dummy",
+                   SDL_AUDIODRIVER="dummy")
+        r = subprocess.run([sys.executable, str(ROOT / "tools/portable/smoke_core.py"), "--cache", str(requires.CACHE),
+                            "--at", str(tmp / "at"), "--out", str(out)], capture_output=True, text=True,
+                           cwd=tempfile.gettempdir(), env=env, timeout=3000)
+        seen = json.loads(out.read_text()) if out.is_file() else None
+        self.assertEqual(r.returncode, 0, (seen or {}).get("steps") or r.stderr[-3000:])
+        steps = seen["steps"]
+        self.assertEqual(steps["first_run_import"]["data"], ["GOAL.DAT", "GOAL.EXE"])
+        self.assertTrue(steps["first_run_import"]["core_boot"].endswith("GOAL.EXE"))
+        self.assertEqual(steps["new_career"]["at"], "manager-menu")
+        match = steps["watched_match"]
+        self.assertIn("full-time", match["stops"])
+        self.assertEqual((match["at"], seen["exceptions"]), ("manager-menu", []))
 
 
 if __name__ == "__main__":

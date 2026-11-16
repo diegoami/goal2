@@ -135,16 +135,30 @@ KINDS = {k.name: k for k in (
     Kind(TAKER_SELECT, keys(("C-computer select", "c C"), ("↑↓", "Up Down"), ("◄┘-select", "Return"),
                            ("keep", "Escape"), ("spacebar-pitch", "space"),
                            ("read without moving", "Left Right")), polled=True, designed=True,
-         evidence="[derived: F030; confirmed: T88/T89 at archaeology9aa9f27c/922fd8d8] observed CC7B roles2/5"),
+         evidence="[derived: F030; confirmed: T88/T89 at archaeology9aa9f27c/922fd8d8, T131 at 7fbfd2e9] observed CC7B roles 2/3/4/5"),
     Kind(TAKER_PITCH, keys(("hit any key", "(any)")), designed=True,
-         evidence="[confirmed: T88/T89 original Space/Return] CC7B pitch read returning CF3A"),
+         evidence="[confirmed: T88/T89, T131 original Space/Return] CC7B pitch read returning CF3A"),
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
     Kind("match-summary-save-prompt", _YES_NO, polled=True, evidence=_CAT),
-    Kind("substitution-request", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+    # [designed: T224; confirmed: named/seg_0791_13.c select_team_screen 0791:E44F, T224's probe] T is printed on
+    # these screens ('T-tactics') and opens a player's own tactics (1771:4B61) while DS:0C20 is clear; Up and Down go
+    # to E44F's last branch, the cursor DS:0C1B (u214b_menu_move_word_wrap(0x14, 0xC1B)). Neither touches DS:9B40.
+    Kind("substitution-request", keys(("◄┘", "Return"), ("Esc", "Escape"), ("T", "t"), ("↑↓", "Up Down")),
+         designed=True,
          evidence="[confirmed: named/seg_0791_12.c E44F; DS:4760/4812, E006 live Enter] request or cancel substitution"),
-    Kind("substitution-requested", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+    Kind("substitution-requested", keys(("◄┘", "Return"), ("Esc", "Escape"), ("T", "t"), ("↑↓", "Up Down")),
+         designed=True,
          evidence="[confirmed: named/seg_0791_12.c E44F, DS:4812] Enter cancels DS:9B40's request"),
+    # [confirmed: catalogue.tsv's screen rows, E015-r0007 state 150; T224's probe] a player's own tactics in a match
+    # with substitutions now (E44F's T at half time or a stoppage)
+    Kind("squad-substitution-tactic", keys(("Esc", "Escape"), ("↑↓←→", "Up Down Left Right"), ("◄┘", "Return")),
+         evidence=_CAT),
+    Kind("match-own-tactics", keys(("↓↑←→", "Up Down Left Right"), ("◄┘", "Return"), ("Esc", "Escape")),
+         designed=True,
+         evidence="[designed: T224; confirmed: named/seg_1771_04.c 4B61, T224's probe] a player's own tactics in a "
+                  "match from E44F's T where E44F offers no substitution now (a pause's request, or none left): "
+                  "'tactics and', '↓↑←→-select', '◄┘-alter tactic', 'Esc-exit'"),
     Kind("substitution-refused", keys(("any key", "(any)")), designed=True,
          evidence="[confirmed: named/seg_0791_12.c E022, return E167] incoming player cannot play"),
     Kind("championship-bracket", keys(("any key", "(any)")), designed=True,
@@ -214,7 +228,9 @@ KINDS = {k.name: k for k in (
     Kind("tournament-table", keys(("any key", "(any)")), designed=True,
          evidence="[designed] one pass of the group table after a fixture (1771:958D with its mode byte 0, from "
                   "0791:E929): 'P W D L', 'hit any key'"),
-    Kind("substitutions-used", keys(("F2", "F2"), ("R,C", "r c"), ("T", "t"), ("Esc", "Escape")), designed=True,
+    # [T224] ↑↓: E44F's last branch moves the cursor here too (named/seg_0791_13.c E44F; T224's probe)
+    Kind("substitutions-used", keys(("F2", "F2"), ("R,C", "r c"), ("T", "t"), ("Esc", "Escape"), ("↑↓", "Up Down")),
+         designed=True,
          evidence="[designed] SELECT TEAM in a match with no substitution left (0791:E44F draws DS:2538): 'no more "
                   "substitutes', 'F2-new name R,C-reposition T-tactics', 'Esc-exit'"),
     Kind("eleven-refused", keys(("any key", "(any)")), designed=True,
@@ -632,11 +648,23 @@ def _select_view(f):
 def _own_tactics(f):
     # [confirmed: named/seg_1771_04.c 1771:4B61 edit_own_tactics] its key read is u214b_menu_read_key_and_move, far-
     # called at 1771:4C05 (return 4C0A); 4B61's own caller is SELECT YOUR TEAM's T (0791:E758, return E75D). Outside a
-    # match (DS:0C1F clear) it is own-tactics; in a match it is kinds.tsv's squad-substitution-tactic (no entry yet).
+    # match (DS:0C1F clear) it is own-tactics.
+    # [T224; confirmed: named/seg_0791_13.c E44F, T224's probe] In a match (DS:0C1F set) E44F (its frame the one above
+    # 4B61's, called from E949 at E99C) leaves its own box drawn under 4B61's screen: with substitutions now (DS:9B41
+    # and DS:9B3A + side [bp-3]) "make substitutions now", kinds.tsv's squad-substitution-tactic; else (a pause's
+    # request DS:4760/4812, or "no more substitutes" DS:2538) goal2's match-own-tactics. E44F's T does nothing while
+    # DS:0C20 is set, so no such frame is met then; nor with DS:066D set, which no route has reached (None).
     up = f.up(f.bp)
-    if f.far_caller(up) != "0791:E75D" or f.ds_byte(MATCH_MENU_USED):
+    if f.far_caller(up) != "0791:E75D":
         return None
-    return "own-tactics"
+    if not f.ds_byte(MATCH_MENU_USED):
+        return "own-tactics"
+    select = f.up(up)
+    if f.ds_byte(SUMMARY_FILE) or f.ds_byte(VIEW_ONLY) or f.far_caller(select) != SELECT_FROM_MATCH:
+        return None
+    if f.ds_byte(SUBS_ALLOWED) and f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(select, -3)):
+        return "squad-substitution-tactic"
+    return "match-own-tactics"
 
 
 def _own_view(f):
@@ -673,17 +701,44 @@ CAPTAIN = 0x9978
 
 def _captain(f, bp):
     # choose_captain_or_taker 0791:CC7B(role [bp+4], side): role 1 the captain (CF0B; routines.tsv); the takers
-    # T120 adds the observed roles2/5 below; roles3/4 still have no entry.
+    # T120 adds the observed roles2/5 below, T220 the penalty (3) and free-kick (4) takers T131 delivered.
     return "captain-select" if f.byte(bp, 4) == 1 else _taker(f, bp)
+
+
+# [confirmed: upstream T131, goal2-archaeology 7fbfd2e9 (#707), docs/requests/400-roles34.md, notes/400-roles34/delivery.json]
+# CC7B's caller 6D4E (choose_player) returns to 6EEF with the byte arguments [10, 3, side] for the penalty, to 6F92 with
+# [11, 4, side] for the free kick (the restart callers 6ECF and 6F3E, F030/T92). Checkpoints (the first 16 hex digits of
+# each file's SHA-256), each in five kept Core states: role 3 Denmark side 1, round 7 minute 33, decision 964d78d67e8cd83c;
+# role 4 England side 0, round 3 minute 71, decision dc1f31f1af0b355c; role 4 Albania side 1, round 3 minute 58, decision
+# b2221e9c681dec5a. The unchanged Core stops at the decision machine for role 3 and for England's role 4 (T131's
+# stop-r1/stop-c9, memory and registers identical); Albania's has no such comparison (its Core stops earlier at a role 3 of
+# its own), so **Albania's is the weakest of the three**. Role 3 was kept at side 1 only; its side 0 (round 10 minute 78) is
+# a recorded observation of the role and side bytes, no kept state [derived: the side is CC7B's argument and indexes only
+# the country and the stored pick, as at roles 2/5 and role 4's two sides].
+TAKER_ORIGINS = {3: (0x6EEF, 10), 4: (0x6F92, 11)}      # role -> (6D4E's return offset, its first byte argument)
+
+
+def _taker_origin(f, bp, role, side):
+    """[confirmed: T131, as above] True when CC7B's caller 6D4E is the penalty (role 3) or free-kick (role 4) restart's: its
+    return offset and its three byte arguments [10 or 11, role, side] (low bytes: the high bytes are scratch)."""
+    origin, first = TAKER_ORIGINS[role]
+    parent = f.up(bp)
+    return (f.near_caller(parent) == origin
+            and (f.byte(parent, 4), f.byte(parent, 6), f.byte(parent, 8)) == (first, role, side))
 
 
 def _taker(f, bp):
     # [confirmed: T88/T89 live frames; F030 at53d7ef5] Noncaptain CC7B from choose_player's6D74.
-    # Only roles2/5 have genuine inputs; roles3/4 remain explicitly unobserved on archaeology#400.
-    if f.byte(bp, 4) not in (2, 5):
+    # Roles2/5 have genuine inputs (T88/T89). [confirmed: T131] So do roles3/4, each read together with its caller 6D4E's
+    # frame, which a generic captain state does not show; a role 3 or 4 without it, and any other role, give None and the
+    # runner stops: no entry is inferred from role2's shape.
+    role = f.byte(bp, 4)
+    if role not in (2, 3, 4, 5):
         return None
     if (f.near_caller(bp) != 0x6D74 or f.byte(bp, 6) not in (0, 1)
             or not 1 <= f.word(bp, -5) <= 11):
+        return None
+    if role in TAKER_ORIGINS and not _taker_origin(f, bp, role, f.byte(bp, 6)):
         return None
     return TAKER_SELECT
 

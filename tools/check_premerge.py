@@ -68,7 +68,7 @@ SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|compet
                         r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view|port_route|pypy_worker"
                         r"|core_runner_t100|core_screens_t103|core_desktop_t105|core_new_game_t106|core_team_t107"
                         r"|core_round_t108|core_watch_t109|core_bulletin_t110|core_continuation_t111|core_world_t113"
-                        r"|core_lineup_t114|core_pause_t115|core_playback_t116|core_shootout_t118|core_walkoff_363|core_extra_t119|core_nice_try_371|core_takers_t120|core_save_t121|core_patches_t122|core_best_place_395|core_congratulations_409|core_cycle_t123))"
+                        r"|core_lineup_t114|core_pause_t115|core_playback_t116|core_shootout_t118|core_walkoff_363|core_extra_t119|core_nice_try_371|core_takers_t120|core_save_t121|core_patches_t122|core_best_place_395|core_congratulations_409|core_cycle_t123|core_delay_t223))"
                         r"|pyproject\.toml$|tools/(watched_evidence|prove_core_cycle|verify_core_cycle)\.py$|tools/watched-kit-hashes\.json$)")
 # [designed: owner, 2026-11-01, #505] Not the CI plumbing (this gate, tools/ci_changes.py, tools/slow_reach.py, the
 # slow workflows): their own focused tests check them; --affected remains an explicit investigation mode.

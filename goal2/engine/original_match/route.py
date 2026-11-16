@@ -63,7 +63,36 @@ The stage pages' key reads and polls are answered by the same policy, at sites R
 60CB's page waits in the news pages' 05F6 (its call at 000E:6622), which polls at 0515 and 05EC and reads at 0624
 [confirmed: code/seg_000E_08.asm 6622, seg_000E_01.asm 05F6-0624]; nothing under stage_end 1771:8208 (80DA's subtree
 included) or run_stage 76B1 calls 214B:08DD or 0723 (the closure of calls.tsv's direct calls), and under 60CB only
-05F6 does, so a round's end adds no site."""
+05F6 does, so a round's end adds no site.
+
+play_action (T130, #705): Route(image, entry="play_action") runs the manager menu's Play action by main_menu_loop
+000E:7439's own code: the Enter branch of item 6, from 000E:772A to 000E:77CB, where every path of it ends. It is
+neither 57E5 nor 77BF [confirmed: code/seg_000E_09.asm 7722-77CB; routines.tsv 000E:57E5 managed_retirement_scan (F017),
+000E:5CF4 finals_squad_news (F031), 000E:7072 shareware_limit_reached (F025), 000E:70B9 play_round (F004)]: 77BF is the
+last step, and 57E5 is called at 7785 only by this branch, with 5CF4 behind it. The branch, in its order: 7722 `cmp ax,
+6; je 772A`; 772A `call 7072` (always 0 here, F025: a non-zero answer only moves the manager, 7731-7751); at 7753, when
+the byte [A923]+0x47+m is clear (m = [A923]+1): `call 57E5(country)`, and a non-zero answer ends the press (7788); then
+`call 5CF4(country)`, likewise (77AC); at 77B0, when m equals the count [A923]+0, `call 70B9` (77BF), else m + 1 (77C4).
+So one press does one of: replace a retiree (57E5 returns 1 after 56F3: the press ends, no play_round), show the finals
+squad news (5CF4 returns 1: no play_round), move to the next manager, or play_round; the original's own order is the
+branch's, and a second press follows a first when the first ends early (the retirement flag +0x4D+m, which 56F3 sets
+at 570D, makes the next 57E5 return 0 at 5824). The harness makes one press per call() and decides nothing: its
+round() repeats presses, as it repeats play_round calls, until one reaches the round's end.
+
+The frame is 7439's [confirmed: the E006-r0001 state, e0afff67..., at the manager menu: SS:3FF0 = word DS:A923,
+SS:3FF2 = word DS:A925, the far pointer 7440-7447 keep in [bp-6]; SS:3FF4 = 1, the loop local; SS:3FF6 = the caller's
+BP 0x3FFE]. The harness stands in it: SS = load + 0x3052, BP 0x3FF6 (7439's `push bp; mov bp, sp`), SP 0x3EEE (BP -
+0x108, 7439's `sub sp, 0x108`), CS:IP 000E:772A, no call pushed, and the one write it owes, [bp-6]'s two words from
+DS:A923 (a ("k", ...) entry of the record). 7072's call and the call of 70B9 at 77BF then push their return words at
+SP 0x3EEC, the slot play_round's own entry gives its return word, so 70B9 runs in the frame play_round's gives it
+(SP 0x3EE2, BP 0x3EEA, SS:3EEA = 3FF6, SS:3EEC = 77C2 at 70D1) and the stop at 6F18 is the same. The call returns at
+000E:77CB with SP 0x3EEE and BP 0x3FF6 (checked), and the record gets ("return", "000E:77CB"); the decisions are in
+it too, as ("action", name[, AL]) at 7788 ("retirements", AL), 77AC ("finals_news", AL), 77BF ("play_round") and 77C4
+("next_manager"). DS:00B0, the menu item 7439 compares, is read nowhere else (datarefs.tsv) and is left alone. The
+key sites of the pre-step add none [derived: the closure of calls.tsv's direct calls from 57E5 (119 routines) and from
+5CF4 (97) reaches 214B:08DD and 0723 only through 000E:04F5, 0572 and 05F6, whose sites READS and POLLS name]. The sealed API
+(play_round(), resume_round()) has no play_action: the PortMachine refuses 57E5, 56F3, 54F0, 544D, 50D4, 1771:1B2E,
+1771:4CF7, 5CF4 and 5AC5, which have no port."""
 from .image import Image, FIXTURES_PTR, FIXTURE_SIZE, GAME_PTR
 from .route_team import RouteMatch
 from .news import capture_news_page,news_pages as decode_news_pages
@@ -84,7 +113,15 @@ ROUND_CALLER, ROUND_RETURN = "000E:77BF", "000E:77C2"   # main_menu_loop 7439's 
 ROUND_SP = 0x3EEC               # the return word's slot: 7439's SP at 77BF (BP 0x3FF6 - 0x108 - 2)
 MENU_BP = 0x3FF6                # 7439's BP (the E011-r0001 state's SS:3EEA), which 70B9 pushes
 ROUND_END = "000E:70E6"         # play_round's `call far 1771:8208`, reached when the cursor +0x26 is the count +0x28
-ENTRIES = ("route_fixture", "play_round")
+ACTION_AT = "000E:772A"         # main_menu_loop 7439's item 6 Enter branch: 7722 `cmp ax, 6; je 772A` (T130, #705)
+ACTION_END = "000E:77CB"        # where every path of that branch ends: `jmp 0x781b`, the menu loop's next turn (744A)
+ACTION_SP = 0x3EEE              # 7439's SP in the branch: BP 0x3FF6 - 0x108 (7439's `sub sp, 0x108`); no call is pushed
+ACTION_LOCAL = MENU_BP - 6      # 7439's [bp-6]: the far pointer to the game record that 7440-7447 load from DS:A923
+ENTRIES = ("route_fixture", "play_round", "play_action")
+# The decisions of the branch, in its own order: the site of each `or al, al` after a call (or the call itself) and the
+# name the record gives it [confirmed: code/seg_000E_09.asm 7785-778A, 77A9-77AE, 77BD-77C7]
+ACTION_SITES = {"000E:7788": "retirements", "000E:77AC": "finals_news", "000E:77BF": "play_round",
+                "000E:77C4": "next_manager"}
 MENU_SITE = "214B:157C"         # 214B:1560 reads at 1578 (push cs; call 08DD): its caller names the screen
 ENTER, KEY_N = 0x0D, 0x4E
 
@@ -207,8 +244,11 @@ class Route:
             m.at("0791:F1F6", lambda replay: None if replay else self._match())
         else:
             m.at(MATCH_AT, lambda replay: replay or m.stop("match"))
-        if self.entry == "play_round":
+        if self.entry in ("play_round", "play_action"):
             m.at(ROUND_END, self._on_round_end)
+        if self.entry == "play_action":
+            for site, name in ACTION_SITES.items():
+                m.at(site, lambda replay, name=name: self._on_action(replay, name))
 
     def _on_news_page(self, replay):
         """Actual05F6entry: back buffer is complete, front copy/celebration not begun.
@@ -246,6 +286,16 @@ class Route:
         game = m.far(GAME_PTR)
         self.record.append(("round_end", {"cursor": m.word_at(game + 0x26), "count": m.word_at(game + 0x28),
                                           "stage": m.read(game + 0x3C, 1)[0], "rounds": m.read(game + 0x3D, 1)[0]}))
+
+    def _on_action(self, replay, name):
+        """At one of ACTION_SITES: the branch's decision, in the record (what the original's own code did)."""
+        if replay:
+            return
+        m = self.m
+        if name in ("retirements", "finals_news"):
+            self.record.append(("action", name, m.reg("ax") & 0xFF))     # the callee's AL: 1 ends the press
+        else:
+            self.record.append(("action", name))
 
     def _watch_seed(self, m, name, off, where):
         def step(old, new):
@@ -320,12 +370,19 @@ class Route:
         ss = m.seg(SS_PARAGRAPH)
         if self.entry == "play_round":
             target, caller, ret, sp, bp = PLAY_ROUND, ROUND_CALLER, ROUND_RETURN, ROUND_SP, MENU_BP
+        elif self.entry == "play_action":
+            target, caller, ret, sp, bp = ACTION_AT, "000E:7722", ACTION_END, ACTION_SP, MENU_BP
         else:
             target, caller, ret, sp, bp = ROUTE_FIXTURE, CALLER, RETURN_TO, CALL_SP, CALLER_BP
         name = self.entry
         rseg, roff = ret.split(":")
-        self._write(f"the call of {target} at {caller}: its return word", ss * 16 + sp,
-                    int(roff, 16).to_bytes(2, "little"))
+        if self.entry == "play_action":
+            # not a call: the harness stands in 7439's frame, whose one local the branch reads is [bp-6], 7440-7447's
+            self._write("main_menu_loop 7439's [bp-6]: the game record pointer, as 7440-7447 load it from DS:A923",
+                        ss * 16 + ACTION_LOCAL, m.read(m.DS * 16 + GAME_PTR, 4))
+        else:
+            self._write(f"the call of {target} at {caller}: its return word", ss * 16 + sp,
+                        int(roff, 16).to_bytes(2, "little"))
         tseg, toff = target.split(":")
         for reg, value in (("ss", ss), ("sp", sp), ("bp", bp), ("ds", m.DS), ("es", m.DS),
                            ("cs", m.seg(int(tseg, 16))), ("eip", int(toff, 16))):
@@ -344,15 +401,16 @@ class Route:
             if stopped != "match":
                 raise GuestError(f"{name} stopped: {stopped}")
             self._match()
-        if m.reg("sp") != sp + 2:
-            raise GuestError(f"{name} returned with SP {m.reg('sp'):04X}, not {sp + 2:04X}")
+        done = sp if self.entry == "play_action" else sp + 2
+        if m.reg("sp") != done or (self.entry == "play_action" and m.reg("bp") != MENU_BP):
+            raise GuestError(f"{name} returned with SP {m.reg('sp'):04X}, not {done:04X}")
         self.record.append(("return", ret))
         return self.record
 
     def round(self, limit=64):
         """play_round calls until one reaches the round's end (70E6), at most `limit`; returns the record."""
-        if self.entry != "play_round":
-            raise ValueError('round(): a Route made with entry="play_round"')
+        if self.entry not in ("play_round", "play_action"):
+            raise ValueError('round(): a Route made with entry="play_round" or "play_action"')
         for _ in range(limit):
             before = sum(1 for e in self.record if e[0] == "round_end")
             self.call()

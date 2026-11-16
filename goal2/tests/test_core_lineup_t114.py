@@ -187,7 +187,10 @@ class Desktop(unittest.TestCase):
                         self.assertEqual(sum((list(x) for x in b.words()),[])[b.roster.current],word)
                     self.assertEqual(views.bench(d.wait.state)['left'],before)
                     self.assertTrue(model.in_round)
-                    self.assertFalse(any(button.isEnabled() for button in w.core_team_buttons.values()))
+                    # [T224] the Team page's position edits stay locked in the round; its tactics routes are the
+                    # original's match menu's (docs/core.md, "Tactics in a match")
+                    self.assertFalse(any(w.core_team_buttons[name].isEnabled() for name in ('reposition','clubPosition')))
+                    self.assertEqual(w.core_team_buttons['teamTacticsRoute'].isEnabled(),bool(model.tactics_offer()[0]))
                     if case in (0,1):
                         b.position_club.click();w.finish_core();self.app.processEvents()
                         card=views.player_card(d.wait.state,word)

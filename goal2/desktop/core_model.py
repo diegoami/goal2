@@ -39,7 +39,20 @@ ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
                  'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue',
-                 'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight', 'replay')
+                 'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight', 'replay',
+                 'replay_timeout', 'match_tactic', 'match_own_tactic', 'match_marking')
+# [designed: T224, #454] The tactics a match offers, by the original's own route (Driver.match_tactic and the rest):
+# from its match menu before the kick-off, at a pause, a stoppage or an interval, or from live play (the pause first).
+TACTICS_ACTIONS = ('match_tactic', 'match_own_tactic', 'match_marking')
+TACTICS_MENUS = {'before': 'before the kick-off', 'pause': 'at the pause', 'stoppage': 'at the stoppage',
+                 'half-time': 'at half time', 'extra-time-start': 'before extra time',
+                 'extra-time-half': 'at the extra-time interval'}
+# [designed: T223] The round's steps outside the watched match (the other fixtures, the end of the round) and the
+# replay question's timeout, whose wait the window has already counted down (core_replay.py): never paced.
+UNPACED = ('round_start', 'round_continue', 'finish', 'summary_done', 'replay_timeout')
+# [designed: T223] A sound whose delay lasts this long is named in the window while it runs; shorter ones (the 1 ms
+# beep of a kick, 214B:1EA1) would only flicker.
+NOTE_MS = 200
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
                'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order',
@@ -62,6 +75,14 @@ class CoreModel:
         self.refused = None           # [T108] the original's last refusal of the eleven, while the round waits on it
         self.commentary_cursor = 0
         self.pitch_sequence = 0
+        # [designed: T223] Wall-time pacing of the watched match (the window turns it on): after a step, the
+        # milliseconds the original's delays asked for are waited, in order; `sounding` names the sound whose delay
+        # is being waited ('whistle', 'tune', 'beep') or is None. Headless models never wait.
+        from threading import Event
+        self.pacing = False
+        self.sounding = None
+        self.waited = []              # the last paced step's delays: [[sound or None, ms], ...] in order
+        self._cancel_hold = Event()
         if core.wait.kind not in ROUND_WAITS + ('save-game-name-entry',):
             self.driver.to_menu()
 
@@ -166,9 +187,20 @@ class CoreModel:
 
 
     # -- the round (T108) -------------------------------------------------------------------------------------------
+    # [designed: T227] The core's wait is None while a step runs on the job thread (Core._run clears it first). The
+    # window refreshes its controls then too (poll_core, as the next step starts), so these answer from the last wait
+    # read, the one the running step started from, instead of raising. One read of `core.wait`, never two.
+    _settled_kind = None
+
+    def _wait_kind(self):
+        wait = self.core.wait
+        if wait is not None:
+            self._settled_kind = wait.kind
+        return self._settled_kind
+
     @property
     def in_round(self):
-        return self.core.wait.kind in ROUND_WAITS
+        return self._wait_kind() in ROUND_WAITS
 
     def round_step(self, name, *args):
         """[designed: T108] Run the round's step `name` (ROUND_ACTIONS) by the original's keys; returns round_state().
@@ -184,6 +216,23 @@ class CoreModel:
             # [confirmed: F029 at53d7ef5] 0C65 restores7FBbytes from8439 to7C3E,
             # including the commentary index80EE. Resume from that snapshot's index.
             self.commentary_cursor = views.Memory(self.state).ds_word(0x8439 + 0x80EE - 0x7C3E)
+        import time
+        started = time.monotonic()
+        delays = []
+        paced = self.pacing and name not in UNPACED and self.driver.watching
+
+        def asked(ms, sound):
+            # [designed: T223] The delays the step asks for, in order (consecutive ones of the same sound merged).
+            if delays and delays[-1][0] == sound:
+                delays[-1][1] += ms
+            else:
+                delays.append([sound, ms])
+            # [designed: T228] The sound is named as soon as the core serves its delay, not only once the hold
+            # waits: on a host slower than the original's pacing the step's own emulation outlasts the delays,
+            # the hold has nothing left to wait, and the stop would show no note (Windows CI, run 43452154768).
+            if paced and sound is not None and delays[-1][1] >= NOTE_MS:
+                self.sounding = sound
+        listening, self.core.on_delay = self.core.on_delay, asked
         try:
             # [designed: T116; confirmed: 0791:9571–9708] All original polls execute; only complete poses need
             # a kept snapshot/text page. Reads and manager decisions retain their immediate stops.
@@ -194,12 +243,23 @@ class CoreModel:
                 else:
                     result = getattr(self.driver, name)(*args)
         except CoreError as exc:
+            self.sounding = None
             if self.core.stopped is not None:
                 raise
             raise ValueError(str(exc).split('\n')[0]) from exc
+        except BaseException:
+            self.sounding = None
+            raise
+        finally:
+            self.core.on_delay = listening
+        if not (self.pacing and name not in UNPACED and self.driver.watching):
+            self.sounding = None
+        else:
+            self.waited = delays
+            self.hold(delays, started)
         position_refused = result['refused'] if isinstance(result, dict) and set(result)=={'refused'} else None
         if position_refused is not None:self.refused=position_refused
-        elif name!='round_position':self.refused=None
+        elif name not in ('round_position',) + TACTICS_ACTIONS:self.refused=None
         state = self.round_state()
         if name == 'substitute':
             state['substitution'] = result
@@ -207,6 +267,52 @@ class CoreModel:
             state['position_player'] = args[0]
             state['position_refused'] = position_refused
         return state
+
+    def hold(self, delays, started):
+        """[designed: T223] Make the step that began at `started` (time.monotonic) last, in wall time, the
+        milliseconds of its `delays` ([[sound or None, ms], ...], in order): the original's own pacing, which the
+        core served without waiting (goal2/core/delay.py). The step's own emulation counts toward the wait, so its
+        pace does not depend on the emulator's speed while the delays are the longer (a whistle takes its 1.7 s).
+        Runs on the job's thread; `cancel_hold()` ends it early (the window closing)."""
+        import time
+        due = started
+        try:
+            for sound, ms in delays:
+                due += ms / 1000
+                self.sounding = sound if sound is not None and ms >= NOTE_MS else None
+                # [designed: T228] A timed wait can end a little early (Windows' coarse timer: 1.750 s for 1.753 s
+                # asked, CI run 43461361162), so wait again until the clock has reached the due time.
+                while (left := due - time.monotonic()) > 0:
+                    if self._cancel_hold.wait(left):
+                        return
+        finally:
+            self.sounding = None
+
+    def cancel_hold(self):
+        self._cancel_hold.set()
+
+    def resume_hold(self):
+        self._cancel_hold.clear()
+
+    def tactics_offer(self):
+        """[designed: T224; confirmed: T224's probe, docs/core.md "Tactics in a match (T224)"] Whether the original
+        offers its tactics where the round waits, and where or why not: (True, where) at its match menu before the
+        kick-off, at a pause, a stoppage or an interval, and in live play (Enter opens the pause); (False, reason)
+        elsewhere in the round. Outside a round the manager menu's routes serve them (None)."""
+        wait = self.core.wait
+        if not self.in_round:
+            return None
+        if wait.kind == 'match-live':
+            if views.Memory(self.state).ds_byte(0x0C20):
+                return False, 'During an action replay the original shows tactics for viewing only.'
+            return True, 'in live play (the original pauses at its match menu, then plays on)'
+        context = wait.view.get('context') if wait.kind in ('match-menu', 'match-menu-halftime',
+                                                             'match-menu-extra-time',
+                                                             'match-menu-extra-halftime') else None
+        if context in TACTICS_MENUS:
+            return True, TACTICS_MENUS[context]
+        return False, ('The original offers tactics in a match from live play and at its match menu (before the '
+                       'kick-off, a pause, a stoppage, half time); not here.')
 
     @presented
     def round_state(self):
@@ -218,8 +324,10 @@ class CoreModel:
         out = {'at': wait.kind, 'stop': 'menu', 'pages': list(self.driver.pages), 'refused': self.refused,
                'captain': None, 'bench': None, 'board': None, 'notice': None}
         if wait.kind in ('action-replay-prompt','save-goal-prompt'):
+            # [designed: T223] `countdown_ms`: the delay the question still asks for before it ends by itself
+            from goal2.core.delay import timed_left_ms
             out.update(stop='replay' if wait.kind == 'action-replay-prompt' else 'replay-save',
-                       board=views.board(self.state))
+                       board=views.board(self.state), countdown_ms=timed_left_ms(self.core))
         elif wait.kind == 'shootout-announcement':
             out.update(stop='shootout-announcement',message=wait.view['message'],board=views.board(self.state))
         elif wait.kind == 'shootout-order':
@@ -282,7 +390,7 @@ class CoreModel:
     # -- saving ----------------------------------------------------------------------------------------------
     @property
     def in_save_name(self):
-        return self.core.wait.kind == 'save-game-name-entry'
+        return self._wait_kind() == 'save-game-name-entry'
 
     def begin_save_name(self):
         """[confirmed: T121 original F7 probe] Enter the original save decision only from management."""
@@ -420,9 +528,10 @@ def dos_year(start_year):
 class CoreNewGame:
     """[designed: T106] The original's new game for Launch's New career on the core route.
 
-    `browse(start_year)` boots the core from the date-call state (e039-r0005-date-call.sav) with the DOS date of
-    that start year, presses N while the title's tune plays (`Core.boot`'s title_key) and Enter on the player count
-    (one manager), and keeps the core at the country browser, one per start year. `countries`, `card` and `campaign`
+    `browse(start_year)` boots the core with the DOS date of that start year, from the player's GOAL.EXE
+    (`Core.boot_exe`, T222) or, for developers and the tests, from the recorded date-call state
+    (e039-r0005-date-call.sav, `Core.boot`): `boot_path` names either, told apart by its content. It presses N
+    while the title's tune plays (the boot's title_key) and Enter on the player count (one manager), and keeps the core at the country browser, one per start year. `countries`, `card` and `campaign`
     read that core's memory (goal2/core/views.py). `start` plays the rest of the new game by the driver and returns
     the CoreModel at the first manager menu with the bulletins the original showed on the way."""
 
@@ -436,9 +545,13 @@ class CoreNewGame:
         from goal2.core.screens import RETURN
         if start_year not in self._drivers:
             try:
+                from goal2.core.exeboot import is_exe
                 state = self.boot_path.read_bytes()
-                wait = Core.boot(state, (dos_year(start_year),) + BOOT_MONTH_DAY, goal_dat=self.data_path,
-                                 title_key='n')
+                date = (dos_year(start_year),) + BOOT_MONTH_DAY
+                if is_exe(state):     # a refused GOAL.EXE is named by its path
+                    wait = Core.boot_exe(self.boot_path, date, goal_dat=self.data_path, title_key='n')
+                else:
+                    wait = Core.boot(state, date, goal_dat=self.data_path, title_key='n')
                 driver = Driver(wait.core)
                 if wait.kind == 'title-player-count':
                     driver.press(RETURN, expect=('country-select',))

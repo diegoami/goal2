@@ -137,7 +137,8 @@ class Event:
     data: dict = field(default_factory=dict)
 
     def __str__(self):
-        extra = " ".join(f"{k}={v}" for k, v in self.data.items() if k not in ("players", "eleven", "bench", "positions"))
+        extra = " ".join(f"{k}={v}" for k, v in self.data.items()
+                         if k not in ("players", "eleven", "bench", "positions", "pool"))
         return f"[{self.minute:3d}' {self.score[0]}-{self.score[1]}] {self.kind} {extra}"
 
 
@@ -382,7 +383,58 @@ class Match:
         self.end_lin=self.m.lin(RUN_MATCH_RETURN);self.st['fresh']=True
         if self.m.read(0,MEM_SIZE)!=bytes(data[:MEM_SIZE]) or any(self.m.reg(k)!=v for k,v in regs.items()):
             raise MatchError('route entry initialization changed incoming memory/CPU')
+        self._route_entry = (self, self.m, tuple((k, self.m.reg(k)) for k in REGS),
+                             hashlib.sha256(self.m.read(0, MEM_SIZE)).digest(),
+                             json.loads(json.dumps(self.opts)))
+        self._route_entry_configured = False
         return self
+
+    def configure_route_entry(self, *, captain=None, substitutions=None, ticks=False,
+                              record_draws=False, set_piece=False, live_players=False,
+                              substitution_control=False, pre_match_edits=False):
+        """Configure this actual held route Match exactly once, before events run.
+
+        Configuration changes no guest memory, CPU, fixture, setup or RNG. The
+        existing captain/prompt and play-entry hooks apply these inputs later.
+        A failed validation consumes nothing. Ordinary/loaded Match objects and
+        entries whose execution/replay has begun cannot be configured this way.
+        pre_match_edits [T132, #709]: the pre-match team menu publishes a
+        `pre_match` decision the consumer answers (tactics, within-twenty
+        swap pairs and pool exchanges, edit_only=True, or an empty answer
+        to play) instead of the harness playing it unseen; the swaps are
+        pressed through the original's own DEA6 route (route_team.PreMatchPlan).
+        """
+        entry = getattr(self, '_route_entry', None)
+        if (type(self) is not Match or entry is None or entry[0] is not self
+                or self.m is not entry[1] or getattr(self, '_route_entry_configured', False)
+                or not self.st['fresh'] or self.over or self.st['waiting'] is not None
+                or getattr(self, '_replay_origin', None) is not None
+                or self.opts != entry[4]
+                or any(self.m.reg(k) != v for k, v in entry[2])
+                or hashlib.sha256(self.m.read(0, MEM_SIZE)).digest() != entry[3]):
+            raise ValueError('route entry is foreign, configured, changed or already started')
+        flags = dict(ticks=ticks, record_draws=record_draws, set_piece=set_piece,
+                     live_players=live_players, substitution_control=substitution_control,
+                     pre_match_edits=pre_match_edits)
+        if any(type(value) is not bool for value in flags.values()):
+            raise ValueError('route entry flags must be booleans')
+        if captain is not None and (type(captain) is not int or not 1 <= captain <= 3060
+                or self.side is None or captain not in self._squad(self.opts['managed'])[:11]):
+            raise ValueError('route entry captain must belong to the current managed eleven')
+        budget = None
+        if substitutions is not None:
+            budget = ([substitutions, substitutions] if type(substitutions) is int else
+                      list(substitutions) if type(substitutions) in (list, tuple) else [])
+            if len(budget) != 2 or any(type(v) is not int or not 0 <= v <= 255 for v in budget):
+                raise ValueError('route entry substitutions: budget0..255 or two such budgets')
+        # All validation precedes any configuration/listener mutation.
+        options = dict(self.opts, captain=captain, substitutions=budget,
+                       ticks=ticks, record_draws=record_draws)
+        options.update({k: v for k, v in flags.items() if v and k not in ('ticks', 'record_draws')})
+        self.opts = options
+        if record_draws:
+            self._install_draw_recorder()
+        self._route_entry_configured = True
 
     def _install_proof(self, prove):
         """The proof mode (T59, port/prove.py): the ports' calls from the draw `prove` on, side by side."""
@@ -441,6 +493,30 @@ class Match:
     def _squad(self, c):
         raw = self.m.read(self._country(c), 40)
         return [int.from_bytes(raw[2 * i:2 * i + 2], "little") for i in range(20)]
+
+    def _pool(self):
+        """[confirmed: named seg_0791_12.c:806 (T129p); DDCB and 1771:5532 sort_pool (T128); F011] The
+        current manager's pool list, as the SELECT TEAM screen's pool view draws it: the manager byte at +1
+        of the game block (the far pointer DS:A923), the manager's base word at DS:6D18 + 2*manager (F011's
+        1-indexed table; manager 1's base 1), then the eighty words A927[base + i] (the far pointer DS:A927).
+        F011: only the managed manager's block is made (0xA01..0xA50 for manager 1); the words past a made
+        block are zero and returned as zero, like _squad's raw twenty. Read-only; the screen's own state
+        (scroll +0x52, cursor +0x5E, game-block words of the manager) is the plan's to drive."""
+        m = self.m
+        game = m.far(0xA923)
+        manager = m.read(game + 1, 1)[0]
+        base = m.word_at(m.DS * 16 + 0x6D18 + 2 * manager)
+        return [m.word_at(m.far(0xA927) + 2 * (base + i)) for i in range(80)]
+
+    def _pool_state(self):
+        """[confirmed: T128's prepare, 0791:DDCB] The SELECT screen's pool-pane state words of the
+        current manager: the scroll word at game + 2*manager + 0x52 and the cursor word at +0x5E.
+        DEA6's selected pool word is the list entry scroll + cursor - 2 (T128: index = base+4+3-2
+        with scroll 4, cursor 3). Read-only; the plan drives them with the pane's own keys."""
+        m = self.m
+        o = m.far(0xA923)
+        o += 2 * m.read(o + 1, 1)[0]
+        return m.word_at(o + 0x52), m.word_at(o + 0x5E)
 
     def _tactics(self):
         return self.m.read(self._country(self.opts["managed"]) + TACTICS, 1)[0]
@@ -588,9 +664,17 @@ class Match:
             paused_tactics = (context in ("pause", "extra_time") and tactics is not None
                               and not (substitutions or positions or marking or own_tactics))
             legal_bench = context in ("half_time", "substitution") and self.m.rd(S.SUBS_ALLOWED, 1)
-            if (not (legal_bench or paused_tactics or request_substitution is not None) or quick or speed is not None
-                    or taker is not None or shootout_order is not None):
-                raise ValueError("edit_only needs a legal stopped bench or a tactics-only paused menu, without play-on inputs")
+            # [T132, #709] A configured pre-match decision takes the team tactics and/or
+            # swap pairs within the twenty or out of the made pool (the generic validation
+            # below checks the squad-or-pool membership); DEA6's pre-play swaps have no
+            # budget gate and are not deferred.
+            pre_match = (context == "pre_match" and self.opts.get("pre_match_edits")
+                         and (tactics is not None or substitutions)
+                         and not (positions or marking or own_tactics))
+            if (not (legal_bench or paused_tactics or pre_match or request_substitution is not None) or quick
+                    or speed is not None or taker is not None or shootout_order is not None):
+                raise ValueError("edit_only needs a legal stopped bench, a tactics-only paused menu "
+                                 "or a configured pre-match edit, without play-on inputs")
         if self.st["waiting"]["context"] == "set_piece":
             if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None or shootout_order is not None:
                 raise ValueError("the set-piece prompt takes taker only")
@@ -626,10 +710,14 @@ class Match:
         if speed is not None and not 0 <= speed <= 5:
             raise ValueError("speed is 0..5")
         squad = self._squad(self.opts["managed"])
+        # [T132, #709] At a configured pre-match edit the incoming player may also be a made-pool
+        # word (F011): DEA6 exchanges squad and pool word-list entries outside a match.
+        pool = self._pool() if (edit_only and self.st["waiting"]["context"] == "pre_match") else []
         subs = [[int(a), int(b)] for a, b in substitutions]
         for off, on in subs:
-            if off not in squad[:11] or on not in squad[11:]:
-                raise ValueError(f"substitution ({off}, {on}): the first must be in the eleven, the second on the bench")
+            if off not in squad[:11] or (on not in squad[11:] and on not in pool):
+                raise ValueError(f"substitution ({off}, {on}): the first must be in the eleven, the second "
+                                 "on the bench or, at a pre-match edit, in the pool")
         positions = {int(p): int(c) for p, c in (positions or {}).items()}
         if any(p not in squad or not 0 <= c <= 13 for p, c in positions.items()):
             raise ValueError("positions: {player of the managed squad: position code 0..13}")
@@ -654,10 +742,17 @@ class Match:
                                                 "quick": bool(quick), "speed": speed, **edit}})
         self.st["waiting"] = None
 
-    def _new_plan(self, answer):
-        plan = S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
-                          positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"),
-                          request_substitution=answer.get("request_substitution"))
+    def _new_plan(self, answer, context=None):
+        if context == "pre_match":
+            # [T132, #709] DEA6's own pre-play route for the swaps (route_team.PreMatchPlan:
+            # marks the incoming player first, validates each swap the original made), the
+            # shared tactics step and Play for the menu itself; no budget gate, no requests.
+            from .route_team import PreMatchPlan
+            plan = PreMatchPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"))
+        else:
+            plan = S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
+                              positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"),
+                              request_substitution=answer.get("request_substitution"))
         plan.edit_only = bool(answer.get("edit_only"))
         return plan
 
@@ -768,18 +863,26 @@ class Match:
         m.watch(ds + MINUTE, 2, self._on_minute)
         m.watch(ds + S.SUBS_LEFT, 2, self._on_subs_left)
         if self.opts["record_draws"]:
-            lin = m.DS * 16 + SEED
+            self._install_draw_recorder()
 
-            def seed_write(address, size, value):     # a guest write or a port's (Machine.on_write)
-                if not self.st["recording"]:
-                    return
-                old = m.word_at(lin)
-                raw = bytearray(old.to_bytes(2, "little"))
-                for i in range(size):
-                    if 0 <= address + i - lin < 2:
-                        raw[address + i - lin] = (value >> (8 * i)) & 0xFF
-                self.st["draws"].append([m.rd(MINUTE), m.rd(SUBTICK), old, int.from_bytes(raw, "little")])
-            m.on_write(lin, lin + 1, seed_write)
+    def _install_draw_recorder(self):
+        """Install the original recorder once; do not reinstall unrelated hooks."""
+        if getattr(self, '_draw_recorder_installed', False):
+            return
+        m = self.m
+        lin = m.DS * 16 + SEED
+
+        def seed_write(address, size, value):     # a guest write or a port's (Machine.on_write)
+            if not self.st["recording"]:
+                return
+            old = m.word_at(lin)
+            raw = bytearray(old.to_bytes(2, "little"))
+            for i in range(size):
+                if 0 <= address + i - lin < 2:
+                    raw[address + i - lin] = (value >> (8 * i)) & 0xFF
+            self.st["draws"].append([m.rd(MINUTE), m.rd(SUBTICK), old, int.from_bytes(raw, "little")])
+        m.on_write(lin, lin + 1, seed_write)
+        self._draw_recorder_installed = True
 
     def _fail(self, message):
         raise GuestError(message + "\n" + self.screen_text())
@@ -884,14 +987,24 @@ class Match:
                 return S.ESC
             self.st["answer"] = None
             self._extras(answer)
-            self._menu = self._new_plan(answer)
+            # [fix, found by goal2 T170m] An edit-only answer continuing inside SELECT TEAM (the
+            # plan kept it open between edits) must build the pre-match plan again: without the
+            # menu context a chained pre-match edit fell to the squad-only MenuPlan, whose flow
+            # pressed past a pool exchange and silently made nothing. Other contexts build the
+            # same MenuPlan as before.
+            self._menu = self._new_plan(answer, self.st["menu_context"])
             self._menu.steps = ["select", "play"]
             self._menu.in_screen = "select"
         if site == SITE_SELECT and self._menu is not None:
-            key = self._menu.select_key({
-                "cursor": m.rd(S.SELECT_CURSOR), "squad": self._squad(self.opts["managed"]),
-                "allowed": m.rd(S.SUBS_ALLOWED, 1), "request": m.rd(S.SUBS_REQUEST, 1),
-                "subs_left": m.rd(S.SUBS_LEFT + self.side, 1), "position": lambda p: self._player(p, PLAYER_POSITION)})
+            state = {"cursor": m.rd(S.SELECT_CURSOR), "squad": self._squad(self.opts["managed"]),
+                     "allowed": m.rd(S.SUBS_ALLOWED, 1), "request": m.rd(S.SUBS_REQUEST, 1),
+                     "subs_left": m.rd(S.SUBS_LEFT + self.side, 1), "position": lambda p: self._player(p, PLAYER_POSITION)}
+            if getattr(self._menu, "pool_pane", None) is not None:
+                # [T132] a pre-match plan drives the pool pane too; MenuPlan ignores the keys,
+                # and surgical controls with stub machines never reach here.
+                pool_scroll, pool_cursor = self._pool_state()
+                state.update(pool=self._pool(), pool_scroll=pool_scroll, pool_cursor=pool_cursor)
+            key = self._menu.select_key(state)
             if key == S.ESC and getattr(self._menu, "edit_only", False):
                 # Keep SELECT TEAM open between edits: leaving/reentering it runs original
                 # housekeeping again. The next answer continues at this same key read.
@@ -937,7 +1050,9 @@ class Match:
         if plan is not None and plan.steps == ["play"] and plan.in_screen is None and plan.menu_reads_after_play:
             # "play" was pressed and the menu is read again: 0791:EA09 refused the eleven (its message is kept)
             refusal = st.get("message") or "the original refused the managed eleven"
-            if st["menu_context"] not in DECIDED_AT_MENU + ("substitution",):
+            if st["menu_context"] not in DECIDED_AT_MENU + ("substitution",) and not (
+                    st["menu_context"] == "pre_match" and self.side is not None
+                    and self.opts.get("pre_match_edits")):
                 raise MatchError(f"the original refuses goal2's eleven: {refusal}")
             st["refused"], st["message"], self._menu = refusal, None, None
             plan = None
@@ -947,6 +1062,19 @@ class Match:
                 # run_match still visits its menu for two computer sides. Keep
                 # its sorting/validation and choose play, with no human answer.
                 self._menu = S.MenuPlan(1)
+            elif context == "pre_match" and self.side is not None and self.opts.get("pre_match_edits"):
+                # [T132, #709] The pre-match menu is a decided context on a configured entry:
+                # a `pre_match` decision the consumer answers (tactics and/or swap pairs
+                # within the twenty or out of the pool, edit_only, or an empty answer to
+                # play on). The plan presses the original's own keys (PreMatchPlan); swaps
+                # are made now (DEA6 has no budget gate), never deferred to a stoppage.
+                if st["answer"] is None:
+                    self._decide(context, pre_match=True, refused=st.get("refused"))
+                    return None
+                answer, st["answer"], st["refused"] = st["answer"], None, None
+                self._extras(answer)
+                st["editing_menu"] = False
+                self._menu = self._new_plan(answer, "pre_match")
             elif context in DECIDED_AT_MENU or st.get("editing_menu") or (context == "substitution" and (st.get("refused") or self.opts.get("substitution_control"))):
                 if st["answer"] is None:
                     self._decide(context, substitutions_now=bool(self.m.rd(S.SUBS_ALLOWED, 1)),
@@ -1055,6 +1183,10 @@ class Match:
         positions = [[w, self.m.read(base + PLAYER_SIZE * w + PLAYER_POSITION, 1)[0]] for w in squad if w]
         data.update(context=context, eleven=squad[:11], bench=squad[11:], injured=injured, positions=positions,
                     substitutions_left=self.m.rd(S.SUBS_LEFT + self.side, 1), tactics=self._tactics())
+        if context == "pre_match":
+            # [T132, #709; F011] The made pool of the current manager: the incoming words a
+            # pre-match exchange can draw from, published beside the bench.
+            data["pool"] = self._pool()
         if self.opts.get("substitution_control", False):
             data["request_substitution"] = bool(self.m.rd(S.SUBS_REQUEST, 1))
         if self.opts.get("live_players", False):
@@ -1374,6 +1506,12 @@ class Match:
                 self._emit(kind, minute, score, **card)
         for team in (0, 1):            # a scorer row or an eleven change without its counter's write: not guessed
             if rows[team] or swaps[team]:
+                # [T132, #709] The pre-match menu changes the managed line-up by DEA6's own swaps,
+                # before play: no substitution event or counter write exists for them (T124t; the
+                # route harness's swaps precede the first flush's baseline for the same reason).
+                if (swaps[team] and not rows[team] and st["menu_context"] == "pre_match"
+                        and self.side is not None and team == self.side):
+                    continue
                 self._fail(f"team {team}: scorer rows {rows[team]} or eleven changes {swaps[team]} without the "
                            "score or substitutions-left write that makes them events")
         st["candidates"] = {}

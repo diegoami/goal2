@@ -14,6 +14,7 @@ from collections import Counter
 from itertools import combinations
 
 from . import screens as S
+from .screens import MAX_MOVES, ScreenError
 from .match import Match, MatchError, SITE_SELECT, PUSHED_BACK, KEY, PLAYER_ENERGY, PLAYER_STATUS, PLAYER_POSITION
 
 
@@ -39,6 +40,11 @@ def choose_eleven(squad, player):
 
 class PreMatchPlan(S.MenuPlan):
     """DEA6 before play, rather than E022's substitutions during play."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pool_pane = False          # the SELECT screen opens in the squad view (E009-r0001)
+
     def select_key(self, s):
         if self.pending_check is not None:
             job = self.pending_check
@@ -49,6 +55,8 @@ class PreMatchPlan(S.MenuPlan):
         if self.job == len(self.jobs):
             return self.act(S.ESC)
         job = self.jobs[self.job]
+        if job[2] not in s["squad"] and job[2] in s.get("pool", ()):
+            return self._pool_key(s, job)
         # Mark the nonzero incoming player first: DEA6 refuses to mark an empty outgoing slot.
         want = job[1] if self.sub_marked else job[2]
         if want not in s["squad"]:
@@ -61,6 +69,38 @@ class PreMatchPlan(S.MenuPlan):
             self.pending_check = job
             self.job += 1
         return self.act(S.ENTER)
+
+    def _pool_key(self, s, job):
+        """[T128, F011, #709] The incoming is a made-pool word: T128's pool-to-squad case. Either
+        toggle key flips the SELECT screen's pane outside a match (E6C7-E6D4, one press one flip);
+        the pool-pane Enter asks DBFA before DEA6 marks, and DEA6's selected word sits at the list
+        index scroll(+0x52) + cursor(+0x5E) - 2 of the manager. The squad-pane Enter completes the
+        exchange (214B:007B swaps the word-list entries; the squad is sorted)."""
+        if self.pool_pane == self.sub_marked:
+            self.pool_pane = not self.pool_pane
+            return self.act(S.LEFT)                     # the toggle key E009-r0001 pressed
+        if not self.sub_marked:
+            if job[2] not in s["pool"]:
+                raise MatchError(f"pre-match pool player {job[2]} is no longer in the pool")
+            at = s["pool_scroll"] + s["pool_cursor"]    # = the list index + 2 (T128's prepare)
+            target = s["pool"].index(job[2]) + 2
+            if at != target:
+                self.moves += 1
+                if self.moves > 2 * MAX_MOVES:         # the pool holds eighty entries (F011), not twenty
+                    raise ScreenError(f"the pool cursor does not reach pool index {target - 2}")
+                return self.act(S.DOWN if at < target else S.UP)
+            self.sub_marked = True
+            return self.act(S.ENTER)                    # marks the pool player (DBFA gates)
+        want = job[1]
+        if want not in s["squad"]:
+            raise MatchError(f"pre-match player {want} is no longer in the squad")
+        slot = s["squad"].index(want) + 1
+        if s["cursor"] != slot:
+            return self.move(s["cursor"], slot)
+        self.sub_marked = False
+        self.pending_check = job
+        self.job += 1
+        return self.act(S.ENTER)                        # completes the exchange
 
 
 class RouteMatch(Match):
@@ -88,8 +128,10 @@ class RouteMatch(Match):
 
     def _key_for(self, site):
         if site == SITE_SELECT and self.st["menu_context"] == "pre_match" and isinstance(self._menu, PreMatchPlan):
+            scroll, cursor = self._pool_state()         # [T128] the pool pane's own state words
             key = self._menu.select_key({"cursor": self.m.rd(S.SELECT_CURSOR),
-                                         "squad": self._squad(self.opts["managed"])})
+                                         "squad": self._squad(self.opts["managed"]),
+                                         "pool": self._pool(), "pool_scroll": scroll, "pool_cursor": cursor})
         else:
             key = super()._key_for(site)
         if key is not None:

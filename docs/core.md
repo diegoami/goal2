@@ -36,7 +36,8 @@ core = Core.load(blob)       # at the same wait: core.wait
 - [designed] **A poll answers "no key"** unless a key is queued for its screen (T103, below). [confirmed: F030] A
   timed prompt is a count of polls with the calibrated delay `214B:1E09` between them, so it advances by itself on
   the original's own clock (the image's `DS:A9FF`, never rewritten): the captain prompt passes after its 1000 polls
-  (`KeyWait.polls` counts them per poll site, `0791:CC54` for `wait_or_key`).
+  (`KeyWait.polls` counts them per poll site, `0791:CC54` for `wait_or_key`). The delay is served at its entry and
+  its milliseconds reported (`KeyWait.delay_ms`; "The delay, served", below).
 - A read with the pushed-back flag `DS:79AE` set is not a wait: 08DD returns without reading (08E3-08EF), so the
   guest's own code runs.
 
@@ -121,12 +122,13 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `title-tune` | polls `1771:0723`, `1771:0782` (1771:06F3, the title's tune) | E039's traces (T106) | "THE international soccer management game" "Do you want to load a saved game? (Y/N)" |
 | `select-squad` | `0791:E61F` (0791:E44F from main_menu_loop 000E:771A or 7620, or from E949 before a match's kick-off, DS:0C1F clear, `[bp-5]` 1) | E006-r0001, the manager menu's select squad (T107); the match menu's players before the kick-off (T108) | "SELECT YOUR TEAM" "Hit Ins for assistant's recommended 20" |
 | `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" |
-| `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107) | "↓↑←→-select" "◄┘-alter tactic" |
+| `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107); T on the match menu's players before the kick-off (T224) | "SELECT YOUR TEAM" "↓↑←→-select" "◄┘-alter tactic" |
+| `match-own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T in a match, DS:0C1F set, E44F offering no substitution now: DS:9B41 clear or DS:9B3A + side 0) | E006-r0001's round 1 watched, Enter in play, players, T (T224); E010-r0001's half time after five substitutions, players, T (T224) | "tactics and" "◄┘-alter tactic" |
 | `player-name-entry` | polled `214B:0DB9`, read `214B:112B` (the editor 214B:1086 from 1771:4859, return 1771:48A0, from E44F's F2, return 0791:E700) | E006-r0001, F2 on select squad (T107) | "Type in characters (maximum 12)" "◄┘-accept Esc-abort" |
 | `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | not visited: no kept state is in a finals or tour window (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
 | `fixture-result` | `000E:6A89` (simulate_fixture 000E:6970, a fixture marked to watch and declined: its first byte 0xFE) | E006-r0001's round 3, N at the watch prompt (T108) | "location:" "hit any key" |
 | `tournament-table` | `214B:157C` from `1771:9022` (8E9A under 1771:958D with its mode byte `[bp+10]` 0, from 0791:E929 after a fixture) | E006-r0001's round 2, after the own qualifier (T108) | "P W D L" "hit any key" |
-| `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "Esc-exit" |
+| `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "T-tactics" "Esc-exit" |
 | `eleven-refused` | `214B:098A` (the box 214B:04F8 under 214B:1765, from 0791:EA09 at EB7D or EBD2: return EB82/EBD7, or EC22/ECEB) | E006-r0001's round 10 and half-time keeper case (T108); T114's real no-keeper and excessive-position inputs | "location:" "PRESS ANY KEY" |
 
 [T108] SELECT YOUR TEAM's hint line reads "◄┘-move player" until a player is marked and "◄┘-put here" after, so its
@@ -162,9 +164,9 @@ near-called by welcome_new_manager 000E:68A4 and announce_stage_to_manager 000E:
 title's tune ends it (06F3 returns at a key) and the title's read takes it; `Core.boot`'s `title_key` queues one so.
 
 **Not reached yet**, so not in the table:
-- The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
-  `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
-  until a screen task maps them: the unobserved penalty/free-kick taker roles3/4, the other players' screen of E949 (another country's, 1771:50F1), E022's other
+- The other kinds.tsv screens no tour met (`match-commentary`, `file-not-found-prompt`; `squad-substitution-tactic`
+  is mapped and reached by T224's tactics in a match) and the other cases of the shared sites stop with `UnknownScreen`
+  until a screen task maps them: the other players' screen of E949 (another country's, 1771:50F1), E022's other
   message ("There is no player here" E062) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
@@ -196,8 +198,9 @@ of that prompt.
 22 player updates. The watched desktop reads the complete pose at the last poll, before advancing, and Enter
 opens the pause menu. Its Players screen, with DS:9B41 clear, accepts Enter to request a substitution (DS:9B40),
 or cancel the request; it does not select a pair. At the next substitution opportunity the original offers the
-bench that makes the pair. Goal2's `substitution-request` kind names this screen, and accepts only its printed
-Enter and Esc. `Core.advance()` answers one poll with no key, keeping the next poll as a wait; `release()` retains
+bench that makes the pair. Goal2's `substitution-request` kind names this screen, and accepts its printed Enter,
+Esc and T (a player's own tactics, T224) and the Up and Down that E44F's last branch reads for its cursor; the driver
+never presses Enter there for a tactics change. `Core.advance()` answers one poll with no key, keeping the next poll as a wait; `release()` retains
 its T108 meaning of passing the screen. These are manager inputs, with no guest-memory patch.
 
 [designed: T116; confirmed: the same 9571–9708 poll loop] `with core.live_frames():` batches intermediate
@@ -334,6 +337,52 @@ driver.pages                           # the screens passed: (kind, view), read 
 - A round takes 35 to 60 s under Unicorn (each half of the quick result about 17 s, the other fixtures up to 14 s), so
   the desktop runs each step as a background job (`CoreJobs`).
 
+## Tactics in a match (T224, #454)
+
+[designed: owner, 2026-11-13, #705; T224] v0.1 fixes #454: the manager changes tactics during a match by the
+original's own route. What the original offers, and where, was found by pressing its keys under the core
+[confirmed: T224's probe of E006-r0001's round 1 watched (Denmark v Sweden, the managed side DS:9B36), its first
+half's live play, its half time, the match menu before the kick-off, and E010-r0001's half time after five
+substitutions; `goal2/tests/test_core_in_match_tactics_t224.py` replays each; named/seg_0791_13.c in_match_menu ED8A,
+select_team_screen E44F; seg_1771_02.c 1981; seg_1771_04.c 4B61, 49B8]:
+
+- **Team tactics.** The match menu's item 1 (6 for the other side) opens 1771:1981 for its side, editable for the
+  managed country (`team-tactics`), before the kick-off, at the pause of live play (Enter in play: ED8A from 945B), at
+  half time; [derived: the same ED8A, not probed] at a stoppage and the extra-time intervals (ED8A from 8100, 9B42,
+  9B70). Enter toggles
+  the row's element of the country's +0x2D, the byte the manager menu's route edits; Esc returns to the same menu.
+  ED8A sets DS:9B55 when the byte changed.
+- **A player's own tactics and marking.** The menu's players (E949 -> E44F) list the squad; Up and Down move its
+  cursor DS:0C1B (E44F's last branch) and T opens 1771:4B61 for the highlighted player whenever DS:0C20 is clear: before
+  the kick-off `own-tactics` (SELECT YOUR TEAM), at half time or a stoppage with substitutions now kinds.tsv's
+  `squad-substitution-tactic`, at a pause (substitution-request or -requested) or with none left goal2's
+  `match-own-tactics`. Enter on rows 1..4 cycles the team's, his own clear, his own set (the player's +0xF, as from the
+  manager menu); row 5, the marking, is offered (a row count of 5) only with the match set up and for an available
+  outfield player (+6 >= 2) of the squad list: the goalkeeper and the sweeper see four rows. Its Enter (1771:49B8)
+  cycles the team's marking (status element 7 clear), a protected zone (element 7 set, no man), then the opposing
+  squad's slots 2..11 it finds available, writing the marking word DS:9A3E + 0x28 b + 2 slot (b for the side
+  DS:9B36) and rebuilding the others (set_marking_words). The card then shows the marked man's name, with "P" for
+  his own choice (1771:3BD3). 4B61 sets DS:9B55 at each Enter in a match. None of these keys touches the substitution
+  request DS:9B40 or the substitutions left DS:9B3A: only Enter on E44F does, which the route never presses.
+- **When it takes effect.** After the menu's play, live play resumes at the next poll, at the same minute and score;
+  the tick loop 0791:97D0 takes DS:9B55 at its next iteration (the snapshot 15B9, then clears it: routines.tsv
+  97D0, seen in the probe); [derived] the match reads the changed records from then on. During an action replay (DS:0C20 set) 1981 only shows and E44F's T
+  does nothing: the window offers no change then. After the full-time menu the match is over: no route is offered.
+
+[designed: T224] The driver's actions start at one of those menus, or at a live poll, where they press Enter for the
+pause first and the menu's play after; they write no byte and use no manager-menu route:
+
+```python
+driver.match_tactic(element, on)                 # team tactics, the row, Enter, Esc (and play, from live play)
+driver.match_own_tactic(player, element, value)  # players, Up/Down to him, T, the row, Enter cycles, Esc, Esc
+driver.match_marking(player, target)             # row 5: None the team's, 0 a protected zone, a man's word, "next"
+views.marking(state, player)                     # {"own": status element 7, "opponent": his marking word}
+```
+
+`CoreModel.tactics_offer()` says where the original offers them for the window (docs/desktop-management.md). The
+original offers no more than this: no route changes tactics without the match menu, and the match menu is reached
+from live play only by its pause.
+
 ## Original round pause (T115, #308's G13e)
 
 [confirmed: F030 at archaeology 53d7ef5; named/seg_000E_05.c simulate_fixture 6970,
@@ -380,7 +429,7 @@ The legacy evidence verifier and staged reference also carry the explicit guard-
 all other behavioural/reference files retain the accepted kit pin. Corruption and file-set checks stay strict.
 The unchanged announcement input and deliberate guard re-vendor are pinned in
 [evidence/T118/artifacts.json](evidence/T118/artifacts.json) and
-[the upstream handover](handover-2026-10-24-mutable-build-guard.md). T119 covers the earlier extra-time menus; T120 covers observed corner/goal-kick decisions, while roles3/4 remain separate evidence gaps. Tests use an independent direct-key replay and the
+[the upstream handover](handover-2026-10-24-mutable-build-guard.md). T119 covers the earlier extra-time menus; T120 covers observed corner/goal-kick decisions, and T220 the penalty and free-kick decisions T131 delivered (below). Tests use an independent direct-key replay and the
 original's printed full-time score; a different order is not claimed to reproduce E031's recorded score.
 
 ## Extra-time intervals (T119, #308's G13g)
@@ -430,7 +479,31 @@ allowing only the standard saved-VGA text restoration.
 key. Closing it leaves that genuine wait available for save/resume or reopening; it never advances the match.
 Selector/pitch saves retain the actual CPU, original keys and stop configuration. Round, worker and save guards
 remain in force. Input hashes are in [the private-input manifest](evidence/T120/artifacts.json).
-Roles3/4 and E062/EC60 remain unobserved/unmapped on archaeology#400.
+E062/EC60 remain unobserved/unmapped on archaeology#400; roles3/4 are catalogued by T220, below.
+
+## Penalty and free-kick decisions (T220, #695)
+
+[confirmed: upstream T131, goal2-archaeology `7fbfd2e9` (#707), docs/requests/400-roles34.md and notes/400-roles34/delivery.json]
+CC7B role3 (penalty) and role4 (free kick) are catalogued with the same selector, board read and controls as roles2/5
+(`set-piece-select` at the CC54/CEDE polls, `set-piece-pitch` at CF3A, the same view). Three cases of five kept Core
+states each (the wait before, the decision, Space and the board, Return, Return): role3 Denmark (side1) v England, round 7
+minute 33, slot 11, pick 131 (decision `964d78d67e8cd83c`); role4 England (side0) v Portugal, round 3 minute 71, slot 3,
+pick 163 (`dc1f31f1af0b355c`); role4 Albania (side1) v Cyprus, round 3 minute 58, slot 10, pick 10 (`b2221e9c681dec5a`).
+They are in the owner's private Drive, not in this repository; `test_core_taker_roles_695` checks each by its SHA-256 and
+skips when it is absent.
+
+[confirmed: T131] What makes them not generic captain states is CC7B's caller `6D4E` (choose_player): it returns to `6EEF`
+with the byte arguments `[10, 3, side]` for the penalty and to `6F92` with `[11, 4, side]` for the free kick. The entry
+(`screens._taker`) asks for exactly that frame; a role3 or role4 without it gives no kind and the runner stops. The
+delay-entry of T120 (`runner.timed_taker_entry`) stays for roles2/5 alone: T131's roles3/4 are kept at the polls.
+
+[confirmed: T131] The kept machines were reached by unchanged original keys; the unchanged Core stops at the decision for
+role3 and for England's role4. **Albania's role4 is the weakest evidence**: its unchanged Core stops earlier at a role3 of its
+own (minute 13), so its input comes from T131's label-adapted run alone. [derived] Role3 was kept at side1 only; the entry
+accepts side0 too, as the side is CC7B's argument indexing only the country and the stored pick (role4 is kept at both
+sides), and T131 recorded a role3 at side0 (round 10 minute 78, search-r1) as an observation without a kept state.
+Nothing else about roles3/4 is unobserved for the taker decisions: the extra-time menus (archaeology#400 item2), E062 and
+EC60 remain.
 
 [confirmed: supplied text pages] The test oracle combines the pitch's shaded field, match header and dismissal
 hint; `hit any key` alone also appears on stats and tactics screens. Production identification uses frames only.
@@ -540,7 +613,8 @@ screen to the byte (its record's digest `18190236…`).
   10,000,000,000; a watched first half needs between 3e9 and 4e9, measured T100) without a key read raises
   `BudgetExceeded`, naming the PC (listing address and CS:IP) and the text page. It never presses a key for the
   original.
-- [designed] **Interrupts**: the core serves only the new game's (T106, "The new game" below). Any other INT the
+- [designed] **Interrupts**: the core serves only the new game's (T106, "The new game" below); a GOAL.EXE boot's own
+  DOS and BIOS answers end at the date call (T222). Any other INT the
   guest calls, or any other request through `Intr`/`MsDos`, stops the run with
   `InterruptError` (its number, AX, the PC and the text page). The menus, the match menu and a whole watched
   first half called none; quitting (F10, Y, N) calls INT 10h and then DOS, and stops there.
@@ -555,8 +629,11 @@ start year is the original's and the seed its own:
 ```python
 from goal2.core import Core
 from goal2.core.driver import Driver
+wait = Core.boot_exe(".cache/GOAL.EXE", (1990, 10, 4),
+                     dos_time=(10, 0, 20, 95), goal_dat=".cache/GOAL.DAT")   # the title's read, 1771:085F
+# or, from the recorded state at the date call (developers and the tests):
 wait = Core.boot(open(".cache/e039-r0005-date-call.sav", "rb").read(), (1990, 10, 4),
-                 dos_time=(10, 0, 20, 95), goal_dat=".cache/GOAL.DAT")   # the title's read, 1771:085F
+                 dos_time=(10, 0, 20, 95), goal_dat=".cache/GOAL.DAT")
 driver = Driver(wait.core)
 driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arrows, the name, Enter on each bulletin
 ```
@@ -609,6 +686,60 @@ driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arro
   and stage), `views.country_card` (a country as the browser's panel shows it, in the desktop card's shape) and
   `views.bulletin` (each story's masthead and lines, read from the page buffer [DS:A96E] that 000E:070B, 062F and
   075F compose and 000E:05F6 moves to the screen; the template's filler rows of ≡ and ░ are left out).
+
+### Booting from GOAL.EXE (T222)
+
+[designed: owner, 2026-11-13, #705] v0.1's player supplies GOAL.EXE and GOAL.DAT; the recorded state never ships
+(CLAUDE.md rule 14). `Core.boot_exe(exe, date, ...)`, the core's third entry kind, makes the date-call state from
+GOAL.EXE's bytes alone (`goal2/core/exeboot.py`) and then continues exactly as `Core.boot` does. The desktop's default
+start and the first-run import use it (docs/packaging.md); `--core-boot` takes either file, told apart by its
+content.
+
+- **Refused before it runs** [designed: T222]: a GOAL.EXE whose SHA-256 is not the registered one's
+  (`a6928b0b…d3664`, [confirmed: goal2/engine/original_match/build.py:3]) raises `CoreError` naming the file and its
+  digest, before any instruction runs.
+- **The machine** [designed: T222]: 1 MiB and the HMA, an IVT whose vector n points to `F000:4n` holding `int n;
+  iret`, a BIOS data area of a VGA in mode 3 (80x25, page 0, cursor 0,0, 16 points, 25 rows, 640 KiB), a cleared
+  screen (space, attribute 07h), an environment block, the program's memory block `M` named GOAL owned by the PSP,
+  then a free block to A000h. The program is placed at the recording's load segment 0823 (PSP 0813), so the two
+  memories compare at the same addresses. [confirmed: the recording's MCB 0812, 803Eh paragraphs] DOS sizes the block
+  as the PSP, the header's 181 pages less the 2 header paragraphs, and maxalloc 6990h; its top, the PSP's word +2,
+  becomes DS:7B4A (23E4:002B-0032). The registers are those DOS's EXEC leaves (AX, BX 0, CX 00FFh, DX the PSP, SI and
+  DI the entry IP and SP, BP 091Ch) and the flags 7202h [derived: the recording's flags 7206h at the date call carry
+  IOPL 3 and NT, which the program never sets]. The core save's `template_sha256` is `goal-exe:` and GOAL.EXE's
+  digest; its header (the Memory component's 0x78 bytes) is zero and its tail above MEM_SIZE empty: no DOSBox-X
+  state made it, and nothing reads either.
+- **The answers** [confirmed: seg_23E4_01.asm 0035-0071, seg_2382_01.asm 0030-012E and 0608; derived: the
+  feasibility probe, #705]: from the MZ entry to the date call the program asks INT 21h AH=35h ×18 (ES:BX the
+  vector), 25h ×5 (the vector set to DS:DX), 44h AL 0 ×1 (handle 1, the console: DX 80D3h; 23E4:14D4 tests DL's
+  bit 7), and INT 10h AH=0Fh ×2 (mode, columns and page from the BIOS data area), 1130h BH 0 ×1 (ES:BP INT 1Fh's
+  vector, CX the points, DL the rows less one: the CRT unit's DS:AAAF is then 0, no snow checking), 08h ×1 (the
+  character and attribute at the cursor, read from the screen: DS:AAB2 and DS:AABC take 07h) and 02h ×2 (the cursor
+  in the BIOS data area, through Intr from 214B:0661). Any other request stops the boot with `InterruptError`. The
+  boot runs on an engine of its own, dropped at the date call: the core's refusals hold after it unchanged.
+- **The tick is an input** [derived: goal2-archaeology E039 derive.py (4f4bf358), which made the recording]: the
+  BIOS tick 0040:006C advances by one every 1,647,750 instructions, a tick at the recording's fixed `cycles=30000`.
+  The CRT unit's calibration then gives DS:AAB8 = 04A7h (its 65,535 passes see no advance) and the game's 214B:1DA7
+  gives DS:A9FF = 10B7h (4279), the recording's. The count itself, `bios_ticks`, is an input like the date: the
+  unit start-up 0791:F3F2 keeps its low word at DS:8336, the seed of the random numbers 0791:94C9 draws for the
+  watched match's sounds [confirmed: seg_0791_24.asm F43F-F447, datarefs.tsv]. By default it is the count at
+  `dos_time`; E039's is 655,435 (derive-r0005.json: 655,438 at the date call, less the 3 ticks served).
+- **Equal to the recording** [derived: measured by goal2/tests/test_core_exe_boot_t222.py]: at the date call the
+  load module equals the recording's byte for byte and the build guard finds no difference; the data segment and
+  the live stack (SS:SP to SS:4000, the program's SP at its entry 0000:0000) equal it but for the bytes below. From
+  both starts the same new game, at both E039 dates, passes the same waits and screens to the same manager menu, and
+  the first watched match ends with the same result and data segment, but for the first two rows below.
+
+| Bytes | The boot | The recording | Why the game does not read it |
+|---|---|---|---|
+| DS:86CC–86DB | LZEXE's stack (SS load+2DE7, SP 0080): its stub's push of 002Bh at SS:007A, zeros | an interrupt frame (IP FEAF, CS F000, flags 7206h) and others DOSBox-X's hardware interrupts pushed while LZEXE ran; the boot models none | data the program has not written by the manager menu; replaced by FFh it changes nothing there, nor (with the recording's bytes) the first watched match |
+| DS:ACC0–AD07 | the 18 vectors 23E4:0035-004E saves: F000:4n, the boot's stubs | DOSBox-X's BIOS and DOS addresses, a property of its ROM, not producible | read only by the program's exit 23E4:0141, which restores them; the core stops before it (quitting stops at INT 10h AH=02h) |
+| SS:3DC2–3DD5 (DS:EAD2–EAE5) | Intr's (235C:000B-0048) pushes for INT 10h AH=02h | zeros: E039's derivation served Intr at its entry and ran none of it | below SS:SP |
+| SS:3DF2–3DF3 | 7202h, the flags Intr's return path stored in 214B:0661's record | 296Eh, the request's word | 214B:1C63's local for the day: GetDate writes it at 235C:007E right after the date call |
+| SS:3FCD–3FE1 | zeros: the program writes none of it before the date call | what DOSBox-X's own interrupt code left on the program's stack before E039's catch | overwritten by the manager menu; replaced by FFh it changes nothing there |
+
+  At the date call BX (00AAh, the record's BX Intr loaded, against 3D6Fh), ES (loaded by GetDate at 235C:0075), AL,
+  CX and DX (DOS's answer) differ too.
 
 ### TEAM card labels and manager text
 
@@ -705,11 +836,48 @@ arbitrary-byte patch loader or edited vendor file; raw native inputs retain the 
 The genuine before-kickoff inputs, source hashes and private readbacks are recorded in
 [evidence metadata](evidence/T122/artifacts.json).
 
+## The delay, served (T223)
+
+[confirmed: `static/goal-exe/code/seg_214B_04.asm` 1E09-1E57, 1DA7-1E08] `214B:1E09(n)` is the game's own calibrated
+delay: for each of n milliseconds it counts a dword up from 0 to the calibration `DS:AA01:DS:A9FF` (the passes of one
+BIOS tick / 55, stored by 214B:1DA7 at the boot; 4279 in the recording and the GOAL.EXE boot, T222). It reads no clock,
+port or interrupt, so no caller can rely on the BIOS tick ending it early; under the core the tick does not advance
+after the boot anyway (goal2/core/exeboot.py). Executed under Unicorn, its wall time is the emulator's speed, not the
+milliseconds it asks for (#428, and #455's pause after a wide shot: [confirmed: #455 comment 2026-10-27T09:15:47Z]
+22 calls of 214B:1E09(2) from match_delay 0791:043B, one 214B:1E09(1) of a beep and 1,708 of the whistle's notes from
+214B:1F81, `play_note` in `play_jingle` under match_whistle 0791:0441).
+
+[designed: T223] `goal2/core/delay.py` serves it at its entry: it writes what the loop would leave (AX = n, DX = ES =
+the count's high word, the flags of the final equal `cmp`, the saved BP and the four locals below SP) and returns as
+`retf 2` does. The core counts the milliseconds asked since the last wait in `KeyWait.delay_ms` and tells
+`Core.on_delay(ms, sound)`, when set, each delay with the sound it times, read from the original's frames:
+`whistle` (a note of match_whistle's jingle), `tune` (another note: the title, a bulletin), `beep` (214B:1EA1, a
+kick or a foul) or None. The core never waits: headless runs (tests, quick results, the round's other fixtures, the
+season) run at full speed. `Core.delays_served = False` executes the loop instead; neither attribute is saved.
+`goal2/tests/test_core_delay_t223.py` plays the same watched stretches both ways (the wide shot's transition, a goal
+and its replay question; a whole first half at each speed 0..5 under `GOAL2_SLOW=1`) and finds the same waits, text
+pages, pitch, commentary, registers and memory, and checks the served routine against its loop call by call.
+
+[designed: T223] The wall-time wait is the watched window's: `CoreWindow` turns on `CoreModel.pacing`, and after each
+step of the watched match (not the round's other fixtures or its end) the model makes the step last, from its start,
+the milliseconds its delays asked for, in their order, on the job's thread (the step's own emulation counts toward
+the wait, so the pace does not depend on the emulator's speed while the delays are the longer: the wide shot's whistle
+takes its 1.7 s); `CoreModel.sounding` names the sound being waited while it
+lasts 200 ms or more ([designed: T228] from the moment the core serves its delay, so a host slower than the original's
+pacing, whose step outlasts the delays and leaves nothing to wait, still names it), and the window's status line says so ("The original plays its whistle (not heard here)…"): no
+sound is played (#431). The step's pose is shown after its wait (a pose is the state at the step's last poll, after all its delays).
+Speeds 0..5 keep their meaning: 0 has no match delay (match_delay and match_whistle return at once). The replay
+question after a goal counts down its own 600 polls x 10 ms on the main window (`round_state()['countdown_ms']`,
+read from wait_or_key's locals); a choice before then is pressed at the current poll (T140), and at the end
+`Driver.replay_timeout()` lets the original's remaining polls run with no key, so the original answers N itself.
+Measured on Linux: `measurements/T223/`.
+
 ## Requirements and cost
 
 `import goal2.core` needs the standard library only; `Core.start` needs `unicorn` (`pip install -e
 '.[watched]'`) and says so when it is missing. Menu keys take milliseconds; pressing **play** runs the captain
-prompt and a whole first half at the image's own delay calibration, about 110 s under the instruction count.
+prompt and a whole first half at the image's own delay calibration, about 110 s under the instruction count (T100,
+before T223 served the delay at its entry: "The delay, served").
 `python3 -m unittest goal2.tests.test_core_runner_t100 -v` checks all of this on E006-r0001, and
 `python3 -m unittest goal2.tests.test_core_screens_t103 -v` the screen table; both need `.cache/` and the
 goal2-archaeology checkout, and skip without them. [designed: #316] The tests that run the original past its first
@@ -814,7 +982,8 @@ are retained as manager decisions. `Driver.replay(True)` answers original Y then
 without writing a highlight file. `replay(False)` answers N to continue live. A resumed
 `save-goal-prompt` accepts `replay(True)` to continue the already-requested replay without
 saving. Scripted `play_round` callers supply `on_replay(driver, wait)` returning that explicit
-boolean; absent a callback the driver refuses rather than silently answering. Original replay
+boolean; absent a callback the driver refuses rather than silently answering. [designed: T223]
+`Driver.replay_timeout()` is the question's own end with no key (N), which the desktop's countdown reaches. Original replay
 restoration and goal/RNG evolution run unchanged. The desktop marks replay frames through
 causal viewer events, and the commentary cursor resumes from the restored snapshot's index.
 

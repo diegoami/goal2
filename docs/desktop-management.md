@@ -68,7 +68,13 @@ and team tactics [confirmed: `docs/original-game/images/m244-squad.png`, `m244-t
 on the right (the eleven, a rule, the bench; Enter marks a player, Enter on another swaps them), the compact card of
 the selected player with its bars (no number where a bar fits), the routes **Team tactics**, **Own tactics (T)**,
 **Reposition (R)**, **Club position (C)** and **Rename (F2)**; the team tactics view's eight rows and the own tactics
-view's four rows (and the marking row, which the original refuses outside a match) change by Enter. **Pool** is the
+view's four rows (and the marking row, which the original refuses outside a match) change by Enter. [designed:
+T224, #454] In a match the same rows send the change by the original's match route (docs/core.md, "Tactics in a
+match"): enabled in live play (a click during a running pose waits for it; the original pauses at its match menu,
+changes the tactic and plays on), at half time, at a pause, a stoppage and before the kick-off; the marking row steps
+the original's own marking cycle (the team's, a protected zone, the opposing eleven) and shows whom he marks. A note
+on the Team page names where the original offers them; Reposition, Club position, Rename, the Pool's moves and Play
+next game are disabled with their reason in the tooltip (positions and substitutions are the bench's). **Pool** is the
 pool side of SELECT YOUR TEAM [confirmed: `m244-pool.png`]: the card on the left, a strip of the squad or of the pool's
 eighty, 21 rows at a time, on the right (Left/Right switch them, Up/Down/PgUp/PgDn scroll); Enter marks, Enter on a
 player of the other list exchanges them. Each edit is the driver's action (docs/core.md, "The Team and Pool route"),
@@ -117,10 +123,14 @@ The core pitch transports Enter/Left/Right in order with bounded, checked input 
 its existing presentation-rate controls. No calibration, speed or substitution byte is patched directly.
 
 [designed: owner, 2026-10-22; T106, #308's G10] **A new career on the core route.** `--core-boot` opens Launch
-over the original's own new game, booted from the state at the program's DOS date call (`e039-r0005-date-call.sav`,
-docs/core.md "Booting at the DOS date call"); GOAL.DAT is read at run time from `--data`:
+over the original's own new game, booted to the program's DOS date call (docs/core.md "Booting at the DOS date
+call"); GOAL.DAT is read at run time from `--data`. [designed: owner, 2026-11-13, #705; T222] `--core-boot` takes the
+player's GOAL.EXE, which the core runs from its first instruction to the date call (`Core.boot_exe`; the desktop's
+default start, from the imported data folder), or the recorded state there (`e039-r0005-date-call.sav`, `Core.boot`),
+which developers and the tests keep using; the file's content tells them apart:
 
 ```sh
+python3 -m goal2.desktop --core-boot .cache/GOAL.EXE --data .cache/GOAL.DAT --save .cache/desktop.g2core
 python3 -m goal2.desktop --core-boot .cache/e039-r0005-date-call.sav --data .cache/GOAL.DAT --save .cache/desktop.g2core
 ```
 
@@ -766,7 +776,8 @@ in the goal2 bench window; switch back to that window to manage the team.
 [designed: owner#429/T140; confirmed: original F029/F030 at archaeology53d7ef5] **Watching a goal replay:**
 after a goal, choose **Watch replay without saving (Y)** in the main window. The pitch comes
 forward and says **ACTION REPLAY**, then returns to live play. **Continue match (N)** skips
-the replay. The prompt waits for your choice; it does not disappear unseen. A resumed
+the replay. [designed: T223] The question counts down the original's own wait, 600 polls of 10 ms (6 s), on the
+main window; with no choice by then the original answers N itself and live play goes on. A resumed
 save-goal question can continue the replay without creating a highlight file. Highlight-file
 saving and a saved-replay library remain separate. Use **SHOW MATCH (F8)** if the OS keeps
 the main window in front. Replay uses the original simulation and does not add a host goal.

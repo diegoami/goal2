@@ -408,11 +408,22 @@ class Bench(unittest.TestCase):
         self.assertEqual(first["texts"][2], "Esc / Enter: open the bench")
         self.assertEqual(first["timeout_ms"],10000 if walk.out["first_stop"]["keeper_unavailable"] else 4000)
         at = walk.order.index("PitchScreen+S18:substitution")
-        self.assertEqual(walk.order[at + 1:at + 3], ["BenchScreen:now", "MenuScreen:stop"])
+        # [designed: #714, T203/#663] Esc/Enter opens the legal bench directly: the box closes first (the accept
+        # travels to the engine before the stop's bench arrives — the plain PitchScreen between), then the bench
+        # with the play menu below (MenuScreen "stop", as first_stop's menu_below asserts).
+        self.assertEqual(walk.order[at + 1:at + 4], ["PitchScreen", "BenchScreen:now", "MenuScreen:stop"])
         self.assertEqual(walk.out["first_stop"]["record"]["menu_below"],"stop")
-        self.assertIn("SUBSTITUTION OPPORTUNITY", walk.out["stop_menu"]["situation"])
+        # [designed: #714, T203] The walker's swap at the bench was acknowledged before Esc opened the menu: a
+        # confirmed swap clears the opportunity presentation (BenchAnswer.opportunity_visible; s15 shows TIMES's
+        # "SUBSTITUTION OPPORTUNITY" only while it is visible), so the menu below is the standard stopped header.
+        # The opportunity itself was named by S18's box (first["texts"][0]) and the bench's own label below.
+        self.assertIn("MATCH STOPPED", walk.out["stop_menu"]["situation"])
+        self.assertNotIn("SUBSTITUTION OPPORTUNITY", walk.out["stop_menu"]["situation"])
         stop = walk.out["first_stop"]
-        self.assertEqual(stop["record"]["label"], "MAKE SUBSTITUTIONS NOW")
+        # [designed: #714, T203] The accepted-opportunity bench names the actual natural opportunity while it is
+        # visible (s19's refresh: "SUBSTITUTION OPPORTUNITY"; "MAKE SUBSTITUTIONS NOW" is the half-time bench's
+        # label, asserted by test_s20_esc_opens_the_bench_in_make_substitutions_now_mode).
+        self.assertEqual(stop["record"]["label"], "SUBSTITUTION OPPORTUNITY")
         self.assertEqual(stop["hints"], ["Take off this player", "Put on this player"])
         self.assertEqual(stop["chosen"], [])
         self.assertIn(stop["pair"][1], stop["after"]["eleven"])

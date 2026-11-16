@@ -14,8 +14,10 @@ def main(argv=None):
     # [designed: owner, 2026-10-22, #321; T105] --core opens the original's own game (goal2/core) from a savestate
     # in its key read; --resume with a core save (G2C1, docs/core.md) resumes it. The --template route is unchanged.
     parser.add_argument('--core',type=Path)
-    # [designed: owner, 2026-10-22; T106] --core-boot opens Launch over the original's own new game, booted from the
-    # state at its DOS date call (e039-r0005-date-call.sav, docs/core.md); GOAL.DAT is read from --data.
+    # [designed: owner, 2026-10-22; T106] --core-boot opens Launch over the original's own new game, booted to its DOS
+    # date call (docs/core.md): [designed: owner, 2026-11-13, #705; T222] from the player's GOAL.EXE, or from the
+    # recorded state there (e039-r0005-date-call.sav), which developers and the tests keep using; GOAL.DAT is read
+    # from --data.
     parser.add_argument('--core-boot',type=Path)
     args=parser.parse_args(argv)
     if args.data is None:
@@ -71,8 +73,8 @@ DEVELOPER_SAVE=Path('.cache/desktop.g2save')   # [designed: T69] the default sav
 
 def _player_defaults(args):
     """[designed: owner, 2026-11-02, T153] Fill the defaults from the player's data folder, importing it first if
-    it is incomplete: --data its GOAL.DAT; with no other route flag, --core-boot its date-call state (the core
-    route's new career); --save the saves folder's
+    it is incomplete: --data its GOAL.DAT; with no other route flag, --core-boot its GOAL.EXE (the core route's new
+    career, T222); --save the saves folder's
     desktop.g2core (desktop.g2save on the --template route). Returns an exit status if the desktop cannot start."""
     from goal2.desktop import data_setup
     try:

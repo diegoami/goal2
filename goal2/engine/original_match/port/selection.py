@@ -5,7 +5,7 @@ The key adapter supplies keys; these bodies retain the original frames and calls
 from . import Registry
 from .contests import ss16, ss8
 from .geometry import cbw, mul
-from .runtime import Regs, sub_flags
+from .runtime import Regs, sub_flags, add_flags
 from .mem import PortError
 from .restarts import _end
 from .setup import guest, farg, rb, rw, w8, w16, squad_of, player_of, ss_w16
@@ -16,6 +16,14 @@ PORTS.variant('form-not-swapped','E20B omits the match-form swap')
 PORTS.variant('keeper-check-inverted','EB89 rejects one keeper instead of two')
 PORTS.variant('squad-word-swap-omitted','DF24 omits the pre-match squad word swap')
 PORTS.variant('squad-mark-clear-omitted','DEDE omits clearing the parent mark before the swap')
+PORTS.variant('pool-gate-omitted','DEB9 omits the current-pool DBFA gate')
+PORTS.variant('pool-index-off-by-one','DF78 stores the wrong retained pool index')
+PORTS.variant('pool-scroll-omitted','DFC2 omits the pool mark scroll value')
+PORTS.variant('pool-view-row-off-by-one','E392 omits the decrement of the pool row word index')
+PORTS.variant('pool-view-base-omitted','E38B omits the manager pool base word DS:6D18')
+PORTS.variant('pool-view-highlight-omitted','E3D2 omits the retained mark row highlight')
+PORTS.variant('pool-view-cursor-attribute-off-by-one','E438 adds 1 instead of 2 to the cursor row for 214B:13C5')
+PORTS.variant('pool-view-return-ax-clobbered','E449 return leaves AX zeroed instead of the last callee result')
 M16=0xFFFF
 
 
@@ -47,6 +55,24 @@ def slot(mem,r,index):
     return rw(mem,r,-2)
 
 
+@PORTS.port('0791:DDCB',ret='ret 2')
+def pool_selection_index(mem,variant):
+    """[confirmed: T128 rescope, code seg_0791_22.asm DDCB-DE24] No callees; full original frame."""
+    r=Regs(mem);r.enter(6)
+    r.di,r.es=mem.ds16(0xA923),mem.ds16(0xA925)
+    r.local16(-6,r.di);r.local16(-4,r.es)
+    farg(mem,r,-6);r.al=rb(mem,r,1);r.ah=0;r.di=(r.ax<<1)&M16
+    r.cx=mem.ds16((r.di+0x6D18)&M16)
+    farg(mem,r,-6);r.al=rb(mem,r,1);r.ah=0;r.ax=(r.ax<<1)&M16
+    farg(mem,r,-6);r.di+=r.ax;r.dx=rw(mem,r,0x5E)
+    farg(mem,r,-6);r.al=rb(mem,r,1);r.ah=0;r.ax=(r.ax<<1)&M16
+    farg(mem,r,-6);r.di+=r.ax;r.ax=rw(mem,r,0x52)
+    r.ax=(r.ax+r.dx)&M16;r.ax=(r.ax+r.cx)&M16
+    r.arith(sub_flags(r.ax,2,16));r.ax=(r.ax-2)&M16
+    r.local16(-2,r.ax);r.ax=ss16(mem,r,r.bp-2)
+    return _end(r)
+
+
 @PORTS.port('0791:DE27',ret='ret 2')
 def selected_index(mem,variant):
     r=Regs(mem);r.enter(2)
@@ -72,21 +98,21 @@ def selected_pointer(mem,variant):
 
 @PORTS.port('0791:DEA6',ret='ret 2')
 def swap_pre_match_squad(mem,variant):
-    """T123b bounded DEA6: squad pane only, C1F clear; both original C1E re-sorts.
-
-    named/seg_0791_12.c, then code/seg_0791_22.asm DEA6-DFDC. Unsupported
-    current/marked pool panes and in-match substitution mode fail before any
-    write. A stale marked pane is irrelevant while no mark is active.
+    """[confirmed: T128, named seg_0791_12.c; code seg_0791_22.asm DEA6-DFDC]
+    Original pre-match squad/pool selection. Only the CURRENT pool pane asks
+    DBFA; a marked pool pane alone does not. C1F remains an unsupported mode.
     """
-    outer=mem.arg(0)
-    if (mem.ds8(0xC1F) or mem.u16(mem.ss_lin(outer-5))!=1 or
-            (mem.u8(mem.ss_lin(outer-1)) and mem.u16(mem.ss_lin(outer-7))!=1)):
-        raise PortError('0791:DEA6 supports only pre-match squad-to-squad selection')
+    if mem.ds8(0xC1F):
+        raise PortError('0791:DEA6 requires pre-match selection')
     r=Regs(mem);r.enter(4)
     r.di,r.es=mem.ds16(0xA923),mem.ds16(0xA925)
     r.local16(-4,r.di);r.local16(-2,r.es)
-    # DEB9's pool gate is outside this bounded entry; supported pane is one.
     r.arith(sub_flags(pword(mem,r,-5),2,16))
+    if pword(mem,r,-5)==2 and variant!='pool-gate-omitted':
+        country=pword(mem,r,6)
+        r=yield from guest(mem,r,'DBFA',country,ret='DECA',far=False)
+        r.arith(sub_flags(r.al,0,8))                       # DECA: or al,al
+        if not r.al:return _end(r)
     marked=pbyte(mem,r,-1);r.arith(sub_flags(marked,0,8))
     if marked:
         if variant!='squad-mark-clear-omitted':putp(r,parent(mem,r)-1,0,byte=True)  # DEDE
@@ -121,10 +147,19 @@ def swap_pre_match_squad(mem,variant):
         r.di=r.ax;r.es=r.dx;word=rw(mem,r,0);r.arith(sub_flags(word,0,16))
         if word:
             r=yield from guest(mem,r,'DE27',ss16(mem,r,r.bp+4),ret='DF75',far=False)
-            putp(r,parent(mem,r)-9,r.ax)
+            putp(r,parent(mem,r)-9,(r.ax+1)&M16 if variant=='pool-index-off-by-one' and pword(mem,r,-5)==2 else r.ax)
             r.ax=pword(mem,r,-5);putp(r,parent(mem,r)-7,r.ax)
             r.arith(sub_flags(pword(mem,r,-5),2,16))
-            r.di=parent(mem,r);r.ax=0;r.arith(sub_flags(0,0,16));putp(r,r.di-11,r.ax)
+            if pword(mem,r,-5)==2:
+                farg(mem,r,-4);r.al=rb(mem,r,1);r.ah=0;r.ax=(r.ax<<1)&M16
+                farg(mem,r,-4);r.di+=r.ax;r.dx=rw(mem,r,0x52)
+                farg(mem,r,-4);r.al=rb(mem,r,1);r.ah=0;r.ax=(r.ax<<1)&M16
+                farg(mem,r,-4);r.di+=r.ax;r.ax=rw(mem,r,0x5E)
+                carry=add_flags(r.ax,r.dx)&1;r.ax=(r.ax+r.dx)&M16
+                r.arith((sub_flags(r.ax,1,16)&~1)|carry);r.ax=(r.ax-1)&M16  # DFBE: dec preserves CF
+                r.di=parent(mem,r);putp(r,r.di-11,0 if variant=='pool-scroll-omitted' else r.ax)
+            else:
+                r.di=parent(mem,r);r.ax=0;r.arith(sub_flags(0,0,16));putp(r,r.di-11,r.ax)
             putp(r,parent(mem,r)-1,1,byte=True)
     return _end(r)
 
@@ -154,6 +189,84 @@ def substitution_instructions(mem,variant):
     r=yield from template(mem,r,0x4840,'E2B2')
     if mem.ds16(0xC1B)>11:r=yield from template(mem,r,0x4740,'E2C8')
     elif mem.ds16(0xC1B)<12:r=yield from template(mem,r,0x4720,'E2E0')
+    return _end(r)
+
+
+@PORTS.port('0791:E2E6',ret='ret 2')
+def draw_pool_view(mem,variant):
+    """[confirmed: T129p, named seg_0791_12.c:806 draw_pool_view; code seg_0791_22.asm E2E6-E44C]
+    The pool pane of SELECT TEAM: three templates, rows top..top+20 of the manager's pool
+    (1771:2F37, each row's word A927[DS:6D18[manager]+row-1]), the retained mark row's
+    highlight (214B:00DB), the footer templates when DS:0C20 is clear, the card of the
+    selected pool player (DDCB, DE51, 1771:42BC) and the cursor row's back attribute
+    (214B:13C5). Flags at each guest call are those of the listing's last flag setter.
+    """
+    r=Regs(mem);r.enter(14)                                                   # E2E6-E2E9
+    r.di,r.es=mem.ds16(0xA923),mem.ds16(0xA925)                               # E2EC
+    r.local16(-8,r.di);r.local16(-6,r.es)                                     # E2F0, E2F3
+    r.di=ss16(mem,r,r.bp+4);r.ax=ss16(mem,r,r.di+6)                           # E2F6, E2F9
+    r.dx=0xBF;mul(r,r.dx)                                                     # E2FD, E300
+    r.di,r.es=mem.ds16(0xA917),mem.ds16(0xA919);flags=add_flags(r.di,r.ax)   # E302, E306
+    r.di=r.di+r.ax;r.arith(flags)
+    r.local16(-12,r.di);r.local16(-10,r.es)                                   # E308, E30B
+    r=yield from template(mem,r,0x454C,'E31D')                                # E30E-E318
+    r=yield from template(mem,r,0x26F2,'E32C')                                # E31D-E327
+    r=yield from template(mem,r,0x57F0,'E33B')                                # E32C-E336
+    r.local16(-4,2)                                                           # E33B
+    farg(mem,r,-8);r.al=rb(mem,r,1);r.ah=0;r.ax=(r.ax<<1)&M16                # E340-E349
+    farg(mem,r,-8);r.di=(r.di+r.ax)&M16;r.ax=rw(mem,r,0x52)                  # E34B-E350
+    r.ax=(r.ax+0x14)&M16;r.local16(-14,r.ax)                                  # E354, E357
+    farg(mem,r,-8);r.al=rb(mem,r,1);r.ah=0;r.ax=(r.ax<<1)&M16                # E35A-E363
+    farg(mem,r,-8);r.di=(r.di+r.ax)&M16;r.ax=rw(mem,r,0x52)                  # E365-E36A
+    end=ss16(mem,r,r.bp-14);r.arith(sub_flags(r.ax,end,16))
+    if r.ax<=end:                                                             # E371: ja skips an unsigned wrap
+        r.local16(-2,r.ax)                                                    # E373
+        first=True
+        while True:
+            if not first:r.local16(-2,(ss16(mem,r,r.bp-2)+1)&M16)           # E378
+            first=False
+            r.local16(-4,(ss16(mem,r,r.bp-4)+1)&M16)                         # E37B
+            farg(mem,r,-8);r.al=rb(mem,r,1);r.ah=0;r.di=r.ax                  # E37E-E387
+            r.di=(r.di<<1)&M16
+            r.ax=0 if variant=='pool-view-base-omitted' else mem.ds16((r.di+0x6D18)&M16)  # E38B
+            r.ax=(r.ax+ss16(mem,r,r.bp-2))&M16
+            if variant!='pool-view-row-off-by-one':r.ax=(r.ax-1)&M16        # E392
+            r.ax=(r.ax<<1)&M16                                                # E393
+            r.di,r.es=mem.ds16(0xA927),mem.ds16(0xA929);flags=add_flags(r.di,r.ax)  # E395, E399
+            r.di=r.di+r.ax;r.arith(flags)
+            word=rw(mem,r,0);row=ss16(mem,r,r.bp-4);r.ax=0x41                # E39B-E3A1
+            r=yield from guest(mem,r,'1771:2F37',word,row,r.ax,ret='E3AA')    # E3A5
+            r.ax=ss16(mem,r,r.bp-2);r.di=ss16(mem,r,r.bp+4)                   # E3AA, E3AD
+            mark=ss16(mem,r,r.di-11);r.arith(sub_flags(r.ax,mark,16))         # E3B0
+            if r.ax==mark and variant!='pool-view-highlight-omitted':         # E3B4
+                r.ax=ss16(mem,r,r.bp-4);r.dx=0xA0;mul(r,r.dx)                 # E3B6-E3BC
+                r.di,r.es=mem.ds16(0xA96E),mem.ds16(0xA970);flags=add_flags(r.di,r.ax)  # E3BE, E3C2
+                r.di=r.di+r.ax;r.arith(flags)
+                flags=add_flags(r.di,0xFFE0);r.di=r.di+0xFFE0;r.arith(flags)  # E3C4
+                ptr=r.es,r.di;r.ax=0x8F;attr=r.ax;r.ax=12                     # E3C8-E3CE
+                r=yield from guest(mem,r,'214B:00DB',*ptr,attr,r.ax,ret='E3D7')  # E3D2
+            r.ax=ss16(mem,r,r.bp-2);end=ss16(mem,r,r.bp-14)                   # E3D7, E3DA
+            r.arith(sub_flags(r.ax,end,16))
+            if r.ax==end:break                                                # E3DD
+    c20=mem.ds8(0xC20);r.arith(sub_flags(c20,0,8))                            # E3DF
+    if not c20:                                                               # E3E4
+        r=yield from template(mem,r,0x269C,'E3F5')                            # E3E6-E3F0
+        r=yield from template(mem,r,0x268A,'E404')                            # E3F5-E3FF
+    r.di=ss16(mem,r,r.bp+4);side=ss16(mem,r,r.di-5)                           # E404, E407
+    r.push(side)
+    r=yield from guest(mem,r,'DDCB',ss16(mem,r,r.bp+4),ret='E411',far=False)  # E40B-E40E
+    # The retained pane word already occupies DE51's first argument slot (DEA6's
+    # reassembly): the three words land at the physical addresses of E411-E415.
+    r.sp+=2
+    r=yield from guest(mem,r,'DE51',side,r.ax,ss16(mem,r,r.bp+4),ret='E418',far=False)
+    r.di=r.ax;r.es=r.dx;word=rw(mem,r,0)                                      # E418-E41C
+    r=yield from guest(mem,r,'1771:42BC',word,ret='E424')                     # E41F
+    farg(mem,r,-8);r.al=rb(mem,r,1);r.ah=0;r.ax=(r.ax<<1)&M16                # E424-E42D
+    farg(mem,r,-8);r.di=(r.di+r.ax)&M16;r.ax=rw(mem,r,0x5E)                  # E42F-E434
+    flags=add_flags(r.ax,2);r.ax=(r.ax+(1 if variant=='pool-view-cursor-attribute-off-by-one' else 2))&M16;r.arith(flags)  # E438
+    row=r.ax;r.ax=0x41;attr=r.ax;r.ax=12                                      # E43B-E443
+    r=yield from guest(mem,r,'214B:13C5',row,attr,r.ax,ret='E449')            # E444
+    if variant=='pool-view-return-ax-clobbered':r.ax=0
     return _end(r)
 
 

@@ -283,6 +283,9 @@ def build_core(self, model):
                ('Own tactics (T) >', 'teamOwnRoute', lambda: core_team_view(self, 2)),
                ('Reposition (R)', 'reposition', lambda: core_reposition(self, False)),
                ('Club position (C)', 'clubPosition', lambda: core_reposition(self, True)))
+    # [designed: T224, #454] In a match the page says which tactics go to the original, where, and what waits.
+    self.core_match_note = QLabel();self.core_match_note.setObjectName('coreMatchTacticsNote')
+    self.core_match_note.setWordWrap(True);self.core_match_note.hide();page.content.addWidget(self.core_match_note)
     self.core_team_buttons = {}
     for i, (text, name, action) in enumerate(buttons):
         button = QPushButton(text);button.setObjectName(name);button.setAccessibleName(text.rstrip(' >'))
@@ -467,7 +470,23 @@ def core_rename(self):
     self.run_core('rename', player, text)
 
 
+def core_match_action(self, name, *args):
+    """[designed: T224, #454] A tactics change in a match goes by the original's match route (Driver.match_tactic and
+    the rest). In live play the running pose finishes first: the change waits for it (CoreRound.pending_action)."""
+    if not self.core_jobs.busy:
+        return self.run_core(name, *args)
+    state = self.core_round.state
+    if state and state.get('stop') == 'live':
+        self.core_round.pending_action = (name, args)
+        self.status.setText('The change waits for the original\'s current pose, then it pauses at its match menu…')
+        return True
+    self.status.setText('The original is still busy with the last action');return False
+
+
 def core_toggle_tactic(self, element):
+    if self.model.in_round:
+        return core_match_action(self, 'match_tactic', element,
+                                 not self.model.team_tactics()['byte'] >> (element - 1) & 1)
     self.run_core('set_tactic', element, not self.model.team_tactics()['byte'] >> (element - 1) & 1)
 
 
@@ -477,12 +496,17 @@ def core_own_tactic(self, element):
     r = self.model.card(player)['own_tactics']
     state = None if not r >> (element + 3) & 1 else bool(r >> (element - 1) & 1)
     following = {None: False, False: True, True: None}[state]         # 1771:4B61's cycle
+    if self.model.in_round:
+        return core_match_action(self, 'match_own_tactic', player, element, following)
     self.run_core('set_own_tactic', player, element, following)
 
 
 def core_marking(self):
     player = selected_player(self)
-    if player is not None:self.run_core('set_marking', player, 0)
+    if player is None:return
+    if self.model.in_round:          # [T224] one Enter on 4B61's row 5: 49B8's next marking
+        return core_match_action(self, 'match_marking', player, 'next')
+    self.run_core('set_marking', player, 0)
 
 
 def core_refresh_card(self):

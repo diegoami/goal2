@@ -57,6 +57,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from goal2.core import delay as _delay
 from goal2.core import screens as _screens
 from goal2.core import patches as _patches
 from goal2.engine.original_match import machine as _machine
@@ -202,7 +203,9 @@ def timed_taker_entry(memory, load, regs):
     if (waiting != bp + 12 or selector != waiting + 20 or selector + 8 >= 0x10000
             or f.near_caller(waiting) != 0xCED9 or f.word(waiting,4) != 1000):
         return False
-    return _screens._taker(f, selector) == _screens.TAKER_SELECT
+    # [designed: T220] Only roles 2/5 have a delay input (T88/T89); T131's roles 3/4 are kept at the polls, not in the delay,
+    # so a role 3 or 4 here is no validated entry and is not widened to one.
+    return f.byte(selector, 4) in (2, 5) and _screens._taker(f, selector) == _screens.TAKER_SELECT
 
 
 class UnknownScreen(CoreError):
@@ -286,6 +289,8 @@ class KeyWait:
     view: dict = field(default_factory=dict, hash=False)
     passed: tuple = ()
     poll: bool = False          # [T108] the original is at a poll of a kind the core stops at (Core.stop_at)
+    # [T223] the milliseconds the original's delay 214B:1E09 asked for since the last wait (0 for a loaded core's wait)
+    delay_ms: int = field(default=0, compare=False)
 
 
 class Core:
@@ -313,6 +318,11 @@ class Core:
         self.quit_origin = None      # [designed: T121] one exact playable snapshot before manager F10
         self.patches = ()             # [designed: owner#73, T122] raw cores retain original policy
         self._live_frames = False     # [T116] temporary presentation batching; never a guest or save setting
+        # [designed: T223] 214B:1E09 is served at its entry (goal2/core/delay.py); False executes its loop instead.
+        # `on_delay(ms, sound)` is told each delay asked for (None: nobody listens). Neither is saved.
+        self.delays_served = True
+        self.on_delay = None
+        self._delay_ms = 0
         self._hooks()
 
     # -- starting and resuming -----------------------------------------------------------------------------
@@ -369,26 +379,53 @@ class Core:
         state = bytes(state)
         image = _image(state)
         regs = cpu_state(state)
+        memory = bytearray(image.memory)
+        memory[TEXT_PAGE:TEXT_PAGE + ROWS * COLS * 2] = text_page(state)
+        return cls._boot_at_date_call(memory[:MEM_SIZE], image.load, regs, image.header, bytes(image.memory[MEM_SIZE:]),
+                                      hashlib.sha256(state).hexdigest(), date, budget=budget, dos_time=dos_time,
+                                      goal_dat=goal_dat, title_key=title_key)
+
+    @classmethod
+    def boot_exe(cls, exe, date, *, budget=DEFAULT_BUDGET, dos_time=DEFAULT_DOS_TIME, goal_dat=None, title_key=None,
+                 bios_ticks=None):
+        """The third entry kind (T222): `boot`, from the player's own GOAL.EXE (`exe`: its path or bytes) instead of
+        a recorded state. GOAL.EXE is refused (CoreError naming it) unless it is the registered one, before any of
+        its instructions runs; it is then run from its MZ entry in a bare machine to its date call
+        (goal2/core/exeboot.py, docs/core.md "The new game"), and continues as `boot` does. The boot's DOS and BIOS
+        answers end at the date call. The core save's `template_sha256` is 'goal-exe:' and GOAL.EXE's digest.
+
+        `bios_ticks`: the BIOS's tick count when GOAL.EXE starts, an input like the date (exeboot.py: the program
+        keeps its low word as a random seed, DS:8336). [designed: T222] By default the count at `dos_time`."""
+        _need_unicorn()
+        from goal2.core import exeboot
+        data, _ = exeboot.read_exe(exe)
+        call = exeboot.date_call(data, exeboot.ticks_at(_dos_time(dos_time)) if bios_ticks is None else bios_ticks)
+        return cls._boot_at_date_call(bytearray(call.memory), call.load, call.regs, call.header, b"",
+                                      exeboot.digest_id(data), date, budget=budget, dos_time=dos_time,
+                                      goal_dat=goal_dat, title_key=title_key)
+
+    @classmethod
+    def _boot_at_date_call(cls, memory, load, regs, header, tail, template_id, date, *, budget, dos_time, goal_dat,
+                           title_key):
+        """`boot`'s run from the machine stopped at the date call (`memory`, its `load` segment and `regs`)."""
         year, month, day = (int(x) for x in date)
         if not DOS_YEARS[0] <= year <= DOS_YEARS[1]:
             raise ValueError(f"DOS answers the years {DOS_YEARS[0]}..{DOS_YEARS[1]}, not {year} (NG-9)")
-        seg = (image.load + int(DATE_CALL[0], 16)) & 0xFFFF
+        seg = (load + int(DATE_CALL[0], 16)) & 0xFFFF
         at = seg * 16 + DATE_CALL[1]
-        if (regs["CS"], regs["EIP"] & 0xFFFF) != (seg, DATE_CALL[1]) or bytes(image.memory[at:at + 2]) != b"\xcd\x21" \
+        if (regs["CS"], regs["EIP"] & 0xFFFF) != (seg, DATE_CALL[1]) or bytes(memory[at:at + 2]) != b"\xcd\x21" \
                 or (regs["EAX"] >> 8) & 0xFF != GET_DATE:
             raise CoreError(f"the state is not stopped at the date call {DATE_CALL[0]}:{DATE_CALL[1]:04X} (int 21h, "
                             f"AH 2Ah; NG-10): CPU at {regs['CS']:04X}:{regs['EIP'] & 0xFFFF:04X}, AX "
                             f"{regs['EAX'] & 0xFFFF:04X}")
-        m = Machine(image.memory, image.load)
-        m.write(TEXT_PAGE, text_page(state))
+        m = Machine(memory, load)
         for name in REGS:
             if name in regs:
                 m.set_reg(name, regs[name])
         for name, value in date_registers(regs, (year, month, day)).items():
             m.set_reg(name, value)
         m.set_reg("eip", DATE_RETURN)
-        core = cls(m, image.header, bytes(image.memory[MEM_SIZE:]), budget, [], hashlib.sha256(state).hexdigest(),
-                   dos_time=dos_time, date=(year, month, day), data=goal_dat)
+        core = cls(m, header, tail, budget, [], template_id, dos_time=dos_time, date=(year, month, day), data=goal_dat)
         if title_key is not None:
             core.queue("title-tune", title_key)
         core._run()
@@ -585,6 +622,7 @@ class Core:
         self.m.at(READKEY, self._on_readkey)
         self.m.at(MSDOS, self._on_msdos)
         self.m.at(INTR, self._on_intr)
+        self.m.at(_delay.DELAY, self._on_delay)
         self.m.uc.hook_add(UC_HOOK_INTR, self._on_interrupt)
         # [confirmed: NG-10] Speaker port I/O (OUT 42h/43h, IN/OUT 61h) is ignored: Unicorn drops an OUT and reads 0
         # from an IN without a port hook, as E039's trace answered them.
@@ -627,6 +665,17 @@ class Core:
                     break
         m.set_reg("ax", (m.reg("ax") & 0xFF00) | has)
         m.return_from(True, 0)
+
+    def _on_delay(self, replay):
+        """[designed: T223] 214B:1E09(n), at its entry: the milliseconds are counted and told to the listener, and the
+        routine is left as its loop would leave it (goal2/core/delay.py), unless `delays_served` is False."""
+        m = self.m
+        ms = _delay.asked(m)
+        self._delay_ms += ms
+        if self.on_delay is not None and ms:
+            self.on_delay(ms, _delay.sound(m))
+        if self.delays_served:
+            _delay.serve(m)
 
     def _on_readkey(self, replay):
         if self.m.rd(PUSHED_BACK, 1):
@@ -733,7 +782,7 @@ class Core:
 
     def _run(self):
         m = self.m
-        self.wait, self._polls, self._passed = None, {}, []
+        self.wait, self._polls, self._passed, self._delay_ms = None, {}, [], 0
         m.stop_reason, m.error = None, None
         m._resume_lin = None          # the kit's replay marker: the core never resumes at a hooked instruction
         try:
@@ -750,11 +799,12 @@ class Core:
             self.stopped = BudgetExceeded(self.budget, self._pc(m.reg("cs"), m.reg("ip")), self._text())
             raise self.stopped
         passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in self._passed)
-        self.wait = self._make_wait(tuple(sorted(self._polls.items())), passed, poll=m.stop_reason == "poll")
+        self.wait = self._make_wait(tuple(sorted(self._polls.items())), passed, poll=m.stop_reason == "poll",
+                                    delay_ms=self._delay_ms)
         if self.wait.kind == 'manager-menu':
             self.quit_origin = None
 
-    def _make_wait(self, polls, passed=(), poll=False):
+    def _make_wait(self, polls, passed=(), poll=False, delay_ms=0):
         m = self.m
         site = m.where(m.stack_word(2), m.stack_word(0))
         screen = self._screen()
@@ -764,7 +814,8 @@ class Core:
             self.stopped = UnknownScreen(site, decode_text(screen))
             raise self.stopped
         return KeyWait(site=site, text=decode_text(screen), screen=screen, state=StateView(self.memory_component(), m.load),
-                       polls=polls, core=self, kind=kind, view=_screens.view(site, frame), passed=passed, poll=poll)
+                       polls=polls, core=self, kind=kind, view=_screens.view(site, frame), passed=passed, poll=poll,
+                       delay_ms=delay_ms)
 
 
 def _image(savestate):
