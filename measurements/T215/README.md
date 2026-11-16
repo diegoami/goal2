@@ -10,3 +10,9 @@ Rendered application: `f3b1134d43869e19a9249dd666d271548a073e9d`.
 [designed: T215] No text is shrunk or dropped: continent labels receive seven cells; the manager summary uses two rows in its existing colours. The first long-country regression failed before the fix. The unnamed-manager career walk separately failed with the obsolete technical placeholder and passes with the implemented short default.
 
 These are capture receipts, not acceptance status; live checks, the milestone verdict and owner playtest are on PR #748 and milestone #749. The default window/backend remains unchanged.
+
+## Windows import correction
+
+[designed: T215] Source `90c212bc2066a6999c530496af024ce365aca9f8` uses the import panel’s two spare rows for the complete Windows refusal. Native before/after probes retain seven text lines, measuring 266 px needed versus 228 px available before and 304 px available after. The new regression fails before and passes after. No string, font, folder capacity or control changes.
+
+`import-correction-validation.json` records the full baseline plus all seven affected UI modules rerun with actual slow journeys on Linux and native Windows, in isolated processes. The original Windows full run remains a failed baseline, not a pass. Unchanged engine/game receipts are retained under process.md §3; the corrected UI coverage supplements them. `layout-report.json` and the design receipt are regenerated from 144 corrected-source captures with no problems. Native proof is `docs/design/ui-2026-11/T215-import-correction/windows-refused.png`.

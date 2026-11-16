@@ -1,0 +1,48 @@
+[
+  {
+    "state": "first",
+    "size": [
+      1440,
+      1080
+    ],
+    "problems": [],
+    "message": "",
+    "error_lines": [],
+    "error_rect": [
+      0,
+      0,
+      640,
+      480
+    ],
+    "folder_lines": [
+      "\u2014"
+    ]
+  },
+  {
+    "state": "refused",
+    "size": [
+      1440,
+      1080
+    ],
+    "problems": [],
+    "message": "GOAL.DAT is missing: it is not in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-ui-shots-g5atekuj\\offered.\ne010-r0008-halftime.sav is missing: it is not in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-ui-shots-g5atekuj\\offered.\nGOAL.HLP in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-ui-shots-g5atekuj\\offered is not the right file: its contents differ from the one goal2 needs.\nChoose the folder that holds all the files.",
+    "error_lines": [
+      "GOAL.DAT is missing: it is not in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-ui-",
+      "shots-g5atekuj\\offered.",
+      "e010-r0008-halftime.sav is missing: it is not in",
+      "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-ui-shots-g5atekuj\\offered.",
+      "GOAL.HLP in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-ui-shots-g5atekuj\\offered is not the",
+      "right file: its contents differ from the one goal2 needs.",
+      "Choose the folder that holds all the files."
+    ],
+    "error_rect": [
+      0,
+      342,
+      1440,
+      304
+    ],
+    "folder_lines": [
+      "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-ui-shots-g5atekuj\\offered"
+    ]
+  }
+]

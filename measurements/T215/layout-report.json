@@ -36,21 +36,21 @@
         "height": 1080,
         "problems": [],
         "path": "01-ImportScreen-1440x1080.png",
-        "sha256": "e269ee4b637a07991885988f28ab693f7268dc9f27f065cb0f0968884a29b5a6"
+        "sha256": "df8350a6e2d1272d7376e71d37fdac99afc4f4db2cfcc40705e19016ea8dc9fa"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "01-ImportScreen-1440x900.png",
-        "sha256": "e3db5b0fb45e59bd39de815af231ad26163607b91b224007f32ab3acb3e4fea1"
+        "sha256": "576c6478eaf72d0f72ff9930086964fbc412e3e63fa8421268bd59868c626c88"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "01-ImportScreen-2110x1213.png",
-        "sha256": "24971e48bffc27514809b93b189c3e459d4ec16f8501abdca2fe8c2653a29266"
+        "sha256": "354f7d1f2b36bb9325d28f4ff7843851efbfa7badaab3099818ac76012097ab7"
       }
     ],
     "journey": "s01-import.png"
@@ -148,21 +148,21 @@
         "height": 1080,
         "problems": [],
         "path": "05-StartScreen-1440x1080.png",
-        "sha256": "2a5b72b116864ee93e8cec9904d3b89bbaa62e3def2b21b58132f9d422aa9198"
+        "sha256": "1eaf1f413d4849fb423c8ce619fcb4e54aa93c7560235a471808f0f73e53e745"
       },
       {
         "width": 1440,
         "height": 900,
         "problems": [],
         "path": "05-StartScreen-1440x900.png",
-        "sha256": "eac04f85897e3b1090d9e8050d94dae0e84564767897261ffdd72774457416b0"
+        "sha256": "61ed582cf74977a7b7f09399491e9f33187fbf15af358936981c60dc5ed070ec"
       },
       {
         "width": 2110,
         "height": 1213,
         "problems": [],
         "path": "05-StartScreen-2110x1213.png",
-        "sha256": "57f1eb21e1bebd5722ca21c8c63e4c27098e3d10acd63cfad4e129e55eebfa54"
+        "sha256": "1efe96e1cebead02bb62d136d345ecb673b27d4da68d5432f81445c277fe5b85"
       }
     ],
     "journey": "s02-start.png"
