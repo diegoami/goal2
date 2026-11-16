@@ -47,7 +47,8 @@ LIST_WIDTH = 390     # [designed: owner #598] the list's width in pixels on the 
 LIST_COLS, RANK_COLS = 29, 4
 LIST_AT = BODY_COLS - LIST_COLS
 PREVIEW_MS = 120     # [designed: T86, Launch's preview delay] the card follows the highlight after a pause
-NAME_NOTE = "Enter on a country opens this line; Enter again starts the career."
+NAME_NOTE = "Choose a country, then Enter to enter your name."
+NAME_ACTIVE = "Type your name.\nEnter: start career\nEsc: choose country"  # [designed: owner playtest, #754]
 # [confirmed: F008 DS:699A] a role code's line, by the code itself (goal2/desktop/country_card.py's table)
 from goal2.desktop.country_card import CODE_LINE  # noqa: E402
 
@@ -245,6 +246,8 @@ class CountryScreen(Screen):
         self.bind((), "group of 16", None, captions=("←", "→"))
         self.bind((Qt.Key.Key_Insert,), "world / continental rank", self.toggle_rank)
         self.bind((Qt.Key.Key_Space,), "players", self.players)
+        self.country_keys=[b for b in self.bindings if b.text in ("country","group of 16","world / continental rank","players")]
+        self.erase_key=self.bind((Qt.Key.Key_Backspace,),"erase",self.erase_name,captions=("Backspace",),shown=False)
         esc = next(b for b in self.bindings if Qt.Key.Key_Escape in b.keys)
         self.bindings.remove(esc)
         self.bindings.append(esc)
@@ -263,7 +266,7 @@ class CountryScreen(Screen):
         body = Cells(BODY_COLS, BODY_ROWS, "countryBody")
         self.body_layout.addWidget(body, 1)
         self.area = body
-        body.text("Player 1 · choose your country", "sub", 0, 0)
+        self.prompt = body.text("Player 1 · choose your country", "sub", 0, 0,49)
         body.text("level of difficulty", "sub", 49, 0)
         body.put(CellLabel(NOT_DECODED, "undecoded"), 69, 0, len(NOT_DECODED))
         self.first = body.text("", "sub", 0, 1, BODY_COLS)
@@ -286,7 +289,8 @@ class CountryScreen(Screen):
         body.put(self.countries_frame, LIST_AT, 2, LIST_COLS, GROUP + 2)
         # The manager's name under the list: the line (open once a country is chosen) and what it says.
         name_frame, inner = framed("manager's name", LIST_COLS, 4)
-        self.field = CellLineField(MANAGER_MAX, count=True, on_click=self.press_enter_key)
+        self.name_frame = name_frame
+        self.field = CellLineField(MANAGER_MAX, count=True, on_click=self.focus_name)
         inner.put(self.field, 0, 0, LIST_COLS)
         self.name_note = CellPara(NAME_NOTE, "sub")
         inner.put(self.name_note, 0, 1, LIST_COLS, 3)
@@ -302,6 +306,13 @@ class CountryScreen(Screen):
             row.set_on(start + i == self.index)
         self.group_note.setText(f"{start + GROUP} of {len(self.order)} · ←→ next group")
         self._show_card()
+        self.prompt.setText("Player 1 · type your manager's name" if self.naming else "Player 1 · choose your country")
+        self.name_frame.set_label("type your name" if self.naming else "manager's name")
+        for binding in self.country_keys:binding.shown=not self.naming
+        self.erase_key.shown=self.naming
+        next(b for b in self.bindings if Qt.Key.Key_Escape in b.keys).text="cancel name" if self.naming else "back"
+        self.prompt.setStyleSheet("color: "+(theme.VALUE if self.naming else theme.TEXT_NORMAL)+";")
+        self._refresh_bar()
         if self.naming:
             self.set_enter("Start the career", self.press_enter_key)
         else:
@@ -381,10 +392,11 @@ class CountryScreen(Screen):
         if not self.naming:
             return False
         if key == Qt.Key.Key_Backspace:
-            self.field.backspace()
+            self.erase_name()
             return True
         if text and len(text) == 1 and text.isprintable():
             self.field.type(text)
+            self._note(NAME_ACTIVE)
             return True
         return False
 
@@ -394,15 +406,27 @@ class CountryScreen(Screen):
         if not self.naming:
             self.naming = True
             self.field.set_active(True)
-            self._note(NAME_NOTE)
+            self._note(NAME_ACTIVE)
+            self.window_.setFocus()
             self._show()
             return None
         return self.start()
 
+    def erase_name(self):
+        """[designed: owner playtest, #754] Keyboard and clickable key hint erase through one action."""
+        if self.naming:
+            self.field.backspace()
+            self._note(NAME_ACTIVE)
+
+    def focus_name(self):
+        """[designed: owner playtest, #754] A field click activates/focuses typing, never submits an active name."""
+        if not self.naming:return self.press_enter_key()
+        self.window_.setFocus()
+
     def start(self):
         name = self.field.text.strip()
         if not name:
-            self._note("Type the manager's name first: 14 characters at most.", error=True)
+            self._note("Type the manager's name.\nEnter: start · Esc: cancel\n14 characters maximum", error=True)
             return None
         number = self.order[self.index][0]
         try:

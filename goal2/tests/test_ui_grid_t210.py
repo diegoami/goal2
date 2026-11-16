@@ -136,11 +136,12 @@ class FrameDrawing(Base):
                     self.assertEqual(rule.text(), "-name" + "-" * 15, "`-name---…` to the panel's edge")
                     cells = cell_ink(rule.grab().toImage(), 20)
                     self.assertEqual([len(c) > 0 for c in cells], [True] * 20, "a rule with no gap: every cell has ink")
-                    self.assertEqual(cells[0], {theme.FRAME_DARK}, "the leading dash")
+                    self.assertEqual(cells[0], {theme.FRAME_DARK,theme.FRAME}, "the rule joins the left edge")
                     for index in range(1, 5):
                         self.assertEqual(cells[index], {colour}, f"label cell {index}")
-                    for index in range(5, 20):
-                        self.assertEqual(cells[index], {theme.FRAME_DARK}, f"dash cell {index}")
+                    for index in range(5, 19):
+                        self.assertEqual(cells[index], {theme.FRAME_DARK}, f"rule cell {index}")
+                    self.assertEqual(cells[19],{theme.FRAME_DARK,theme.FRAME},"the rule joins the right edge")
 
     def test_a_frame_is_the_rule_and_a_body_with_no_border_and_no_padding(self):
         def build(page):
@@ -160,16 +161,35 @@ class FrameDrawing(Base):
         self.assertEqual(len(frame.rule.text()), 30, "dashes to the panel's edge")
         self.assertEqual(frame.styleSheet(), "")
         self.assertEqual(empty.rule.geometry().getRect()[:2], (0, 0), "a panel with nothing in it keeps its rule on top")
-        # The rule is drawn, not a Qt border: a frame's picture is only its rule and its body.
+        # [designed: owner playtest, #754] Connected panel edges are drawn without adding padding or a fill.
         body.hide()
         for panel in (frame, empty):
             image = QImage(panel.size(), QImage.Format.Format_RGB32)
             image.fill(QColor(theme.GROUND))
-            panel.render(image, QPoint(), QRegion(), QWidget.RenderFlag.DrawChildren)   # no fill of its own
-            below = {QColor(image.pixel(x, y)).name()
-                     for x in range(0, image.width(), 3) for y in range(round(38 * image.height() / panel.height()) + 1,
-                                                                         image.height())}
-            self.assertEqual(below, {theme.GROUND}, "nothing is drawn under the rule: no side, no foot, no fill")
+            panel.render(image, QPoint(), QRegion(), QWidget.RenderFlag.DrawChildren)
+            for point in ((0, panel.height()-1),(panel.width()-1,panel.height()-1),
+                          (0, panel.rule.height()+2),(panel.width()-1,panel.rule.height()+2)):
+                self.assertEqual(image.pixelColor(*point).name(),theme.FRAME,"connected sides and bottom")
+            interior={image.pixelColor(x,y).name() for x in range(2,panel.width()-2,3)
+                      for y in range(panel.rule.height()+2,panel.height()-2)}
+            self.assertEqual(interior,{theme.GROUND},"outline only: body stays unfilled")
+
+    def test_fact_fields_have_dividers_without_filling_or_reducing_their_content(self):
+        """[designed: owner playtest, #754] Facts share the original's visible column boundaries."""
+        from goal2.ui.cell_parts import CellFacts
+        def build(page):
+            facts=CellFacts({'age':8,'caps':8},rows=2)
+            facts.set({'age':'25','caps':'15'},theme.VALUE)
+            facts.setParent(page)
+        window,page=self.page(build)
+        facts=page.findChild(CellFacts);facts.setGeometry(0,0,16*16,38*3);facts.layout().activate()
+        image=QImage(facts.size(),QImage.Format.Format_RGB32);image.fill(QColor(theme.GROUND))
+        facts.render(image,QPoint(),QRegion(),QWidget.RenderFlag.DrawChildren)
+        for x in (0,8*16,16*16-1):
+            self.assertEqual(image.pixelColor(x,81).name(),theme.FRAME)
+        self.assertEqual(image.pixelColor(8*16+16,81).name(),theme.GROUND)
+        self.assertEqual([v.text() for v in facts.values.values()],['25','15'])
+        self.assertEqual(fixed_page.problems(window),[])
 
     def test_a_panel_too_narrow_for_its_label_says_so(self):
         rule = FrameRule("characteristics", "red")

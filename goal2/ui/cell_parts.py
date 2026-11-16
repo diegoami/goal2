@@ -13,7 +13,7 @@ from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QWidget
 
 from goal2.ui import theme
-from goal2.ui.cells import CellEdit, CellLabel, CellPara, Cells, row_px
+from goal2.ui.cells import CellEdit, CellLabel, CellPara, Cells, cell_w, row_px
 from goal2.ui.frame import Frame, FrameRule
 from goal2.ui.screen import Clickable
 from goal2.ui.squad_card import CHARACTERISTIC_CELLS, LINE_COLOUR, NAME_MAX, SKILL_CELLS, Row, colour
@@ -54,6 +54,19 @@ class CellRow(Row):
         self.on = False
         self.clicked.connect(lambda: self.chosen.emit(self.index))
         self._paint()
+
+    def _paint(self):
+        # [designed: owner playtest, #754] Preserve the panel's edge underneath each roster/table row.
+        Row._paint(self)
+        self.setStyleSheet(self.styleSheet()+"\n#listRow { background: transparent; }")
+        self.update()
+
+    def paintEvent(self,event):
+        super().paintEvent(event)
+        if self.on:
+            painter=QPainter(self)
+            painter.fillRect(self.rect().adjusted(1,0,-1,0),QColor(theme.HIGHLIGHT))
+            painter.end()
 
 
 class CellWrapRow(CellRow):
@@ -216,9 +229,59 @@ class WrapStrip(GridStrip):
                 at += 1 if gap else 0
 
 
+class BenchRosterRow(CellTableRow):
+    """[designed: owner playtest, #754] Name, two status cells, then the original's right-hand role column."""
+    def __init__(self,index):
+        super().__init__(index,(14,2,2),(None,None,Qt.AlignmentFlag.AlignRight),plain=True)
+
+    def paintEvent(self,event):
+        super().paintEvent(event)
+        painter=QPainter(self);painter.setPen(QColor(theme.FRAME))
+        x=round(16*cell_w(self));painter.drawLine(x,0,x,self.height()-1);painter.end()
+
+
+class RosterDivider(QWidget):
+    def paintEvent(self,event):
+        painter=QPainter(self);painter.setPen(QColor(theme.FRAME))
+        painter.drawLine(0,self.height()//2,self.width()-1,self.height()//2)
+        x=round(17*cell_w(self));painter.drawLine(x,0,x,self.height()-1);painter.end()
+
+
+class BenchStrip(Frame):
+    """[designed: owner playtest, #754] All twenty players keep a one-row baseline, including injured/marked players."""
+    chosen=Signal(int)
+    def __init__(self,cols=20):
+        super().__init__("","red");self.setObjectName("strip");self.cols=cols;self.count=20
+        self.area=Cells(cols,24,"benchRosterRows");self.add(self.area,1)
+        self.gap=RosterDivider();self.area.put(self.gap,0,11,cols)
+        self.rows=[]
+        for i in range(20):
+            row=BenchRosterRow(i);row.chosen.connect(self.chosen.emit)
+            self.area.put(row,1,i+(i>10),cols-2);self.rows.append(row)
+        self.legend=self.area.text("I injured  * marked","sub",0,22,cols)
+        self.area.text("^ on  v off","sub",0,23,cols)
+
+    def show_rows(self,heading,rows,current=-1,gap=True,injured=(),marks=None):
+        self.set_label(heading);self.gap.setVisible(gap);marks=marks or {}
+        for i,row in enumerate(self.rows):
+            self.area.move(row,1,i+(1 if i>10 and gap else 0),self.cols-2)
+            if i<len(rows):
+                code,line,name=rows[i];tone=LINE_COLOUR.get(line,theme.TEXT_NORMAL)
+                status=("I" if i in injured else " ")+(marks.get(i,"") or " ")
+                row.setProperty("injured",i in injured)
+                row.set((name,status,code),(tone,theme.VALUE,tone))
+                row.setAccessibleName(name+"; position "+code+("; INJURED" if i in injured else "")+("; "+{"*":"marked","^":"put on","v":"taken off"}.get(marks.get(i,""),"") if marks.get(i,"") else ""))
+                row.show()
+            else:row.set(("","",""));row.hide()
+            row.set_on(i==current)
+
+    def shown_texts(self):
+        return [row.texts() for row in self.rows if not row.isHidden()]
+
+
 class CellLineField(LineField):
     """A typed line on the grid (the desk's manager name): its text, then a block cursor one cell wide while it is active, and
-    the count. No border: the cursor says it is open."""
+    the count. [designed: owner playtest, #754] The active line is highlighted, with a contrasting block cursor."""
 
     def __init__(self, maximum, count=False, on_click=None):
         Clickable.__init__(self, "cellField")
@@ -231,6 +294,7 @@ class CellLineField(LineField):
         layout.addWidget(self.shown)
         self.cursor = QFrame()
         self.cursor.setObjectName("cursor")
+        self.cursor.setAttribute(Qt.WidgetAttribute.WA_StyledBackground,True)
         self.cursor.setFixedWidth(theme.CELL_W)   # a cell wide and as high as the row it is in (a fixed height rounds to a pixel more than a row at some scales)
         layout.addWidget(self.cursor)
         layout.addStretch(1)
@@ -319,6 +383,7 @@ class CellFacts(Cells):
 
     def __init__(self, widths, rows=1):
         super().__init__(sum(widths.values()), 1 + rows, "facts")
+        self.edges=[]
         self.labels, self.values = {}, {}
         column = 0
         for name, width in widths.items():
@@ -327,7 +392,18 @@ class CellFacts(Cells):
             self.put(rule, column, 0, width)
             self.put(value, column, 1, width - 1, rows)
             self.labels[name], self.values[name] = rule, value
+            self.edges.append(column+width)
             column += width
+
+    def paintEvent(self,event):
+        # [designed: owner playtest, #754] Keep the original's fact-column dividers on the same cells.
+        super().paintEvent(event)
+        painter=QPainter(self);painter.setPen(QColor(theme.FRAME))
+        top=row_px(self)-1
+        for edge in [0,*self.edges]:
+            x=min(self.width()-1,round(edge*cell_w(self)))
+            painter.drawLine(x,top,x,self.height()-1)
+        painter.drawLine(0,self.height()-1,self.width()-1,self.height()-1);painter.end()
 
     def set(self, values, tone):
         for name, value in values.items():
@@ -456,4 +532,4 @@ class GridCard(Cells):
 
 
 __all__ = ["CellKeyItem", "CellBar", "CellBars", "CellFacts", "CellLineField", "CellNameLine", "CellRow", "CellTableRow", "CellValues", "CellWrapRow",
-           "GridCard", "GridStrip", "WrapStrip", "key_values", "row_px"]
+           "GridCard", "GridStrip", "WrapStrip", "BenchStrip", "key_values", "row_px"]

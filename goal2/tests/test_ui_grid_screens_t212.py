@@ -16,6 +16,7 @@ size. The careers read GOAL.DAT and the E010 half-time template from the git-ign
 """
 import unittest
 
+from goal2.ui.squad_card import full_name
 from goal2.tests import requires
 from goal2.tests import ui_assertions
 from goal2.tests import test_ui_desk_t164
@@ -484,7 +485,7 @@ LONG_REASON = ("This player has already been substituted and cannot return; choo
 @BENCH
 class BenchOnTheGrid(Base):
     """S19 in each mode it has (make substitutions now, request, view, refused) and each state of its words: the pair chosen, the
-    engine's reports, the longest names, up to three players the match has injured (each name then takes two rows of the strip)."""
+    engine's reports, the longest names, injured/marked players with complete names and uniformly aligned one-row roster entries [designed: owner playtest, #754]."""
 
     mode = "now"
     injured = ()
@@ -681,34 +682,37 @@ class BenchOnTheGrid(Base):
             self.app.processEvents()
         return window, screen
 
-    def test_an_injured_players_name_takes_two_rows_and_the_rows_under_it_move_down(self):
-        """[designed: T212] A live injury is said in the strip's row (" · INJURED", S19's own words, T188b): the name and the word are more
-        than the 16 cells the 20-cell strip leaves its name, so the row takes a second row, the paragraph of its name wrapped at the cells,
-        and the rows under it move down. The text is whole (`texts()[-1]` has INJURED), nothing is squeezed (a shown window at any size
-        it gets); the rows and the grid are measured on the page's own size, where a cell is whole pixels (never shown: a desktop clamps)."""
-        window, screen = self.shown((1,))
-        self.assertEqual(fixed_page.problems(window), [])
-        self.assertIn("INJURED", screen.strip.rows[1].texts()[-1])
-        self.injured = (1,)
-        window, screen = self.canonical(self.make)
-        self.settle(screen)
-        self.relayout(window)
-        row = screen.strip.rows[1]
-        unit = cells.row_px(screen)
-        self.assertEqual(row.height(), 2 * unit)
-        self.assertEqual(len(row.cells[-1].lines()), 2)
-        self.assertEqual(screen.strip.rows[2].y(), row.y() + 2 * unit, "the next row is under the two")
-        self.assertEqual(screen.strip.rows[0].height(), unit)
+    def test_injuries_and_pair_markers_keep_uniform_rows_and_complete_names(self):
+        """[designed: owner playtest, #754] Status belongs in aligned columns, never in wrapped names."""
+        self.injured=(1,)
+        window,screen=self.canonical(self.make);self.long_names(screen)
+        screen.answer.first=screen.answer.words()[1];self.settle(screen);self.relayout(window)
+        unit=cells.row_px(screen)
+        self.assertEqual([row.height() for row in screen.strip.rows],[unit]*20)
+        for index,word in enumerate(screen.answer.words()):
+            self.assertEqual(screen.strip.rows[index].cells[0].text(),full_name(screen.model,word))
+        self.assertEqual(screen.strip.rows[1].cells[1].text(),"I*")
+        screen.answer.first=None;screen.answer.chosen=[(self.off,self.on)];self.settle(screen)
+        words=screen.answer.words()
+        self.assertEqual(screen.strip.rows[words.index(self.off)].cells[1].text(),"Iv")
+        self.assertEqual(screen.strip.rows[words.index(self.on)].cells[1].text()," ^")
+        self.assertIn("I injured",screen.strip.legend.text())
+        self.assertEqual(screen.strip.rows[2].y(),screen.strip.rows[1].y()+unit)
+        self.assertEqual(fixed_page.problems(window),[])
         self.on_the_grid(window)
 
-    def test_three_injured_players_fit_and_a_fourth_is_where_the_strip_runs_out_of_rows(self):
-        """The strip has three rows more than the twenty and the gap need: three names that take two rows fit. A fourth is more than the
-        page has rows for, and `fixed_page.problems` says so (nothing is hidden): the limit of the layout, stated."""
-        window, screen = self.shown((1, 2, 3))
-        self.assertEqual(fixed_page.problems(window), [])
-        self.assertEqual([row.height() // cells.row_px(screen) for row in screen.strip.rows[:5]], [1, 2, 2, 2, 1])
-        window, screen = self.shown((1, 2, 3, 4))
-        self.assertNotEqual(fixed_page.problems(window), [], "four names of two rows are 24 rows, the strip has 23 for the players")
+    def test_all_twenty_injured_players_fit_without_changing_row_heights_or_click_indices(self):
+        """[designed: owner playtest, #754] No injury count may push a player off the roster."""
+        self.injured=tuple(range(20))
+        window,screen=self.canonical(self.make);self.settle(screen);self.relayout(window)
+        unit=cells.row_px(screen)
+        self.assertEqual(len(screen.strip.shown_texts()),20)
+        self.assertEqual([r.height() for r in screen.strip.rows],[unit]*20)
+        self.assertTrue(all('I' in r.cells[1].text() for r in screen.strip.rows))
+        seen=[];screen.strip.chosen.connect(seen.append);screen.strip.rows[19].clicked.emit()
+        self.assertEqual(seen,[19])
+        self.assertEqual(fixed_page.problems(window),[])
+        self.on_the_grid(window)
 
 
 

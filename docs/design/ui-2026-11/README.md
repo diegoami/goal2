@@ -187,6 +187,11 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 ![S04 Country and name](images/s04-country.png)
 
+[designed: owner playtest, 2026-11-16, #754] Choosing a country makes the name field visibly active, changes the prompt
+and heading to typing instructions, and shows Enter/Esc/Backspace hints. Clicking an already active name field focuses it;
+it never starts the career. Esc restores country selection. This clarifies the original's modal name entry without
+changing its 14-character limit or the game rules.
+
 ### S05 Bulletin
 
 - **Purpose**: the news: a new manager, the groups, after each round, at the end of a stage.
@@ -554,6 +559,10 @@ we can keep the rest"]
     heading panel, red (`theme.CARD_HEADING`); the leading dash and the dashes are the dark frame grey (`theme.FRAME_DARK`), as the
     proposal draws them [designed: T210]. A panel narrower than its label and a dash on each side is reported by
     `fixed_page.problems`, never clipped.
+  - **Connected boundaries** [designed: owner playtest, 2026-11-16, #754; supersedes the top-rule-only treatment above]:
+    panels now continue their labelled rule into thin vertical sides and a bottom rule, and player facts retain visible
+    column dividers. The original country/name and half-time bench captures show these boundaries. They are line-art:
+    no extra layout padding, smaller text, fill or cyan card headings. Table rows preserve the panel edge beneath them.
   - **The grid check** [designed: owner, 2026-11-08, #668; T210] Every edge of a panel is a whole number of cells.
     `goal2/ui/grid_check.py` walks a window's visible widgets and reports each rectangle whose x, y, width or height is not a
     multiple of the cell (to a pixel: a row is 38 pixels in a layout and 38.4 in the grid, and the few pixels the 4:3 page has
@@ -733,3 +742,8 @@ rows; on the 16 × 32 grid (T211b) it shows sixteen, as the original's list does
 panel, with more room in the reading view. No engine event is removed from the transcript or recording.
 
 The owner-requested [manual-to-build fidelity audit](manual-fidelity.md) maps each manual section and S01–S22 action to source, exercised evidence, explicit differences and outstanding acceptance.
+
+[designed: owner playtest, 2026-11-16, #754] S19's twenty names stay on uniform one-row baselines. The name, two status
+cells and right-aligned original position code are separate columns. `I` means injured, `*` the first marked player,
+`^` put on and `v` taken off; the legend and selected player's complete injury description retain those meanings.
+The XI/bench separator remains a line and every row keeps its original click index, regardless of injury count.

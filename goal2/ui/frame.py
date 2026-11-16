@@ -1,18 +1,12 @@
-"""[designed: owner, 2026-11-08, #666, #667; T210] The frame: a rule with its lowercase label sitting on it.
+"""[designed: owner playtest, 2026-11-16, #754; T215] Connected fine panel rules with lowercase labels.
 
-[designed: owner, 2026-11-08; docs/design/ui-2026-11/fidelity-review.md §3] The original's frame is a rule with its label on
-it, lowercase, brown or red, the rule continuing as dashes to the panel's edge: `-rankings-----`, `-characteristics-`. Panels
-touch and nest; there is no padding, no fill and no card (a bordered box with an uppercase cyan heading inside it). The
-proposal draws it (docs/design/ui-2026-11/proposal/grid.py `Screen.rule`: the dashes in the dark frame colour, the label in
-brown or red over the rule, one leading dash). This is the widget that draws it, once, for every screen.
+[confirmed: docs/original-game/images/t156-006-name-entry.png and t156-124-halftime-bench.png] The original separates
+panels and columns with connected horizontal and vertical lines. The owner requested these boundaries in the playtest.
+`FrameRule` interrupts a horizontal rule with its brown/red label and joins the sides; `Frame` continues the sides and
+bottom. Lines are painted without Qt borders, added padding or a body fill, preserving every cell of content.
 
-The rule **is** the frame: one row of cells, drawn glyph by glyph at the cell (`theme.CELL_W` across, a row down, at the page's
-scale and stretch), never a Qt border with text drawn over it. A panel is a `Frame`: the rule on top and the body under it
-(`Frame.body`, a layout with no margin and no spacing), so the panel's edge is the widget's edge and the dashes run to it.
-
-[designed: T210] The label is lowercase whatever it is given (the grammar's), and the rule is never narrower than its label
-plus the leading dash and one dash after it: `minimumSizeHint` says so, so a panel too narrow for its label is a finding of
-`fixed_page.problems` (a squeezed widget), never a clipped label.
+[designed: T210, retained] The one-row heading and minimum label width remain on the 16 x 32 grid; a panel narrower
+than its complete label is reported by fixed_page.problems, never clipped. The textual rule API stays `-label---`.
 """
 from __future__ import annotations
 
@@ -92,16 +86,23 @@ class FrameRule(QWidget):
         painter.setFont(font)
         width = self.cell_width()
         height = self.height()
-        for index, glyph in enumerate(self.text()):
-            on_label = 1 <= index <= len(self.label)
-            painter.setPen(QColor(self.label_colour() if on_label else DASH_COLOUR))
-            # One glyph in one cell, so a platform whose font engine rounds the advance cannot move the next one.
-            painter.drawText(QRectF(index * width, 0, width, height), int(Qt.AlignmentFlag.AlignCenter), glyph)
+        # [designed: owner playtest, #754] A connected fine rule, with the label interrupting it.
+        middle = self.height() // 2
+        painter.setPen(QColor(DASH_COLOUR))
+        painter.drawLine(0, middle, self.width()-1, middle)
+        for index, glyph in enumerate(self.label, 1):
+            rect = QRectF(index * width, 0, width, height)
+            painter.fillRect(rect, QColor(theme.GROUND))
+            painter.setPen(QColor(self.label_colour()))
+            painter.drawText(rect, int(Qt.AlignmentFlag.AlignCenter), glyph)
+        painter.setPen(QColor(theme.FRAME))
+        painter.drawLine(0,middle,0,self.height()-1)
+        painter.drawLine(self.width()-1,middle,self.width()-1,self.height()-1)
         painter.end()
 
 
 class Frame(QWidget):
-    """A panel: its rule on top, its body under it. No margin, no spacing, no border: the rule is the frame."""
+    """A connected outline and labelled rule, without layout margins, spacing or a body fill."""
 
     def __init__(self, label: str, kind: str = "brown", parent: QWidget | None = None):
         super().__init__(parent)
@@ -115,6 +116,14 @@ class Frame(QWidget):
         layout.setSpacing(0)
         layout.addWidget(self.rule, 0, Qt.AlignmentFlag.AlignTop)   # on top, whatever the body (or its absence) leaves
         layout.addLayout(self.body, 1)
+
+    def paintEvent(self, event):
+        """[designed: owner playtest, #754] Outline panels without stealing a cell or filling the body."""
+        super().paintEvent(event)
+        painter=QPainter(self);painter.setPen(QColor(theme.FRAME))
+        top=max(0,self.rule.height()-1);bottom=self.height()-1;right=self.width()-1
+        painter.drawLine(0,top,0,bottom);painter.drawLine(right,top,right,bottom)
+        painter.drawLine(0,bottom,right,bottom);painter.end()
 
     @property
     def label(self) -> str:

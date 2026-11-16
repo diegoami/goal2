@@ -20,7 +20,7 @@ from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtWidgets import QPushButton
 
 from goal2.ui import cells, theme
-from goal2.ui.cell_parts import GridCard, GridStrip, WrapStrip
+from goal2.ui.cell_parts import GridCard, BenchStrip
 from goal2.ui.cells import CellLabel, CellPara, Cells
 from goal2.ui.frame import Frame
 from goal2.ui.live_cards import player_snapshot, card_state
@@ -47,14 +47,13 @@ TIMES = {"half_time": "half time", "substitution": "substitution opportunity", "
 # between the title row and the two key rows): at the left the mode and its button on the first row and the match's words on the
 # second, under them the card (69 x 18, the squad's) and under the card the substitution's own words in a frame of five rows (the
 # budget of substitutions at the right of its first row, the words under it); at the right, a cell apart and down to the foot, the
-# twenty in a frame of 25 rows (the twenty, the gap, and three rows more: a name followed by a live injury takes two).
+# twenty in uniform rows with separate name/status/role columns and a marker legend [designed: owner playtest, #754].
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
 HEAD_ROWS = 2
 CARD_AT = HEAD_ROWS
 LEFT_COLS = 69
 STRIP_COLS = 20
 STRIP_AT = BODY_COLS - STRIP_COLS
-STRIP_SPARE = BODY_ROWS - (GridStrip.PAGE + 2)
 MODE_COLS = 34          # "NO SUBSTITUTIONS BEFORE EXTRA TIME", the longest of the modes
 BUTTON_AT, BUTTON_COLS = MODE_COLS + 1, 22   # "Request substitution", a cell in from each side
 COUNTER_COLS = 35       # "substitutions: unlimited (friendly)", the longest of the budget's words
@@ -358,7 +357,7 @@ class BenchScreen(Screen):
         colour(self.note, theme.VALUE)
         inner.put(self.note, 0, 1, GridCard.COLS, inner.rows - 1)
         body.put(feedback, 0, FEEDBACK_AT, GridCard.COLS, FEEDBACK_ROWS)
-        self.strip = WrapStrip(STRIP_COLS, STRIP_SPARE)
+        self.strip = BenchStrip(STRIP_COLS)
         self.strip.chosen.connect(self.click_row)
         body.put(self.strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS)
 
@@ -399,14 +398,15 @@ class BenchScreen(Screen):
         off = {p[0] for p in answer.chosen}
         on = {p[1] for p in answer.chosen}
         rows = []
-        for word in answer.words():
+        marks = {}
+        for i, word in enumerate(answer.words()):
             code, line = roles.role(self.model.state, answer.position(word), cache=table)
             mark = OFF if word in off else ON if word in on else MARKED if word == answer.first else ""
-            injury = " · INJURED" if word in answer.injured else ""
-            rows.append((code, line, full_name(self.model, word) + mark + injury))
+            marks[i] = mark.strip()
+            rows.append((code, line, full_name(self.model, word)))
         heading = self.model.goaldat.country_names[self.model.state.managed_country]
         self.strip.show_rows(heading, rows, self.row, len(answer.eleven) == 11,
-                             injured={i for i,w in enumerate(answer.words()) if w in answer.injured})
+                             injured={i for i,w in enumerate(answer.words()) if w in answer.injured},marks=marks)
         word = self.current()
         if word is not None:
             self.card.set_card(answer.card(word))

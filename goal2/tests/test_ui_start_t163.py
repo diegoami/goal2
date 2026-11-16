@@ -283,6 +283,29 @@ class StartAndBusy(App):
 
 @CAREER
 class CountryKeys(App):
+    def test_name_entry_is_explicit_and_clicking_the_active_field_does_not_submit(self):
+        """[designed: owner playtest, #754] Typing mode must look active; clicking it only focuses it."""
+        self.data();window=self.window();screen=self.to_country_screen(window)
+        self.key(window,Qt.Key.Key_Return)
+        self.assertIn("Type your name",screen.name_note.text())
+        self.assertIn("Esc",screen.name_note.text())
+        self.assertIn("name",screen.prompt.text().lower())
+        self.assertTrue(screen.field.active)
+        self.type(window,"K Ees")
+        self.click(screen.field)
+        self.assertIs(window.current(),screen,"a click to focus must not start the career")
+        self.assertEqual(screen.field.text,"K Ees")
+        self.assertTrue(all(not b.shown for b in screen.country_keys))
+        from goal2.ui.screen import Clickable
+        erase=next(w for w in screen.key_bar.findChildren(Clickable) if getattr(w,'binding',None) is screen.erase_key)
+        self.click(erase)
+        self.assertEqual(screen.field.text,"K Ee")
+        self.key(window,Qt.Key.Key_Backspace)
+        self.assertEqual(screen.field.text,"K E")
+        self.key(window,Qt.Key.Key_Escape)
+        self.assertFalse(screen.naming)
+        self.assertIn("choose your country",screen.prompt.text())
+
     def test_groups_ranking_players_and_the_name_line(self):
         self.data()
         window = self.window()

@@ -43,6 +43,9 @@ def stylesheet() -> str:
 #lineField {{ background: {t.GROUND}; border: 2px solid {t.FRAME_DARK}; }}
 #lineField[active="true"] {{ border: 2px solid {t.FRAME}; }}
 #cursor {{ background: {t.TEXT_BRIGHT}; }}
+#cellField[active="true"] {{ background: {t.HIGHLIGHT}; }}
+#cellField[active="true"] #value, #cellField[active="true"] #muted {{ color: {t.ON_HIGHLIGHT}; }}
+#cellField[active="true"] #cursor {{ background: {t.ON_HIGHLIGHT}; }}
 #bad {{ color: {t.BAD}; }}
 #masthead {{ color: {t.TEXT_BRIGHT}; }}
 #story {{ color: {t.TEXT_BRIGHT}; }}
