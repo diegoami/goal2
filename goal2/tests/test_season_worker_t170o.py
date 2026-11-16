@@ -115,7 +115,9 @@ def actual_worker(raw, late_captain=False):
     a, b = direct.pending_match, worker.session.pending_match
     assert a.m.read(0, MEM_SIZE) == b.m.read(0, MEM_SIZE)
     assert all(a.m.reg(r) == b.m.reg(r) for r in REGS)
-    ask('configure', substitutions=2); PrematchSeam(a, substitutions=2)
+    configured_captain = a._squad(a.opts['managed'])[0] if late_captain else None
+    ask('configure', captain=configured_captain, substitutions=2)
+    PrematchSeam(a, captain=configured_captain, substitutions=2)
     stream = iter(a.events())
     def next_decision():
         events = []
@@ -137,7 +139,8 @@ def actual_worker(raw, late_captain=False):
     a.answer(edit_only=True, tactics={8: answer['tactics']['8']})
     second = next_decision()
     assert b.waiting == a.waiting and b.waiting['edited']
-    play_answer = ({'captain': next(w for w in reversed(a.waiting['eleven']) if a._available(w))}
+    play_answer = ({'captain': next(w for w in reversed(a.waiting['eleven'])
+                                   if w != configured_captain and a._available(w))}
                    if late_captain else {})
     ask('answer', decision=second['decision'], answer=play_answer); a.answer(**play_answer)
     observed = ask('next', count=1)
@@ -146,6 +149,7 @@ def actual_worker(raw, late_captain=False):
     assert all(a.m.reg(r) == b.m.reg(r) for r in REGS)
     return {'state': value, 'first': first, 'edited': second, 'after_play': observed,
             'play_answer': play_answer,
+            'configured_captain': configured_captain,
             'entry_equal': True, 'post_play_sha256': hashlib.sha256(b.m.read(0, MEM_SIZE)).hexdigest()}
 
 
@@ -248,7 +252,8 @@ class Pipe(unittest.TestCase):
         ready = self.receive('ready'); self.assertEqual(ready['version'], [3, 11])
         self.receive('season')
         engine.season_request('advance'); self.receive('season')
-        engine.season_request('configure', substitutions=2); self.receive('season')
+        engine.season_request('configure', captain=expected['configured_captain'], substitutions=2)
+        self.receive('season')
         streamed = []
         while True:
             engine.season_request('next', count=32)
