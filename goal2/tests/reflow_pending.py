@@ -25,12 +25,10 @@ import sys
 # Screen -> why it does not fit yet. The text is the screen-level problem at 1440x1080: the size the screen needs
 # ("squeezed below WxH") against the page it has.
 PENDING = {
-    "HelpScreen@720x450": "help viewer 311 px high, 69 % of the 450 px page, under the 70 % it must fill (it fits, with no problems)",
-    "SaveScreen@failed-save": "dialog 533x882 squeezed below 587x402; error text needs 432 px, has 346 (the long Windows temp path in the message)",
 }
 
 # The entries that overflow only on one platform, measured on the hosted Windows runner (`sys.platform`).
-ONLY_ON = {"SaveScreen@failed-save": "win32"}
+ONLY_ON = {}
 
 
 def screen_keys(window, capture=None):

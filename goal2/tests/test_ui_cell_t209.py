@@ -284,9 +284,11 @@ class EveryScreen(unittest.TestCase):
         """[designed: owner, 2026-11-09, #667] A screen that now fits must leave `PENDING`: checked at 1440x1080 (the journey's
         size), on the platform it was measured on. The ordinary tests exempt a listed screen."""
         reached = {key for key in PENDING if "@" not in key} & set(self.seen)
-        self.assertGreater(len(reached), 10, "the journey reaches most of the pending screens")
+        self.assertGreater(len(set(self.seen)), 15, "the journey still reaches the screen families after the pending list shrinks")
         fits = sorted(name for name in reached if name not in self.overflowing)
         self.assertEqual(fits, [], "these screens fit now: remove them from reflow_pending.PENDING")
+        if not PENDING:
+            self.assertEqual(self.overflowing, set(), "with no exceptions left, every captured screen must fit")
 
 
 def target_branch():
@@ -382,10 +384,8 @@ class PendingReflow(unittest.TestCase):
         self.assertGreaterEqual(len(set(visited)), 10, f"visited {visited}")
         self.assertEqual(sorted(reached - overflowing), [], "these screens fit at 1440x1080 now: remove them from PENDING")
 
-    def test_the_help_viewer_still_falls_short_at_720x450(self):
-        """[designed: owner, 2026-11-09, #667] `HelpScreen@720x450` is listed because the viewer is under 70 % of the page there."""
-        if sys.platform.startswith("win"):
-            self.skipTest("measured on Linux, Qt offscreen")
+    def test_the_help_viewer_fills_at_least_seventy_percent_at_720x450(self):
+        """[designed: owner, #667; T216] The former exception is removed: the help fills its page on every platform."""
         import tempfile
         tmp = Path(tempfile.mkdtemp(prefix="goal2-t209-help-"))
         self.addCleanup(__import__("shutil").rmtree, tmp, True)
@@ -401,8 +401,8 @@ class PendingReflow(unittest.TestCase):
         window.open_help()
         for _ in range(3):
             app.processEvents()
-        self.assertLess(window.current().viewer.height(), 0.7 * window.page.height(),
-                        "it fills the page now: remove HelpScreen@720x450 from PENDING")
+        self.assertGreaterEqual(window.current().viewer.height(), 0.7 * window.page.height(),
+                                "the viewer must fill the page without a pending exemption")
 
     def test_pending_reflow_is_empty(self):
         """THE GATE for merging the integration branch `ui/foundation-32` into main [designed: owner, 2026-11-09, #667]:
