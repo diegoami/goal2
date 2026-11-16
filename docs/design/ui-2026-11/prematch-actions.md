@@ -23,13 +23,19 @@ the current state/2 without changing full RAM, all sixteen registers, Python sta
 or replay. The decision exposes twenty player records and eighty pool IDs, but no
 pool records or opponent roster. The audit records hashes and metadata only.
 
-[designed: #746/T170s] The next bounded root leaf is a detached current pre-match
-preview: explicit decision identity and canonical hash, separate from round
+[designed: #746/T170s] The worker's `preview` operation supplies detached current
+pre-match data: explicit decision identity and canonical hash, separate from round
 publication, ledger deltas, and saving. Cards, both elevens, country tactics, pool
 records, availability, club position, own overrides and marking targets must come
 from this current snapshot. Identity overlays remain keyed by player word. Do not
 replace the held Match, read stale DesktopModel records, or publish preview as a
 completed round. See [the worker mapping](../../tasks/T170i.md).
+
+[confirmed: T170s/#750 full worker proof and synthetic actual-server control]
+Original news snapshots include raw cell bytes, which the initial season wire
+encoder cannot carry. [#751](https://github.com/diegoami/goal2/issues/751) must
+preserve them losslessly before round publication over the pipe. Preview's JSON
+state/2 payload is separate and unaffected.
 
 [designed: T170r] Send one accepted edit and wait for its next numbered decision
 before refreshing authoritative values. A pure invalid request retains the same
@@ -88,8 +94,8 @@ the guard alone would leave pre-match plan jobs undriven. The broader original/p
 Prover comparison remains archaeology #709; this audit claims no cross-backend raw
 memory equivalence and introduces no mask.
 
-[designed: T170r] Order the prerequisites as detached preview (#746), upstream
-personal inputs (#719) and their deliberate root adoption, then window activation
+[designed: T170r/T170s] Order the prerequisites as detached preview (#746),
+lossless news framing (#751), upstream personal inputs (#719) and their deliberate root adoption, then window activation
 with the complete matrix as acceptance cases. Activation must fix marking context,
 preserve identity/search/filter/help, and exercise S15→edits→captain→same Match.
 In-match/resume and save/load remain separate leaves. T183 keeps its explicit owner
