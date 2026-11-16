@@ -56,7 +56,7 @@ class Launch(unittest.TestCase):
         self.assertEqual({k: v.text() for k, v in w.saved_fields.items()},
                          {k: expected[k] for k in w.saved_fields})
         self.assertEqual(expected['campaign'], '1992 Continental qualifying')
-        self.assertIn('#265', expected['manager'])
+        self.assertEqual(expected['manager'], 'Manager 1')  # [designed: T215] naming is implemented; no technical placeholder
         self.assertTrue(w.resume.isEnabled());self.assertEqual(w.resume.text(), 'RESUME BULGARIA')
         self.assertFalse(w.retry.isVisible())
 
