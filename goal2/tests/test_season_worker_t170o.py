@@ -92,7 +92,7 @@ class Worker(unittest.TestCase):
         self.assertRaises(ValueError, self.ask, 'observe', extra=True)
 
 
-def actual_worker(raw, late_captain=False):
+def actual_worker(raw, late_captain=False, roster_case=None):
     """Source-bound entry and prematch against direct answers, in a PyPy child."""
     import hashlib
     import sys
@@ -139,6 +139,22 @@ def actual_worker(raw, late_captain=False):
     a.answer(edit_only=True, tactics={8: answer['tactics']['8']})
     second = next_decision()
     assert b.waiting == a.waiting and b.waiting['edited']
+    roster_answer = roster = None
+    if roster_case:
+        from goal2.engine.original_match.match import PLAYER_POSITION
+        d = a.waiting
+        if roster_case == 'starter':
+            pair = [d['eleven'][0], d['eleven'][1]]
+        else:
+            off = d['bench'][-1]
+            on = next(w for w in d['pool'] if a._available(w)
+                      and a._player(w, PLAYER_POSITION) != a._player(off, PLAYER_POSITION))
+            pair = [off, on]
+        roster_answer = {'edit_only': True, 'substitutions': [pair]}
+        ask('answer', decision=second['decision'], answer=roster_answer)
+        a.answer(**roster_answer)
+        roster = next_decision()
+        second = roster
     play_answer = ({'captain': next(w for w in reversed(a.waiting['eleven'])
                                    if w != configured_captain and a._available(w))}
                    if late_captain else {})
@@ -150,6 +166,7 @@ def actual_worker(raw, late_captain=False):
     return {'state': value, 'first': first, 'edited': second, 'after_play': observed,
             'play_answer': play_answer,
             'configured_captain': configured_captain,
+            'roster_answer': roster_answer, 'roster': roster,
             'entry_equal': True, 'post_play_sha256': hashlib.sha256(b.m.read(0, MEM_SIZE)).hexdigest()}
 
 
@@ -234,13 +251,13 @@ class Pipe(unittest.TestCase):
     def test_late_captain_crosses_the_actual_pipe_after_the_edits(self):
         self.actual_pipe(True)
 
-    def actual_pipe(self, late_captain):
+    def actual_pipe(self, late_captain, roster_case=None):
         from pathlib import Path
         from goal2.engine.original_match.assets import REFERENCE, reference_image
         from goal2.tests import requires, pypy_engine
         requires.require(files=(REFERENCE['asset'],))
         raw = reference_image(Path(__file__).resolve().parents[2]/'.cache')
-        expected = pypy_engine.call(__name__+':actual_worker', raw, late_captain)
+        expected = pypy_engine.call(__name__+':actual_worker', raw, late_captain, roster_case)
         command = None
         if late_captain:
             from goal2.game.engine_python import engine_python
@@ -272,6 +289,23 @@ class Pipe(unittest.TestCase):
             if packet['decision'] is not None:
                 break
         self.assertEqual(edited, expected['edited']['events'])
+        if roster_case:
+            off = expected['roster_answer']['substitutions'][0][0]
+            engine.season_request('answer', decision=packet['decision'],
+                                  answer={'edit_only': True, 'substitutions': [[off, off]]})
+            refused = self.receive('season_error')
+            self.assertIn('pre-match swap', refused['error'])
+            self.assertFalse(refused['lost'])
+            self.assertTrue(engine.season_active)
+            engine.season_request('answer', decision=packet['decision'], answer=expected['roster_answer'])
+            self.receive('season')
+            changed = []
+            while True:
+                engine.season_request('next', count=32)
+                packet = self.receive('season'); changed.extend(packet['events'])
+                if packet['decision'] is not None:
+                    break
+            self.assertEqual(changed, expected['roster']['events'])
         if late_captain:
             engine.season_request('answer', decision=packet['decision'], answer={'captain': True})
             refused = self.receive('season_error')

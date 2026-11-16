@@ -35,11 +35,11 @@ class PrematchSeam:
         self.match.answer(edit_only=True, tactics={int(element): bool(value)})
 
     def swap(self, outgoing, incoming):
-        """[T170i scope 2] S08's swap: one within-twenty pair (the kit's generic membership rule)."""
+        """[T170q/T134] S08's full-squad pair; fresh decisions retain the original's sorted order."""
         self.match.answer(edit_only=True, substitutions=[[int(outgoing), int(incoming)]])
 
     def exchange(self, outgoing, incoming):
-        """[T170m, T170i scope 4] The pool control: a squad player out, a made-pool word in —
+        """[T170q/T134, T170i scope 4] The pool control: any squad player out, a made-pool word in —
         the kit's pre-match arm accepts a pool word as the incoming (archaeology #713's DEA6
         pool pane route; the pool is published in the decision beside the bench)."""
         self.match.answer(edit_only=True, substitutions=[[int(outgoing), int(incoming)]])

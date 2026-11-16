@@ -312,7 +312,7 @@ class Server:
             data = b'' if state is None else json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
             self.send('season', result, data)
         except Exception as exc:
-            # Known request guards (including T133 captain validation) promise a
+            # Known request guards (T133 captain/T134 pre-match pairs) promise a
             # pure rejection. A backend failure
             # may have advanced private memory: invalidate, never continue that session.
             lost = not isinstance(exc, SeasonRequestError)

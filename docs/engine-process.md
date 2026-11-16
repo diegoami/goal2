@@ -112,6 +112,16 @@ memory, RNG or replay action, so its named `season_error` has `lost=false` and
 the same decision can be repaired. `PrematchSeam.play(captain=...)` preserves the
 same distinction. The original role-1 prompt receives the choice through keys.
 
+[designed: T170q; confirmed: archaeology T134/#717, F031/F012/F010] A pre-match
+edit-only `substitutions` pair may use any current squad outgoing word and a
+different squad or made-pool incoming word. Starter/starter reorder and bench/
+pool exchange follow DEA6's real word swap and original XI/bench sorts; callers
+use the fresh decision order. These pre-match edits spend no substitution budget
+or match tick. Bad pair validation is pure, reports its named `season_error`
+with `lost=false`, and keeps the same decision for repair. Runtime/plan failures
+still invalidate the private session. Ordinary in-match substitution rules stay
+unchanged. This adds no window controls or automatic model publication.
+
 ## The match
 
 The engine plays a match with the shared driver, never with one of its own: `prepare_watched`, or
