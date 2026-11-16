@@ -24,6 +24,10 @@ from . import screens as S
 VERSION = "4"                  # 4: live Python port frames are reconstructed by deterministic replay on load
 LOADS = ("2", "3", VERSION)
 
+# [designed: T133/#715] Omission preserves the legacy configured captain;
+# explicit None on a pre-match Play answer chooses the original default.
+_NO_CAPTAIN = object()
+
 # -- the calls (route_fixture's own, static/goal-exe/code/seg_000E_09.asm:308 and :396) -------------------------
 RUN_MATCH, RUN_MATCH_RETURN = "0791:F1F6", "000E:6F1D"
 PLAYER_UPDATE, PLAYER_UPDATE_RETURN = "0791:B7FA", "000E:6FFD"
@@ -611,11 +615,15 @@ class Match:
 
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
                speed=None, shootout_order=None, taker=None, edit_only=False,
-               request_substitution=None, opportunity=None):
+               request_substitution=None, opportunity=None, captain=_NO_CAPTAIN):
         """goal2's answer to the waiting decision; nothing given plays on.
         edit_only: execute edits at a legal half-time/substitution menu, or team-tactics-only edits at an
           ordinary pause/extra-time menu, and yield a fresh decision before Play. An ordinary subsequent answer continues;
           no match tick occurs between edits. The pause arm never queues a substitution.
+        captain: at a configured pre_match decision, a Play-only input after all edits:
+          an available current-XI word, or None for the original default. Omission preserves
+          the configured captain. The original role-1 prompt consumes it through keys;
+          later replacement-captain prompts keep the original default.
         substitutions: (off, on) player words of the managed squad, made now at half time and at a substitution
           notice; at a pause the original only takes the request and offers it at the next stoppage (a
           `substitution` decision whose default answer is what was asked for).
@@ -635,6 +643,21 @@ class Match:
         # E44F Enter changes the request, and 7FCF accepts/dismisses a timed notice.
         # Validate all new inputs before consuming the waiting decision/replay.
         context = self.st["waiting"]["context"]
+        # [designed: T133/#715; confirmed: F030, CC7B] S16 follows all
+        # pre-match edits. This is a Play input, delivered only at the original
+        # role-1 prompt through its key policy, never a guest memory patch.
+        late_captain = captain is not _NO_CAPTAIN
+        if late_captain:
+            if (context != "pre_match" or not self.opts.get("pre_match_edits")
+                    or edit_only or substitutions or (tactics is not None and tactics != {}) or positions
+                    or marking or own_tactics or quick or speed is not None
+                    or shootout_order is not None or taker is not None
+                    or request_substitution is not None or opportunity is not None):
+                raise ValueError("captain is a configured pre-match Play input only, without other changes")
+            if captain is not None and (type(captain) is not int
+                    or captain not in self._squad(self.opts["managed"])[:11]
+                    or not self._available(captain)):
+                raise ValueError("captain must be an available player of the current managed eleven")
         controlled = self.opts.get("substitution_control", False)
         if opportunity is not None or context == "substitution_opportunity":
             if (not controlled or context != "substitution_opportunity"
@@ -729,10 +752,14 @@ class Match:
         if any(p not in squad or any(not 1 <= e <= 4 for e in d) for p, d in own.items()):
             raise ValueError("own_tactics: {player of the managed squad: {element 1..4: True, False or None}}")
         edit = {"edit_only": True} if edit_only else {}
+        if late_captain:
+            edit["captain"] = captain
         if request_substitution is not None:
             edit["request_substitution"] = request_substitution
         self._replay_action("answer", {"substitutions": subs, "tactics": tactics, "positions": positions,
                                       "marking": marking, "own_tactics": own, "quick": bool(quick), "speed": speed, **edit})
+        if late_captain:
+            self.st["kickoff_captain"] = captain
         self.st["answer"] = {"substitutions": subs, "tactics": tactics, "positions": positions, "marking": marking,
                              "own": own, "quick": bool(quick), "speed": speed, **edit}
         self.st["decisions"].append({"context": self.st["waiting"]["context"], "minute": self.st["minute"],
@@ -1257,7 +1284,7 @@ class Match:
             self._fail("a key read at the captain prompt the kit did not ask for")
         if p.get("role") == 1:
             initial = p.get("initial", self.st["kickoff_seed"] is None)
-            want = self.opts["captain"] if initial else None
+            want = self.st.get("kickoff_captain", self.opts["captain"]) if initial else None
         else:
             want = p.get("target")
         if want is not None:
