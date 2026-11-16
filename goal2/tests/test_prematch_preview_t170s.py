@@ -121,9 +121,17 @@ def real_preview(raw, complete=False, previews=True):
         observed = ask('observe')
         assert observed['state'] == result['state']
         assert not observed['observation']['played_fixtures'] and not observed['observation']['news_pages']
+        def digest(value):
+            # [confirmed: route/news at fb6d3093] News has raw cell bytes.
+            # Preserve them in this comparison, emitting only the final digest.
+            def raw_bytes(item):
+                if not isinstance(item, bytes): raise TypeError(type(item).__name__)
+                return {'bytes.hex': item.hex()}
+            return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'),
+                                             default=raw_bytes).encode('ascii')).hexdigest()
         return dict(state_hash=canonical_hash(result['state']),
-                    observation_hash=canonical_hash(result['observation']), memory=final_memory,
-                    registers=registers, events=canonical_hash(events),
+                    observation_hash=digest(result['observation']), memory=final_memory,
+                    registers=registers, events=digest(events),
                     status=result['observation']['status'],
                     fixtures=len(result['observation']['played_fixtures']),
                     news_pages=len(result['observation']['news_pages']))
