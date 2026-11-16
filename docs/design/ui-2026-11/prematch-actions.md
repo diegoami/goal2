@@ -32,10 +32,10 @@ replace the held Match, read stale DesktopModel records, or publish preview as a
 completed round. See [the worker mapping](../../tasks/T170i.md).
 
 [confirmed: T170s/#750 full worker proof and synthetic actual-server control]
-Original news snapshots include raw cell bytes, which the initial season wire
-encoder cannot carry. [#751](https://github.com/diegoami/goal2/issues/751) must
-preserve them losslessly before round publication over the pipe. Preview's JSON
-state/2 payload is separate and unaffected.
+Original news snapshots include raw cell bytes. The season-specific framing in
+[#751](https://github.com/diegoami/goal2/issues/751) preserves them losslessly
+with provenance and ordered deltas before round publication over the pipe.
+Preview's JSON state/2 payload remains separate.
 
 [designed: T170r] Send one accepted edit and wait for its next numbered decision
 before refreshing authoritative values. A pure invalid request retains the same

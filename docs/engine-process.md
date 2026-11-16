@@ -98,6 +98,18 @@ adds `state` to the callback value. Advance/resume deliver their own fixture/new
 deltas exactly once. A held Match is still an incomplete round, never a publishable
 candidate. Event/answer requests retain private Match memory in the child.
 
+[designed: T170t/#751; confirmed: archaeology `fb6d3093`, F039/news]
+News snapshots keep every original cell byte and provenance field. On the wire,
+each raw page's `cells` uses `{schema:"goal2/news-cells/1", base64:<text>}`.
+The season-only adapter validates the exact snapshot fields, 4000 decoded bytes,
+provenance types and word tuples. After generic tuple restoration, the parent
+restores `cells` to bytes, preserving the worker's detached dictionary/tuple
+shape and ordered duplicate pages. Malformed snapshots are protocol failures;
+the existing state/observation hash check still applies. Empty observe deltas
+stay empty. The generic save encoder still rejects raw bytes: this is transient
+season transport, with no save-schema change. Public receipts contain hashes
+and counts, never actual original cells.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

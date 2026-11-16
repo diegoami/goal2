@@ -307,6 +307,10 @@ class Server:
             result = self.season.dispatch(header)
             if header['action'] == 'open':
                 self.game = None
+            if 'observation' in result:
+                # [designed: T170t/#751] News cells are bytes, not generic save JSON.
+                from goal2.game.season_wire import encode_observation
+                result['observation'] = encode_observation(result['observation'])
             # The detached state/2 can exceed the header bound; it is binary JSON payload.
             state = result.pop('state', None)
             data = b'' if state is None else json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
