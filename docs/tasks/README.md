@@ -401,6 +401,8 @@ operational status.
 
 - [T170s](T170s.md): expose detached current pre-match data from the held season worker (#746).
 
+- [T170t](T170t.md): preserve raw news snapshots and provenance across the retained season pipe (#751).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
