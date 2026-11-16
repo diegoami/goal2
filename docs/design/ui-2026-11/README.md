@@ -228,6 +228,9 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 ![S07 Team info](images/s07-team-info.png)
 
+[designed: T170r/#745] The held-worker activation contract for S08–S10 and
+S15–S16 is the [pre-match action inventory](prematch-actions.md).
+
 ### S08 Squad and pool
 
 - **Purpose**: who is in the twenty, in what position.
