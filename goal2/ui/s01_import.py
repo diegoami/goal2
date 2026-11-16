@@ -100,7 +100,7 @@ class ImportScreen(Screen):
             inner.text(NEEDED_FOR[name],"sub",26,row,34)
             self.cells[name]=inner.text("","value",60,row,30)
         self.error=CellPara("","error")
-        inner.put(self.error,0,9,90,6)
+        inner.put(self.error,0,9,90,8)  # [designed: T215] use both spare rows for complete Windows refusal paths
         body.put(frame,0,1,90,18)
         folder,inner=framed("folder",90,4)
         self.folder_label=CellPara("","fieldValue")

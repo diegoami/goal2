@@ -240,8 +240,9 @@ class EveryScreen(unittest.TestCase):
             screen = window.current()
             name = type(screen).__name__
             cls.seen.append(name)
-            if fixed_page.problems(window):
-                cls.overflowing.add(name)
+            problems = fixed_page.problems(window)
+            if problems:
+                cls.overflowing.add((name, tuple(problems)))
             scale = window.frame.scale
             want = round(theme.TEXT * theme.STRETCH * scale)
             stretch = theme.stretch_percent(scale)

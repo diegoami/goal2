@@ -67,6 +67,25 @@ class StartOnTheGrid(Base):
         self.assertLessEqual(len(screen.folder_label.lines()),self.rows_of(screen.folder_label))
         self.on_the_grid(window,20)
 
+    def test_windows_import_refusal_keeps_all_three_errors_and_the_folder(self):
+        """[designed: T215] The actual Windows journey's two missing files and wrong optional help need seven rows."""
+        from goal2.desktop import data_setup
+        self.kind=ImportScreen
+        folder=r"C:\Users\runneradmin\AppData\Local\Temp\goal2-ui-shots-12345678\offered"
+        problems=[(data_setup.DATA_NAME,'missing'),(data_setup.TEMPLATE_NAME,'missing'),(data_setup.HELP_NAME,'wrong')]
+        message=data_setup.describe(problems,folder)+"\nChoose the folder that holds all the files."
+        def make(window):
+            screen=self.make(window);screen.folder=folder
+            screen.result={name:dict(problems)[name] for name in ROWS};screen._show(message)
+            return screen
+        def complete(window,screen):
+            self.assertEqual(screen.error.text(),message)
+            self.assertGreaterEqual(len(screen.error.lines()),7)
+            self.assertLessEqual(len(screen.error.lines()),self.rows_of(screen.error))
+            self.assertEqual(screen.folder_label.text(),folder)
+        self.fitting(make,complete)
+        window,screen=self.canonical(make);complete(window,screen);self.on_the_grid(window,20)
+
     def test_all_year_and_manager_messages_fit_and_the_year_remains_editable(self):
         self.kind=NewGameScreen
         window,screen=self.canonical(self.make)
