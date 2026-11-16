@@ -1,0 +1,157 @@
+{
+  "audited_sha256": {
+    "goal2/engine/original_match/match.py": "8252239601a5f055db6e73387ec2fa5e4077b206254a7161e7be30cee3cdb502",
+    "goal2/engine/original_match/route_team.py": "456ae39c06b573451f13d348191d5f7e2ad3b87fb4ac2ba9c4ca074b8694b6d0",
+    "goal2/ui/s08_squad.py": "c6674360bcdd4e833ebfd00fa761c979ebc13db17c1f4c49f28235fe55113291",
+    "goal2/ui/s09_player_tactics.py": "0ba2f608fa17f2fcb4229734cdf1184a7bbfd65fd86ec500235134d85fc7a8a3",
+    "goal2/ui/s10_team_tactics.py": "00b6adb3c32c700b6d027ddc266e955fc739834139bf818f953ba33b7effd2d1",
+    "tools/prematch_action_audit.py": "1c576da7e4c137c62c8f3699492784fcb4f7f46f67a3d380f9c20872bcb12ecd"
+  },
+  "goal2_head": "22f86051d6cd7143c1fb0ba8f3f1ef3b73ed9e4e",
+  "original": {
+    "entry_sha256": "c2376b657edf3cc2c2e87bfa5aaf8d89822aece4076db7a407c8af28d1eff757",
+    "menu_controls": [
+      {
+        "available": true,
+        "domain": "xi-outfield",
+        "in_match_menu_used": 0,
+        "match_set_up": 1,
+        "menu_rows": 5,
+        "pane": 1,
+        "position": 2,
+        "word": 123
+      },
+      {
+        "available": true,
+        "domain": "xi-keeper",
+        "in_match_menu_used": 0,
+        "match_set_up": 1,
+        "menu_rows": 4,
+        "pane": 1,
+        "position": 0,
+        "word": 121
+      },
+      {
+        "available": true,
+        "domain": "bench-outfield",
+        "in_match_menu_used": 0,
+        "match_set_up": 1,
+        "menu_rows": 5,
+        "pane": 1,
+        "position": 2,
+        "word": 134
+      },
+      {
+        "available": true,
+        "domain": "pool-outfield",
+        "in_match_menu_used": 0,
+        "match_set_up": 1,
+        "menu_rows": 4,
+        "pane": 2,
+        "position": 2,
+        "word": 2630
+      }
+    ],
+    "runtime": "cpython-unicorn"
+  },
+  "schema": "t170r-action-audit/1",
+  "sealed": {
+    "boundary_hash_unchanged": true,
+    "boundary_roster_differs_from_current": true,
+    "boundary_state_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+    "current_preview_hash": "94529cef752b33a04fcd29ed58025be65b48017d632dae8e1a7589f4d7ec7b72",
+    "current_public_read_pure": true,
+    "current_roster_equals_decision": true,
+    "decision_fields": [
+      "bench",
+      "context",
+      "eleven",
+      "injured",
+      "player_records",
+      "pool",
+      "positions",
+      "pre_match",
+      "refused",
+      "request_substitution",
+      "substitutions_left",
+      "tactics",
+      "team_context"
+    ],
+    "managed_record_count": 20,
+    "opponent_roster_published": false,
+    "pool_records_published": false,
+    "pool_word_count": 80,
+    "refusals": [
+      {
+        "action": "position:xi",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "club-position:xi",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "own-tactic:xi",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "position:bench",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "club-position:bench",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "own-tactic:bench",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "position:pool",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "club-position:pool",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "own-tactic:pool",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "mark:xi",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      },
+      {
+        "action": "mark:bench",
+        "full_memory_all16_state_replay_pure": true,
+        "refusal": "edit_only needs a legal stopped bench, a tactics-only paused menu or a configured pre-match edit, without play-on inputs"
+      }
+    ],
+    "runtime": "pypy3.11",
+    "source_fixture_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    "swap": [
+      123,
+      124
+    ],
+    "team_context": {
+      "in_match_menu_used": 0,
+      "match_set_up": 1,
+      "sides": [
+        27,
+        7
+      ]
+    }
+  },
+  "upstream_head": "fb6d30937429b1d0f2491f5de6b29d79c96f65d1"
+}
