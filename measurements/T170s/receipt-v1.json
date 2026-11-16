@@ -1,0 +1,78 @@
+{
+  "coverage": "Four current snapshots around same-position XI swap, team tactic and bench/pool exchange; both teams/player/pool bytes; detached repeat reads; full RAM/all16/Python/replay/decision purity; pure stale/type/context refusals; pipe; identity/hash/JSON/busy guards; full Play/resume noninterference within PyPy. No cross-backend Prover claim or window activation.",
+  "existing_wire_blocker": {
+    "control": "synthetic genuine NewsPageMemory, actual Server.send",
+    "error": "TypeError: unsupported session value: bytes",
+    "issue": 751,
+    "lost": true,
+    "result": "season_error",
+    "schema": "t170t-wire-repro/1"
+  },
+  "fail_before": {
+    "cases": [
+      "parent rejects unknown preview operation",
+      "actual worker rejects preview at its held pre-match decision"
+    ],
+    "head": "2998e84e4867144f59556375417013f26819a559"
+  },
+  "fast_gate": {
+    "command": "tools/check_premerge.py --expected-head 5114660fdd53f551aa7c38251d71afc534b6c3ef",
+    "head": "5114660fdd53f551aa7c38251d71afc534b6c3ef",
+    "modules": 242,
+    "passed": 242,
+    "runtime": "CPython 3.12 parent, PyPy 3.11 engine; offscreen Qt/dummy SDL",
+    "skip_scope": "Fast gate excludes slow cases and retains optional dependency/platform guards. The new full preview case was explicitly exercised with GOAL2_SLOW=1.",
+    "skipped": 229
+  },
+  "fixture_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+  "full_proof": {
+    "head": "d56b533569af72db031f44e9ca0f6d5cbb7f2776",
+    "passed": 5,
+    "result": {
+      "events": "5a4f5338198ad68796663b16765ac3f0ccf244d893f903db5cd4298e3fac119f",
+      "fixtures": 1,
+      "memory": "8a6147e1b4e7b9e37e1fba27f0a6282aba663a2a56ec4c0ae9dd9b8b07cfbf0a",
+      "news_pages": 1,
+      "observation_hash": "7caebfad2a704f8b0afc7354745037aadabf300e270c0226dc3cde7694a249d2",
+      "registers": [
+        80,
+        31421,
+        4,
+        65519,
+        31588,
+        6,
+        16094,
+        16072,
+        3,
+        28445,
+        2097,
+        11684,
+        23911,
+        14453,
+        0,
+        0
+      ],
+      "state_hash": "6f389c351c448176f687cb647f02381746791762bf89d8b3216b1c61dda27d1e",
+      "status": "complete"
+    },
+    "runtime": "PyPy 3.11; Uc is None",
+    "seconds": 182.186,
+    "slow": true,
+    "tests": 5
+  },
+  "issue": 746,
+  "platform_code_head": "d56b533569af72db031f44e9ca0f6d5cbb7f2776",
+  "platform_run_refs": {
+    "Linux": 43922161201,
+    "Windows": 43922161183
+  },
+  "pull_request": 750,
+  "schema": "t170s-validation/1",
+  "sha256": {
+    "goal2/game/engine_process.py": "54f466cef7c68ed73c6fe8e6f0c1b28e29bec87b55e46d189e6321b901ae30fc",
+    "goal2/game/season_worker.py": "606f29512e20a4fe3e3c489484fd2d2952cb92b28550232a9d07b1031c9eb224",
+    "goal2/tests/test_prematch_preview_t170s.py": "5c48bb92f520cd4bcbf00647c9ed3380ad330d8e0d5221b1155e4591fae3e66a"
+  },
+  "superseded": "Initial mixed-tree local jobs were cancelled and not accepted. e1e31 full run reached complete but failed its summary on raw news bytes; it is not counted as passing. Corrected d56b full proof passes.",
+  "upstream": "fb6d30937429b1d0f2491f5de6b29d79c96f65d1"
+}
