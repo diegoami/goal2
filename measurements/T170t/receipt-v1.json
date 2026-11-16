@@ -1,0 +1,56 @@
+{
+  "coverage": [
+    "Exact synthetic all-byte/provenance/tuple/ordered duplicate snapshot round-trip through actual Server and EngineProcess decoder",
+    "Malformed cell encoding, envelope, metadata and state hash rejection; generic save raw-byte rejection unchanged",
+    "Actual complete PyPy round and EngineProcess pipe equal direct worker: state, events, complete observation/news bytes, fixture/news counts",
+    "Repeated observe has no deltas; valid preview and repairable stale preview retain live season",
+    "No engine, window, save-schema or route-result changes; no cross-backend Prover claim"
+  ],
+  "fail_before": {
+    "cases": [
+      "actual Server.send valid advance news returned season_error",
+      "actual Server.send valid resume news returned season_error"
+    ],
+    "head": "a48e7ba670396104e3fd3110b1de83a00df72671"
+  },
+  "fast_gate": {
+    "command": "tools/check_premerge.py --expected-head 125c158b8ed636a0458a99b9ba8cdcd221d9eed9",
+    "modules": 243,
+    "passed": 243,
+    "scope": "Fast gate excludes slow cases and retains existing optional dependency/platform guards; actual full pipe case explicitly ran in focused proof.",
+    "skipped": 230
+  },
+  "fixture_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+  "focused": {
+    "passed": 19,
+    "result": {
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "events_hash": "bced27e1a2f8fea7f97f9083feacf5016b26ba03e043acfdf155589c8e8af93d",
+      "fixtures": 1,
+      "news": 1,
+      "observation_hash": "5880d888ac683ce5f471d48bb7208f41fb833509e07c7efaff7f2161f5d97a41",
+      "preview_hash": "c00033380c208a76ac6a190c1b0e5b23cabd329e62e5b0892d09af7d11ac21f1",
+      "state_hash": "9722e637f74a470663fcede6bebe09c558b3c6df088a293ed959eaba25f6fe7b",
+      "status": "complete"
+    },
+    "runtime": "CPython 3.12 parent; actual PyPy3.11 worker/control, Uc=None",
+    "seconds": 360.418,
+    "slow": true,
+    "tests": 19
+  },
+  "issue": 751,
+  "platform_run_refs": {
+    "Linux": 43943126499,
+    "Windows": 43943126577
+  },
+  "pull_request": 752,
+  "schema": "t170t-validation/1",
+  "sha256": {
+    "goal2/game/engine_process.py": "81e25f15559518c3c924f70ed0c33e4825b8e3fc56555df7c259311a369a58e8",
+    "goal2/game/engine_server.py": "44cb3a5a587fa0592711d8b597a01ff025a3ec790262f4e382acf7a95e733b71",
+    "goal2/game/season_wire.py": "abfd0c9e67a6fd9c5da4c28605c7adb3e8d813c5d790095cf56735898b478d66",
+    "goal2/tests/test_season_news_wire_t170t.py": "2eaa7e1452e161fba86896bff8b1e272f96376303e4b9e5e909cccd5bfadadb1"
+  },
+  "tested_head": "125c158b8ed636a0458a99b9ba8cdcd221d9eed9",
+  "upstream": "fb6d30937429b1d0f2491f5de6b29d79c96f65d1"
+}
