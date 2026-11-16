@@ -15,19 +15,19 @@ history, so no value is read from it [designed: T178's task, "no value is shown 
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 from goal2.ui import theme
 from goal2.ui.screen import Screen, para, set_para
-from goal2.ui.squad_card import Row, box, colour, last_on_the_bar
+from goal2.ui.squad_card import last_on_the_bar
 
 LATER = "Kept from a later version: this route keeps no {what} yet (#509, Track B)."
-SEASON = (110, 120, 50, 50, 50, 50, 50, 0)   # season, competition, W D L F A, best place [designed: s13-history.html]
-RESULT = (110, 0, 90, 0, 140)   # a result under its season: (indent), first side, score, second side, kind
+SEASON = (8, 12, 4, 4, 4, 4, 4, 50)   # season, competition, W D L F A, best place [designed: s13-history.html]
+RESULT = (0, 16, 9, 16, 49)   # a result under its season: (indent), first side, score, second side, kind
 ROWS = 9   # [designed: the results box's height at 1440x900]
 
 
 class HistoryScreen(Screen):
+    GRID = True   # [designed: owner, #667; T213]
     title = "history"
     escape_text = "desk"
 
@@ -41,58 +41,49 @@ class HistoryScreen(Screen):
         self._show()
 
     def _build(self):
-        top = QHBoxLayout()
-        top.setSpacing(18)
+        """[designed: owner, #667; T213] Results retain nine lines; the four explicit unavailable panels keep their complete words."""
+        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.cell_parts import CellTableRow
+        from goal2.ui.country_parts import framed
+        body = Cells(90,25,"historyBody")
+        self.body_layout.addWidget(body,1)
         self.later = {}
-        statistics, inner = box("Statistics")
-        self.later["statistics"] = self._later(inner, "runs of wins and defeats")
-        top.addWidget(statistics, 1)
-        successes, inner = box("Successes")
-        successes.setFixedWidth(360)
-        self.later["successes"] = self._later(inner, "successes")
-        top.addWidget(successes)
-        self.body_layout.addLayout(top)
-        middle = QHBoxLayout()
-        middle.setSpacing(18)
-        results, inner = box("Results")
-        inner.setSpacing(0)
-        inner.addSpacing(10)
-        header = Row(-1, SEASON, margins=(8, 4, 8, 4), underline=True)
-        header.set(("SEASON", "", "W", "D", "L", "F", "A", "BEST PLACE"), (theme.HEADING,) * len(SEASON))
-        header.setCursor(Qt.CursorShape.ArrowCursor)
+        self.later_frames = {}
+        self.area = body
+        for title,key,what,col,row,cols,rows in (
+                ("statistics","statistics","runs of wins and defeats",0,0,22,6),
+                ("successes","successes","successes",23,0,22,6),
+                ("top scorers","scorers","scorers",46,0,22,6),
+                ("top caps","caps","caps",69,0,21,6),
+                ("records","records","biggest wins and defeats",0,21,90,4)):
+            frame,inner = framed(title,cols,rows-1)
+            text = CellPara(LATER.format(what=what),"sub")
+            inner.put(text,0,0,cols,rows-1)
+            self.later[key] = text
+            self.later_frames[key] = (frame,inner,text)
+            body.put(frame,col,row,cols,rows)
+        frame,inner = framed("results",90,13)
+        self.result_frame, self.result_area = frame, inner
+        header = CellTableRow(-1,SEASON)
+        header.set(("season","","W","D","L","F","A","best place"),(theme.HEADING,)*8)
         self._centre(header)
-        inner.addWidget(header)
-        # Each line is a season's row or a result under it: both are made now, one of them shown.
+        inner.put(header,0,0,90)
         self.rows = []
         for i in range(ROWS):
-            season = Row(i, SEASON, margins=(8, 4, 8, 4), underline=True)
+            season = CellTableRow(i,SEASON)
             self._centre(season)
-            result = Row(i, RESULT, margins=(8, 4, 8, 4), underline=True)
+            result = CellTableRow(i,RESULT)
+            result.cells[0].hide()
             result.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             result.cells[2].setAlignment(Qt.AlignmentFlag.AlignCenter)
-            for row in (season, result):
+            # [designed: T213] The full-width result keeps the longest stage name on its existing line.
+            for row in (season,result):
                 row.setCursor(Qt.CursorShape.ArrowCursor)
-                inner.addWidget(row)
-            self.rows.append((season, result))
-        inner.addSpacing(8)
-        self.results_note = para("", "sub")
-        inner.addWidget(self.results_note)
-        inner.addStretch(1)
-        middle.addWidget(results, 1)
-        scorers, inner = box("Top scorers")
-        scorers.setFixedWidth(300)
-        self.later["scorers"] = self._later(inner, "scorers")
-        middle.addWidget(scorers)
-        caps, inner = box("Top caps")
-        caps.setFixedWidth(300)
-        self.later["caps"] = self._later(inner, "caps")
-        middle.addWidget(caps)
-        self.body_layout.addLayout(middle, 1)
-        records, inner = box("Records")
-        self.later["records"] = self._later(inner, "biggest wins and defeats")
-        column = QVBoxLayout()
-        column.addWidget(records)
-        self.body_layout.addLayout(column)
+                inner.put(row,0,i+1,90)
+            self.rows.append((season,result))
+        self.results_note = CellPara("","sub")
+        inner.put(self.results_note,0,10,90,3)
+        body.put(frame,0,7,90,14)
 
     @staticmethod
     def _later(inner, what):
@@ -120,6 +111,20 @@ class HistoryScreen(Screen):
 
     def _show(self):
         lines = self.lines()
+        # [designed: T213] A fresh career has only a season line. Use two wide rows of notices around that short table;
+        # once there are more results, the full nine-line table gets the middle and the notices share the top row.
+        sparse = len(lines) <= 3
+        placements = ({"statistics":(0,0,45,5),"successes":(46,0,44,5),"scorers":(0,15,45,5),"caps":(46,15,44,5)}
+                      if sparse else {"statistics":(0,0,22,6),"successes":(23,0,22,6),"scorers":(46,0,22,6),"caps":(69,0,21,6)})
+        for key,(col,row,cols,rows) in placements.items():
+            frame,inner,text = self.later_frames[key]
+            inner.cols,inner.rows = cols,rows-1
+            inner.grid.cols,inner.grid.rows = cols,rows-1
+            inner.move(text,0,0,cols,rows-1)
+            self.area.move(frame,col,row,cols,rows)
+        self.result_area.rows = self.result_area.grid.rows = 7 if sparse else 13
+        self.area.move(self.result_frame,0,6 if sparse else 7,90,8 if sparse else 14)
+        self.result_area.move(self.results_note,0,4 if sparse else 10,90,3)
         for i, (season, result) in enumerate(self.rows):
             kind, texts = lines[i] if i < len(lines) else (None, ())
             season.setVisible(kind == "season")

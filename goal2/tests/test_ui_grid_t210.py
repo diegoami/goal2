@@ -331,13 +331,20 @@ class PendingGrid(unittest.TestCase):
         """[designed: T210] Every screen starts pending, so a screen added later is on the grid from its first test.
         [designed: T211] A screen laid out on the grid declares `GRID = True` (goal2/ui/screen.py) and leaves the list: it is on
         no list because it needs none, and a screen that declares it is not listed."""
-        import re
+        import ast
         screens, on_the_grid = set(), set()
-        bases = {"BoxScreen"}   # the dialogs' base class: never shown on its own
+        bases = {"Screen", "BoxScreen"}   # screen/dialog bases: never shown on their own
         for path in sorted((ROOT / "goal2" / "ui").glob("*.py")):
-            text = path.read_text(encoding="utf-8")
-            screens |= set(re.findall(r"^class (\w+Screen|SavedGoalMenu)\(", text, re.M))
-            on_the_grid |= set(re.findall(r"^class (\w+)\([\w.]+\):\n(?:    #[^\n]*\n|    \"\"\"[^\n]*\n)?    GRID = True", text, re.M))
+            # [designed: T213] Parse declarations rather than assuming a class docstring is a single source line.
+            for node in ast.parse(path.read_text(encoding="utf-8")).body:
+                if not isinstance(node, ast.ClassDef):
+                    continue
+                if node.name.endswith("Screen") or node.name == "SavedGoalMenu":
+                    screens.add(node.name)
+                if any(isinstance(item, ast.Assign) and isinstance(item.value, ast.Constant) and item.value.value is True
+                       and any(isinstance(target, ast.Name) and target.id == "GRID" for target in item.targets)
+                       for item in node.body):
+                    on_the_grid.add(node.name)
         named = {key.split("@")[0] for key in grid_pending.PENDING}
         self.assertEqual(sorted(screens - bases - named - on_the_grid), [],
                          "screens that are on no list: list them, or lay them out on the grid")
