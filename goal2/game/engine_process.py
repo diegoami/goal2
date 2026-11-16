@@ -409,6 +409,13 @@ class EngineProcess:
                             if (not isinstance(observation, dict)
                                     or observation.get('output_hash') != canonical_hash(value['state'])):
                                 raise ProtocolError('season state differs from its observation')
+                            # [designed: T170t/#751] Restore raw cells only on
+                            # boundary observations, never preview or saves.
+                            from goal2.game.season_wire import decode_observation
+                            try:
+                                value['observation'] = decode_observation(observation)
+                            except ValueError as exc:
+                                raise ProtocolError('invalid season news snapshot') from exc
                     elif payload:
                         raise ProtocolError('unexpected season reply payload')
                     if pending[1] == 'open':
