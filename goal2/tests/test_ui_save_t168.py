@@ -29,7 +29,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
-from goal2.tests.reflow_pending import assert_fits
+from goal2.tests.ui_assertions import assert_fits
 
 requires.require(modules=("PySide6",))
 

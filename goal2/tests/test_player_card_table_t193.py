@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from goal2.tests import requires
-from goal2.tests.reflow_pending import assert_fits
+from goal2.tests.ui_assertions import assert_fits
 
 @requires.need(modules=('PySide6',), **requires.HALFTIME)
 class CardTable(unittest.TestCase):

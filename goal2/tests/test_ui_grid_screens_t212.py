@@ -4,8 +4,7 @@ The claim it protects: **these screens fit and sit on the grid.** [designed: own
 fidelity-review.md §3] Each is laid out in cells (goal2/ui/cells.py) with frames for panels (goal2/ui/frame.py): at 1440x1080,
 1440x900 and 2110x1213 (and 1440x1061, what a measured Windows runner gave a window asked for 1440x1080) `fixed_page.problems` is
 empty, every widget rectangle is a multiple of the cell (T210's check, at the 4:3 page's own size) and there is no card (`#box`,
-`#boxHeading`); and none of them is on `reflow_pending.PENDING` or `grid_pending.PENDING`, so the helpers enforce it everywhere
-else. It is true in every state the screens have, with the longest text each shows.
+`#boxHeading`); and the strict layout helpers enforce it everywhere else. It is true in every state the screens have, with the longest text each shows.
 
 [designed: T212] The pitch's own look (the drawn field, the players, the ball) is T179/#573's and is not touched: S17 is the screen
 that hosts it (the score, the commentary, the stop box over it), laid out on the cells.
@@ -18,7 +17,7 @@ size. The careers read GOAL.DAT and the E010 half-time template from the git-ign
 import unittest
 
 from goal2.tests import requires
-from goal2.tests import grid_pending, reflow_pending
+from goal2.tests import ui_assertions
 from goal2.tests import test_ui_desk_t164
 from goal2.tests.test_ui_desk_t164 import CAREER, holland
 from goal2.tests.test_ui_grid_screens_t211 import SIZES, Base as GridBase
@@ -94,8 +93,7 @@ class Base(GridBase):
                 self.assertLessEqual(label.cols(), round(label.width() / cell), f"{message} {label.objectName()} {label.text()!r}")
 
     def not_pending(self, name, kind):
-        for lists in (reflow_pending.PENDING, grid_pending.PENDING):
-            self.assertNotIn(name, lists)
+        ui_assertions.assert_no_exemptions(self)
         self.assertTrue(kind.GRID)
 
 
@@ -356,8 +354,7 @@ class PitchOnTheGrid(Base):
         """It was listed (reflow_pending, grid_pending) until T212, with its saved variant: the helpers now hold both to the cells."""
         from goal2.ui.s17_pitch import PitchScreen
         self.not_pending("PitchScreen", PitchScreen)
-        for lists in (reflow_pending.PENDING, grid_pending.PENDING):
-            self.assertNotIn("SavedPitchScreen", lists)
+        ui_assertions.assert_no_exemptions(self)
 
     def test_the_score_the_pitch_and_the_commentary_are_where_the_cells_put_them(self):
         """The score in three rows, the pitch 64 x 18 under it, the commentary's frame at its right a cell apart and a row lower."""

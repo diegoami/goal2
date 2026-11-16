@@ -10,12 +10,9 @@ and line height 32; pixel size 38 with `QFont.setStretch(83)` gives advance 16 a
 property, so each widget carries it in code (goal2/desktop/fixed_page.py `set_stretch`); the screens are walked here to show
 that none re-sets its own font without it.
 
-Overflow is not asserted here: a screen that does not fit the 28 rows or 90 columns at 32 px is a finding of the task,
-reported by `fixed_page.problems` (tools/ui_readability_screenshots.py), never hidden.
+Every captured screen must fit the 28 rows and 90 columns at 32 px without an exemption [designed: T215].
 """
-import os
 import re
-import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -29,7 +26,7 @@ from PySide6.QtWidgets import QApplication, QLabel, QScrollBar, QWidget  # noqa:
 
 from goal2.desktop import data_setup, fixed_page  # noqa: E402
 from goal2.ui import theme  # noqa: E402
-from goal2.tests.reflow_pending import PENDING  # noqa: E402
+from goal2.tests import ui_assertions  # noqa: E402
 from goal2.ui.home import HomeScreen  # noqa: E402
 from goal2.ui.window import Window  # noqa: E402
 
@@ -101,23 +98,19 @@ class Cell(unittest.TestCase):
         self.assertEqual(window.page.geometry().getRect(), (0, 0, 1440, 1080), "no side bars, no letterbox")
         self.assertEqual(window.frame.scale, 1.0)
 
-    def test_a_listed_screen_is_exempt_and_every_other_must_fit(self):
-        """[designed: owner, 2026-11-09, #667] `assert_fits`: only a screen not listed in `PENDING` must fit. (That a listed
-        one still overflows is `PendingReflow`'s, at the canonical size.) A tag for another platform lists nothing here."""
+    def test_layout_assertions_never_exempt_a_screen_or_capture(self):
+        """[designed: T215] Fit, fill and room checks fail for every violating screen."""
         from unittest import mock
-        from goal2.tests import reflow_pending
         window = self.window()
-        overflow = mock.patch.object(fixed_page, "problems", return_value=["screen 1x1 squeezed below 2x2"])
-        reflow_pending.assert_fits(self, window)   # Home fits and is not listed
-        with overflow:
-            with self.assertRaises(AssertionError, msg="not listed and overflowing: fails"):
-                reflow_pending.assert_fits(self, window)
-            with mock.patch.dict(reflow_pending.PENDING, {"HomeScreen": "test"}):
-                reflow_pending.assert_fits(self, window)   # listed: exempt
-            with mock.patch.dict(reflow_pending.PENDING, {"HomeScreen": "test"}), \
-                    mock.patch.dict(reflow_pending.ONLY_ON, {"HomeScreen": "some-other-platform"}):
-                with self.assertRaises(AssertionError, msg="listed for another platform: must fit here"):
-                    reflow_pending.assert_fits(self, window)
+        ui_assertions.assert_fits(self, window)
+        with mock.patch.object(fixed_page, "problems", return_value=["screen squeezed"]):
+            for capture in (None, "HomeScreen", "HomeScreen@1440x1080"):
+                with self.subTest(capture=capture), self.assertRaises(AssertionError):
+                    ui_assertions.assert_fits(self, window, capture=capture)
+        with self.assertRaises(AssertionError):
+            ui_assertions.assert_room(self, window, 1, 2)
+        with self.assertRaises(AssertionError):
+            ui_assertions.assert_fills(self, window, window.page, 2)
 
     def test_the_font_is_one_cell_wide_and_32_high(self):
         self.assertEqual((theme.CELL_W, theme.CELL_H), (16, 32))
@@ -279,43 +272,17 @@ class EveryScreen(unittest.TestCase):
         self.assertGreater(len(set(self.seen)), 15, f"the journey reached {sorted(set(self.seen))}")
         self.assertEqual(self.wrong, [])
 
-    @unittest.skipUnless(sys.platform.startswith("linux"), "the list was measured on Linux, Qt offscreen")
-    def test_every_pending_screen_the_journey_reaches_still_overflows(self):
-        """[designed: owner, 2026-11-09, #667] A screen that now fits must leave `PENDING`: checked at 1440x1080 (the journey's
-        size), on the platform it was measured on. The ordinary tests exempt a listed screen."""
-        reached = {key for key in PENDING if "@" not in key} & set(self.seen)
-        self.assertGreater(len(set(self.seen)), 15, "the journey still reaches the screen families after the pending list shrinks")
-        fits = sorted(name for name in reached if name not in self.overflowing)
-        self.assertEqual(fits, [], "these screens fit now: remove them from reflow_pending.PENDING")
-        if not PENDING:
-            self.assertEqual(self.overflowing, set(), "with no exceptions left, every captured screen must fit")
+    def test_every_screen_the_journey_reaches_fits(self):
+        """[designed: T215] Every captured screen fits on every platform, without exceptions."""
+        self.assertGreater(len(set(self.seen)), 15, f"the journey reached {sorted(set(self.seen))}")
+        self.assertEqual(self.overflowing, set())
 
-
-def target_branch():
-    """The branch this run is for: the pull request's base in CI, else the pushed branch, else the checked-out one."""
-    base = os.environ.get("GITHUB_BASE_REF") or os.environ.get("GITHUB_REF_NAME")
-    if base:
-        return base
-    done = subprocess.run(["git", "branch", "--show-current"], cwd=ROOT, capture_output=True, text=True)
-    return done.stdout.strip()
 
 
 class PendingReflow(unittest.TestCase):
-    def test_every_entry_is_a_ui_screen_with_a_reason(self):
-        source = "\n".join(path.read_text(encoding="utf-8") for path in sorted((ROOT / "goal2" / "ui").glob("*.py")))
-        for key, reason in PENDING.items():
-            with self.subTest(key=key):
-                name = key.split("@")[0]
-                self.assertRegex(key, r"^[A-Za-z]+(@[A-Za-z0-9-]+)?$")
-                self.assertIn(f"class {name}(", source, "a screen class of goal2/ui")
-                self.assertTrue(reason.strip(), "the reason: what the screen needs")
-
     @requires.need(modules=("pygame",), **requires.HALFTIME)
-    @unittest.skipUnless(sys.platform.startswith("linux"), "the list was measured on Linux, Qt offscreen")
-    def test_every_pending_screen_the_desk_reaches_still_overflows_at_1440x1080(self):
-        """[designed: owner, 2026-11-09, #667] The listed screens one career opens, with no match played, at the canonical
-        1440x1080 on the platform they were measured on; the rest are `EveryScreen`'s (slow). A screen that now fits must be
-        removed from `PENDING`: the ordinary tests exempt it, so this is where the list is held to shrink."""
+    def test_every_screen_the_desk_reaches_fits_at_1440x1080(self):
+        """[designed: T215] Retain the ten-screen career walk and require every screen to fit."""
         import tempfile
         from PySide6.QtCore import Qt
         from goal2.desktop.model import DesktopModel
@@ -340,8 +307,9 @@ class PendingReflow(unittest.TestCase):
                 app.processEvents()
             name = type(window.current()).__name__
             visited.append(name)
-            if fixed_page.problems(window):
-                overflowing.add(name)
+            found = fixed_page.problems(window)
+            if found:
+                overflowing.add((name, tuple(found)))
 
         def key(k):
             window.current().handle_key(k)
@@ -378,11 +346,8 @@ class PendingReflow(unittest.TestCase):
         open_team_tactics(window, model)
         key(Qt.Key.Key_Return)
         look()
-        reached = {key_ for key_ in PENDING if "@" not in key_} & set(visited)
-        # [designed: T211] The list shrinks as screens are reflowed, so the walk's reach is its own screens (the ten it opens),
-        # not how many of them are still listed.
         self.assertGreaterEqual(len(set(visited)), 10, f"visited {visited}")
-        self.assertEqual(sorted(reached - overflowing), [], "these screens fit at 1440x1080 now: remove them from PENDING")
+        self.assertEqual(overflowing, set(), "every screen in the career walk must fit")
 
     def test_the_help_viewer_fills_at_least_seventy_percent_at_720x450(self):
         """[designed: owner, #667; T216] The former exception is removed: the help fills its page on every platform."""
@@ -405,12 +370,9 @@ class PendingReflow(unittest.TestCase):
                                 "the viewer must fill the page without a pending exemption")
 
     def test_pending_reflow_is_empty(self):
-        """THE GATE for merging the integration branch `ui/foundation-32` into main [designed: owner, 2026-11-09, #667]:
-        it fails while `reflow_pending.PENDING` is not empty. On the integration branch and on the task branches that
-        target it, the list is the tolerated overflow (docs/tasks/T209.md, Done-when 6) and this is skipped."""
-        if target_branch() != "main":
-            self.skipTest("ui/foundation-32 only: the list must be empty before this branch reaches main")
-        self.assertEqual(PENDING, {}, "every screen must be reflowed to the 90 x 28 grid before this reaches main")
+        """[designed: T215] The landing gate runs on every branch: no exemption modules remain."""
+        ui_assertions.assert_no_exemptions(self)
+
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 import unittest
 from types import SimpleNamespace
 from goal2.tests import requires
-from goal2.tests.reflow_pending import assert_fits
+from goal2.tests.ui_assertions import assert_fits
 
 @requires.need(modules=('PySide6','pygame'), **requires.HALFTIME)
 class Readable(unittest.TestCase):

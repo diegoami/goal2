@@ -2,7 +2,7 @@
 import copy
 import unittest
 from goal2.tests import requires
-from goal2.tests.reflow_pending import assert_fits
+from goal2.tests.ui_assertions import assert_fits
 from goal2.tests.test_ui_start_t163 import App
 
 @requires.need(modules=('PySide6',),**requires.HALFTIME)

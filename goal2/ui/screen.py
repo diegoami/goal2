@@ -9,13 +9,12 @@ keyboard"] Every screen of the new window is a `Screen`:
   Enter hint, drawn as the original's highlight bar: what Enter does now, on the highlighted option;
 - a screen that waits for the player says so above its body (`wait_for`), with the key that answers.
 
-[designed: owner, 2026-11-08, #667; T211] A screen that sets `GRID` is laid out on the 16 x 32 grid (docs/design/ui-2026-11/
-fidelity-review.md §3, goal2/ui/cells.py): the title bar is one row, the page has no margin and no padding (a screen's panels
-are placed by cell, separated by one empty cell), a key of the bottom bar is its caption and its word joined (`F1help`, no box),
-the bar is as many rows as its keys need (never fewer than `KEY_ROWS`, so the page does not move when the Enter hint changes),
-and an option is a bordered box of two rows or a line of one. The country, team info and fixtures screens (S04, S07, S11) are on
-it too (T211b), and the captain, taker, pitch and bench screens (S16, S17, S19: T212). The other screens keep the layout they were drawn
-with until they are reflowed (T212b-T214, T216); `GRID` goes when the last one is.
+[designed: owner, 2026-11-08, #667; T211–T216] Every screen is laid out on the 16 x 32 cell grid:
+the title bar is one row, panels have no padding, and key captions join their words without a box.
+[designed: T215] The old layout branches are removed. `GRID` remains a declaration inspected by the screen inventory;
+it no longer selects a different rendering path. The bottom bar has at least `KEY_ROWS` rows, and each option has
+one or two rows.
+
 
 Keys and the mouse take one path: a key's binding, a click on an option, on a key of the bottom bar or on the Enter
 hint all call `Binding.run` or `Screen.activate`, and so the same handler. [designed: owner, 2026-11-03, #526: "the
@@ -172,14 +171,14 @@ class Screen(QWidget):
     pre_game = False      # the title bar of S01–S04: the corner's note, the name in normal text
     escape_text = "back"  # what Esc does, on the bottom bar; None: Esc does nothing here
     offers_help = True    # F1 opens the help (S22) from this screen
-    GRID = False          # laid out on the 16 x 32 grid (T211): see the module's docs
+    GRID = True           # [designed: T215] every screen uses the cell layout
     KEY_ROWS = 2          # on the grid: the rows the bottom bar always has, so the page does not move with the Enter hint
 
     def __init__(self, window):
         super().__init__()
         self.window_ = window
         self.setObjectName("screen")
-        self.setProperty("grid", self.GRID)
+        self.setProperty("grid", True)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.bindings: list[Binding] = []
         self.options: list[Option] = []
@@ -193,39 +192,35 @@ class Screen(QWidget):
         main = QWidget()
         main.setObjectName("body")
         self.main_layout = QVBoxLayout(main)
-        self.main_layout.setContentsMargins(*((0, 0, 0, 0) if self.GRID else (24, 18, 24, 18)))
-        self.main_layout.setSpacing(0 if self.GRID else 18)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
         self.wait_box = self._wait_box()
         self.main_layout.addWidget(self.wait_box)
         self.body = QWidget()
         self.body.setObjectName("body")
         self.body_layout = QVBoxLayout(self.body)
         self.body_layout.setContentsMargins(0, 0, 0, 0)
-        self.body_layout.setSpacing(0 if self.GRID else 14)
+        self.body_layout.setSpacing(0)
         self.main_layout.addWidget(self.body, 1)
         outer.addWidget(main, 1)
         from goal2.ui.key_flow import KeyBar
         self.key_bar = KeyBar()
-        self.key_bar.setObjectName("keyRow" if self.GRID else "keyBar")
+        self.key_bar.setObjectName("keyRow")
         self.key_bar.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         from goal2.ui.key_flow import KeyFlow
         self.key_layout = KeyFlow(self.key_bar)
-        if self.GRID:
-            # [designed: T211] flush left, a cell between keys, the rows touching, the keys on the bottom rows
-            self.key_layout.rows = self.KEY_ROWS
-            self.key_layout.setContentsMargins(0, 0, 0, 0)
-            self.key_layout.setSpacing(theme.CELL_W)
-            self.key_layout.line_spacing = 0
-            self.key_layout.bottom = True
-        else:
-            self.key_layout.setContentsMargins(24, 8, 24, 8)
-            self.key_layout.setSpacing(12)
+        # [designed: T211] flush left, a cell between keys, the rows touching, the keys on the bottom rows
+        self.key_layout.rows = self.KEY_ROWS
+        self.key_layout.setContentsMargins(0, 0, 0, 0)
+        self.key_layout.setSpacing(theme.CELL_W)
+        self.key_layout.line_spacing = 0
+        self.key_layout.bottom = True
         outer.addWidget(self.key_bar)
-        self.enter_hint = Clickable("enterBar" if self.GRID else "enterHint")
+        self.enter_hint = Clickable("enterBar")
         hint_layout = QHBoxLayout(self.enter_hint)
-        hint_layout.setContentsMargins(*((theme.CELL_W, 0, theme.CELL_W, 0) if self.GRID else (22, 12, 22, 12)))
-        hint_layout.setSpacing(theme.CELL_W if self.GRID else 10)
-        self.enter_text = cells.CellLabel("", "enterText") if self.GRID else label("", "enterText")
+        hint_layout.setContentsMargins(theme.CELL_W, 0, theme.CELL_W, 0)
+        hint_layout.setSpacing(theme.CELL_W)
+        self.enter_text = cells.CellLabel("", "enterText")
         hint_layout.addWidget(self.enter_text)
         hint_layout.addWidget(self._cap("Enter"))
         self.enter_hint.clicked.connect(self.press_enter)
@@ -237,18 +232,18 @@ class Screen(QWidget):
     # The title bar and the "waiting for" line.
     def _cap(self, caption):
         """A key's caption: a key cap with its box, or on the grid the caption alone in a row of cells."""
-        return cells.CellLabel(caption, "keyCap") if self.GRID else kbd(caption)
+        return cells.CellLabel(caption, "keyCap")
 
     def _title_bar(self):
         bar = QFrame()
-        bar.setObjectName("titleRow" if self.GRID else "titleBar")
-        bar.setFixedHeight(theme.CELL_H if self.GRID else 64)   # one row on the grid
+        bar.setObjectName("titleRow")
+        bar.setFixedHeight(theme.CELL_H)   # one row on the grid
         layout = QHBoxLayout(bar)
-        layout.setContentsMargins(*((theme.CELL_W, 0, theme.CELL_W, 0) if self.GRID else (24, 0, 24, 0)))
-        layout.setSpacing(theme.CELL_W if self.GRID else 28)
+        layout.setContentsMargins(theme.CELL_W, 0, theme.CELL_W, 0)
+        layout.setSpacing(theme.CELL_W)
         corner = QHBoxLayout()
-        corner.setSpacing(theme.CELL_W if self.GRID else 6)
-        make = cells.CellLabel if self.GRID else label   # the same call: (text, object name)
+        corner.setSpacing(theme.CELL_W)
+        make = cells.CellLabel   # the same call: (text, object name)
         corner.addWidget(make("GOAL2", "brand"))
         if self.pre_game:
             corner.addWidget(make("the 1993 game, rebuilt", "brandNote"))
@@ -260,27 +255,15 @@ class Screen(QWidget):
 
     def _wait_box(self):
         box = QFrame()
-        if self.GRID:
-            # [designed: T211] the headline over its detail, on the page: no border, no padding, rows of cells
-            box.setObjectName("waitRow")
-            layout = QVBoxLayout(box)
-            layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(0)
-            self.wait_head = cells.CellLabel("", "waitHead")
-            self.wait_detail = cells.CellPara("", "sub")
-            layout.addWidget(self.wait_head)
-            layout.addWidget(self.wait_detail)
-            box.hide()
-            return box
-        box.setObjectName("waitBox")
-        layout = QHBoxLayout(box)
-        layout.setContentsMargins(16, 14, 16, 14)
-        layout.setSpacing(20)
-        self.wait_head = label("", "waitHead")
-        self.wait_detail = para("", "sub")
-        self.wait_detail.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        # [designed: T211] the headline over its detail, on the page: no border, no padding, rows of cells
+        box.setObjectName("waitRow")
+        layout = QVBoxLayout(box)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        self.wait_head = cells.CellLabel("", "waitHead")
+        self.wait_detail = cells.CellPara("", "sub")
         layout.addWidget(self.wait_head)
-        layout.addWidget(self.wait_detail, 1)
+        layout.addWidget(self.wait_detail)
         box.hide()
         return box
 
@@ -291,10 +274,7 @@ class Screen(QWidget):
             self.wait_box.hide()
             return
         self.wait_head.setText(headline)
-        if self.GRID:
-            self.wait_detail.setText(detail)
-        else:
-            set_para(self.wait_detail, detail)
+        self.wait_detail.setText(detail)
         self.wait_box.show()
 
     # Keys.
@@ -312,8 +292,7 @@ class Screen(QWidget):
     def add_option(self, text, handler, key=None, enter=None, rows=2) -> Option:
         """A clickable option; ↑↓ move the highlight over the options and Enter does the highlighted one. On the grid it is a box
         of `rows` = 2 rows, or a line of 1."""
-        option = (GridOption(self, text, handler, key, enter, rows=rows) if self.GRID
-                  else Option(self, text, handler, key, enter))
+        option = GridOption(self, text, handler, key, enter, rows=rows)
         self.options.append(option)
         if key is not None:
             self.bind((key,), text, lambda o=option: self.activate(o))
@@ -385,10 +364,10 @@ class Screen(QWidget):
             item = Clickable("keyItem")
             row = QHBoxLayout(item)
             row.setContentsMargins(0, 0, 0, 0)
-            row.setSpacing(0 if self.GRID else 7)
+            row.setSpacing(0)
             for caption in binding.captions:
                 row.addWidget(self._cap(caption))
-            row.addWidget(cells.CellLabel(binding.text, "keyLabel") if self.GRID else label(binding.text, "keyLabel"))
+            row.addWidget(cells.CellLabel(binding.text, "keyLabel"))
             item.binding = binding
             if binding.handler is not None:
                 item.clicked.connect(binding.run)

@@ -28,7 +28,8 @@ STAGES={2:'Continental qualifying',3:'Continental finals groups',4:'Continental 
 # [confirmed: F023 §§4,7] Continent numbers 1..4 are Europe, America, Africa and Asia.
 CONTINENTS={1:'Europe',2:'America',3:'Africa',4:'Asia'}
 # [designed: T86] Until #265 delivers manager names, the one manager is shown by number.
-MANAGER='Manager 1 (naming arrives later, #265)'
+# [designed: T215] The unnamed manager uses the existing short default (state.py); naming is implemented.
+MANAGER='Manager 1'
 # The competition's name on the banners (T178, #563). [confirmed: docs/original-game/images/t156-013-hub.png and
 # t156-227-tournament-europe.png "European Championship"; t156-228-tournament-americas.png "American Championship";
 # m244-world-qualifying-a.png "World cup"] [derived: goal2-archaeology static/goal-exe-map.md at

@@ -3,7 +3,7 @@ import copy
 import hashlib
 import unittest
 from goal2.tests import requires
-from goal2.tests.reflow_pending import assert_fits, assert_room
+from goal2.tests.ui_assertions import assert_fits, assert_room
 from goal2.tests.test_ui_start_t163 import App
 from goal2.tests.test_core_team_panels_t144 import FIXTURES
 

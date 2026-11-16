@@ -2,7 +2,7 @@
 import copy
 import unittest
 from goal2.tests import requires
-from goal2.tests.reflow_pending import assert_fits
+from goal2.tests.ui_assertions import assert_fits
 
 @requires.need(modules=('unicorn',),files=('e006-r0001-main.sav','GOAL.DAT'))
 class InjuryFitness(unittest.TestCase):

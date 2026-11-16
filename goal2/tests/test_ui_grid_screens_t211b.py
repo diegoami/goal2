@@ -4,8 +4,7 @@ The claim it protects: **these screens fit and sit on the grid.** [designed: own
 fidelity-review.md §3] Each is laid out in cells (goal2/ui/cells.py) with frames for panels (goal2/ui/frame.py): at 1440x1080,
 1440x900 and 2110x1213 (and 1440x1061, what a measured Windows runner gave a window asked for 1440x1080) `fixed_page.problems` is
 empty, every widget rectangle is a multiple of the cell (T210's check, at the 4:3 page's own size) and there is no card (`#box`,
-`#boxHeading`); and none of the three is on `reflow_pending.PENDING` or `grid_pending.PENDING`, so the helpers enforce it everywhere
-else. It is true in every state the screens have, with the longest text each shows: the country card of each of the 128
+`#boxHeading`); and the strict layout helpers enforce it everywhere else. It is true in every state the screens have, with the longest text each shows: the country card of each of the 128
 countries fits the cells it is given, S04's name line open and its messages, S07's mark on a name of fifteen characters and the
 performance panel, S11's longest kind and each message it says.
 
@@ -18,7 +17,7 @@ import shutil
 import unittest
 
 from goal2.tests import requires
-from goal2.tests import grid_pending, reflow_pending
+from goal2.tests import ui_assertions
 from goal2.tests import test_ui_boards_t178, test_ui_desk_t164
 from goal2.tests.test_ui_boards_t178 import career, played_round
 from goal2.tests.test_ui_desk_t164 import CAREER, holland
@@ -107,8 +106,7 @@ class Base(GridBase):
         self.assertEqual(screen.body.height(), window.page.height() - cells.row_px(screen) - screen.key_bar.height())
 
     def not_pending(self, name, kind):
-        for lists in (reflow_pending.PENDING, grid_pending.PENDING):
-            self.assertNotIn(name, lists)
+        ui_assertions.assert_no_exemptions(self)
         self.assertTrue(kind.GRID)
 
 

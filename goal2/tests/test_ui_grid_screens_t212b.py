@@ -1,6 +1,6 @@
 """[designed: owner, #667; T212b] Tactics and team players fit the cell grid without losing their controls or values."""
 import unittest
-from goal2.tests import requires, grid_pending, reflow_pending
+from goal2.tests import requires, ui_assertions
 from goal2.tests.test_ui_desk_t164 import CAREER, holland, tearDownModule
 from goal2.tests.test_ui_grid_screens_t211b import Base
 requires.require(modules=("PySide6",))

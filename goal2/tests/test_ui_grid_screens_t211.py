@@ -3,8 +3,7 @@
 The claim it protects: **these screens fit and sit on the grid.** [designed: owner, 2026-11-08; docs/design/ui-2026-11/
 fidelity-review.md §3] Each is laid out in cells (goal2/ui/cells.py) with frames for panels (goal2/ui/frame.py): at 1440x1080,
 1440x900 and 2110x1213 `fixed_page.problems` is empty, every widget rectangle is a multiple of the cell (T210's check, at the 4:3
-page's own size) and there is no card (`#box`, `#boxHeading`); and neither screen is on `reflow_pending.PENDING` or
-`grid_pending.PENDING`, so the helpers enforce it everywhere else.
+page's own size) and there is no card (`#box`, `#boxHeading`); and the strict layout helpers enforce it everywhere else.
 
 The geometry is measured on a window that is never shown where the grid is concerned (a desktop clamps a top-level window to its
 work area: a measured Windows runner gave 1440x1061 for 1440x1080); a shown window is asked for the three sizes and the screen must
@@ -17,7 +16,7 @@ import unittest
 from pathlib import Path
 
 from goal2.tests import requires
-from goal2.tests import grid_pending, reflow_pending
+from goal2.tests import ui_assertions
 from goal2.tests.test_ui_desk_t164 import CAREER, holland, tearDownModule  # noqa: F401  (the module's career cache is theirs)
 
 requires.require(modules=("PySide6",))
@@ -125,8 +124,7 @@ class DeskOnTheGrid(Base):
 
     def test_the_desk_is_not_on_either_pending_list(self):
         """It was listed (reflow_pending, grid_pending) until T211: the helpers now hold it to fitting and to the grid."""
-        for lists in (reflow_pending.PENDING, grid_pending.PENDING):
-            self.assertNotIn("DeskScreen", lists)
+        ui_assertions.assert_no_exemptions(self)
         self.assertTrue(DeskScreen.GRID)
 
     def test_its_panels_are_frames_a_rule_with_its_lowercase_label(self):
@@ -241,8 +239,7 @@ class SquadOnTheGrid(Base):
                     self.assertEqual(fixed_page.problems(shown), [], f"{name} at {shown.width()}x{shown.height()}")
 
     def test_the_squad_is_not_on_either_pending_list(self):
-        for lists in (reflow_pending.PENDING, grid_pending.PENDING):
-            self.assertNotIn("SquadScreen", lists)
+        ui_assertions.assert_no_exemptions(self)
         self.assertTrue(SquadScreen.GRID)
 
     def test_its_panels_are_frames_and_its_facts_rules_with_their_labels(self):

@@ -558,10 +558,12 @@ we can keep the rest"]
     `goal2/ui/grid_check.py` walks a window's visible widgets and reports each rectangle whose x, y, width or height is not a
     multiple of the cell (to a pixel: a row is 38 pixels in a layout and 38.4 in the grid, and the few pixels the 4:3 page has
     over its 28 rows are taken up by the widget that stretches, never by the cell) and each card still drawn. A screen is on the
-    grid when `grid_check.violations(window)` is empty. Until every screen is, `goal2/tests/grid_pending.py` lists the screens that
-    are not (all of them when T210 merged); its `assert_on_grid` is what a screen's test calls, a listed screen is exempt in the
-    ordinary tests, one dedicated test holds each listed screen to still violating (the list only shrinks), and
-    `test_ui_grid_t210.test_grid_pending_is_empty` is the gate for merging `ui/foundation-32` into main.
+    grid when `grid_check.violations(window)` is empty. [designed: T215] Every screen now uses
+    `goal2/tests/ui_assertions.py`'s unconditional fit/grid/room checks. Both transitional pending modules and their
+    exemptions are removed. `test_ui_grid_t210.PendingGrid.test_grid_pending_is_empty` and
+    `test_ui_cell_t209.PendingReflow.test_pending_reflow_is_empty` retain the landing gates and require those modules
+    to remain absent, on every branch. The full screenshot journey and career walk check every reached screen.
+
   - **A screen on the grid** [designed: owner, 2026-11-09, #667; T211] The desk (S06) and the squad (S08) are the first screens laid out
     on the cell, and what they use is the way the others follow (T211b, T212–T214); [designed: T211b] the country, team info and fixtures
     screens (S04, S07, S11) are the second group, with `goal2/ui/country_parts.py` for the country card's panels and `CellTableRow` for a list;

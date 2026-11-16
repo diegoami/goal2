@@ -2,7 +2,7 @@
 import copy
 import unittest
 from goal2.tests import requires
-from goal2.tests.reflow_pending import assert_fits
+from goal2.tests.ui_assertions import assert_fits
 
 # [confirmed: original1771:3827, accepted port performance_text_state at80831d9a]
 # Literal boundary oracles are independent of the implementation helper.

@@ -1,14 +1,8 @@
 """[designed: owner, 2026-11-08, #666, #667, #668; T210] The frame (a rule with its label) and the grid check.
 
-The claim it protects: the frame and the check exist, and a screen not on the pending list (goal2/tests/grid_pending.py) is on
-the grid with no card. [designed: owner, 2026-11-08; docs/design/ui-2026-11/fidelity-review.md §3] A frame is a rule with its
-lowercase label sitting on it, the rule continuing as dashes to the panel's edge, brown or red; every edge of a panel is a whole
-number of 16 x 32 cells; the card and its uppercase cyan heading go.
-
-The geometry is measured on a window that is never shown (a desktop clamps a top-level window to its work area: a measured
-Windows runner gave 1440x1061 for 1440x1080), at the 4:3 page's own size, where the scale is 1 and a cell is 16 pixels across
-and a row 38. A listed screen is exempt in the ordinary tests; that it still violates is `PendingGrid`'s, at the canonical size,
-on the platform the list was measured on (the list only shrinks).
+The frame is a rule with its lowercase label; every concrete screen must use the cell grid with no cards.
+[designed: T215] Checks run unconditionally on all platforms. Measurements use never-shown windows where a desktop
+would clamp the requested size. The journey and career walk retain their screen coverage with no pending exemptions.
 """
 import sys
 import unittest
@@ -24,8 +18,7 @@ from PySide6.QtGui import QColor, QImage, QRegion  # noqa: E402
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QWidget  # noqa: E402
 
 from goal2.desktop import data_setup, fixed_page  # noqa: E402
-from goal2.tests import grid_pending  # noqa: E402
-from goal2.tests.test_ui_cell_t209 import target_branch  # noqa: E402
+from goal2.tests import ui_assertions  # noqa: E402
 from goal2.ui import frame as frame_module, grid_check, theme  # noqa: E402
 from goal2.ui.frame import Frame, FrameRule, rule_text  # noqa: E402
 from goal2.ui.home import HomeScreen  # noqa: E402
@@ -234,32 +227,14 @@ class AssertOnGrid(Base):
         self.addCleanup(lambda: (window.close(), window.deleteLater(), self.app.processEvents()))
         return window
 
-    def test_a_listed_screen_is_exempt_and_every_other_must_be_on_the_grid(self):
-        """`assert_on_grid`: only a screen not listed in `PENDING` must be on the grid with no card. (That a listed one still
-        violates is `PendingGrid`'s, at the canonical size.) A tag for another platform lists nothing here."""
+    def test_every_violation_fails_even_for_named_captures(self):
         window = self.home()
-        violating = mock.patch.object(grid_check, "violations", return_value=["box (1, 2, 3, 4) off the cell"])
         with mock.patch.object(grid_check, "violations", return_value=[]):
-            grid_pending.assert_on_grid(self, window)   # on the grid and not listed
-        with violating:
-            with mock.patch.dict(grid_pending.PENDING, clear=True):
-                with self.assertRaises(AssertionError, msg="not listed and violating: fails"):
-                    grid_pending.assert_on_grid(self, window)
-            with mock.patch.dict(grid_pending.PENDING, {"HomeScreen": "test"}):
-                grid_pending.assert_on_grid(self, window)   # listed: exempt
-            with mock.patch.dict(grid_pending.PENDING, {"HomeScreen": "test"}), \
-                    mock.patch.dict(grid_pending.ONLY_ON, {"HomeScreen": "some-other-platform"}):
-                with self.assertRaises(AssertionError, msg="listed for another platform: must be on the grid here"):
-                    grid_pending.assert_on_grid(self, window)
-            with mock.patch.dict(grid_pending.PENDING, {"HomeScreen@1440x1080": "test"}, clear=True):
-                grid_pending.assert_on_grid(self, window)   # the capture name, with the size, is looked up first
-
-    def test_the_home_screen_still_has_its_card(self):
-        """It is the first thing a layout task removes from the list: today it is a bordered card."""
-        window = self.home()
-        for _ in range(3):
-            self.app.processEvents()
-        self.assertTrue(grid_check.cards(window) or grid_check.off_grid(window))
+            ui_assertions.assert_on_grid(self, window)
+        with mock.patch.object(grid_check, "violations", return_value=["box off the cell"]):
+            for capture in (None, "HomeScreen", "HomeScreen@1440x1080"):
+                with self.subTest(capture=capture), self.assertRaises(AssertionError):
+                    ui_assertions.assert_on_grid(self, window, capture=capture)
 
 
 @requires.need(slow=True, modules=("pygame",), **requires.HALFTIME)   # plays a friendly under PyPy, as the journey does
@@ -298,39 +273,14 @@ class EveryScreen(unittest.TestCase):
             Window.grab = original
             app.setFont(font_before)
 
-    @unittest.skipUnless(sys.platform.startswith("linux"), "the list was measured on Linux, Qt offscreen")
-    def test_every_pending_screen_the_journey_reaches_still_violates(self):
-        """[designed: owner, 2026-11-09, #667] A screen that is on the grid with no card now must leave `PENDING`: checked at
-        1440x1080 (the journey's size), on the platform it was measured on. The ordinary tests exempt a listed screen."""
+    def test_every_screen_the_journey_reaches_is_on_the_grid(self):
         self.assertGreater(len(set(self.seen)), 15, f"the journey reached {sorted(set(self.seen))}")
-        reached = {key for key in grid_pending.PENDING if "@" not in key} & set(self.seen)
-        self.assertGreater(len(reached), 10, "the journey reaches most of the pending screens")
-        clean = sorted(name for name in reached if name not in self.violating)
-        self.assertEqual(clean, [], "these screens are on the grid with no card now: remove them from grid_pending.PENDING")
-
-    def test_every_screen_the_journey_reaches_is_listed_or_on_the_grid(self):
-        """The other direction: a screen that violates and is not listed would fail its own tests; say it here, once."""
-        unlisted = sorted(name for name in self.violating if grid_pending.listed_name(name) is None)
-        self.assertEqual(unlisted, [], "violating and not on grid_pending.PENDING")
+        self.assertEqual(self.violating, {}, "every captured screen must be on the grid without cards")
 
 
 class PendingGrid(unittest.TestCase):
-    def test_every_entry_is_a_ui_screen_with_a_reason(self):
-        import re
-        source = "\n".join(path.read_text(encoding="utf-8") for path in sorted((ROOT / "goal2" / "ui").glob("*.py")))
-        for key, reason in grid_pending.PENDING.items():
-            with self.subTest(key=key):
-                name = key.split("@")[0]
-                self.assertRegex(key, r"^[A-Za-z]+(@[A-Za-z0-9-]+)?$")
-                self.assertIn(f"class {name}(", source, "a screen class of goal2/ui")
-                self.assertTrue(reason.strip(), "the reason: what the screen needs")
-        for key in grid_pending.ONLY_ON:
-            self.assertIn(key, grid_pending.PENDING)
-
-    def test_the_list_names_every_screen_class_of_the_window(self):
-        """[designed: T210] Every screen starts pending, so a screen added later is on the grid from its first test.
-        [designed: T211] A screen laid out on the grid declares `GRID = True` (goal2/ui/screen.py) and leaves the list: it is on
-        no list because it needs none, and a screen that declares it is not listed."""
+    def test_every_screen_class_of_the_window_declares_the_grid(self):
+        """[designed: T215] Every concrete screen declares its cell layout without a pending escape."""
         import ast
         screens, on_the_grid = set(), set()
         bases = {"Screen", "BoxScreen"}   # screen/dialog bases: never shown on their own
@@ -345,18 +295,11 @@ class PendingGrid(unittest.TestCase):
                        and any(isinstance(target, ast.Name) and target.id == "GRID" for target in item.targets)
                        for item in node.body):
                     on_the_grid.add(node.name)
-        named = {key.split("@")[0] for key in grid_pending.PENDING}
-        self.assertEqual(sorted(screens - bases - named - on_the_grid), [],
-                         "screens that are on no list: list them, or lay them out on the grid")
-        self.assertEqual(sorted(named & on_the_grid), [], "screens that are laid out on the grid are not pending")
+        self.assertEqual(sorted(screens - bases - on_the_grid), [], "every screen declares its cell layout")
 
     @requires.need(modules=("pygame",), **requires.HALFTIME)
-    @unittest.skipUnless(sys.platform.startswith("linux"), "the list was measured on Linux, Qt offscreen")
-    def test_every_pending_screen_the_desk_reaches_still_violates_at_1440x1080(self):
-        """[designed: owner, 2026-11-09, #667] The listed screens one career opens, with no match played (the walk of
-        `test_ui_cell_t209.PendingReflow`), at the canonical 1440x1080 on the platform they were measured on; the rest are
-        `EveryScreen`'s (slow). A screen that is on the grid with no card now must be removed from `PENDING`: the ordinary
-        tests exempt it, so this is where the list is held to shrink."""
+    def test_every_screen_the_desk_reaches_is_on_the_grid_at_1440x1080(self):
+        """[designed: T215] Retain the ten-screen career walk and require every screen to be on the grid."""
         import shutil
         import tempfile
         from goal2.desktop.model import DesktopModel
@@ -419,19 +362,19 @@ class PendingGrid(unittest.TestCase):
         open_team_tactics(window, model)
         key(Qt.Key.Key_Return)
         look()
-        reached = {key_ for key_ in grid_pending.PENDING if "@" not in key_} & set(visited)
-        # [designed: T211] The list shrinks as screens are reflowed, so the walk's reach is its own screens (the ten it opens),
-        # not how many of them are still listed.
         self.assertGreaterEqual(len(set(visited)), 10, f"visited {visited}")
-        self.assertEqual(sorted(reached - violating), [], "these screens are on the grid with no card now: remove them")
+        self.assertEqual(violating, set(), "every career screen must be on the grid without cards")
 
     def test_grid_pending_is_empty(self):
-        """THE GATE for merging the integration branch `ui/foundation-32` into main [designed: owner, 2026-11-09, #667]:
-        it fails while `grid_pending.PENDING` is not empty. On the integration branch and on the task branches that target
-        it, the list is the tolerated violation and this is skipped."""
-        if target_branch() != "main":
-            self.skipTest("ui/foundation-32 only: the list must be empty before this branch reaches main")
-        self.assertEqual(grid_pending.PENDING, {}, "every screen must be on the grid, with frames, before this reaches main")
+        """[designed: T215] The landing gate runs on every branch: no exemption modules remain."""
+        ui_assertions.assert_no_exemptions(self)
+        import ast
+        source = (ROOT / "goal2/ui/screen.py").read_text(encoding="utf-8")
+        for node in ast.walk(ast.parse(source)):
+            if isinstance(node, (ast.If, ast.IfExp)):
+                self.assertFalse(any(isinstance(item, ast.Attribute) and item.attr == "GRID"
+                                     for item in ast.walk(node.test)), "GRID cannot select a legacy layout")
+
 
 
 if __name__ == "__main__":
