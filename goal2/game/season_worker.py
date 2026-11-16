@@ -14,11 +14,11 @@ FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'answer': {'decision', 'answer'}, 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
-                 'request_substitution', 'opportunity'}
+                 'request_substitution', 'opportunity', 'captain'}
 
 
 class SeasonRequestError(ValueError):
-    """A request refused before entering engine code; the session stays held."""
+    """A known pure request-validation refusal; the session stays held."""
 
 
 def validate_request(header):
@@ -107,7 +107,15 @@ class SeasonWorker:
                             answer[field] = {int(k): v for k, v in answer[field].items()}
                         except (TypeError, ValueError) as exc:
                             raise SeasonRequestError('invalid season answer element') from exc
-                match.answer(**answer)
+                try:
+                    match.answer(**answer)
+                except ValueError as exc:
+                    # [confirmed: archaeology T133/#715] Captain-answer validation
+                    # precedes guest execution, input/replay consumption and state
+                    # mutation. Keep that same decision so S16 can repair a choice.
+                    if 'captain' in answer:
+                        raise SeasonRequestError(str(exc)) from exc
+                    raise
                 self.decision = None
             else:
                 if not match.over or not self.exhausted or self.decision is not None:
