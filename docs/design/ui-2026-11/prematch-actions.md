@@ -4,7 +4,8 @@
 S15 → S16 over one held Match. The approved Actions lines remain in
 [the design](README.md). This audit adds no UI design or save semantics.
 Each row includes click equivalents. Closing a child returns to its invoker;
-Esc cancels selection/text editing before closing, and never reverses accepted edits.
+Esc cancels text editing before closing; closing discards an unfinished pick and
+never reverses accepted edits.
 
 [confirmed: goal2 `31989d87`; archaeology `fb6d3093`, F010/F031/F030]
 The current window edits DesktopModel copies. The worker/seam accepts team tactics,
@@ -56,7 +57,7 @@ an existing scoped assistant placeholder remains the approved T183 exception.
 | S08 F2/name Enter | `new_name`/`give_name` → `rename_player`; original F2 name editor | Existing designed identity metadata/GOAL.DAT overlay, keyed by word; not a guest record edit | Preserve printable CP437/length validation; cancel leaves identity unchanged; preview refresh must retain overlay |
 | S08 /, text, Backspace, Enter, Esc | `open_search`/`set_query`; owner extras / T177 | Local accent-folded pool-name filter, preview names plus identity overlay | Enter commits query; Esc clears editing/filter before parent close; never send filtered row index as player ID |
 | S08 P / Shift+P | `step_position`; owner extras / T177 | Local fourteen-position filter, preview position | Cursor resets within visible result; selected word survives only if still valid |
-| S08 Esc | `escape` | Local cancel pick/editor, then pop to S15 when invoked there | Accepted engine/identity edits persist; no extra answer or kick-off |
+| S08 Esc | `escape` | Local cancel text editor, otherwise pop to S15 when invoked there | Accepted engine/identity edits persist; no extra answer or kick-off |
 | S09 arrows | `choose`, arrow bindings; original own menu | Local row cursor; actual eligible four/five rows | Re-evaluate after position/availability/pane change; never infer original eligibility solely from XI membership |
 | S09 Enter on four personal rows | `alter` → `model.own_tactic`; original 4B61 | Personal API, own byte and team defaults from preview; inherit → own false → own true → inherit | Currently rejected; inherited/default semantics must remain distinct, including false values; all eligible squad/pool players |
 | S09 Enter on marking row | `alter` → stopped `bench.step_mark`; original 49B8 | Personal API plus own side, opponent squad/availability, setup and pane context; inherit/protect zone/opponent cycle | Original offers row for available outfield **bench as well as XI**, in squad pane during setup; pool/keeper controls have four rows. Current pre-match UI has none: fix context predicate and API before activation |
