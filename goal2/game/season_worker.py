@@ -6,12 +6,13 @@ No window policy, reconstructed Match, private engine writes or implicit answers
 from copy import deepcopy
 from dataclasses import asdict
 
-from goal2.game.season import SeasonSession
+from goal2.game.season import SeasonSession, canonical_hash
 from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions'}, 'next': {'count'},
-          'answer': {'decision', 'answer'}, 'resume': set(), 'discard': set()}
+          'answer': {'decision', 'answer'}, 'preview': {'decision'},
+          'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
                  'request_substitution', 'opportunity', 'captain'}
@@ -27,6 +28,8 @@ def validate_request(header):
             or header['request'] < 1 or not isinstance(action, str) or action not in FIELDS
             or set(header) - ({'op', 'request', 'action'} | FIELDS[action])):
         raise SeasonRequestError('invalid season request')
+    if action == 'preview' and (type(header.get('decision')) is not int or header['decision'] < 1):
+        raise SeasonRequestError('preview needs a positive decision number')
     return action
 
 
@@ -62,7 +65,7 @@ class SeasonWorker:
                 raise SeasonRequestError('complete and resume the held match before advancing')
             observation = session.advance()
             self._reset_match()
-        elif action in ('configure', 'next', 'answer', 'resume'):
+        elif action in ('configure', 'next', 'answer', 'preview', 'resume'):
             match = session.pending_match
             if match is None:
                 raise SeasonRequestError('no season match is pending')
@@ -92,6 +95,19 @@ class SeasonWorker:
                         break
                 result.update(events=events, decision=self.decision, over=match.over,
                               exhausted=self.exhausted)
+            elif action == 'preview':
+                # [designed: T170s/#746; confirmed: T170r audit, fb6d3093]
+                # Read current records without consuming the stopped generator.
+                # A preview never changes the session's route-boundary state.
+                if (self.seam is None or self.decision is None
+                        or type(header.get('decision')) is not int
+                        or header['decision'] != self.decision
+                        or match.waiting is None or match.waiting.get('context') != 'pre_match'):
+                    raise SeasonRequestError('preview needs the current pre-match decision')
+                current = match.records_after()
+                result.update(preview={'schema': 'goal2/prematch-preview/1',
+                                       'decision': self.decision, 'state_hash': canonical_hash(current)},
+                              state=current)
             elif action == 'answer':
                 answer = header.get('answer')
                 if (self.decision is None or type(header.get('decision')) is not int

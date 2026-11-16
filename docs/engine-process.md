@@ -78,6 +78,7 @@ be outstanding at a time; its numbered reply ends that request.
 | --- | --- | --- |
 | `advance` | | One original route call; refuses while a Match is held. |
 | `observe` | | Detached current boundary, with empty deltas. |
+| `preview` | positive integer `decision` | T170s: detached current pre-match state; only while that configured decision waits. No observation or deltas. |
 | `configure` | optional `captain`, `substitutions` | Configures the actual pending Match exactly once through `PrematchSeam`. |
 | `next` | optional `count`, integer 1..32 (default 32) | At most that many `events` as plain Event records, stopping at every decision; returns `decision` (number or null), `over`, `exhausted`. |
 | `answer` | `decision`, `answer` (Match.answer keyword object) | Answers that still-waiting numbered decision once. JSON element-map keys become integers. T170p adds `captain` on pre-match Play after edits. |
@@ -96,6 +97,19 @@ detached state/2. The parent verifies its canonical hash against `output_hash` a
 adds `state` to the callback value. Advance/resume deliver their own fixture/news
 deltas exactly once. A held Match is still an incomplete round, never a publishable
 candidate. Event/answer requests retain private Match memory in the child.
+
+[designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
+`preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
+and the current state/2 in the binary JSON payload. The parent checks that identity,
+requested decision, state schema and canonical hash before adding `state` to the
+callback value. Both teams, pool and current player records come from the same
+held Match's public `records_after()` read. Repeated reads do not consume events,
+answer a decision or modify the route-boundary state. A stale/consumed decision,
+missing configuration or a different phase refuses purely. Preview is separate
+from `SeasonObservation`: it is neither a completed-round candidate nor a save or
+active-session serialization. A subsequent edit requires a fresh numbered
+decision/preview; only completed Match resume can publish the round. Existing
+one-outstanding-request and explicit recovery rules apply.
 
 A known pure request refusal replies `season_error` with `lost=false`; an engine or
 decode failure invalidates the season (`lost=true`). Worker death clears the

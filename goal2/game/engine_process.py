@@ -133,7 +133,7 @@ class EngineProcess:
         validate_request(header)
         self._send(header, payload)
         self._season_requests = number
-        self._season_request = (number, action)
+        self._season_request = (number, action, values.get('decision'))
 
     # --- requests ------------------------------------------------------------------------------------------------
 
@@ -386,16 +386,29 @@ class EngineProcess:
                 else:
                     if value.get('action') != pending[1]:
                         raise ProtocolError('season reply is for another operation')
-                    if pending[1] in ('open', 'advance', 'observe', 'resume'):
+                    if pending[1] in ('open', 'advance', 'observe', 'resume', 'preview'):
                         try:
                             value['state'] = json.loads(payload.decode('utf8'))
                         except (ValueError, UnicodeDecodeError) as exc:
                             raise ProtocolError('invalid season state payload') from exc
                         from goal2.game.season import canonical_hash
-                        observation = value.get('observation')
-                        if (not isinstance(observation, dict)
-                                or observation.get('output_hash') != canonical_hash(value['state'])):
-                            raise ProtocolError('season state differs from its observation')
+                        if pending[1] == 'preview':
+                            preview = value.get('preview')
+                            if (set(value) != {'request', 'action', 'preview', 'state'}
+                                    or not isinstance(preview, dict)
+                                    or set(preview) != {'schema', 'decision', 'state_hash'}
+                                    or preview['schema'] != 'goal2/prematch-preview/1'
+                                    or type(preview['decision']) is not int
+                                    or preview['decision'] != pending[2]
+                                    or not isinstance(value['state'], dict)
+                                    or value['state'].get('schema') != 'original_match.state/2'
+                                    or preview['state_hash'] != canonical_hash(value['state'])):
+                                raise ProtocolError('invalid season pre-match preview')
+                        else:
+                            observation = value.get('observation')
+                            if (not isinstance(observation, dict)
+                                    or observation.get('output_hash') != canonical_hash(value['state'])):
+                                raise ProtocolError('season state differs from its observation')
                     elif payload:
                         raise ProtocolError('unexpected season reply payload')
                     if pending[1] == 'open':
