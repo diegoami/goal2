@@ -47,6 +47,10 @@ loaded here is the one the model makes, and the screens copy no career rule.
 - **The home** of an open career is the desk (S06). `goal2/ui/home.py` stays only as the screen with no career open
   (T162's tests and the screenshot tool's `home.png`).
 
+[designed: T215] The desk reserves seven cells for rank labels (including Americas and Oceania).
+Its managers panel keeps the full manager name and country on separate rows in their existing colours,
+so the longest country name and a maximum-length manager fit without shrinking or dropping text.
+
 ## Saved games
 
 [designed: owner decisions 4 and 8, #526; T163] Saves live in the data root's `saves` folder, one file per save,

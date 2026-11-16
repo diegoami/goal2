@@ -67,7 +67,7 @@ from goal2.ui.squad_card import colour, full_name, squad_rows
 # [designed: T211; docs/design/ui-2026-11/proposal/README.md] The desk's cells: 90 columns and the 25 rows between the title row and the
 # two key rows; the left column 30 wide, the middle 34, the strip 24, an empty column between each.
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
-LEFT_COLS, LABEL_COLS = 30, 6
+LEFT_COLS, LABEL_COLS = 30, 7  # [designed: T215] Americas and Oceania need seven cells
 MIDDLE_AT, MIDDLE_COLS = LEFT_COLS + 1, 34
 STRIP_AT = MIDDLE_AT + MIDDLE_COLS + 1
 
@@ -78,6 +78,27 @@ def panel(label, cols, rows):
     inner = Cells(cols, rows, "panelRows")
     frame.add(inner, 1)
     return frame, inner
+
+
+class ManagerSummary(Cells):
+    """[designed: T215] Keep the complete name and country on separate rows, in their existing colours."""
+    def __init__(self):
+        super().__init__(LEFT_COLS, 2, "managerSummary")
+        self.name_line = self.text_widget("value", 0)
+        self.country_line = self.text_widget("sub", 1)
+
+    def text_widget(self, role, row):
+        widget = CellLabel("", role)
+        widget.setTextFormat(Qt.TextFormat.PlainText)
+        self.put(widget, 0, row, LEFT_COLS)
+        return widget
+
+    def show_manager(self, name, country):
+        self.name_line.setText(f"1 · {name}")
+        self.country_line.setText(f"({country})")
+
+    def text(self):
+        return self.name_line.text() + "\n" + self.country_line.text()
 
 HINT = ("↑↓ chooses; Enter opens. Play next game opens the match menu, captain and watched pitch.")   # [designed: s06-hub.html]
 
@@ -154,10 +175,10 @@ class DeskScreen(Screen):
                                                LEFT_COLS, LABEL_COLS)
         inner.put(rows, 0, 1, LEFT_COLS, 3)
         body.put(opponents, 0, 9, LEFT_COLS, 5)
-        managers, inner = panel("managers", LEFT_COLS, 1)
-        self.managers = inner.text("", "value", 0, 0, LEFT_COLS)
-        self.managers.setTextFormat(Qt.TextFormat.RichText)
-        body.put(managers, 0, 15, LEFT_COLS, 2)
+        managers, inner = panel("managers", LEFT_COLS, 2)
+        self.managers = ManagerSummary()
+        inner.put(self.managers, 0, 0, LEFT_COLS, 2)
+        body.put(managers, 0, 15, LEFT_COLS, 3)
         body.put(CellPara(HINT, "sub"), 0, 18, LEFT_COLS, 4)
         # The six options, in the original's order. [confirmed: t156-013-hub.png]
         self.add_option("team info", self.team_info, enter="Team info")
@@ -212,9 +233,7 @@ class DeskScreen(Screen):
             self._ranks(self.opponent_ranks, country_card(state, opponent, model.goaldat))
         self.opponent_ranks["match"].setText(kind)
         self.play_note.setText(f"{names[opponent]} · {kind}" if opponent is not None else kind)
-        self.managers.setText(f'1 · {_escape(model.manager)} '
-                              f'<span style="color:{theme.TEXT_NORMAL}">({_escape(names[state.managed_country])})'
-                              '</span>')
+        self.managers.show_manager(model.manager, names[state.managed_country])
         rows, eleven = squad_rows(model)
         self.strip.show_rows(names[state.managed_country],
                              [(r["role"], r["line"], full_name(model, r["id"])) for r in rows], -1, eleven == 11)

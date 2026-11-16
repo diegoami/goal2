@@ -117,6 +117,18 @@ class DeskOnTheGrid(Base):
     def test_the_desk_fits_at_every_size(self):
         self.fitting(self.make)
 
+    def test_longest_country_and_maximum_manager_names_fit_without_dropping_text(self):
+        """[designed: T215] Real Trinidad/Tobago exercises Americas and the full 14-character manager."""
+        model = holland()
+        model.new_campaign(61, 2028)
+        model.rename_manager("ABCDEFGHIJKLMN")
+        self.assertEqual(model.goaldat.country_names[61], "Trinidad/Tobago")
+        window, desk = self.fitting(lambda window: window.open_career(model))
+        self.assertEqual(desk.manager["name"].text(), "ABCDEFGHIJKLMN")
+        self.assertEqual(desk.managers.text(), "1 · ABCDEFGHIJKLMN\n(Trinidad/Tobago)")
+        canonical, _ = self.canonical(lambda window: window.open_career(model))
+        self.on_the_grid(canonical)
+
     def test_the_desk_is_on_the_grid_with_no_card(self):
         window, desk = self.canonical(self.make)
         self.assertIsInstance(desk, DeskScreen)
