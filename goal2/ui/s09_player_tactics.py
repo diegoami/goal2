@@ -19,10 +19,9 @@ mark line again: the original clears the marks after each match [confirmed: F010
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
-from goal2.ui.screen import Screen, label, para
-from goal2.ui.squad_card import (CHARACTERISTIC_CELLS, SKILL_CELLS, Bars, Row, Strip, box, code_label, colour,
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import (CHARACTERISTIC_CELLS, SKILL_CELLS, colour,
                                  full_name, last_on_the_bar, squad_rows, LINE_COLOUR)
 from goal2.ui import theme
 
@@ -36,6 +35,7 @@ EXPLAIN_MATCH = ("Enter steps the highlighted line to its next option. During th
 
 
 class PlayerTacticsScreen(Screen):
+    GRID = True   # [designed: owner, #667; T212b]
     escape_text = "back to the card"
 
     def __init__(self, window, model, word, bench=None):
@@ -56,56 +56,39 @@ class PlayerTacticsScreen(Screen):
         self.refresh()
 
     def _build(self):
-        main = QHBoxLayout()
-        main.setSpacing(18)
-        column = QVBoxLayout()
-        column.setSpacing(14)
-        head, head_layout = box(margins=(16, 14, 16, 14))
-        row = QHBoxLayout()
-        row.setSpacing(20)
-        self.code = code_label("", "unknown")
-        self.name = label("", "h1")
-        self.facts = label("", "sub")
-        for widget in (self.code, self.name):
-            row.addWidget(widget, 0, Qt.AlignmentFlag.AlignBaseline)
-        row.addStretch(1)
-        head_layout.addLayout(row)
-        self.facts.setWordWrap(True)
-        head_layout.addWidget(self.facts)
-        column.addWidget(head)
-        boxes = QHBoxLayout()
-        boxes.setSpacing(18)
-        own, own_layout = box("His own tactics")
-        own.setFixedWidth(560)
-        own_layout.setSpacing(0)
-        own_layout.addSpacing(10)
+        """[designed: owner, #667; T212b] The editable lines beside all twelve skills and five traits, with the twenty at the right."""
+        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.cell_parts import CellTableRow, CellBars, GridStrip
+        from goal2.ui.country_parts import framed
+        from goal2.game.player_card import SKILLS
+        body = Cells(90, 25, "playerTacticsBody")
+        self.body_layout.addWidget(body, 1)
+        head, inner = framed("name", 69, 3)
+        self.code = inner.text("", "roleCode", 0, 0, 2)
+        self.name = inner.text("", "h1", 3, 0, 31)
+        self.facts = CellPara("", "sub")
+        inner.put(self.facts, 35, 0, 34, 3)
+        body.put(head, 0, 0, 69, 4)
+        own, inner = framed("his own tactics", 34, 5)
         self.rows = []
         for i in range(len(LINES) + (1 if self.marks else 0)):
-            line = Row(i, (210, 0), margins=(8, 6, 8, 6), underline=True)
+            line = CellTableRow(i, (10, 23), gaps=(0, 1))
             line.chosen.connect(self.click)
-            own_layout.addWidget(line)
+            inner.put(line, 0, i, 34)
             self.rows.append(line)
-        own_layout.addSpacing(14)
-        explain = para(EXPLAIN if self.bench is None else EXPLAIN_MATCH, "sub")
-        explain.setMinimumWidth(560 - 2 * 16 - 2)
-        own_layout.addWidget(explain)
-        own_layout.addStretch(1)
-        boxes.addWidget(own)
-        right, right_layout = box("Skills")
-        from goal2.game.player_card import SKILLS
-        self.skills = Bars(SKILLS, word_width=24)
-        right_layout.addWidget(self.skills)
-        right_layout.addSpacing(4)
-        right_layout.addWidget(label("CHARACTERISTICS", "boxHeading"))
-        self.characteristics = Bars(("hardness", "fitness", "energy", "morale", "leadership"))
-        right_layout.addWidget(self.characteristics)
-        right_layout.addStretch(1)
-        boxes.addWidget(right, 1)
-        column.addLayout(boxes, 1)
-        main.addLayout(column, 1)
-        self.strip = Strip()
-        main.addWidget(self.strip)
-        self.body_layout.addLayout(main, 1)
+        body.put(own, 0, 4, 34, 6)
+        self.explain = CellPara(EXPLAIN if self.bench is None else EXPLAIN_MATCH, "sub")
+        body.put(self.explain, 0, 11, 34, 8)
+        skills, inner = framed("skills", 34, len(SKILLS))
+        self.skills = CellBars(SKILLS, 10, 20, 2)
+        inner.put(self.skills, 0, 0, 34, len(SKILLS))
+        body.put(skills, 35, 5, 34, 1 + len(SKILLS))
+        traits, inner = framed("characteristics", 34, 5)
+        self.characteristics = CellBars(("hardness", "fitness", "energy", "morale", "leadership"), 10, 8, 14)
+        inner.put(self.characteristics, 0, 0, 34, 5)
+        body.put(traits, 0, 19, 34, 6)
+        self.strip = GridStrip(cols=20)
+        body.put(self.strip, 70, 0, 20, 22)
 
     def card(self):
         from goal2.game.player_card import card

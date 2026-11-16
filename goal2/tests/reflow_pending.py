@@ -31,10 +31,6 @@ PENDING = {
     "NewGameScreen": "box 900x793 squeezed below 903x537",
     "PlayersScreen": "screen 1440x1080 squeezed below 1132x1119",
     "ReimportScreen": "box 1260x648 squeezed below 1538x648",
-    "TeamTacticsScreen": "screen 1440x1080 squeezed below 1398x1149",
-    "CountryTacticsScreen": "screen 1440x1080 squeezed below 969x1119",
-    "PlayerTacticsScreen": "screen 1440x1080 squeezed below 1400x1194",
-    "TeamPlayersScreen": "screen 1440x1080 squeezed below 1132x1119",
     "HelpScreen@720x450": "help viewer 311 px high, 69 % of the 450 px page, under the 70 % it must fill (it fits, with no problems)",
     "SaveScreen@failed-save": "dialog 533x882 squeezed below 587x402; error text needs 432 px, has 346 (the long Windows temp path in the message)",
 }
