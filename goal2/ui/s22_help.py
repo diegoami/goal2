@@ -53,10 +53,14 @@ def help_text(path: Path):
 class Scrim(QWidget):
     """The screen under a box, dimmed. [derived: docs/design/ui-2026-11/mockups/style.css, `.scrim`]"""
 
+    def __init__(self,parent=None,alpha=None):
+        super().__init__(parent)
+        self.alpha=theme.SCRIM_ALPHA if alpha is None else alpha
+
     def paintEvent(self, event):
         painter = QPainter(self)
         colour = QColor(theme.GROUND)
-        colour.setAlpha(theme.SCRIM_ALPHA)
+        colour.setAlpha(self.alpha)
         painter.fillRect(self.rect(), colour)
 
 

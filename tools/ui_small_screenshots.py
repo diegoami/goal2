@@ -42,7 +42,10 @@ def main():
             w.push(BulletinScreen(w,[page],lambda:None));shot('s05-bulletin.png','real original bulletin projection from kept E038 input');w.pop()
             screen=w.push(SaveScreen(w,w.current(),model));screen.field.set_text('Road to the championship');shot('s21-save.png','name entry over the desk')
             screen.say('The game was not saved: '+r'C:\Users\runneradmin\AppData\Local\Temp'+(r'\subfolder'*25)+r'\a-name.g2game: Access denied. Nothing was replaced.');shot('s21-save-failed.png','authored Windows-style failure message, all text retained')
-            screen.say('');screen.save();screen=w.push(SaveScreen(w,w.current(),model));screen.save();shot('s21-replace.png','actual named-save replacement question');w.pop()
+            screen.say('');screen.save();saves.write(model,target.saves,'Another save')
+            screen=w.push(SaveScreen(w,w.current(),model));screen.field.set_text('Road to the championship');screen.save()
+            assert screen.replacing is not None
+            shot('s21-replace.png','actual replacement of a different named save');w.pop()
             for name,head,question in (('s21-quit.png','Quit',QUIT_TEXT),('s21-save-question.png','Save',SAVE_QUESTION)):
                 w.push(QuestionScreen(w,w.current(),'quit',head,question,lambda:None,lambda:None,cancel=lambda:None));shot(name,'question over the desk');w.pop()
             goal=dict(frames=frames(),countries=['Holland','Romania'],score=[0,1],minute=3,scorer='A Player',kits=dict(shirt=[1,2],keeper=[3,4]),kind='FRIENDLY')

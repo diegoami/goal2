@@ -101,4 +101,27 @@ class SmallOnTheGrid(Base):
         self.assertEqual(image.pixelColor(round((point.x()-8)*ratio),round((point.y()+80)*ratio)).name(),theme.GROUND)
 
 
+    def test_bulletin_papers_keep_their_colours_and_every_source_line(self):
+        self.kind='BulletinScreen'
+        window,screen=self.canonical(self.make)
+        image=window.grab().toImage();ratio=image.devicePixelRatio()
+        from PySide6.QtCore import QPoint
+        from goal2.ui.cells import cell_w,row_px
+        for name,colour in (('left','#aaaaaa'),('middle','#0000aa'),('right','#00aa00')):
+            paper=screen.papers[name]
+            point=paper.mapTo(window,QPoint(round(3*cell_w(paper)),row_px(paper)//2))
+            self.assertEqual(image.pixelColor(round(point.x()*ratio),round(point.y()*ratio)).name(),colour)
+            self.assertEqual(screen.panels[name][2].text(),screen.pages[0][name]['masthead'])
+            self.assertEqual(screen.panels[name][3].text(),'\n'.join(screen.pages[0][name]['lines']))
+
+
+    def test_prompt_is_anchored_at_the_foot_without_clipping_long_errors(self):
+        from goal2.ui.cells import row_px
+        self.kind='SaveScreen';self.failed=True
+        window,screen=self.canonical(self.make)
+        self.assertEqual(screen.dialog.geometry().bottom()+1,row_px(screen,25))
+        self.assertEqual(fixed_page.problems(window),[])
+        self.assertLessEqual(len(screen.problem.lines()),self.rows_of(screen.problem))
+
+
 if __name__=='__main__':unittest.main()

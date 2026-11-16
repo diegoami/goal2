@@ -35,101 +35,101 @@
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s05-bulletin.png",
-    "sha256": "69a1264cd577bacdcb76732f68d61e702d5276f8d529923591c4094aaf8725d3",
+    "sha256": "85f90da2587933648fa0a3dd721f9e38c45c8fe7eb002e0884d739bfb84dcabb",
     "original": "docs/original-game/images/t156-011-bulletin-welcome.png",
     "floor": 1.5,
     "tiles": [
       [
-        3.800308253046077,
-        5.052495091583956,
-        6.168495340111354,
-        1.6061452521584754
+        21.660123052529656,
+        12.030691867990003,
+        10.378686961994676,
+        14.998972063261531
       ],
       [
-        0.5139262059226983,
-        1.9633324586460101,
-        1.6332969660292092,
-        0.0
+        52.92890141934964,
+        27.54331236585179,
+        22.325550968288557,
+        40.029696596465534
       ],
       [
-        0.0,
-        0.0,
-        0.0,
-        0.0
+        34.2400548696845,
+        26.073177503429438,
+        23.04705733882031,
+        38.55104526748954
       ],
       [
-        5.627838211086901,
-        3.8960217872992815,
-        0.0,
-        0.0
+        20.152529569111596,
+        14.975843743242176,
+        9.788338989752294,
+        10.764611248285329
       ]
     ],
-    "passed": false,
-    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s21-quit.png",
-    "sha256": "f437f6bd01fc38aa1048af2d79999e4e0316addfaa96ad79d353f6d9be47949b",
+    "sha256": "debb8d951be8c8d443b8d65781ac300b347dbe2b6cafc21eeb9cf99c613b29e4",
     "original": "docs/original-game/images/quit-confirm.png",
     "floor": 1.5,
     "tiles": [
       [
-        3.98445779472283,
-        5.245719457758413,
-        6.718492215766958,
-        1.4813121253933665
+        6.475160014524331,
+        12.166030888404748,
+        16.650058415234383,
+        3.697782845961431
       ],
       [
-        3.685351893004114,
-        3.255355984830148,
-        1.1895206463326076,
-        1.4783299435165018
+        4.181200855321554,
+        2.788683740014524,
+        1.746642855644315,
+        5.002967892358591
       ],
       [
-        2.895901045751633,
-        2.088194808359558,
-        2.032360428467682,
-        2.6899399531993877
+        8.08616451141773,
+        5.384819128540304,
+        2.359869975792787,
+        4.433059696602921
       ],
       [
-        3.4320588227225026,
-        0.9936772105220689,
-        0.5527254014362949,
-        0.7188840280803679
+        3.467160622125392,
+        3.676621055434521,
+        4.352062413459212,
+        1.8882972032599046
       ]
     ],
-    "passed": false,
-    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s21-replace.png",
-    "sha256": "1ee89724ccab9d6c4393b5944a253384e93189e4025ba9e7ead5a519bb04235f",
+    "sha256": "c8f07fb80708fb7740bf49059e147145bbf165de36d8a94cb706fd0890499b71",
     "original": null,
     "floor": null,
     "tiles": [
       [
-        6.586994000645531,
-        12.303605761316861,
-        19.208632233518834,
-        6.086089632050347
+        6.475160014524331,
+        12.134502696683615,
+        16.650058415234383,
+        3.697782845961431
       ],
       [
-        4.215482916162347,
-        2.767987294440409,
-        1.7440513846526255,
-        5.134259628015815
+        4.181200855321554,
+        2.788683740014524,
+        1.746642855644315,
+        5.002967892358591
       ],
       [
-        7.997464565480509,
-        5.545727520374407,
-        2.465742164931813,
-        4.139601061889778
+        8.022772290809323,
+        5.021684897926247,
+        2.2807200371177276,
+        4.401264891470992
       ],
       [
-        7.748795232792706,
-        3.8619116452836293,
-        2.2750160743968375,
-        8.253795984830143
+        7.579621221657387,
+        7.190946222867745,
+        4.9098272161704175,
+        2.0531561300734293
       ]
     ],
     "passed": null,
@@ -137,139 +137,139 @@
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s21-save-failed.png",
-    "sha256": "3b9567a3650b97a17d71a050158ce28e6570ba1b5c74ef1c68d94490f3e67d35",
+    "sha256": "faf0581dcd0c8b9d58de62cca6b3142b2caff398d32e835f3baa9781bcda9dfc",
     "original": "docs/original-game/images/t156-233-save-name-prompt.png",
     "floor": 1.5,
     "tiles": [
       [
-        3.98445779472283,
-        5.213126148632294,
-        6.717427098361972,
-        1.4717789147099163
+        6.475160014524331,
+        12.134502696683615,
+        16.650058415234383,
+        3.697782845961431
       ],
       [
-        7.621814855967075,
-        10.523017826999126,
-        4.51081731703381,
-        1.6022946485919467
+        4.733714751876063,
+        5.999511812313405,
+        2.922468938110224,
+        4.843206381021547
       ],
       [
-        5.548372177842333,
-        7.605961019123699,
-        8.444676930525292,
-        5.843232666828044
+        8.839159668361175,
+        11.887292419914466,
+        9.993689814411361,
+        4.458311970467198
       ],
       [
-        5.392514634874526,
-        0.9936772105220689,
-        0.5527254014362949,
-        0.7188840280803679
+        6.756268284515453,
+        5.644215843621396,
+        8.566272228677477,
+        2.3033610860969906
       ]
     ],
-    "passed": false,
-    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s21-save-goal.png",
-    "sha256": "ec3df75a8b9b244f920a869d824b18ee40bb94bb62a02cb08783f96c2fe432b5",
+    "sha256": "1788fc45d01a90ef661bbaaa52af100f0f2763889001ed8afb337099232bb079",
     "original": "docs/original-game/images/t156-176-save-goal-prompt.png",
     "floor": 0.31970166666666666,
     "tiles": [
       [
-        3.98445779472283,
-        5.812594524328251,
-        6.718492215766958,
-        1.4813121253933665
+        6.475160014524331,
+        12.732905954974585,
+        16.650058415234383,
+        3.697782845961431
       ],
       [
-        5.516697559105949,
-        5.129114616315665,
-        0.6574937416283385,
-        1.264325597514727
+        4.181200855321554,
+        2.788683740014524,
+        1.746642855644315,
+        5.002967892358591
       ],
       [
-        4.116046409263292,
-        3.5098197708383765,
-        3.6354709190672136,
-        5.012567548616147
+        8.131253396272086,
+        4.115150562414266,
+        2.1554681158718636,
+        4.2854593092875
       ],
       [
-        5.392514634874526,
-        0.9936772105220689,
-        0.5527254014362949,
-        0.7188840280803679
+        6.959797750342935,
+        8.64096137496974,
+        6.6203649310094415,
+        2.1603454571128866
       ]
     ],
     "passed": true,
-    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s21-save-question.png",
-    "sha256": "9b5a77a9c7352c78bb478a36557d228b6933737b136f0382e027e1d4995cff5a",
+    "sha256": "6bd1d05305813f2b4aef0eef8fba74aefdb76653ace0c8484aa808927d3b6e16",
     "original": "docs/original-game/images/t156-240-quit-save-prompt.png",
     "floor": 1.5,
     "tiles": [
       [
-        3.98445779472283,
-        5.245719457758413,
-        6.718492215766958,
-        1.4813121253933665
+        6.475160014524331,
+        12.166030888404748,
+        16.650058415234383,
+        3.697782845961431
       ],
       [
-        3.7152016170418762,
-        3.23239332607117,
-        1.1895206463326076,
-        1.4783299435165018
+        4.181200855321554,
+        2.788683740014524,
+        1.746642855644315,
+        5.002967892358591
       ],
       [
-        2.895901045751633,
-        2.088194808359558,
-        2.032360428467682,
-        2.6899399531993877
+        8.08616451141773,
+        5.384819128540304,
+        2.359869975792787,
+        4.433059696602921
       ],
       [
-        1.807355833131606,
-        0.9936772105220689,
-        0.5527254014362949,
-        0.7188840280803679
+        3.3937258944565465,
+        3.6636899580408304,
+        4.445315303800532,
+        1.8882972032599046
       ]
     ],
-    "passed": false,
-    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s21-save.png",
-    "sha256": "753a6276c3ecfdd6f7cdb7b26b93f0d8674f3f18b781e1eb76426861d1ef6802",
+    "sha256": "627981cdd80925b98f6aeed4fcbfc11346c0d87978222ea6960f3deb08444eb3",
     "original": "docs/original-game/images/t156-233-save-name-prompt.png",
     "floor": 1.5,
     "tiles": [
       [
-        3.98445779472283,
-        5.214191266037281,
-        6.718492215766958,
-        1.4813121253933665
+        6.475160014524331,
+        12.134502696683615,
+        16.650058415234383,
+        3.697782845961431
       ],
       [
-        5.431321817961753,
-        6.3830920568062615,
-        1.5524754466230932,
-        1.2337288493504406
+        4.181200855321554,
+        2.788683740014524,
+        1.746642855644315,
+        5.002967892358591
       ],
       [
-        4.425741179698219,
-        5.079301331396757,
-        3.6492261171629123,
-        4.8198549584442745
+        8.131253396272086,
+        4.462103886064714,
+        2.155561449205197,
+        4.2854593092875
       ],
       [
-        5.392514634874526,
-        0.9936772105220689,
-        0.5527254014362949,
-        0.7188840280803679
+        7.091694607439683,
+        8.708018933268788,
+        9.801969382716049,
+        2.1657059993544743
       ]
     ],
-    "passed": false,
-    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
   },
   {
     "picture": "docs/design/ui-2026-11/T216-screens/s21-saved-goals.png",

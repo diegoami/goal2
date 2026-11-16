@@ -1,0 +1,410 @@
+[
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/home.png",
+    "sha256": "e387ca40f2b1bffa66643f8e6dce57e8ada529f0fd170c980a9f3648e199a1a1",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        1.7225000282417497,
+        0.9984261720325991,
+        0.0,
+        0.0
+      ],
+      [
+        2.831573368837246,
+        5.1219507786653775,
+        3.610769398854192,
+        1.0176449544097472
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.41904960703623007,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s05-bulletin.png",
+    "sha256": "69a1264cd577bacdcb76732f68d61e702d5276f8d529923591c4094aaf8725d3",
+    "original": "docs/original-game/images/t156-011-bulletin-welcome.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        3.800308253046077,
+        5.052495091583956,
+        6.168495340111354,
+        1.6061452521584754
+      ],
+      [
+        0.5139262059226983,
+        1.9633324586460101,
+        1.6332969660292092,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        5.627838211086901,
+        3.8960217872992815,
+        0.0,
+        0.0
+      ]
+    ],
+    "passed": false,
+    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-quit.png",
+    "sha256": "f437f6bd01fc38aa1048af2d79999e4e0316addfaa96ad79d353f6d9be47949b",
+    "original": "docs/original-game/images/quit-confirm.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        3.98445779472283,
+        5.245719457758413,
+        6.718492215766958,
+        1.4813121253933665
+      ],
+      [
+        3.685351893004114,
+        3.255355984830148,
+        1.1895206463326076,
+        1.4783299435165018
+      ],
+      [
+        2.895901045751633,
+        2.088194808359558,
+        2.032360428467682,
+        2.6899399531993877
+      ],
+      [
+        3.4320588227225026,
+        0.9936772105220689,
+        0.5527254014362949,
+        0.7188840280803679
+      ]
+    ],
+    "passed": false,
+    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-replace.png",
+    "sha256": "1ee89724ccab9d6c4393b5944a253384e93189e4025ba9e7ead5a519bb04235f",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        6.586994000645531,
+        12.303605761316861,
+        19.208632233518834,
+        6.086089632050347
+      ],
+      [
+        4.215482916162347,
+        2.767987294440409,
+        1.7440513846526255,
+        5.134259628015815
+      ],
+      [
+        7.997464565480509,
+        5.545727520374407,
+        2.465742164931813,
+        4.139601061889778
+      ],
+      [
+        7.748795232792706,
+        3.8619116452836293,
+        2.2750160743968375,
+        8.253795984830143
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-save-failed.png",
+    "sha256": "3b9567a3650b97a17d71a050158ce28e6570ba1b5c74ef1c68d94490f3e67d35",
+    "original": "docs/original-game/images/t156-233-save-name-prompt.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        3.98445779472283,
+        5.213126148632294,
+        6.717427098361972,
+        1.4717789147099163
+      ],
+      [
+        7.621814855967075,
+        10.523017826999126,
+        4.51081731703381,
+        1.6022946485919467
+      ],
+      [
+        5.548372177842333,
+        7.605961019123699,
+        8.444676930525292,
+        5.843232666828044
+      ],
+      [
+        5.392514634874526,
+        0.9936772105220689,
+        0.5527254014362949,
+        0.7188840280803679
+      ]
+    ],
+    "passed": false,
+    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-save-goal.png",
+    "sha256": "ec3df75a8b9b244f920a869d824b18ee40bb94bb62a02cb08783f96c2fe432b5",
+    "original": "docs/original-game/images/t156-176-save-goal-prompt.png",
+    "floor": 0.31970166666666666,
+    "tiles": [
+      [
+        3.98445779472283,
+        5.812594524328251,
+        6.718492215766958,
+        1.4813121253933665
+      ],
+      [
+        5.516697559105949,
+        5.129114616315665,
+        0.6574937416283385,
+        1.264325597514727
+      ],
+      [
+        4.116046409263292,
+        3.5098197708383765,
+        3.6354709190672136,
+        5.012567548616147
+      ],
+      [
+        5.392514634874526,
+        0.9936772105220689,
+        0.5527254014362949,
+        0.7188840280803679
+      ]
+    ],
+    "passed": true,
+    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-save-question.png",
+    "sha256": "9b5a77a9c7352c78bb478a36557d228b6933737b136f0382e027e1d4995cff5a",
+    "original": "docs/original-game/images/t156-240-quit-save-prompt.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        3.98445779472283,
+        5.245719457758413,
+        6.718492215766958,
+        1.4813121253933665
+      ],
+      [
+        3.7152016170418762,
+        3.23239332607117,
+        1.1895206463326076,
+        1.4783299435165018
+      ],
+      [
+        2.895901045751633,
+        2.088194808359558,
+        2.032360428467682,
+        2.6899399531993877
+      ],
+      [
+        1.807355833131606,
+        0.9936772105220689,
+        0.5527254014362949,
+        0.7188840280803679
+      ]
+    ],
+    "passed": false,
+    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-save.png",
+    "sha256": "753a6276c3ecfdd6f7cdb7b26b93f0d8674f3f18b781e1eb76426861d1ef6802",
+    "original": "docs/original-game/images/t156-233-save-name-prompt.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        3.98445779472283,
+        5.214191266037281,
+        6.718492215766958,
+        1.4813121253933665
+      ],
+      [
+        5.431321817961753,
+        6.3830920568062615,
+        1.5524754466230932,
+        1.2337288493504406
+      ],
+      [
+        4.425741179698219,
+        5.079301331396757,
+        3.6492261171629123,
+        4.8198549584442745
+      ],
+      [
+        5.392514634874526,
+        0.9936772105220689,
+        0.5527254014362949,
+        0.7188840280803679
+      ]
+    ],
+    "passed": false,
+    "comparison_note": "Functional original reference; original uses newspaper graphics or an undimmed bottom-line prompt, while this accepted UI uses text panels/dimmed modal frames. The density failure is retained pending a scope decision."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-saved-goals.png",
+    "sha256": "4978d3adc81e8e186a6f8e0b472ecc2df676948251cf2536a9a44cce960c49d0",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        10.161929987896393,
+        19.621581751795357,
+        19.722908093278463,
+        8.37928669410151
+      ],
+      [
+        3.007269285887195,
+        3.1390456709432764,
+        1.4814814814814814,
+        0.8065843621399177
+      ],
+      [
+        1.9714497716452832,
+        2.313021840555152,
+        1.2345679012345678,
+        0.6426611796982168
+      ],
+      [
+        1.727605969498911,
+        2.995106751391915,
+        3.5508965609618324,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s21-saved-summaries.png",
+    "sha256": "5bba0feb071d02952c6f8cf60c76510fa85a71798101ab37294502c7921e5492",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        2.6476455378035997,
+        1.0121754054708305,
+        0.21673525377229078,
+        0.09053497942386832
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.07048929476317276,
+        0.05210296215605583,
+        0.0,
+        0.0
+      ],
+      [
+        2.119985616880497,
+        2.590418196562576,
+        3.3625950931977724,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s22-help-missing.png",
+    "sha256": "acab4ee3fea129e4a5ffc437a793800b4d53dfc603c62c731e399425d4ce0d33",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        8.230078037601874,
+        5.6640099765996945,
+        5.506667961752603,
+        7.364607298474949
+      ],
+      [
+        7.52724871379004,
+        4.912141174049867,
+        5.871182871782455,
+        4.3271363915113366
+      ],
+      [
+        0.17451188009360116,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.9083798547567172,
+        0.72717348019043,
+        0.0,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T216-screens/s22-help.png",
+    "sha256": "79097201df353cdf1d9a467f33089aa24cd98e69be32ade699beb280431a17cd",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        11.33347233841685,
+        1.9214724118453974,
+        0.21673525377229078,
+        4.468414192689421
+      ],
+      [
+        13.943926343903813,
+        4.012801743726289,
+        0.0,
+        0.0
+      ],
+      [
+        14.746390734285479,
+        4.253326535947705,
+        0.0,
+        0.0
+      ],
+      [
+        9.708015202937132,
+        3.165316271282174,
+        0.19790607601065116,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  }
+]

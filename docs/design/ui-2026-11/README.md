@@ -423,6 +423,8 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 - **Purpose**: the name box and the yes/no questions of saving and quitting.
 - **Shows**: over the current screen, the question and the proposed name (the last name used).
+  [designed: #667; T216] The cell-aligned prompt sits at the foot of the main content, with a light 5% dim behind it;
+  the game context remains readable and the frame grows upward for a long error, without shrinking or clipping text.
 - **Actions**: **F7** save: type or accept the name, **Enter** save, **Esc** cancel. **F10** quit: *Are you
   sure you want to quit?* **Y**/**N**, then *Do you want to save this game?* **Y**/**N**. **F3** / **F4**: the
   saved goals or summaries, listed by name; **Enter** opens one (S15, then S17 or S20).

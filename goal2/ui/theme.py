@@ -52,11 +52,13 @@ PALETTE = {
 
 # What the mockups' style sheet derives from the table. [derived: docs/design/ui-2026-11/mockups/style.css,
 # `--primary-text`, `--good`, `--bad`] Text on the highlight bar is black; a check that passed is bright text, one
-# that failed light red. A translucent ground dims a screen under a box (`.scrim`, 62%).
+# that failed light red. Help retains the mockup scrim; the bottom prompt uses the lighter T216 treatment below.
 ON_HIGHLIGHT = GROUND
 GOOD = TEXT_BRIGHT
 BAD = TITLE_BANNER
-SCRIM_ALPHA = 158   # 0.62 of 255
+SCRIM_ALPHA = 158   # 0.62 of 255, help viewer
+# [designed: #667; T216] The bottom prompt keeps its underlying game context readable, as the original does.
+PROMPT_SCRIM_ALPHA = 13   # approximately 5%
 
 # The cell, the page and the one text size. [designed: owner, 2026-11-08, #666, #667; fidelity-review.md §3] The font is
 # 8 x 16; twice that is 16 x 32, and `TEXT` is the pixel size at which this font's cell is 16 x 32 [confirmed: measured

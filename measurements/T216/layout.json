@@ -364,9 +364,9 @@
     "problems": []
   },
   {
-    "screen": "DeskScreen",
+    "screen": "SaveScreen",
     "picture": "s21-replace.png",
-    "context": "actual named-save replacement question",
+    "context": "actual replacement of a different named save",
     "requested": [
       1440,
       1080
@@ -378,9 +378,9 @@
     "problems": []
   },
   {
-    "screen": "DeskScreen",
+    "screen": "SaveScreen",
     "picture": "s21-replace.png",
-    "context": "actual named-save replacement question",
+    "context": "actual replacement of a different named save",
     "requested": [
       1440,
       900
@@ -392,9 +392,9 @@
     "problems": []
   },
   {
-    "screen": "DeskScreen",
+    "screen": "SaveScreen",
     "picture": "s21-replace.png",
-    "context": "actual named-save replacement question",
+    "context": "actual replacement of a different named save",
     "requested": [
       2110,
       1213
@@ -406,9 +406,9 @@
     "problems": []
   },
   {
-    "screen": "DeskScreen",
+    "screen": "SaveScreen",
     "picture": "s21-replace.png",
-    "context": "actual named-save replacement question",
+    "context": "actual replacement of a different named save",
     "requested": [
       1440,
       1061

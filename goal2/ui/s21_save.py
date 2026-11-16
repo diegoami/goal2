@@ -27,7 +27,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy
 
-from goal2.ui import saves
+from goal2.ui import saves, theme
 from goal2.ui.s22_help import Scrim
 from goal2.ui.screen import Screen, set_para
 
@@ -47,12 +47,12 @@ def button(text,caption,handler,primary=False):
 
 
 class BoxScreen(Screen):
-    """A cell-aligned modal frame over the existing dimmed main content; the current title and key bar remain visible."""
+    """A bottom-anchored prompt frame over readable main content; the current title and key bar remain visible."""
     GRID = True   # [designed: owner, #667; T216]
     escape_text="cancel"
     offers_help=False
     box_title=""
-    COLS=64
+    COLS=48
 
     def __init__(self,window,under):
         self.title=f"{under.title} · {self.box_title}" if under is not None and under.title else self.box_title
@@ -68,19 +68,18 @@ class BoxScreen(Screen):
         host=QWidget();host.setObjectName("overlayHost")
         stack=QStackedLayout(host);stack.setContentsMargins(0,0,0,0)
         stack.setStackingMode(QStackedLayout.StackingMode.StackAll)
-        self.scrim=Scrim(host);self.scrim.setObjectName("scrim")
+        self.scrim=Scrim(host,alpha=theme.PROMPT_SCRIM_ALPHA);self.scrim.setObjectName("scrim")
         stack.addWidget(backdrop);stack.addWidget(self.scrim);stack.setCurrentWidget(self.scrim)
         self.body_layout.addWidget(host,1)
         layout=QHBoxLayout(self.scrim);layout.setContentsMargins(0,0,0,0)
         self.canvas=Cells(90,25,"dialogBody");layout.addWidget(self.canvas)
         self.dialog=Frame(self.box_title or "question")
-        from goal2.ui import theme
         self.dialog.setAttribute(Qt.WidgetAttribute.WA_StyledBackground,True)
         self.dialog.setStyleSheet("#frame { background: "+theme.GROUND+"; }")
         self.box=self.dialog.body
         self.head=CellLabel("","h2");self.box.addWidget(self.head)
         self.text=CellPara("","value");self.box.addWidget(self.text)
-        self.canvas.put(self.dialog,13,0,self.COLS,1)
+        self.canvas.put(self.dialog,(90-self.COLS)//2,0,self.COLS,1)
         self._box_rows=None;self._placing=False
         self.dialog.installEventFilter(self)
 
@@ -118,7 +117,7 @@ class BoxScreen(Screen):
             rows=max(1,math.ceil(height/row_px(self)))
             if rows!=self._box_rows:
                 self._box_rows=rows
-                self.canvas.move(self.dialog,13,max(0,(25-rows)//2),self.COLS,rows)
+                self.canvas.move(self.dialog,(90-self.COLS)//2,max(0,25-rows),self.COLS,rows)
         finally:self._placing=False
 
     def eventFilter(self,obj,event):
