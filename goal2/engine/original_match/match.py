@@ -688,7 +688,7 @@ class Match:
                               and not (substitutions or positions or marking or own_tactics))
             legal_bench = context in ("half_time", "substitution") and self.m.rd(S.SUBS_ALLOWED, 1)
             # [T132, #709] A configured pre-match decision takes the team tactics and/or
-            # swap pairs within the twenty or out of the made pool (the generic validation
+            # swap pairs anywhere within the twenty or out of the made pool (the generic validation
             # below checks the squad-or-pool membership); DEA6's pre-play swaps have no
             # budget gate and are not deferred.
             pre_match = (context == "pre_match" and self.opts.get("pre_match_edits")
@@ -735,10 +735,26 @@ class Match:
         squad = self._squad(self.opts["managed"])
         # [T132, #709] At a configured pre-match edit the incoming player may also be a made-pool
         # word (F011): DEA6 exchanges squad and pool word-list entries outside a match.
-        pool = self._pool() if (edit_only and self.st["waiting"]["context"] == "pre_match") else []
+        pre_match_pairs = edit_only and context == "pre_match" and self.opts.get("pre_match_edits")
+        pool = self._pool() if pre_match_pairs else []
         subs = [[int(a), int(b)] for a, b in substitutions]
+        live_squad, live_pool = list(squad), list(pool)
         for off, on in subs:
-            if off not in squad[:11] or (on not in squad[11:] and on not in pool):
+            if pre_match_pairs:
+                # [confirmed: F031 DEA6; T134/#717] Both squad blocks are
+                # legal. Simulate membership only on detached lists so a bad
+                # later pair consumes none of an otherwise valid batch.
+                if off not in live_squad or not on or off == on or (on not in live_squad and on not in live_pool):
+                    raise ValueError(f"pre-match swap ({off}, {on}): distinct current squad/pool words, "
+                                     "outgoing in the squad and incoming nonzero")
+                i = live_squad.index(off)
+                if on in live_squad:
+                    j = live_squad.index(on)
+                    live_squad[i], live_squad[j] = live_squad[j], live_squad[i]
+                else:
+                    j = live_pool.index(on)
+                    live_squad[i], live_pool[j] = live_pool[j], live_squad[i]
+            elif off not in squad[:11] or on not in squad[11:]:
                 raise ValueError(f"substitution ({off}, {on}): the first must be in the eleven, the second "
                                  "on the bench or, at a pre-match edit, in the pool")
         positions = {int(p): int(c) for p, c in (positions or {}).items()}
@@ -768,6 +784,13 @@ class Match:
                                                 "own_tactics": sorted((p, sorted(d.items())) for p, d in own.items()),
                                                 "quick": bool(quick), "speed": speed, **edit}})
         self.st["waiting"] = None
+
+    def _on_pre_match_swap(self, replay):
+        # [confirmed: F031, DEA6 DF29] The original word swap has returned;
+        # its sort has not run yet. This witness reads, never patches, guest data.
+        observe = getattr(self._menu, "observe_swap", None)
+        if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
+            observe({"squad": self._squad(self.opts["managed"]), "pool": self._pool()})
 
     def _new_plan(self, answer, context=None):
         if context == "pre_match":
@@ -871,6 +894,7 @@ class Match:
         m.at(PROMPT, self._on_prompt)
         m.at(WAIT, self._on_wait)
         m.at("0791:D010", self._on_taker_accepted)
+        m.at("0791:DF29", self._on_pre_match_swap)
         m.at(TICK, self._on_tick)
         m.at(PLAY_MATCH, self._on_play)
         m.at(MATCH_PLAYED, self._on_played)

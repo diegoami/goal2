@@ -139,6 +139,7 @@ def actual_worker(raw, late_captain=False, roster_case=None):
     a.answer(edit_only=True, tactics={8: answer['tactics']['8']})
     second = next_decision()
     assert b.waiting == a.waiting and b.waiting['edited']
+    tactics_decision = second
     roster_answer = roster = None
     if roster_case:
         from goal2.engine.original_match.match import PLAYER_POSITION
@@ -163,7 +164,7 @@ def actual_worker(raw, late_captain=False, roster_case=None):
     assert observed['events'] == [asdict(next(stream))]
     assert a.m.read(0, MEM_SIZE) == b.m.read(0, MEM_SIZE)
     assert all(a.m.reg(r) == b.m.reg(r) for r in REGS)
-    return {'state': value, 'first': first, 'edited': second, 'after_play': observed,
+    return {'state': value, 'first': first, 'edited': tactics_decision, 'after_play': observed,
             'play_answer': play_answer,
             'configured_captain': configured_captain,
             'roster_answer': roster_answer, 'roster': roster,
