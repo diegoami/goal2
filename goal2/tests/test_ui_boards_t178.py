@@ -322,7 +322,7 @@ class Tournament(App):
                                            str(r["lost"]), str(r["goals_for"]), str(r["goals_against"]),
                                            str(r["points"])) for r in table["rows"]], "row by row")
         self.assertEqual(TABS[screen.tab][0], table["continent"])
-        self.assertIn(f"GROUP {'ABCDEFGH'[table['group'] - 1]}", screen.table_heading.text())
+        self.assertIn(f"group {'ABCDEFGH'[table['group'] - 1].lower()}", screen.table_heading.text())
         group = next(g for g in model.tournament()["groups"] if g["managed"])
         self.assertEqual(screen.matches(), [(m["first_name"], "v", m["second_name"]) for m in group["matches"]])
         self.assertIn("European Championship", screen.banner.text())
@@ -364,7 +364,7 @@ class Tournament(App):
         before = copy.deepcopy(model.state)
         for display in ("FINALS", "CHAMPIONSHIP"):
             self.key(window, Qt.Key.Key_Right)
-            self.assertIn(f"{display} · NOT REACHED YET", screen.table_heading.text())
+            self.assertIn(f"{display.lower()} · not reached yet", screen.table_heading.text())
             self.assertEqual(screen.table(), [])
             self.assertEqual(screen.matches(), [])
             self.assertIn("FINALS", screen.banner.text())

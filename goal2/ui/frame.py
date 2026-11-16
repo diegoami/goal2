@@ -68,6 +68,12 @@ class FrameRule(QWidget):
         """What is drawn, cell by cell: `-name--------` to the edge."""
         return rule_text(self.label, self.cols())
 
+    def setText(self, text: str) -> None:
+        """[designed: T213, #667] A changing panel heading uses the same lowercase rule as a static one."""
+        self.label = text.lower()
+        self.updateGeometry()
+        self.update()
+
     def label_colour(self) -> str:
         return KINDS[self.kind]
 
