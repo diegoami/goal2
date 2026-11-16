@@ -121,8 +121,12 @@ def real_preview(raw, complete=False, previews=True):
         observed = ask('observe')
         assert observed['state'] == result['state']
         assert not observed['observation']['played_fixtures'] and not observed['observation']['news_pages']
-        return dict(state=result['state'], observation=result['observation'], memory=final_memory,
-                    registers=registers, events=canonical_hash(events))
+        return dict(state_hash=canonical_hash(result['state']),
+                    observation_hash=canonical_hash(result['observation']), memory=final_memory,
+                    registers=registers, events=canonical_hash(events),
+                    status=result['observation']['status'],
+                    fixtures=len(result['observation']['played_fixtures']),
+                    news_pages=len(result['observation']['news_pages']))
     return dict(initial=initial, boundary=boundary, snapshots=snapshots, edits=edits,
                 after_play=packet, memory=hashlib.sha256(match.memory_component()).hexdigest(),
                 registers=[match.m.reg(r) for r in REGS])
@@ -132,7 +136,7 @@ class PreviewWorker(unittest.TestCase):
     def test_actual_current_read_detaches_and_preserves_the_held_match(self):
         result = pypy_engine.call(__name__+':real_preview', reference_raw())
         self.assertEqual(len(result['snapshots']), 4)
-        self.assertNotEqual(result['snapshots'][-1]['state'], result['boundary'])
+        self.assertNotEqual(canonical_hash(result['snapshots'][-1]['state']), canonical_hash(result['boundary']))
         baseline = pypy_engine.call(__name__+':real_preview', reference_raw(), previews=False)
         self.assertGreater(result['after_play']['request'], baseline['after_play']['request'])
         self.assertEqual({k:v for k,v in result['after_play'].items() if k != 'request'},
@@ -143,8 +147,10 @@ class PreviewWorker(unittest.TestCase):
     @requires.need(slow=True)
     def test_actual_play_and_route_resume_are_identical_with_and_without_previews(self):
         raw = reference_raw()
-        self.assertEqual(pypy_engine.call(__name__+':real_preview', raw, complete=True),
+        result = pypy_engine.call(__name__+':real_preview', raw, complete=True)
+        self.assertEqual(result,
                          pypy_engine.call(__name__+':real_preview', raw, complete=True, previews=False))
+        print('T170S_FULL '+json.dumps(result, sort_keys=True), flush=True)
 
     def test_no_session_and_wrong_context_are_pure_guards(self):
         from types import SimpleNamespace
@@ -184,7 +190,7 @@ class PreviewPipe(unittest.TestCase):
             self.assertFalse(self.receive('season_error')['lost'])
             engine.season_request('preview', decision=packet['decision'])
             got = self.receive('season')
-            self.assertEqual(got['state'], snapshot['state'])
+            self.assertEqual(canonical_hash(got['state']), canonical_hash(snapshot['state']))
             self.assertEqual(got['preview'], snapshot['preview'])
             self.assertNotIn('observation', got)
             answer = expected['edits'][index] if index < len(expected['edits']) else {}
@@ -193,7 +199,7 @@ class PreviewPipe(unittest.TestCase):
         engine.season_request('next', count=1)
         self.assertEqual(self.receive('season')['events'], expected['after_play']['events'])
         engine.season_request('observe')
-        self.assertEqual(self.receive('season')['state'], expected['boundary'])
+        self.assertEqual(canonical_hash(self.receive('season')['state']), canonical_hash(expected['boundary']))
 
 
 class PreviewWire(unittest.TestCase):
