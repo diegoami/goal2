@@ -14,10 +14,10 @@ state, which the mockup's third row names, is not asked for; the template takes 
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFileDialog, QFrame, QGridLayout, QHBoxLayout, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFileDialog, QFrame
 
 from goal2.desktop import data_setup
-from goal2.ui.screen import Screen, label, para, set_para
+from goal2.ui.screen import Screen, set_para
 
 # What each file is needed for, as the S01 mockup says it; GOAL.HLP is marked optional, as data_setup.OPTIONAL has
 # it. [designed: docs/design/ui-2026-11/mockups/s01-import.html; T153]
@@ -36,7 +36,6 @@ CHECK = {
     "absent": ("not in this folder (optional)", "none"),
     "unchecked": ("not checked yet", "none"),
 }
-BOX_WIDTH = 1260   # [designed: s01-import.html, the column's `width:900px`]
 INTRO = ("goal2 plays the original's game from your own data files. Choose the folder that holds them; goal2 checks "
          "each file and copies it into its data folder. Your saved careers are never touched.")
 
@@ -69,6 +68,7 @@ class FixedWidthBox(QFrame):
 
 
 class ImportScreen(Screen):
+    GRID = True   # [designed: owner, #667; T214]
     title = "first start"
     pre_game = True
     escape_text = "quit"
@@ -84,63 +84,29 @@ class ImportScreen(Screen):
         self.set_enter("Choose folder…", self.choose_and_import)
 
     def _build(self):
-        self.body_layout.addStretch(1)
-        row = QHBoxLayout()
-        row.addStretch(1)
-        box = FixedWidthBox()
-        box.setObjectName("box")
-        box.setFixedWidth(BOX_WIDTH)
-        layout = QVBoxLayout(box)
-        layout.setContentsMargins(34, 30, 34, 30)
-        layout.setSpacing(0)
-        tag = label("GOAL2 ADDITION · FIRST START ONLY", "tagNew")
-        layout.addWidget(tag, 0, Qt.AlignmentFlag.AlignLeft)
-        layout.addSpacing(14)
-        layout.addWidget(label("Import your game data", "h1"))
-        layout.addSpacing(6)
-        intro = para(INTRO, "sub")
-        layout.addWidget(intro)
-        layout.addSpacing(20)
-        table = QWidget()
-        grid = QGridLayout(table)
-        grid.setContentsMargins(0, 0, 0, 0)
-        grid.setHorizontalSpacing(0)
-        grid.setVerticalSpacing(0)
-        for col, head in enumerate(("FILE", "NEEDED FOR", "CHECK")):
-            grid.addWidget(label(head, "th"), 0, col)
-        self.cells = {}
-        for r, name in enumerate(ROWS, start=1):
-            grid.addWidget(label(name, "td"), r, 0)
-            grid.addWidget(label(NEEDED_FOR[name], "td"), r, 1)
-            cell = label("", "td")
-            grid.addWidget(cell, r, 2)
-            self.cells[name] = cell
-        grid.setColumnStretch(0, 26)
-        grid.setColumnStretch(1, 30)
-        grid.setColumnStretch(2, 26)
-        layout.addWidget(table)
-        self.error = para("", "error")
-        # The fixed outer box supplies paragraph width. A duplicated minimum would
-        # round padding/borders differently at fractional native DPI (T186).
-        for paragraph in (intro, self.error):
-            paragraph.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Preferred)
-        self.error.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
-        layout.addSpacing(18)
-        layout.addWidget(self.error)
-        layout.addSpacing(18)
-        field = QFrame()
-        field.setObjectName("field")
-        field_layout = QHBoxLayout(field)
-        field_layout.setContentsMargins(14, 10, 14, 10)
-        field_layout.setSpacing(8)
-        field_layout.addWidget(label("Folder", "muted"))
-        self.folder_label = label("", "fieldValue")
-        field_layout.addWidget(self.folder_label, 1)
-        layout.addWidget(field)
-        row.addWidget(box)
-        row.addStretch(1)
-        self.body_layout.addLayout(row)
-        self.body_layout.addStretch(1)
+        """[designed: owner, #667; T214] All three files across the page, with complete errors and a wrapped folder path."""
+        from goal2.ui.cells import Cells,CellPara
+        from goal2.ui.country_parts import framed
+        body=Cells(90,25,"importBody")
+        self.body_layout.addWidget(body,1)
+        body.text("GOAL2 ADDITION · FIRST START ONLY","tagNew",0,0,90)
+        frame,inner=framed("import your game data",90,17)
+        inner.put(CellPara(INTRO,"sub"),0,0,90,3)
+        for col,head,width in ((0,"file",26),(26,"needed for",34),(60,"check",30)):
+            inner.text(head,"cardLabel",col,4,width)
+        self.cells={}
+        for row,name in enumerate(ROWS,5):
+            inner.text(name,"value",0,row,26)
+            inner.text(NEEDED_FOR[name],"sub",26,row,34)
+            self.cells[name]=inner.text("","value",60,row,30)
+        self.error=CellPara("","error")
+        inner.put(self.error,0,9,90,6)
+        body.put(frame,0,1,90,18)
+        folder,inner=framed("folder",90,4)
+        self.folder_label=CellPara("","fieldValue")
+        self.folder_label.setTextFormat(Qt.TextFormat.PlainText)
+        inner.put(self.folder_label,0,0,90,4)
+        body.put(folder,0,20,90,5)
         self._show()
 
     def _show(self, message=""):
@@ -148,6 +114,9 @@ class ImportScreen(Screen):
             text, kind = CHECK[self.result[name]]
             cell.setText(text)
             cell.setProperty("check", kind)
+            from goal2.ui.squad_card import colour
+            from goal2.ui import theme
+            colour(cell,{"good":theme.GOOD,"bad":theme.BAD}.get(kind,theme.TEXT_NORMAL))
             cell.style().unpolish(cell)
             cell.style().polish(cell)
         self.message = message

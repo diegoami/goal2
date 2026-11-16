@@ -69,6 +69,10 @@ def para(text: str, name: str, parent=None) -> QLabel:
 
 
 def set_para(widget: QLabel, text: str):
+    if isinstance(widget, cells.CellPara):
+        # [designed: T214] Cell paragraphs draw their own line pitch. Keep explicit line breaks and literal text.
+        widget.setText(text if widget.textFormat() == Qt.TextFormat.PlainText else html.escape(text))
+        return
     lines = "<br>".join(html.escape(line) for line in text.split("\n"))
     widget.setText(f'<p style="line-height:{LINE_HEIGHT}%">{lines}</p>' if text else "")
 

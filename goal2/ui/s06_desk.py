@@ -376,6 +376,7 @@ class ReimportScreen(ImportScreen):
     """S01 over the desk, to import the data folder again (to add GOAL.HLP). It opens on the data folder's own
     checks; Enter chooses a folder and imports it, by `data_setup`'s rules unchanged, and an import returns to the
     desk; Esc returns to the desk. [designed: owner decision 14, #526; T164]"""
+    GRID = True   # [designed: owner, #667; T214]
     title = "re-import data"
     pre_game = False
     escape_text = "desk"

@@ -430,9 +430,10 @@ class CountryScreen(Screen):
 
 
 class PlayersScreen(Screen):
-    """The country's twenty, read only: T165's S08 card (goal2/ui/squad_card.py `PlayerCard`, bars without numbers
+    """The country's twenty, read only: S08's cell card (goal2/ui/cell_parts.py `GridCard`, bars without numbers
     [designed: owner, 2026-10-21, T99], with performance and cards) beside its strip of the twenty.
     [confirmed: T156-R1 step 4, Space in the country browser; designed: S04 "the S08 card, read only"; T163 6a]"""
+    GRID = True   # [designed: owner, #667; T214]
     title = "new game · step 2 of 3 · players"
     pre_game = True
 
@@ -462,21 +463,26 @@ class PlayersScreen(Screen):
         self._show()
 
     def _build_players(self):
-        from goal2.ui.squad_card import PlayerCard, Strip
-        row = QHBoxLayout()
-        row.setSpacing(18)
-        self.card = PlayerCard()
-        row.addWidget(self.card, 1)
-        self.strip = Strip()
+        """[designed: T214] The same read-only card as S07, shared by its TeamPlayersScreen subclass."""
+        from goal2.ui.cell_parts import GridCard,GridStrip
+        body=Cells(90,25,"playersBody")
+        self.body_layout.addWidget(body,1)
+        self.players_heading=body.text("","sub",0,21,69)
+        self.players_heading.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        self.card=GridCard()
+        body.put(self.card,0,0,69,self.card.ROWS)
+        self.strip=GridStrip(cols=20)
         self.strip.chosen.connect(self.pick)
-        row.addWidget(self.strip)
-        self.body_layout.addLayout(row, 1)
+        body.put(self.strip,70,0,20,22)
 
     def _show(self):
         c = self.cards[self.index]
         self.card.set_card(c)
         self.strip.show_rows(self.heading, [(c["role"], c["line"], c["full_name"]) for c in self.cards],
                              self.index, gap=self.eleven == 11)
+
+        self.players_heading.setText(self.heading)
+        self.strip.set_label(self.heading.removesuffix(" · the twenty"))
 
     @property
     def player_name(self):

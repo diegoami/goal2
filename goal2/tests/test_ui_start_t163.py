@@ -318,7 +318,8 @@ class CountryKeys(App):
         self.assertIsInstance(players, PlayersScreen)
         self.assertEqual(len(players.cards), 20)
         self.assertEqual(sorted(c["id"] for c in players.cards), sorted(screen.browser.state.managed_squad))
-        self.assertIsInstance(players.card, squad_card.PlayerCard, "T165's S08 card, read only")
+        from goal2.ui.cell_parts import GridCard
+        self.assertIsInstance(players.card, GridCard, "S08's grid card, read only")
         self.key(window, Qt.Key.Key_Down)
         self.assertEqual(players.player_name.text(), players.cards[1]["full_name"])
         skill_words = [word.text() for _, word in players.card.skills.rows.values()]

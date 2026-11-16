@@ -83,10 +83,10 @@ class CellWrapRow(CellRow):
 class CellTableRow(CellRow):
     """A row of a list or a table in cells, as `squad_card.Row` (`cells`, `set`, `set_on`, `texts`, `chosen`): its cells at
     columns, `widths` cells each, `gaps` empty cells before each (none by default), the highlight bar behind them when it is the
-    cursor's. `aligns` is a `Qt.AlignmentFlag` per cell (left by default). A cell's text longer than its width is squeezed below
+    cursor's. `aligns` is a `Qt.AlignmentFlag` per cell (left by default). `wrap_rows` uses that many cell rows per field; `plain` retains literal names. A cell's text longer than its width is squeezed below
     the cells it needs, which `fixed_page.problems` reports: a column is never clipped. [designed: T211b]"""
 
-    def __init__(self, index, widths, aligns=None, gaps=None):
+    def __init__(self, index, widths, aligns=None, gaps=None, *, wrap_rows=1, plain=False):
         Clickable.__init__(self, "listRow")
         self.index = index
         self.underline = False
@@ -94,17 +94,19 @@ class CellTableRow(CellRow):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         gaps = gaps if gaps is not None else (0,) * len(widths)
-        self.area = Cells(sum(widths) + sum(gaps), 1, "rowCells")
+        self.area = Cells(sum(widths) + sum(gaps), wrap_rows, "rowCells")
         layout.addWidget(self.area)
         self.cells = []
         self.tones = []
         column = 0
         for number, width in enumerate(widths):
-            cell = CellLabel("", "rowCell")
+            cell = CellPara("", "rowCell") if wrap_rows > 1 else CellLabel("", "rowCell")
+            if plain:
+                cell.setTextFormat(Qt.TextFormat.PlainText)
             if aligns is not None and aligns[number] is not None:
                 cell.setAlignment(aligns[number] | Qt.AlignmentFlag.AlignVCenter)
             column += gaps[number]
-            self.area.put(cell, column, 0, width)
+            self.area.put(cell, column, 0, width, wrap_rows)
             self.cells.append(cell)
             self.tones.append(theme.TEXT_BRIGHT)
             column += width
@@ -115,6 +117,23 @@ class CellTableRow(CellRow):
     def set_cells(self, texts, tones=None):
         """The texts of the cells (as `start_look.Row.set_cells`), in the colours given or the bright text's."""
         self.set(texts, tones)
+
+
+class CellKeyItem(Clickable):
+    """[designed: T214, #667] A direct menu action with its key caption; unlike an option list it keeps no cursor."""
+    def __init__(self, text, caption, handler, cols, rows=1, primary=False):
+        super().__init__("gridLine" if primary else "cellKeyItem")
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0,0,0,0)
+        layout.setSpacing(0)
+        area = Cells(cols,rows,"keyCells")
+        layout.addWidget(area)
+        self.text_label = CellPara(text,"primaryText" if primary else "optionText") if rows > 1 else CellLabel(text,"optionText")
+        area.put(self.text_label,0,0,cols-len(caption)-1,rows)
+        area.put(CellLabel(caption,"keyCap"),cols-len(caption),0,len(caption))
+        if primary:
+            self.setProperty("on",True)
+        self.clicked.connect(handler)
 
 
 class GridStrip(Frame):
@@ -207,6 +226,7 @@ class CellLineField(LineField):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.shown = CellLabel("", "value")
+        self.shown.setTextFormat(Qt.TextFormat.PlainText)
         layout.addWidget(self.shown)
         self.cursor = QFrame()
         self.cursor.setObjectName("cursor")
@@ -434,5 +454,5 @@ class GridCard(Cells):
             self.name_line.edit.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
 
-__all__ = ["CellBar", "CellBars", "CellFacts", "CellLineField", "CellNameLine", "CellRow", "CellTableRow", "CellValues", "CellWrapRow",
+__all__ = ["CellKeyItem", "CellBar", "CellBars", "CellFacts", "CellLineField", "CellNameLine", "CellRow", "CellTableRow", "CellValues", "CellWrapRow",
            "GridCard", "GridStrip", "WrapStrip", "key_values", "row_px"]

@@ -207,23 +207,6 @@ class TeamPlayersScreen(PlayersScreen):
     title = "team info · players"
     pre_game = False
 
-    def _build_players(self):
-        """[designed: T212b] S08's cell card, read only, beside its twenty. The pre-game PlayersScreen keeps its own layout."""
-        from goal2.ui.cell_parts import GridCard, GridStrip
-        body = Cells(90, 25, "teamPlayersBody")
-        self.body_layout.addWidget(body, 1)
-        self.players_heading = body.text("", "sub", 0, 21, 69)
-        self.players_heading.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        self.card = GridCard()
-        body.put(self.card, 0, 0, 69, self.card.ROWS)
-        self.strip = GridStrip(cols=20)
-        self.strip.chosen.connect(self.pick)
-        body.put(self.strip, 70, 0, 20, 22)
-
-    def _show(self):
-        super()._show()
-        self.players_heading.setText(self.heading)
-        self.strip.set_label(self.heading.removesuffix(" · the twenty"))
 
 
 class CountryTacticsScreen(Screen):
