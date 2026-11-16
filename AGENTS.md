@@ -20,16 +20,18 @@ The held-Match team-tactic/roster seam is in the kit through T170q (#743), inclu
 exchanges, full-twenty pair domains, late captain Play and budgets. T170o/#736 retains the actual
 SeasonSession/Match in the PyPy worker. T170s/#750 supplies pure decision-bound current previews;
 its complete PyPy Play/resume control preserves events, full RAM/all16 and round/news data.
+T170t/#752 carries raw news cells and provenance losslessly over the season pipe, with
+complete actual PyPy pipe/direct-worker equality and once-only deltas proven.
 No desktop switch yet. T170r/#747 audits every accepted
 pre-match action in `docs/design/ui-2026-11/prematch-actions.md`: personal positions, club position,
 own tactics and marking are still missing upstream (archaeology #719). Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
-Next, in order: **worker activation**, starting with **T170t/#751**'s lossless news transport
-(`docs/tasks/T170t.md`): actual news snapshots contain raw cells that the initial season wire
-encoder rejects, losing the transient session. Preview's state/2 payload is unaffected.
-Then upstream #719 and its deliberate adoption; then the complete
+Next, in order: **worker activation**, starting with **archaeology #719**'s personal pre-match
+position/club/own-tactic/marking inputs in bounded upstream leaves, then their deliberate adoption.
+Read the owned upstream clone's instructions and #719 before writing its task contract; the
+complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. Then the complete
 window action flow over the same held Match (T170i's mapping and T170r's matrix), in-match/resume,
 and save/load semantics. Preserve the explicit existing T183 assistant exception. Then the
 **Prover comparison** (T132 Done-when 2, archaeology #709, independent of the focused seam
