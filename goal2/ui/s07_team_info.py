@@ -227,9 +227,9 @@ class TeamPlayersScreen(PlayersScreen):
 
 
 class CountryTacticsScreen(Screen):
-    """S07's T on another country: its eight lines, in the original's order, read only, beside its twenty.
-    [confirmed: F010, the team tactics screen's order DS:6BBF; the words of goal2.game.country_card, F008]"""
+    """S07's T: another country's eight lines, read only, beside its twenty."""
     GRID = True   # [designed: owner, #667; T212b]
+    # [confirmed: F010, the team tactics screen's order DS:6BBF; the words of goal2.game.country_card, F008]
     title = "team info · tactics"
 
     def __init__(self, window, model, country):
