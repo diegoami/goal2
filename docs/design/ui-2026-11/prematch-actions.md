@@ -9,7 +9,7 @@ never reverses accepted edits.
 
 [confirmed: goal2 `31989d87`; archaeology `fb6d3093`, F010/F031/F030]
 The current window edits DesktopModel copies. The worker/seam accepts team tactics,
-all-twenty roster pairs, pool exchanges and late captain selection, but the window
+all-twenty roster pairs, pool exchanges, native R/C positions and late captain selection, but the window
 does not yet use that worker. “Supported” below means the held API exists, not that
 window activation is delivered. Source references are the named E44F, 4952,
 4B61/49B8 and 1981 bodies at that upstream pin; current handlers are linked below.
@@ -48,7 +48,11 @@ API field whitelists are not evidence of pre-match semantic support.
 [confirmed: goal2 `31989d87`, handlers linked below; original `fb6d3093`]
 “Preview” in this table means #746, “personal API” means
 [archaeology #719](https://github.com/diegoami/goal2-archaeology/issues/719).
-Those issues and the existing T183 issue are explicit activation prerequisites;
+[confirmed: T170u, archaeology `fc6b5294`] The held position/club input arm exists;
+the remaining personal API work is own tactics and marking. The historical T170r
+audit records the older refusals; its assumption-checking probe intentionally
+detects drift when run against a later kit. Current R/C proofs live in T170u tests.
+The remaining issues and the existing T183 issue are explicit activation prerequisites;
 an existing scoped assistant placeholder remains the approved T183 exception.
 
 | Screen/action | Current handler / original route | Held mapping and required data | Refusal, return and remaining work |
@@ -57,8 +61,8 @@ an existing scoped assistant placeholder remains the approved T183 exception.
 | S08 Enter, two squad picks | `press_move` → `model.swap`; DEA6 outside-match swap | Supported `PrematchSeam.swap(a,b)` / edit-only substitutions; all twenty, including same-block pairs; T134 original sort | Same pick cancels; reject self/unknown/stale batch without consumption; show returned order, not a guessed permutation |
 | S08 Enter, squad/pool picks either order | `press_move` → `model.exchange`; E44F/DEA6 | Supported `exchange(out,in)`; current pool IDs plus preview cards/availability | Two pool picks replace the selection; guest refusal/permission must surface; provisional campaign calendar guard is not an original rule |
 | S08 Ins recommended twenty | `assistant` says COMING_LATER; original DC7E | Existing [T183/#594](../../tasks/T183.md), upstream T125 wrapper required | Preserve explicit placeholder pending T183; no substitute heuristic or claim of delivery |
-| S08 R / Shift+R | `reposition` → `set_position`; original 4952 R cycle | Personal API for current selected squad **or pool** word; desired position, modulo fourteen; Shift+R is owner #423 addition | Currently rejected by pre-match API; no local record patch as activation workaround; wait for fresh sort/card |
-| S08 C club position | `club_position` → `club_position`; 4952 copies club field | Personal API; current preview club position, desired position | Same blocker; club value must be read from current player, not route boundary |
+| S08 R / Shift+R | `reposition` → `set_position`; original 4952 R cycle | Supported `PrematchSeam.set_position(word, code)` for current squad **or pool** word; code0..13; Shift+R is owner #423 addition | Pure invalid inputs retain the decision; wait for fresh guest order/card. Current window still edits its old model until activation |
+| S08 C club position | `club_position` → `club_position`; 4952 copies club field | Supported `PrematchSeam.club_position(word)` sends explicit `"club"`; native C once, not an R target | Preview reads current club value; even already-equal C reaches original4952. Current window awaits activation |
 | S08 T | `his_tactics` pushes S09; E44F T calls 4B61 with pane context | Local navigation with current player and original setup/pane eligibility | Return to same card/selection; pre-match `bench=None` currently hides marking incorrectly |
 | S08 F2/name Enter | `new_name`/`give_name` → `rename_player`; original F2 name editor | Existing designed identity metadata/GOAL.DAT overlay, keyed by word; not a guest record edit | Preserve printable CP437/length validation; cancel leaves identity unchanged; preview refresh must retain overlay |
 | S08 /, text, Backspace, Enter, Esc | `open_search`/`set_query`; owner extras / T177 | Local accent-folded pool-name filter, preview names plus identity overlay | Enter commits query; Esc clears editing/filter before parent close; never send filtered row index as player ID |

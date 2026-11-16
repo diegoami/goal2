@@ -130,6 +130,19 @@ State/2 is never cached for automatic replay, nor is a pending Match serialized.
 `close()` retains its bounded quit/kill behavior. Later leaves wire the window,
 in-match pacing, round publication and save/load policy over these primitives.
 
+[confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
+At configured pre-match decisions, `answer` accepts edit-only `positions` mapping
+current squad/pool words to integer0..13 or explicit `"club"`. Numeric goals use
+the original R path; club presses C once, including already-equal values. The
+held seam exposes `set_position(player, code)` and `club_position(player)`;
+numeric booleans are refused rather than coerced. The4952 entry/E72A return
+witness and actual guest ordering come from the accepted kit. Known-pure
+pre-match position validation errors reply `lost=false` and retain the same
+repairable decision. Driver/backend failures still invalidate the session.
+After a successful edit, consume its fresh decision and request a current preview;
+the season's route boundary stays unchanged. Play remains a separate answer.
+Own tactics and marking still require upstream #719 before window activation.
+
 [designed: T170p; confirmed: archaeology T133/#715] After accepted pre-match
 edits, `answer={"captain": word}` plays with a current eligible XI member, including
 a pool player just brought in. `captain: null` uses the original default; omission
