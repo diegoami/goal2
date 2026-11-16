@@ -395,6 +395,8 @@ operational status.
 
 - [T170p](T170p.md): adopt and carry the late captain Play answer after held pre-match edits (#739).
 
+- [T170q](T170q.md): adopt full pre-match roster pair domains and repairable pair refusals (#742).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
