@@ -230,5 +230,44 @@ class Pipe(unittest.TestCase):
               'post_play_sha256': expected['post_play_sha256'], 'pipe_pypy': ready}), flush=True)
 
 
+class WireGuards(unittest.TestCase):
+    def test_server_keeps_pure_refusals_but_discards_backend_failure(self):
+        import io
+        from goal2.game.engine_server import Server
+        server = Server(io.BytesIO(), io.BytesIO()); sent = []
+        server.send = lambda *args: sent.append(args)
+        server._season({'op': 'season', 'request': 1, 'action': 'open'},
+                       json.dumps({'state': state(), 'keys': None}).encode())
+        held = server.season.session
+        server._season({'op': 'season', 'request': 2, 'action': 'resume'}, b'')
+        self.assertEqual(sent[-1][0], 'season_error')
+        self.assertFalse(sent[-1][1]['lost']); self.assertIs(server.season.session, held)
+        server.game = (None, b'legacy')
+        self.assertRaises(ValueError, server._open, b'legacy')
+        self.assertRaises(ValueError, server._match, {})
+        with patch.object(held, 'advance', side_effect=RuntimeError('backend failed')):
+            server._season({'op': 'season', 'request': 3, 'action': 'advance'}, b'')
+        self.assertTrue(sent[-1][1]['lost'])
+        self.assertIsNone(server.season.session)
+
+    def test_parent_excludes_concurrent_requests_and_bad_reply_hash(self):
+        from goal2.game.engine_process import EngineProcess
+        from goal2.game.engine_server import ProtocolError
+        engine = EngineProcess(lambda *args: None)
+        engine._life = object(); engine._season_active = True
+        with patch.object(engine, '_send'):
+            engine.season_request('observe')
+            self.assertTrue(engine.busy)
+            self.assertRaises(ValueError, engine.season_request, 'advance')
+            self.assertRaises(ValueError, engine.season_open, state())
+            self.assertRaises(ValueError, engine.match, 'watched', None)
+        reply = dict(kind='season', value={'request': 1, 'action': 'observe',
+                                          'observation': {'output_hash': 'wrong'}})
+        self.assertRaises(ProtocolError, engine._decode, engine._life, reply,
+                          json.dumps(state()).encode())
+        reply['value']['request'] = 2
+        self.assertRaises(ProtocolError, engine._decode, engine._life, reply, b'{}')
+
+
 if __name__ == '__main__':
     unittest.main()
