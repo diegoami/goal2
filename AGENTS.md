@@ -12,9 +12,22 @@ Read the latest comment on the open issue labelled `checkpoint` (#471; process.m
 engine replacement on2026-10-27. This session owns the persistent independent upstream
 clone `/home/diego/projects/goal2-archaeology-engine`; the other archaeology session owns
 `/home/diego/projects/goal2-archaeology` and continues analysis. Preserve that other checkout.
-Complete T78–T80/required tournament continuation and goal2 adoption; do not resume
-Unicorn performance optimization or old-career migration. Preserve accepted scoped UI
-work and complete the remaining milestone batch. No obsolete #253 automatic sequence.
+Do not resume Unicorn performance optimization or old-career migration. Preserve accepted scoped UI
+work. No obsolete #253 automatic sequence.
+
+Status (2026-11-16): v0.1 shipped and closed (milestone #705, tag `m2.1-v0.1-core-route`). The
+pre-match team input is complete upstream (archaeology T132: #711, #713, #714) and the held-Match
+seam is complete and live in goal2's kit through T170n (PRs #725–#733): every pre-kick-off input —
+tactics, within-twenty swaps, pool exchanges, captain, budgets — reaches the original's own code
+through one held route Match, proven equal to direct answers byte-for-byte
+(`goal2/tests/test_season_prematch_seam_t170k.py`). The bug queue is swept (#697, #698, #682, #684
+merged). Next, in order: the **worker activation** (a SeasonSession-holding worker for the desktop
+loop, then the window flow over the seam — T170i's mapping in `docs/tasks/T170i.md`; ~3–4 leaves:
+season worker → pre-kick-off window flow → in-match/resume → save/load semantics), the **Prover
+comparison** (T132 Done-when 2, fully scoped on archaeology #709), **#702** (the oracle no-fixture
+round: waits for a milestone dispatch to reach round 20; probes and the design sketch are on the
+issue), T170f (#693's nine ports) and T183, then **T169 flips the ZIP**. The redesigned-UI look
+items #666–#680 stay owner-scoped alongside.
 
 Durable task decisions/status live on the relevant GitHub issues/PRs; supporting evidence is in `/home/diego/projects/goal2-keep`. The owner's final naming scope (2026-10-26) is only the existing33 authored profiles: canonical top32 plus Greece,80 surnames each, unchanged. Drop the128-country expansion; unlisted countries retain original names. Do not restart extra-country surname research.
 

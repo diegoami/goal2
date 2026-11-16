@@ -68,6 +68,9 @@ class EngineProcess:
         self.opens = 0               # `open` requests sent, over every process
         self.ready = None            # the current process's `ready` value
         self.closed = False
+        self._season_active = False
+        self._season_request = None
+        self._season_requests = 0
 
     # --- state ---------------------------------------------------------------------------------------------------
 
@@ -89,7 +92,48 @@ class EngineProcess:
 
     @property
     def busy(self) -> bool:
-        return self._match is not None or self._completion is not None
+        return self._match is not None or self._completion is not None or self._season_request is not None
+
+    @property
+    def season_active(self):
+        """[designed: T170o] A transient session exists only in this live child."""
+        return self._season_active
+
+    def season_open(self, state, *, keys=None):
+        """Explicitly open state/2, never retained for replay after process death."""
+        import json
+        payload = json.dumps({'state': state, 'keys': keys}, allow_nan=False,
+                             separators=(',', ':')).encode('utf8')
+        with self._lock:
+            self._usable()
+            if self.busy:
+                raise ValueError('the engine has a pending request')
+            if self._life is None:
+                self._game = None
+                self._start()
+            self._season_send('open', payload=payload)
+
+    def season_request(self, action, **values):
+        """One asynchronous season operation; replies arrive through on_reply."""
+        from goal2.game.season_worker import FIELDS
+        if action == 'open' or action not in FIELDS:
+            raise ValueError('use season_open for an explicit season open')
+        with self._lock:
+            self._usable()
+            if self.busy:
+                raise ValueError('the engine has a pending request')
+            if not self._season_active or self._life is None:
+                raise ValueError('no live season; explicitly open a state/2')
+            self._season_send(action, **values)
+
+    def _season_send(self, action, *, payload=b'', **values):
+        from goal2.game.season_worker import validate_request
+        number = self._season_requests + 1
+        header = dict(op='season', request=number, action=action, **values)
+        validate_request(header)
+        self._send(header, payload)
+        self._season_requests = number
+        self._season_request = (number, action)
 
     # --- requests ------------------------------------------------------------------------------------------------
 
@@ -101,6 +145,8 @@ class EngineProcess:
         """Send an encoded game (session_save.encode); a new process is started when there is none."""
         with self._lock:
             self._usable()
+            if self._season_active:
+                raise ValueError('discard the held season before opening a legacy game')
             if self.busy:
                 raise ValueError("the engine is playing a match; cancel it before opening another game")
             self._game = bytes(raw)
@@ -127,6 +173,8 @@ class EngineProcess:
             raise ValueError(f"engine match options are {', '.join(OPTIONS)}")
         with self._lock:
             self._usable()
+            if self._season_active:
+                raise ValueError('discard the held season before playing a legacy match')
             if self.busy:
                 raise ValueError("the engine is already playing a match")
             if self._game is None:
@@ -299,6 +347,8 @@ class EngineProcess:
             if self._life is not life:
                 return False
             self._life = None
+            self._season_active = False
+            self._season_request = None
             self._match = None
             self._take_completion()
             self.ready = None
@@ -321,6 +371,39 @@ class EngineProcess:
                 if not isinstance(value, dict):
                     raise ProtocolError("invalid ready reply")
                 self.ready = value
+            elif kind in ('season', 'season_error'):
+                import json
+                pending = self._season_request
+                if (pending is None or not isinstance(value, dict)
+                        or type(value.get('request')) is not int or value['request'] != pending[0]):
+                    raise ProtocolError('stale or unexpected season reply')
+                if kind == 'season_error':
+                    if (set(value) != {'request', 'error', 'lost'} or not isinstance(value['error'], str)
+                            or type(value['lost']) is not bool or payload):
+                        raise ProtocolError('invalid season error reply')
+                    if value['lost']:
+                        self._season_active = False
+                else:
+                    if value.get('action') != pending[1]:
+                        raise ProtocolError('season reply is for another operation')
+                    if pending[1] in ('open', 'advance', 'observe', 'resume'):
+                        try:
+                            value['state'] = json.loads(payload.decode('utf8'))
+                        except (ValueError, UnicodeDecodeError) as exc:
+                            raise ProtocolError('invalid season state payload') from exc
+                        from goal2.game.season import canonical_hash
+                        observation = value.get('observation')
+                        if (not isinstance(observation, dict)
+                                or observation.get('output_hash') != canonical_hash(value['state'])):
+                            raise ProtocolError('season state differs from its observation')
+                    elif payload:
+                        raise ProtocolError('unexpected season reply payload')
+                    if pending[1] == 'open':
+                        self._season_active = True
+                        self._game = None
+                    elif pending[1] == 'discard':
+                        self._season_active = False
+                self._season_request = None
             elif kind in ("opened",):
                 value = None
             elif kind == "event":

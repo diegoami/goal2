@@ -24,6 +24,10 @@ from . import screens as S
 VERSION = "4"                  # 4: live Python port frames are reconstructed by deterministic replay on load
 LOADS = ("2", "3", VERSION)
 
+# [designed: T133/#715] Omission preserves the legacy configured captain;
+# explicit None on a pre-match Play answer chooses the original default.
+_NO_CAPTAIN = object()
+
 # -- the calls (route_fixture's own, static/goal-exe/code/seg_000E_09.asm:308 and :396) -------------------------
 RUN_MATCH, RUN_MATCH_RETURN = "0791:F1F6", "000E:6F1D"
 PLAYER_UPDATE, PLAYER_UPDATE_RETURN = "0791:B7FA", "000E:6FFD"
@@ -611,11 +615,15 @@ class Match:
 
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
                speed=None, shootout_order=None, taker=None, edit_only=False,
-               request_substitution=None, opportunity=None):
+               request_substitution=None, opportunity=None, captain=_NO_CAPTAIN):
         """goal2's answer to the waiting decision; nothing given plays on.
         edit_only: execute edits at a legal half-time/substitution menu, or team-tactics-only edits at an
           ordinary pause/extra-time menu, and yield a fresh decision before Play. An ordinary subsequent answer continues;
           no match tick occurs between edits. The pause arm never queues a substitution.
+        captain: at a configured pre_match decision, a Play-only input after all edits:
+          an available current-XI word, or None for the original default. Omission preserves
+          the configured captain. The original role-1 prompt consumes it through keys;
+          later replacement-captain prompts keep the original default.
         substitutions: (off, on) player words of the managed squad, made now at half time and at a substitution
           notice; at a pause the original only takes the request and offers it at the next stoppage (a
           `substitution` decision whose default answer is what was asked for).
@@ -635,6 +643,21 @@ class Match:
         # E44F Enter changes the request, and 7FCF accepts/dismisses a timed notice.
         # Validate all new inputs before consuming the waiting decision/replay.
         context = self.st["waiting"]["context"]
+        # [designed: T133/#715; confirmed: F030, CC7B] S16 follows all
+        # pre-match edits. This is a Play input, delivered only at the original
+        # role-1 prompt through its key policy, never a guest memory patch.
+        late_captain = captain is not _NO_CAPTAIN
+        if late_captain:
+            if (context != "pre_match" or not self.opts.get("pre_match_edits")
+                    or edit_only or substitutions or (tactics is not None and tactics != {}) or positions
+                    or marking or own_tactics or quick or speed is not None
+                    or shootout_order is not None or taker is not None
+                    or request_substitution is not None or opportunity is not None):
+                raise ValueError("captain is a configured pre-match Play input only, without other changes")
+            if captain is not None and (type(captain) is not int
+                    or captain not in self._squad(self.opts["managed"])[:11]
+                    or not self._available(captain)):
+                raise ValueError("captain must be an available player of the current managed eleven")
         controlled = self.opts.get("substitution_control", False)
         if opportunity is not None or context == "substitution_opportunity":
             if (not controlled or context != "substitution_opportunity"
@@ -665,7 +688,7 @@ class Match:
                               and not (substitutions or positions or marking or own_tactics))
             legal_bench = context in ("half_time", "substitution") and self.m.rd(S.SUBS_ALLOWED, 1)
             # [T132, #709] A configured pre-match decision takes the team tactics and/or
-            # swap pairs within the twenty or out of the made pool (the generic validation
+            # swap pairs anywhere within the twenty or out of the made pool (the generic validation
             # below checks the squad-or-pool membership); DEA6's pre-play swaps have no
             # budget gate and are not deferred.
             pre_match = (context == "pre_match" and self.opts.get("pre_match_edits")
@@ -712,10 +735,26 @@ class Match:
         squad = self._squad(self.opts["managed"])
         # [T132, #709] At a configured pre-match edit the incoming player may also be a made-pool
         # word (F011): DEA6 exchanges squad and pool word-list entries outside a match.
-        pool = self._pool() if (edit_only and self.st["waiting"]["context"] == "pre_match") else []
+        pre_match_pairs = edit_only and context == "pre_match" and self.opts.get("pre_match_edits")
+        pool = self._pool() if pre_match_pairs else []
         subs = [[int(a), int(b)] for a, b in substitutions]
+        live_squad, live_pool = list(squad), list(pool)
         for off, on in subs:
-            if off not in squad[:11] or (on not in squad[11:] and on not in pool):
+            if pre_match_pairs:
+                # [confirmed: F031 DEA6; T134/#717] Both squad blocks are
+                # legal. Simulate membership only on detached lists so a bad
+                # later pair consumes none of an otherwise valid batch.
+                if off not in live_squad or not on or off == on or (on not in live_squad and on not in live_pool):
+                    raise ValueError(f"pre-match swap ({off}, {on}): distinct current squad/pool words, "
+                                     "outgoing in the squad and incoming nonzero")
+                i = live_squad.index(off)
+                if on in live_squad:
+                    j = live_squad.index(on)
+                    live_squad[i], live_squad[j] = live_squad[j], live_squad[i]
+                else:
+                    j = live_pool.index(on)
+                    live_squad[i], live_pool[j] = live_pool[j], live_squad[i]
+            elif off not in squad[:11] or on not in squad[11:]:
                 raise ValueError(f"substitution ({off}, {on}): the first must be in the eleven, the second "
                                  "on the bench or, at a pre-match edit, in the pool")
         positions = {int(p): int(c) for p, c in (positions or {}).items()}
@@ -729,10 +768,14 @@ class Match:
         if any(p not in squad or any(not 1 <= e <= 4 for e in d) for p, d in own.items()):
             raise ValueError("own_tactics: {player of the managed squad: {element 1..4: True, False or None}}")
         edit = {"edit_only": True} if edit_only else {}
+        if late_captain:
+            edit["captain"] = captain
         if request_substitution is not None:
             edit["request_substitution"] = request_substitution
         self._replay_action("answer", {"substitutions": subs, "tactics": tactics, "positions": positions,
                                       "marking": marking, "own_tactics": own, "quick": bool(quick), "speed": speed, **edit})
+        if late_captain:
+            self.st["kickoff_captain"] = captain
         self.st["answer"] = {"substitutions": subs, "tactics": tactics, "positions": positions, "marking": marking,
                              "own": own, "quick": bool(quick), "speed": speed, **edit}
         self.st["decisions"].append({"context": self.st["waiting"]["context"], "minute": self.st["minute"],
@@ -741,6 +784,13 @@ class Match:
                                                 "own_tactics": sorted((p, sorted(d.items())) for p, d in own.items()),
                                                 "quick": bool(quick), "speed": speed, **edit}})
         self.st["waiting"] = None
+
+    def _on_pre_match_swap(self, replay):
+        # [confirmed: F031, DEA6 DF29] The original word swap has returned;
+        # its sort has not run yet. This witness reads, never patches, guest data.
+        observe = getattr(self._menu, "observe_swap", None)
+        if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
+            observe({"squad": self._squad(self.opts["managed"]), "pool": self._pool()})
 
     def _new_plan(self, answer, context=None):
         if context == "pre_match":
@@ -844,6 +894,7 @@ class Match:
         m.at(PROMPT, self._on_prompt)
         m.at(WAIT, self._on_wait)
         m.at("0791:D010", self._on_taker_accepted)
+        m.at("0791:DF29", self._on_pre_match_swap)
         m.at(TICK, self._on_tick)
         m.at(PLAY_MATCH, self._on_play)
         m.at(MATCH_PLAYED, self._on_played)
@@ -1257,7 +1308,7 @@ class Match:
             self._fail("a key read at the captain prompt the kit did not ask for")
         if p.get("role") == 1:
             initial = p.get("initial", self.st["kickoff_seed"] is None)
-            want = self.opts["captain"] if initial else None
+            want = self.st.get("kickoff_captain", self.opts["captain"]) if initial else None
         else:
             want = p.get("target")
         if want is not None:

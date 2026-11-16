@@ -78,9 +78,10 @@ class Client(unittest.TestCase):
 
 class Server(unittest.TestCase):
     def server(self):
+        import io
         from goal2.game.engine_server import Server
-        server=object.__new__(Server);server.game=(SimpleNamespace(),b'synthetic')
-        server.inbox=queue.Queue();server.send=lambda *args:None
+        server=Server(io.BytesIO(),io.BytesIO());server.game=(SimpleNamespace(),b'synthetic')
+        server.send=lambda *args:None
         return server
 
     def request(self,**extra):

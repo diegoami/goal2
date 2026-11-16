@@ -400,6 +400,16 @@ operational status.
 
 - [T170n](T170n.md): the seam's pool exchange becomes the real pool answer — the chained sequence proven (#726).
 
+- [T170o](T170o.md): retain the season and held Match in the existing PyPy worker (#735); window wiring follows.
+
+- [T170p](T170p.md): adopt and carry the late captain Play answer after held pre-match edits (#739).
+
+- [T170q](T170q.md): adopt full pre-match roster pair domains and repairable pair refusals (#742).
+
+- [T170r](T170r.md): account for every pre-match control and define concrete activation prerequisites (#745).
+
+- [T170s](T170s.md): expose detached current pre-match data from the held season worker (#746).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).

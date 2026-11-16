@@ -41,6 +41,7 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | `answer` | `decision`, and `substitutions` ((off, on) pairs) with optional `changes` (`positions`, `marking`, `own_tactics`, `tactics`, `edit_only`, T180; request/opportunity below), or `taker` (a player word or null), or `shootout_order` (player words) | Answers the bench decision or player prompt of that number. |
 | `cancel` | | Ends the running match. |
 | `quit` | | Ends the process. |
+| `season` | `request` (positive integer), `action`, fields below | Operates on one retained sealed season; separate from the legacy fresh-match requests. |
 
 ## Replies (engine to window), by `kind`, with `value`
 
@@ -57,8 +58,69 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | `settled` | no value or payload; closes the preceding completion transaction |
 | `cancelled` | |
 | `error` | its text; the process stays up for the next request |
+| `season` | `request`, `action`, and the detached operation result described below |
+| `season_error` | `request`, `error`, `lost` (whether the transient season was invalidated) |
 
 The window adds one of its own: `death` {`code`, `stderr`, `error`} (below).
+
+## Retained season (T170o)
+
+[designed: T170o/#735] `EngineProcess.season_open(state, keys=None)` explicitly opens
+accepted state/2 in the same PyPy process. It sends `action=open`, with a binary
+UTF-8 JSON payload containing `state` and `keys`. The worker owns one `SeasonSession`,
+its persistent Keys, continuation, and actual pending Match. The legacy `open`/`match`
+requests require the season to have been discarded first. One season request may
+be outstanding at a time; its numbered reply ends that request.
+
+`season_request(action, **fields)` accepts these operations:
+
+| Action | Fields | Result |
+| --- | --- | --- |
+| `advance` | | One original route call; refuses while a Match is held. |
+| `observe` | | Detached current boundary, with empty deltas. |
+| `configure` | optional `captain`, `substitutions` | Configures the actual pending Match exactly once through `PrematchSeam`. |
+| `next` | optional `count`, integer 1..32 (default 32) | At most that many `events` as plain Event records, stopping at every decision; returns `decision` (number or null), `over`, `exhausted`. |
+| `answer` | `decision`, `answer` (Match.answer keyword object) | Answers that still-waiting numbered decision once. JSON element-map keys become integers. T170p adds `captain` on pre-match Play after edits. |
+| `resume` | | Resumes the same completed Match after all its events have been drained. |
+| `discard` | | Drops the transient session and Match; never publishes them. |
+
+[confirmed: vendored match.py, Match.events] Taking another event at an unanswered
+decision otherwise plays on by default. The worker refuses `next` until an explicit
+numbered answer arrives. The answer's legal context and player membership remain
+the kit's decisions. This bounded event interface introduces no pitch pacing or
+window controls; those follow in the activation leaves.
+
+[designed: T170o] `open`, `advance`, `observe`, and `resume` return `observation`
+(the detached SeasonObservation fields); the binary UTF-8 JSON payload is the
+detached state/2. The parent verifies its canonical hash against `output_hash` and
+adds `state` to the callback value. Advance/resume deliver their own fixture/news
+deltas exactly once. A held Match is still an incomplete round, never a publishable
+candidate. Event/answer requests retain private Match memory in the child.
+
+A known pure request refusal replies `season_error` with `lost=false`; an engine or
+decode failure invalidates the season (`lost=true`). Worker death clears the
+parent's season holding; subsequent requests refuse until an explicit `season_open`.
+State/2 is never cached for automatic replay, nor is a pending Match serialized.
+`close()` retains its bounded quit/kill behavior. Later leaves wire the window,
+in-match pacing, round publication and save/load policy over these primitives.
+
+[designed: T170p; confirmed: archaeology T133/#715] After accepted pre-match
+edits, `answer={"captain": word}` plays with a current eligible XI member, including
+a pool player just brought in. `captain: null` uses the original default; omission
+keeps initial configuration. A rejected captain answer consumes no decision,
+memory, RNG or replay action, so its named `season_error` has `lost=false` and
+the same decision can be repaired. `PrematchSeam.play(captain=...)` preserves the
+same distinction. The original role-1 prompt receives the choice through keys.
+
+[designed: T170q; confirmed: archaeology T134/#717, F031/F012/F010] A pre-match
+edit-only `substitutions` pair may use any current squad outgoing word and a
+different squad or made-pool incoming word. Starter/starter reorder and bench/
+pool exchange follow DEA6's real word swap and original XI/bench sorts; callers
+use the fresh decision order. These pre-match edits spend no substitution budget
+or match tick. Bad pair validation is pure, reports its named `season_error`
+with `lost=false`, and keeps the same decision for repair. Runtime/plan failures
+still invalidate the private session. Ordinary in-match substitution rules stay
+unchanged. This adds no window controls or automatic model publication.
 
 ## The match
 
