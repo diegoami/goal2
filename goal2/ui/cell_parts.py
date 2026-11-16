@@ -123,6 +123,7 @@ class CellKeyItem(Clickable):
     """[designed: T214, #667] A direct menu action with its key caption; unlike an option list it keeps no cursor."""
     def __init__(self, text, caption, handler, cols, rows=1, primary=False):
         super().__init__("gridLine" if primary else "cellKeyItem")
+        self.cols,self.rows=cols,rows
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
         layout.setSpacing(0)

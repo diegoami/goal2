@@ -16,11 +16,11 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QPainter, QTextBlockFormat, QTextCursor
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QTextEdit, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QTextEdit, QSizePolicy, QWidget
 
 from goal2.desktop import data_setup
 from goal2.ui import theme
-from goal2.ui.screen import LINE_HEIGHT, Clickable, Screen, kbd, label
+from goal2.ui.screen import LINE_HEIGHT, Screen
 
 DOS_EOF = b"\x1a"
 # [designed: owner decision 13; T163] the help box's place on the 1440x900 page: between the title bar (64 px) and
@@ -61,6 +61,7 @@ class Scrim(QWidget):
 
 
 class HelpScreen(Screen):
+    GRID = True   # [designed: owner, #667; T216]
     title = "help"
     escape_text = "close"
     offers_help = False
@@ -83,67 +84,49 @@ class HelpScreen(Screen):
         backdrop.setScaledContents(True)
         backdrop.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.body_layout.addWidget(backdrop)
-        self.scrim = Scrim(self)
-        self.scrim.setObjectName("scrim")
+        from PySide6.QtWidgets import QStackedLayout
+        host=QWidget();host.setObjectName("overlayHost")
+        stack=QStackedLayout(host);stack.setContentsMargins(0,0,0,0)
+        stack.setStackingMode(QStackedLayout.StackingMode.StackAll)
+        self.scrim=Scrim(host);self.scrim.setObjectName("scrim")
+        stack.addWidget(backdrop);stack.addWidget(self.scrim);stack.setCurrentWidget(self.scrim)
+        self.body_layout.addWidget(host,1)
         self._dialog()
 
     def _dialog(self):
-        """[designed: owner decision 13, #526, #536; T163] The text box fills most of the screen, not the mockup's nine
-        lines: the original's help is a long text. The heading, the tag and Close share one row above it; the keys
-        that scroll are on the bottom bar."""
-        outer = QVBoxLayout(self.scrim)
-        outer.setContentsMargins(0, TOP + MARGIN, 0, BOTTOM + MARGIN)
-        row = QHBoxLayout()
-        row.addStretch(1)
-        dialog = QFrame()
-        dialog.setObjectName("dialog")
-        dialog.setFixedWidth(WIDTH)
-        layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(26, 18, 26, 18)
-        layout.setSpacing(0)
-        head = QHBoxLayout()
-        head.setSpacing(18)
-        head.addWidget(label("Help", "h2"))
-        head.addWidget(label("F1 · THE ORIGINAL'S HELP", "tag"), 0, Qt.AlignmentFlag.AlignVCenter)
-        head.addStretch(1)
-        close = Clickable("enterHint")
-        close_layout = QHBoxLayout(close)
-        close_layout.setContentsMargins(22, 8, 22, 8)
-        close_layout.setSpacing(10)
-        close_layout.addWidget(label("Close", "enterText"))
-        close_layout.addWidget(kbd("Esc"))
-        close.clicked.connect(self.escape)
-        self.close_button = close
-        head.addWidget(close)
-        layout.addLayout(head)
-        layout.addSpacing(12)
-        self.viewer = QTextEdit()
+        """[designed: owner, #667; T216] The viewer keeps 23 cell rows, including at 720x450; its existing scrolling is unchanged."""
+        from goal2.ui.cells import Cells
+        from goal2.ui.cell_parts import CellKeyItem
+        from goal2.ui.country_parts import framed
+        layout=QHBoxLayout(self.scrim);layout.setContentsMargins(0,0,0,0)
+        area=Cells(90,25,"helpBody");layout.addWidget(area)
+        dialog,inner=framed("help",88,24)
+        dialog.setAttribute(Qt.WidgetAttribute.WA_StyledBackground,True)
+        dialog.setStyleSheet("#frame { background: "+theme.GROUND+"; }")
+        inner.text("F1 · THE ORIGINAL'S HELP","tag",0,0,70)
+        self.close_button=CellKeyItem("Close","Esc",self.escape,12,primary=True)
+        inner.put(self.close_button,76,0,12)
+        self.viewer=QTextEdit()
         self.viewer.setObjectName("helpText")
         self.viewer.setReadOnly(True)
         self.viewer.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.viewer.setStyleSheet("border: none; padding: 0px;")
+        self.viewer.document().setDocumentMargin(0)
         self.viewer.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.viewer.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.viewer.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
-        self.viewer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.viewer.setPlainText(self.text if self.text is not None else NO_HELP.format(name=data_setup.HELP_NAME))
-        spaced = QTextCursor(self.viewer.document())
-        spaced.select(QTextCursor.SelectionType.Document)
-        block = QTextBlockFormat()
-        block.setLineHeight(LINE_HEIGHT, QTextBlockFormat.LineHeightTypes.ProportionalHeight.value)
+        spaced=QTextCursor(self.viewer.document());spaced.select(QTextCursor.SelectionType.Document)
+        block=QTextBlockFormat();block.setLineHeight(LINE_HEIGHT,QTextBlockFormat.LineHeightTypes.ProportionalHeight.value)
         spaced.mergeBlockFormat(block)
-        layout.addWidget(self.viewer, 1)
-        row.addWidget(dialog)
-        row.addStretch(1)
-        outer.addLayout(row, 1)
+        inner.put(self.viewer,0,1,88,23)
+        area.put(dialog,1,0,88,25)
 
-    def resizeEvent(self, event):
+    def resizeEvent(self,event):
         super().resizeEvent(event)
-        self.scrim.setGeometry(self.rect())
         self.scrim.raise_()
 
     def shown(self):
-        self.scrim.setGeometry(self.rect())
         self.scrim.raise_()
 
     def line_step(self) -> int:

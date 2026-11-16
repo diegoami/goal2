@@ -14,15 +14,13 @@ stand-in pages only.
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout
 
-from goal2.ui.screen import Screen, label, para, set_para
-from goal2.ui.start_look import box
+from goal2.ui.screen import Screen, set_para
 
-SIDE_WIDTH = 330   # [designed: s05-bulletin.html, the side panels' `width:330px`]
 
 
 class BulletinScreen(Screen):
+    GRID = True   # [designed: owner, #667; T216]
     title = "news"
     escape_text = None   # [confirmed: T156-R1 steps 11–12] the bulletin goes forward only
 
@@ -34,48 +32,46 @@ class BulletinScreen(Screen):
         self._show()
 
     def _build(self):
-        heading = label("THE SOCCER BULLETIN", "bulletinTitle")
-        heading.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        self.body_layout.addWidget(heading)
-        rule = QFrame()
-        rule.setObjectName("rule")
-        rule.setFixedHeight(3)
-        self.body_layout.addWidget(rule)
-        row = QHBoxLayout()
-        row.setSpacing(18)
-        self.panels = {}
-        for name in ("left", "middle", "right"):
-            frame, layout = box()
-            head = label("", "boxHeading")
-            tag = label("", "tag")
-            masthead = para("", "masthead" if name == "middle" else "boxHeading")
-            story = para("", "story" if name == "middle" else "sub")
-            if name == "middle":
-                for part in (head, masthead, story):
-                    part.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-                layout.addWidget(head)
-                layout.addWidget(tag, 0, Qt.AlignmentFlag.AlignHCenter)
-                layout.addSpacing(20)
-            else:
-                frame.setFixedWidth(SIDE_WIDTH)
-                head.hide()
-                layout.addWidget(tag, 0, Qt.AlignmentFlag.AlignLeft)
-            layout.addWidget(masthead)
-            layout.addWidget(story)
-            layout.addStretch(1)
-            row.addWidget(frame, 1 if name == "middle" else 0)
-            self.panels[name] = (head, tag, masthead, story)
-        self.body_layout.addLayout(row, 1)
+        """[designed: owner, #667; T216] Preserve the three complete story projections; newspaper graphics remain #680."""
+        from goal2.ui.cells import Cells,CellLabel,CellPara
+        from goal2.ui.country_parts import framed
+        from goal2.ui.squad_card import colour
+        from goal2.ui import theme
+        body=Cells(90,25,"bulletinBody")
+        self.body_layout.addWidget(body,1)
+        title=body.text("THE SOCCER BULLETIN","bulletinTitle",0,0,90)
+        title.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
+        self.panels={};self.panel_areas={}
+        for name,col,cols in (("left",0,29),("middle",30,30),("right",61,29)):
+            frame,inner=framed("front page" if name=="middle" else "story",cols,23)
+            head=CellLabel("","bulletinCount");colour(head,theme.HEADING)
+            tag=CellPara("","tag")
+            masthead=CellPara("","masthead")
+            story=CellPara("","story" if name=="middle" else "sub")
+            for widget in (head,tag,masthead,story):inner.put(widget,0,0,cols)
+            if name=="middle":
+                for widget in (head,masthead,story):widget.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+            else:head.hide();colour(masthead,theme.HEADING)
+            body.put(frame,col,1,cols,24)
+            self.panels[name]=(head,tag,masthead,story)
+            self.panel_areas[name]=inner
 
     def _show(self):
-        page = self.pages[self.index]
-        for name, (head, tag, masthead, story) in self.panels.items():
-            panel = page[name]
-            head.setText(f"FRONT PAGE · {self.index + 1} OF {len(self.pages)}")
-            tag.setText(page.get("tag", ""))
-            tag.setVisible(bool(page.get("tag")))
-            set_para(masthead, panel["masthead"])
-            set_para(story, "\n".join(panel["lines"]))
+        from goal2.ui.cells import cell_w
+        page=self.pages[self.index]
+        for name,(head,tag,masthead,story) in self.panels.items():
+            inner=self.panel_areas[name];cols=inner.cols;top=0
+            head.setText(f"FRONT PAGE · {self.index+1} OF {len(self.pages)}")
+            if name=="middle":inner.move(head,0,top,cols);top+=1
+            tag.setText(page.get("tag",""));tag.setVisible(bool(page.get("tag")))
+            if page.get("tag"):
+                rows=max(1,len(tag.lines(round(cols*cell_w(tag)))))
+                inner.move(tag,0,top,cols,rows);top+=rows
+            set_para(masthead,page[name]["masthead"])
+            rows=max(1,len(masthead.lines(round(cols*cell_w(masthead)))))
+            inner.move(masthead,0,top,cols,rows);top+=rows+1
+            set_para(story,"\n".join(page[name]["lines"]))
+            inner.move(story,0,top,cols,max(1,23-top))
 
     def count_text(self) -> str:
         return self.panels["middle"][0].text()

@@ -37,7 +37,7 @@ def main():
             screen.offer(ROOT/'.cache');shot('s02-start-empty.png')
             screen=window.push(NewGameScreen(window));shot('s03-new-game.png');screen.choose(6);shot('s03-managers-later.png');window.pop()
             model=DesktopModel.open(target.data/data_setup.TEMPLATE_NAME,target.goal_dat,Path(tmp)/'career',country=20)
-            model.new_campaign(20,2028)
+            model.new_campaign(20,2028);model.rename_manager('K Ees')
             for i in range(6):saves.write(model,target.saves,f'{i} Road to the championship')
             window.replace_home(StartScreen(window));shot('s02-start.png')
             bad=target.saves/'broken.g2game';bad.write_bytes(b'not a zip')

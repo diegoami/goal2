@@ -1,0 +1,702 @@
+[
+  {
+    "screen": "HomeScreen",
+    "picture": "home.png",
+    "context": "placeholder without an open career",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HomeScreen",
+    "picture": "home.png",
+    "context": "placeholder without an open career",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HomeScreen",
+    "picture": "home.png",
+    "context": "placeholder without an open career",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HomeScreen",
+    "picture": "home.png",
+    "context": "placeholder without an open career",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help-missing.png",
+    "context": "missing optional help",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help-missing.png",
+    "context": "missing optional help",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help-missing.png",
+    "context": "missing optional help",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help-missing.png",
+    "context": "missing optional help",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help-missing.png",
+    "context": "missing optional help",
+    "requested": [
+      720,
+      450
+    ],
+    "actual": [
+      720,
+      450
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help.png",
+    "context": "owned stand-in help, not original help bytes",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help.png",
+    "context": "owned stand-in help, not original help bytes",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help.png",
+    "context": "owned stand-in help, not original help bytes",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help.png",
+    "context": "owned stand-in help, not original help bytes",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "HelpScreen",
+    "picture": "s22-help.png",
+    "context": "owned stand-in help, not original help bytes",
+    "requested": [
+      720,
+      450
+    ],
+    "actual": [
+      720,
+      450
+    ],
+    "problems": []
+  },
+  {
+    "screen": "BulletinScreen",
+    "picture": "s05-bulletin.png",
+    "context": "real original bulletin projection from kept E038 input",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "BulletinScreen",
+    "picture": "s05-bulletin.png",
+    "context": "real original bulletin projection from kept E038 input",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "BulletinScreen",
+    "picture": "s05-bulletin.png",
+    "context": "real original bulletin projection from kept E038 input",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "BulletinScreen",
+    "picture": "s05-bulletin.png",
+    "context": "real original bulletin projection from kept E038 input",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save.png",
+    "context": "name entry over the desk",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save.png",
+    "context": "name entry over the desk",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save.png",
+    "context": "name entry over the desk",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save.png",
+    "context": "name entry over the desk",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save-failed.png",
+    "context": "authored Windows-style failure message, all text retained",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save-failed.png",
+    "context": "authored Windows-style failure message, all text retained",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save-failed.png",
+    "context": "authored Windows-style failure message, all text retained",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "SaveScreen",
+    "picture": "s21-save-failed.png",
+    "context": "authored Windows-style failure message, all text retained",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "DeskScreen",
+    "picture": "s21-replace.png",
+    "context": "actual named-save replacement question",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "DeskScreen",
+    "picture": "s21-replace.png",
+    "context": "actual named-save replacement question",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "DeskScreen",
+    "picture": "s21-replace.png",
+    "context": "actual named-save replacement question",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "DeskScreen",
+    "picture": "s21-replace.png",
+    "context": "actual named-save replacement question",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-quit.png",
+    "context": "question over the desk",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-quit.png",
+    "context": "question over the desk",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-quit.png",
+    "context": "question over the desk",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-quit.png",
+    "context": "question over the desk",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-save-question.png",
+    "context": "question over the desk",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-save-question.png",
+    "context": "question over the desk",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-save-question.png",
+    "context": "question over the desk",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "QuestionScreen",
+    "picture": "s21-save-question.png",
+    "context": "question over the desk",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingNameScreen",
+    "picture": "s21-save-goal.png",
+    "context": "owned recording fixture, name-entry UI",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingNameScreen",
+    "picture": "s21-save-goal.png",
+    "context": "owned recording fixture, name-entry UI",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingNameScreen",
+    "picture": "s21-save-goal.png",
+    "context": "owned recording fixture, name-entry UI",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingNameScreen",
+    "picture": "s21-save-goal.png",
+    "context": "owned recording fixture, name-entry UI",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-goals.png",
+    "context": "bounded list of owned recording fixtures",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-goals.png",
+    "context": "bounded list of owned recording fixtures",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-goals.png",
+    "context": "bounded list of owned recording fixtures",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-goals.png",
+    "context": "bounded list of owned recording fixtures",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-summaries.png",
+    "context": "empty summary list",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-summaries.png",
+    "context": "empty summary list",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-summaries.png",
+    "context": "empty summary list",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "RecordingsScreen",
+    "picture": "s21-saved-summaries.png",
+    "context": "empty summary list",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  }
+]
