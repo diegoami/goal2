@@ -44,13 +44,39 @@ class PreMatchPlan(S.MenuPlan):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pool_pane = False          # the SELECT screen opens in the squad view (E009-r0001)
+        self._expected_swap = None
+        self._swap_observed = False
+
+    def _expect_swap(self, s, job):
+        # [confirmed: F031 DEA6/007B; T134] Exact word-list permutation before
+        # either original sort. Sorting later preserves each block's membership.
+        squad, pool = list(s["squad"]), list(s.get("pool", ()))
+        i = squad.index(job[1])
+        if job[2] in squad:
+            j = squad.index(job[2]); squad[i], squad[j] = squad[j], squad[i]
+        else:
+            j = pool.index(job[2]); squad[i], pool[j] = pool[j], squad[i]
+        self._expected_swap = (squad, [w for w in pool if w])
+        self._swap_observed = False
+
+    def observe_swap(self, s):
+        if self.pending_check is None or self._expected_swap is None:
+            raise MatchError("unexpected pre-match word swap")
+        if (s["squad"], s.get("pool", [])) != self._expected_swap:
+            raise MatchError("original pre-match word swap differs from requested pair")
+        self._swap_observed = True
 
     def select_key(self, s):
         if self.pending_check is not None:
             job = self.pending_check
             self.pending_check = None
-            if job[2] not in s["squad"][:11] or job[1] in s["squad"][:11]:
+            expected = self._expected_swap
+            if (not self._swap_observed or expected is None
+                    or Counter(s["squad"][:11]) != Counter(expected[0][:11])
+                    or Counter(s["squad"][11:]) != Counter(expected[0][11:])
+                    or s.get("pool", []) != expected[1]):
                 raise MatchError(f"the original did not make the pre-match swap {job}")
+            self._expected_swap = None
             self.done.append(job)
         if self.job == len(self.jobs):
             return self.act(S.ESC)
@@ -66,6 +92,7 @@ class PreMatchPlan(S.MenuPlan):
             return self.move(s["cursor"], slot)
         self.sub_marked = not self.sub_marked
         if not self.sub_marked:
+            self._expect_swap(s, job)
             self.pending_check = job
             self.job += 1
         return self.act(S.ENTER)
@@ -98,6 +125,7 @@ class PreMatchPlan(S.MenuPlan):
         if s["cursor"] != slot:
             return self.move(s["cursor"], slot)
         self.sub_marked = False
+        self._expect_swap(s, job)
         self.pending_check = job
         self.job += 1
         return self.act(S.ENTER)                        # completes the exchange
