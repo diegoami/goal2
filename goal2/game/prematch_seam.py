@@ -15,6 +15,8 @@ own answer now that T170l vendored the pool arm; T170k's named refusal retired w
 an explicit club action uses original C, even when the position is already equal.
 [confirmed: T136/46315dcf; T170v] Own tactics preserve explicit off/on/inherit
 through the original T menu across squad/pool, using player-country defaults.
+[confirmed: T137/87d92501; T170w] Marking distinguishes inherit from explicit
+protected zone and opponent goals for eligible current squad, including bench.
 """
 
 
@@ -65,6 +67,12 @@ class PrematchSeam:
         if value is not None and type(value) is not bool:
             raise ValueError('own tactic value must be False, True or None')
         self.match.answer(edit_only=True, own_tactics={player: {element: value}})
+
+    def set_marking(self, player, target):
+        """[confirmed: T137/87d92501, F010] Native row5: None/zone0/opponent."""
+        if target is not None and type(target) is not int:
+            raise ValueError('marking target must be None, integer0 or an opponent word')
+        self.match.answer(edit_only=True, marking={player: target})
 
     def play(self, *, captain=_UNSET_CAPTAIN):
         """[T170p/T133] Play after edits: optional current-XI captain, or None for

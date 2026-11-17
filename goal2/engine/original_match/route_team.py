@@ -41,8 +41,12 @@ def choose_eleven(squad, player):
 class PreMatchPlan(S.MenuPlan):
     """DEA6 before play, rather than E022's substitutions during play."""
 
-    def __init__(self, side, tactics=None, subs=None, positions=None, **kwargs):
-        super().__init__(side, tactics=tactics, subs=subs, **kwargs)
+    def __init__(self, side, tactics=None, subs=None, positions=None, marking=None, **kwargs):
+        super().__init__(side, tactics=tactics, subs=subs, marking=marking, **kwargs)
+        self.marking = dict(marking or {})
+        self._mark_status = 0
+        self._mark_pressed = self._mark_calls = 0
+        self._mark_pending = False
         # [T135/#720] Preserve MenuPlan's sub/position/own order without
         # coercing the distinct native C action into a numeric R goal.
         at = next((i for i, job in enumerate(self.jobs) if job[0] == "own"), len(self.jobs))
@@ -173,7 +177,54 @@ class PreMatchPlan(S.MenuPlan):
                 return self.move(s["cursor"], target)
         self.in_own, self.own_failed, self.presses = True, False, 0
         self._own_visit = (player, int(not in_pool))
+        self._mark_pressed = self._mark_calls = 0
+        self._mark_pending = False
         return self.act(S.KEY_T)
+
+    @staticmethod
+    def mark_reached(status, word, target):
+        # [confirmed: F010 49B8] Element7 clear inherits; explicit0 protects zone.
+        return not bool(status & 64) if target is None else bool(status & 64) and word == target
+
+    def observe_mark_state(self, status):
+        self._mark_status = status
+
+    def observe_mark_entry(self, player, pane, key, row):
+        if (self._own_visit != (player, pane) or player not in self.marking
+                or not self._own_entered or self._mark_pending
+                or self._mark_calls >= self._mark_pressed or pane != 1 or key != S.ENTER or row != 5):
+            raise MatchError("original pre-match marking entry differs from requested row5")
+        self._mark_pending = True
+
+    def observe_mark_return(self, player, pane, key, row):
+        if not self._mark_pending or self._own_visit != (player, pane) or key != S.ENTER or row != 5:
+            raise MatchError("original pre-match marking return differs from requested row5")
+        self._mark_pending = False
+        self._mark_calls += 1
+
+    def observe_mark_visit(self, player, status, word):
+        if player in self.marking and (not self._own_returned or self._mark_pending
+                or self._mark_calls != self._mark_pressed
+                or not self.mark_reached(status, word, self.marking[player])):
+            raise MatchError("original pre-match marking goal or call witness was not reached")
+
+    def own_key(self, row, own_set, marking_word, team_set, can_mark):
+        job = self.jobs[self.job]
+        for e, v in job[2].items():
+            has, value = bool(own_set & (1 << (e+3))), bool(own_set & (1 << (e-1)))
+            if (v is None and has) or (v is not None and (not has or value != v)):
+                return super().own_key(row, own_set, marking_word, team_set, can_mark)
+        player = job[1]
+        if player in self.marking and not self.mark_reached(self._mark_status, marking_word, self.marking[player]):
+            if not can_mark:
+                raise MatchError("original pre-match player has no marking row")
+            if row != 5:
+                return self.move(row, 5)
+            self._mark_pressed += 1
+            if self._mark_pressed > 13:
+                raise MatchError("original pre-match marking goal was not reached")
+            return self.act(S.ENTER)
+        return self.act(S.ESC)
 
     def select_key(self, s):
         if self._position_visit is not None:

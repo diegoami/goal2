@@ -630,7 +630,8 @@ class Match:
         tactics: {element 1..8: bool} or the whole byte (bit e-1 = element e; F026; element 8 is man-to-man
           marking for the team).
         positions: {player: position code 0..13} (the formation: F028), made on SELECT TEAM by the original's R key.
-        marking: {player: opponent player word, or 0 for none} (his man-marking, 1771:49B8).
+        marking: {player: opponent player word, or 0} (1771:49B8). Configured pre-match
+          edits also accept None for inherit; 0 is explicit protected zone, distinct from inherit.
         own_tactics: {player: {element 1..4: True, False or None for the team's}} (his own setting, 1771:4B61).
         quick: the rest as a quick result (the original's R key in play). speed: the original's speed byte 0..5
           (presentation only: it never changes the match, E033 notes).
@@ -692,8 +693,7 @@ class Match:
             # below checks the squad-or-pool membership); DEA6's pre-play swaps have no
             # budget gate and are not deferred. T135 also drives R/C positions through4952.
             pre_match = (context == "pre_match" and self.opts.get("pre_match_edits")
-                         and (tactics is not None or substitutions or positions or own_tactics)
-                         and not marking)
+                         and (tactics is not None or substitutions or positions or own_tactics or marking))
             if (not (legal_bench or paused_tactics or pre_match or request_substitution is not None) or quick
                     or speed is not None or taker is not None or shootout_order is not None):
                 raise ValueError("edit_only needs a legal stopped bench, a tactics-only paused menu "
@@ -759,7 +759,7 @@ class Match:
                                  "on the bench or, at a pre-match edit, in the pool")
         # [T135/#720; F010 4952] R/C are pre-match edit inputs, never
         # ignored fields on Play. C is explicit even when its value is unchanged.
-        if context == "pre_match" and (positions or own_tactics) and not pre_match_pairs:
+        if context == "pre_match" and (positions or own_tactics or marking) and not pre_match_pairs:
             raise ValueError("pre-match personal inputs need configured edit_only")
         if pre_match_pairs:
             if positions is not None and not isinstance(positions, dict):
@@ -779,9 +779,33 @@ class Match:
             if any(p not in squad or not 0 <= c <= 13 for p, c in positions.items()):
                 raise ValueError("positions: {player of the managed squad: position code 0..13}")
         other = self._squad(self.opts[TEAM_KEYS[1 - self.side]])
-        marking = {int(p): int(o) for p, o in (marking or {}).items()}
-        if any(p not in squad[:11] or (o and o not in other[:11]) for p, o in marking.items()):
-            raise ValueError("marking: {player of the managed eleven: an opponent of their eleven, or 0}")
+        if pre_match_pairs:
+            # [confirmed: T137/#724, F010; 4B61/49B8] Validate projected
+            # membership/roles only; native keys own all status/table writes.
+            if marking is not None and not isinstance(marking, dict):
+                raise ValueError("pre-match marking needs a player map")
+            marks = {}
+            for player, target in (marking or {}).items():
+                if type(player) not in (int, str) or (target is not None and type(target) is not int):
+                    raise ValueError("pre-match marking needs word keys and None/0/opponent goals")
+                try:
+                    player = int(player)
+                except ValueError as exc:
+                    raise ValueError("pre-match marking player must be a word") from exc
+                position = positions.get(player, self._player(player, PLAYER_POSITION)) if player in live_squad else 0
+                if position == "club":
+                    position = self._player(player, 7)
+                if (not player or player not in live_squad or position < 2
+                        or not self._available(player) or not self.m.rd(0x0C1E, 1)):
+                    raise ValueError("pre-match marking needs an available outfield squad player during setup")
+                if target not in (None, 0) and (target not in other[1:11] or not self._available(target)):
+                    raise ValueError("pre-match marking target is outside available opponent slots2..11")
+                marks[player] = target
+            marking = marks
+        else:
+            marking = {int(p): int(o) for p, o in (marking or {}).items()}
+            if any(p not in squad[:11] or (o and o not in other[:11]) for p, o in marking.items()):
+                raise ValueError("marking: {player of the managed eleven: an opponent of their eleven, or 0}")
         if pre_match_pairs:
             # [T136/#722; F010 4B61] Preserve exact false/true/inherit and
             # validate every target before replay or original-key consumption.
@@ -870,6 +894,30 @@ class Match:
             default = self.m.read(self._country(country) + TACTICS, 1)[0]
             observe(player, self.m.stack_word(-4) & 255, self._player(player, OWN_TACTICS),
                     self.m.rd(KEY, 1), default)
+            done = getattr(self._menu, "observe_mark_visit", None)
+            if done is not None:
+                done(player, self._player(player, PLAYER_STATUS), self._marking_word(player))
+
+    def _marking_word(self, player):
+        squad = self._squad(self.opts["managed"])
+        slot = squad.index(player) + 1 if player in squad else 0
+        return self.m.rd(S.MARKING - 2 + 0x28 * self.side + 2 * slot) if slot else 0
+
+    def _on_pre_match_mark_entry(self, replay):
+        # [confirmed: 49B8 near entry, parent4B61 BP argument at SP+2]
+        observe = getattr(self._menu, "observe_mark_entry", None)
+        if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
+            bp = self.m.stack_word(2)
+            observe(self.m.frame_word(bp, 8), self.m.frame_word(bp, 6) & 255,
+                    self.m.rd(KEY, 1), self.m.rd(S.OWN_ROW))
+
+    def _on_pre_match_mark_return(self, replay):
+        # [confirmed: original4C28 call/4C2B continuation, ret2 restores parent BP]
+        observe = getattr(self._menu, "observe_mark_return", None)
+        if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
+            bp = self.m.reg("bp")
+            observe(self.m.frame_word(bp, 8), self.m.frame_word(bp, 6) & 255,
+                    self.m.rd(KEY, 1), self.m.rd(S.OWN_ROW))
 
     def _new_plan(self, answer, context=None):
         if context == "pre_match":
@@ -878,7 +926,7 @@ class Match:
             # shared tactics step and Play for the menu itself; no budget gate, no requests.
             from .route_team import PreMatchPlan
             plan = PreMatchPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
-                                positions=answer.get("positions"), own=answer.get("own"))
+                                positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"))
         else:
             plan = S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
                               positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"),
@@ -979,6 +1027,8 @@ class Match:
         m.at("0791:E72A", self._on_pre_match_position)
         m.at("1771:4B61", self._on_pre_match_own_entry)
         m.at("0791:E75D", self._on_pre_match_own)
+        m.at("1771:49B8", self._on_pre_match_mark_entry)
+        m.at("1771:4C2B", self._on_pre_match_mark_return)
         m.at(TICK, self._on_tick)
         m.at(PLAY_MATCH, self._on_play)
         m.at(MATCH_PLAYED, self._on_played)
@@ -1169,6 +1219,9 @@ class Match:
                 slot = squad.index(player) + 1 if player in squad else 0
                 # [T136/F010] The pool own editor has four rows and no squad mark slot.
                 marking = m.rd(S.MARKING - 2 + 0x28 * self.side + 2 * slot) if slot else 0
+                observe = getattr(self._menu, "observe_mark_state", None)
+                if observe is not None:
+                    observe(self._player(player, PLAYER_STATUS))
                 return self._menu.own_key(m.rd(S.OWN_ROW), self._player(player, OWN_TACTICS), marking,
                                           self._tactics(), m.frame_word(bp, 6) & 0xFF == 5)
             self._fail(f"an undeclared menu read (214B:1560 called from {caller})")
