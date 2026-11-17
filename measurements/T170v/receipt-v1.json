@@ -1,0 +1,817 @@
+{
+  "accepted_upstream": "46315dcf391740018bb486416bce2a00062fda24",
+  "fail_before": {
+    "failures": [
+      "missing set_own_tactic seam method",
+      "unsupported own validation loses rather than repairs the decision"
+    ],
+    "head": "a1f2fa11"
+  },
+  "fast_gate": {
+    "modules": 254,
+    "passed": 254,
+    "scope": "Default clean-head fast gate on combined accepted UI foundation and own adoption; full slow news/round proof explicitly run.",
+    "skipped": 233
+  },
+  "focused": {
+    "cases": 59,
+    "result": {
+      "all16": [
+        160,
+        4,
+        0,
+        0,
+        31588,
+        1608,
+        16022,
+        16018,
+        70,
+        38668,
+        4020,
+        11684,
+        11684,
+        14453,
+        0,
+        0
+      ],
+      "entries": [
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          2630,
+          0
+        ],
+        [
+          2630,
+          0
+        ],
+        [
+          2630,
+          0
+        ],
+        [
+          2630,
+          0
+        ],
+        [
+          121,
+          1
+        ],
+        [
+          121,
+          1
+        ],
+        [
+          121,
+          1
+        ],
+        [
+          121,
+          1
+        ],
+        [
+          2564,
+          0
+        ],
+        [
+          2564,
+          0
+        ],
+        [
+          2564,
+          0
+        ],
+        [
+          2564,
+          0
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          2630,
+          0
+        ]
+      ],
+      "memory": "a17fccf249ee8dba9163d55553711e275ff8600de7d5d766e4ccf808ac9656b5",
+      "stages": [
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "b1c5edd6de7c729254f3b257e4a27831275500ee51e5473fbcfabb21d6c269e5",
+          "preview_hash": "10bff6c5c4b4203ecf23d11e967c5d977b32776c7cecf8b0815a2aa7480def1c",
+          "records": [
+            [
+              123,
+              7,
+              178,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "1a37f794b46ccf27d65609a76041b49fa5eeae93e591ed8853b52049903f3183",
+          "preview_hash": "389e9d3dbd77dedb82c9a5044e7a5c0e5f50a764230ab7e85561826e0a74725f",
+          "records": [
+            [
+              123,
+              7,
+              179,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "98eae1d8a865bcb91aa53a975b5d3dbaefb1735d270bbba6ff668deff30d75e3",
+          "preview_hash": "8b103be435dd4091cd808cd5c92081c6917bb70f97d31302f1d3d19682712701",
+          "records": [
+            [
+              123,
+              7,
+              163,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "98eae1d8a865bcb91aa53a975b5d3dbaefb1735d270bbba6ff668deff30d75e3",
+          "preview_hash": "8b103be435dd4091cd808cd5c92081c6917bb70f97d31302f1d3d19682712701",
+          "records": [
+            [
+              123,
+              7,
+              163,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "ab276e89e2938f5dc95cfb2b32675d9e64f01509e499ba4fccdbaac182e975f4",
+          "preview_hash": "9428daacbb30e135be5e82dc4fcc5812111f1b5926ff8a12d8784720d9d59633",
+          "records": [
+            [
+              134,
+              7,
+              50,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "e434e15788d90229437e98171f564d105df7cd51a89e6faf36d07119b392a4c5",
+          "preview_hash": "d0896b5dd9116f5ae882426814c57ecc41a91fde338e86955ac1429125542358",
+          "records": [
+            [
+              134,
+              7,
+              51,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "36860254c4b2e7cc57e7307d18e10e5e3128b09e569379bd0b2ba5f8992d1226",
+          "preview_hash": "259281e769371584be31f5cf65bfaf794cc6643f33badadf8e4949a3cbd8804a",
+          "records": [
+            [
+              134,
+              7,
+              35,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "36860254c4b2e7cc57e7307d18e10e5e3128b09e569379bd0b2ba5f8992d1226",
+          "preview_hash": "259281e769371584be31f5cf65bfaf794cc6643f33badadf8e4949a3cbd8804a",
+          "records": [
+            [
+              134,
+              7,
+              35,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "c27f2c7a1bcf0de86e4acc0dfbdc0d78c4920500177bcd2c7d22cebfa3281d65",
+          "preview_hash": "ad62a6fa1fa7a4be60924f198a778846b8e867b36cab6b13b93c2846674b211d",
+          "records": [
+            [
+              2630,
+              7,
+              50,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "07fade24c8262fd5d8d9cdb0a176a099c8fe777d1f1d0148553987cb80c220cf",
+          "preview_hash": "05f67cc0238da307d8ed4815cb35640adb3ca375202c146cc4a201db16630806",
+          "records": [
+            [
+              2630,
+              7,
+              51,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "b8f3ca3a055bb50d59f6105e1f0c3dc210caaf31650b7827b3e062c60448461e",
+          "preview_hash": "5a803db3e2679d4df08aefa7b32f91746851b52248924b248923bd1feb31928f",
+          "records": [
+            [
+              2630,
+              7,
+              35,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "b8f3ca3a055bb50d59f6105e1f0c3dc210caaf31650b7827b3e062c60448461e",
+          "preview_hash": "5a803db3e2679d4df08aefa7b32f91746851b52248924b248923bd1feb31928f",
+          "records": [
+            [
+              2630,
+              7,
+              35,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "077a74edcb2f02ec30fff80941433248708995aa41b24f35c8b646df00fe04ac",
+          "preview_hash": "87fd26164b33f8eb0562d0c717f6234ab310b51a46b526af184ec6b3b7913d8e",
+          "records": [
+            [
+              121,
+              7,
+              16,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "b3098bf5f3c41ffbe488e1c59a67cfcef6052156a438278f93a95e1204f1f8ea",
+          "preview_hash": "14dabac24d46bd1de94f022b08de93dd47033c1e5af7dc84f3ab9a585a0686ae",
+          "records": [
+            [
+              121,
+              7,
+              17,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "00cde9bc3b161f646d9be0bc4b8260f1cd58e6b81243742f036ac2df6f1045e2",
+          "preview_hash": "4a9e5ab17dcf73d46595b816985bac4d9e9c219e06a9e24c471bb517fd875656",
+          "records": [
+            [
+              121,
+              7,
+              1,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "00cde9bc3b161f646d9be0bc4b8260f1cd58e6b81243742f036ac2df6f1045e2",
+          "preview_hash": "4a9e5ab17dcf73d46595b816985bac4d9e9c219e06a9e24c471bb517fd875656",
+          "records": [
+            [
+              121,
+              7,
+              1,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "15f319d0f46c3a68a726225f0939ed438a5ead281f6795bf4e148b63cf1525d8",
+          "preview_hash": "3932aeaa11af5eed34e1ca5b29297bf855a21038daf496127d7c732c0fd2a971",
+          "records": [
+            [
+              2564,
+              7,
+              16,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "102c6daceb8202acf435829df427216a6edc173a09c962d713559c99862d0c63",
+          "preview_hash": "d14d4e1ff2bdf34565f9a7cbd0e338452b0eff25b0540c71af809192d5318d6c",
+          "records": [
+            [
+              2564,
+              7,
+              17,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "a42700ae41da3e222df69fd2f13031cc40c11881e1252c172c2736fef206a89d",
+          "preview_hash": "aed4b7cb989ca9cdc3e58a5cda4cfe132eed8d86eec06148140b67387ac3f60c",
+          "records": [
+            [
+              2564,
+              7,
+              1,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "a42700ae41da3e222df69fd2f13031cc40c11881e1252c172c2736fef206a89d",
+          "preview_hash": "aed4b7cb989ca9cdc3e58a5cda4cfe132eed8d86eec06148140b67387ac3f60c",
+          "records": [
+            [
+              2564,
+              7,
+              1,
+              139
+            ]
+          ]
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            2,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "memory": "6a8473e12f152db6e9378aed4d975c5df0d49ce513591998435a9819c482fba9",
+          "preview_hash": "2135e859e51f989eb1de35e07898a90eec1e01e59cec44db54adad0ecd67c5aa",
+          "records": [
+            [
+              2630,
+              7,
+              33,
+              138
+            ],
+            [
+              134,
+              7,
+              103,
+              138
+            ]
+          ]
+        }
+      ]
+    },
+    "scope": "Five new own/seam/direct/worker/actual-pipe cases plus position, roster, captain, preview, news, vendor, provenance, table and runtime regressions; existing slow/optional guards retained.",
+    "seconds": 113.099,
+    "skipped": 12
+  },
+  "focused_head": "c3b7a6727497ad9c20b22f7e1a35592ac3b12f19",
+  "full_news_pipe": {
+    "cases": 1,
+    "passed": 1,
+    "result": {
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "events_hash": "bced27e1a2f8fea7f97f9083feacf5016b26ba03e043acfdf155589c8e8af93d",
+      "fixtures": 1,
+      "news": 1,
+      "observation_hash": "5880d888ac683ce5f471d48bb7208f41fb833509e07c7efaff7f2161f5d97a41",
+      "preview_hash": "c00033380c208a76ac6a190c1b0e5b23cabd329e62e5b0892d09af7d11ac21f1",
+      "state_hash": "9722e637f74a470663fcede6bebe09c558b3c6df088a293ed959eaba25f6fe7b",
+      "status": "complete"
+    },
+    "seconds": 74.258,
+    "slow": true
+  },
+  "issue": 756,
+  "links_json": 2787,
+  "platform_code_refs": {
+    "Linux": 44073127242,
+    "Windows": 44073127013
+  },
+  "preserved_overrides": {
+    "README.md": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+    "screens.py": "c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4"
+  },
+  "provenance_rows": 65,
+  "pull_request": 757,
+  "schema": "t170v-validation/1",
+  "scope": [
+    "Exact accepted match/route_team copies only; no port body edits",
+    "Exact False/True/None for own rows1..4 across XI, bench, pool and keepers",
+    "21 edit stages, mixed edits, already-inherited goals and separate Play",
+    "Same decision and preview survive pure invalid/stale inputs; genuine backend failures still invalidate",
+    "Current guest records, full memory and all16 equality against direct answers",
+    "No window activation, save-schema change or broader Prover claim; marking remains719"
+  ],
+  "sha256": {
+    "goal2/engine/original_match/match.py": "fdfed812c3ca80a8f8a1a9b0a8ae8c29abe0fb76d738fdd39a2ba32125cfdf88",
+    "goal2/engine/original_match/route_team.py": "56992dba945e7d396d8c6999a8b2b41ec917d09fec21277a3d1a9d0ef7b730ed",
+    "goal2/game/prematch_seam.py": "69d18a4df7d1916f0150730330d6712629ddb8ff3abd10230245514b11b531de",
+    "goal2/game/season_worker.py": "b7d4cfcbce1a01f718fb9e0afc8468ea0a5fd5824bce13092af0dad5535c67cb",
+    "goal2/tests/test_prematch_own_t170v.py": "c7b49756a33f669c190f793e314d752e8d766ab1b589236414bdb8313b7eb925"
+  },
+  "tested_head": "62c55aceaa985a81ff5f5973dad3b8a66773c644"
+}
