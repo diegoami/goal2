@@ -12,6 +12,7 @@ from goal2.game.prematch_view import PrematchView
 from goal2.game.season import canonical_hash
 from goal2.tests import pypy_engine, requires
 from goal2.tests.test_prematch_preview_t170s import reference_raw
+from goal2.tests import test_season_worker_t170o as wire
 
 
 def synthetic():
@@ -114,6 +115,9 @@ class Pure(unittest.TestCase):
         self.assertEqual(zone.marking_goal(2),0)
         self.assertIs(zone.own_override(2701,1),False)
         self.assertFalse(zone.own_value(2701,1))
+        image.memory[image.DS*16+0x9A42:image.DS*16+0x9A44]=(22).to_bytes(2,'little')
+        packet['state']=image.state(engine_tables.load());packet['preview']['state_hash']=canonical_hash(packet['state'])
+        self.assertEqual(build(packet,data).marking_goal(2),22)
 
 
 def real_samples(raw,goaldat):
@@ -155,6 +159,13 @@ def real_samples(raw,goaldat):
                          starting_eleven=list(d['eleven']),country_tactics=m._tactics())
         assert displayed.players==oracle.players and displayed.countries==oracle.countries
         assert view.pool==tuple(m._pool()) and view.opponents==tuple(m._squad(m.opts['second'] if m.side==0 else m.opts['first']))
+        assert view.captain_choices==tuple(w for w in d['eleven'] if m._available(w))
+        assert view.marking_targets==tuple(w for w in view.opponents[1:11] if m._available(w))
+        for w in view.squad:
+            if w:
+                assert view.marking_word(w)==m._marking_word(w)
+                assert view.marking_goal(w)==(m._marking_word(w) if m._player(w,16)&64 else None)
+                assert view.can_mark(w)==bool(m.m.rd(0xC1E,1) and m._player(w,6)>=2 and m._available(w))
         for w in view.squad+view.pool:
             if w:
                 assert card(displayed,w,goaldat)==card(oracle,w,goaldat)
@@ -197,6 +208,38 @@ class Actual(unittest.TestCase):
             PrematchView.from_preview(first['packet'],last['data'],decision=last['decision'],managed_country=last['managed'])
         print('T170X_VIEW '+json.dumps({'input_sha256':result['input_sha256'],'boundary_hash':result['boundary_hash'],
             'samples':[{k:v for k,v in x.items() if k not in ('packet','data')} for x in result['samples']]},sort_keys=True),flush=True)
+
+
+class Pipe(unittest.TestCase):
+    make_engine=wire.Pipe.make_engine
+    receive=wire.Pipe.receive
+
+    def test_parent_wire_preview_is_the_window_view_input(self):
+        from goal2.tests.test_prematch_marking_t170w import initial_state
+        native,_,_=initial_state(reference_raw())
+        engine=self.make_engine();engine.season_open(native)
+        self.assertEqual(self.receive('ready')['implementation'],'PyPy');self.receive('season')
+        engine.season_request('advance');boundary=self.receive('season')['observation']['output_hash']
+        engine.season_request('configure');self.receive('season')
+        def current():
+            while True:
+                engine.season_request('next',count=32);packet=self.receive('season')
+                if packet['decision'] is not None:break
+            data=next(e['data'] for e in reversed(packet['events']) if e['kind']=='decision')
+            engine.season_request('preview',decision=packet['decision']);preview=self.receive('season')
+            return packet['decision'],data,preview,PrematchView.from_preview(preview,data,
+                decision=packet['decision'],managed_country=7)
+        n,data,preview,view=current()
+        word=next(w for w in view.bench if view.can_mark(w))
+        engine.season_request('answer',decision=n,answer={'edit_only':True,'marking':{word:0}});self.receive('season')
+        newer,d2,p2,v2=current();self.assertEqual(v2.marking_goal(word),0)
+        self.assertIsNone(v2.display_state().campaign)
+        with self.assertRaises(ValueError):
+            PrematchView.from_preview(preview,d2,decision=newer,managed_country=7)
+        engine.season_request('preview',decision=newer)
+        self.assertEqual(self.receive('season')['preview']['state_hash'],v2.state_hash)
+        engine.season_request('observe')
+        self.assertEqual(self.receive('season')['observation']['output_hash'],boundary)
 
 
 if __name__=='__main__':unittest.main()
