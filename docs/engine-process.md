@@ -182,7 +182,7 @@ records and marking words. `display_state()` gives existing card/TEAM decoders
 a detached current view, with optional identity overlays and no campaign.
 It supplies no backend reference, mutation API, publication or native career
 bootstrap. Pool permission is not inferred from legacy campaign metadata.
-Window widget/lifecycle wiring remains a subsequent leaf.
+Native bootstrap and the later match/session lifecycle remain separate.
 
 [designed: T170y/#770] `PrematchController` coordinates confirmed edit/captain
 transactions once the process owner has configured the held Match and obtained
