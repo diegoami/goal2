@@ -1,0 +1,29 @@
+{
+  "source": "12f09c1bc78a30942869073fe16c929bde64e07b",
+  "application_source": "60dc4bc60609d4b12d8885fa73e169dc24982bec",
+  "scope": "All six original/PyPy cases including natural tour refusal with full 0x10E game block; GOAL2_SLOW=1, no case filter; Linux then native Windows",
+  "platforms": {
+    "linux": {
+      "exit": 0,
+      "log": "/home/diego/projects/goal2/.cache/T183a-linux-tour-final.log"
+    },
+    "windows": {
+      "exit": 0,
+      "log": "/home/diego/projects/goal2/.cache/T183a-windows-tour-final.log"
+    }
+  },
+  "complete": true,
+  "schema": "goal2/T183a-validation/2",
+  "tests_per_platform": 6,
+  "skips_per_platform": 0,
+  "original_native_comparisons": 10,
+  "natural_tour_refusal": "Original annual-3, one original round, real SELECT TEAM\u2192Ins message: cannot alter squad whilst on tour",
+  "game_record_bytes": 270,
+  "source_application_unchanged": "git diff 60dc4bc6..12f09c1b -- goal2/game is empty",
+  "fast_gate_receipt": "receipt-v1.json retains source60dc4bc6:254/254 pass,235expected fast skips",
+  "finals_limit": "The retained annual-1 and bounded country1/country12 careers did not enter finals; these are not counted as finals-refusal evidence. Parent T183 still requires genuine finals context, current-calendar bridge and window publication controls.",
+  "logs": {
+    "T183a-linux-tour-final.log": "17b7dabc9bc1ce93e13f95b89d5d2d39b42154bd905b793a52de5410f2ad8169",
+    "T183a-windows-tour-final.log": "a4d6a1cae8887d0a1c61c536b5b5f6aaeb7d35404f706cdd3d0bb491dda01573"
+  }
+}
