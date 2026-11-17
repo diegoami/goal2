@@ -118,7 +118,7 @@ def own_guards(raw):
                 copy.deepcopy(m._frame_state()),worker.decision,worker.session.state)
     cases=[dict(edit_only=True,own_tactics={word:{1:1}}),dict(edit_only=True,own_tactics={65535:{1:True}}),
            dict(edit_only=True,own_tactics={word:{5:True}}),dict(own_tactics={word:{1:False}}),
-           dict(edit_only=True,own_tactics={word:{1:True}},marking={word:0}),
+           dict(edit_only=True,own_tactics={word:{1:True}},marking={word:65535}),
            dict(edit_only=True,own_tactics={word:{1:True}},quick=True)]
     for fields in cases:
         before=snapshot()

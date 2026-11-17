@@ -126,11 +126,11 @@ class SeasonWorker:
                 try:
                     match.answer(**answer)
                 except ValueError as exc:
-                    # [confirmed: archaeology T133-T136/#715/#717/#720/#722] These input
+                    # [confirmed: archaeology T133-T137/#715/#717/#720/#722/#724] These input
                     # validations precede guest/replay consumption. A bad roster
-                    # pair, position, own value or captain can repair the same decision.
+                    # pair, position, own/marking value or captain can repair the same decision.
                     if ('captain' in answer or (('substitutions' in answer or 'positions' in answer
-                                                or 'own_tactics' in answer)
+                                                or 'own_tactics' in answer or 'marking' in answer)
                                                and match.waiting is not None
                                                and match.waiting.get('context') == 'pre_match')):
                         raise SeasonRequestError(str(exc)) from exc
