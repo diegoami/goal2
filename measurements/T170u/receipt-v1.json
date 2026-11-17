@@ -1,0 +1,261 @@
+{
+  "accepted_upstream": "fc6b5294e1c9970f492ba8ddccf8a74333206ed9",
+  "fail_before": {
+    "failures": [
+      "missing numeric/club seam methods",
+      "unsupported pre-match position error is not repairable in old worker"
+    ],
+    "head": "c01f3c910476960c3c1249096acd08cf1b829cff"
+  },
+  "fast_gate": {
+    "modules": 244,
+    "passed": 244,
+    "scope": "Default fast gate; full slow round/news proof explicitly run above.",
+    "skipped": 230
+  },
+  "focused": {
+    "cases": 54,
+    "passed_batch": true,
+    "positions": {
+      "all16": [
+        160,
+        4,
+        0,
+        0,
+        31588,
+        1608,
+        16022,
+        16018,
+        70,
+        38668,
+        4020,
+        11684,
+        11684,
+        14453,
+        0,
+        0
+      ],
+      "entries": [
+        [
+          121,
+          82
+        ],
+        [
+          121,
+          67
+        ],
+        [
+          132,
+          82
+        ],
+        [
+          132,
+          67
+        ],
+        [
+          2564,
+          82
+        ],
+        [
+          2564,
+          67
+        ]
+      ],
+      "memory": "5cb35e2eff7c39b3551214685e8852c0dce4862fe03bded94c3588f7b5a7105d",
+      "stages": [
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "goal": 1,
+          "memory": "68c10179a90b75e62270d0351bcb57bd5f3df90bf8ab8b2469e9deb3fe3c74db",
+          "preview_hash": "9628199713f99b0ab100720800b5fb0eec8d2dbcfe31bfe5418651c363ec23f6",
+          "word": 121
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "goal": "club",
+          "memory": "7cb7334176e5622597f6a5b393181d81e36ab64e1b69bb5ad84021f51e5a55bf",
+          "preview_hash": "b1168956f74157e817b0121a4e33ede2ffd2d616d881d6375ae3a79561bedcde",
+          "word": 121
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "goal": 1,
+          "memory": "ba5577216d7ea3ed75a4794b21dca3c1f1ff3234ba4728a2d0a45c03b0ef82d0",
+          "preview_hash": "d5a1387392620e43257e028bc80390be4a5067b3702525878444af3b3ab76b21",
+          "word": 132
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "goal": "club",
+          "memory": "6388f7a24210851560a8b5e698ded8848e7d30f4c51984a0d08b310ed8621753",
+          "preview_hash": "c7e6321a07fdf5d374316997589f7842cdbbc37485ef28f3948991335ea0d9ab",
+          "word": 132
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "goal": 1,
+          "memory": "6ccaac1fb36fcc14a1560b8ef24492753b56fabf117823dd7b3228585e2a7685",
+          "preview_hash": "273aa6a36bdde5c0d10e3dbf76849c61dcfb34fd43aa37def126338f8e769a63",
+          "word": 2564
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            6,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "goal": "club",
+          "memory": "df182c1e5b48238b85bea1edbb1771bfc86be838b34f138ca1e6136b4640070a",
+          "preview_hash": "db056f635ed1cfdeaf0beb22e69449f47b93b45ed76210791023cfd65f1f5393",
+          "word": 2564
+        }
+      ]
+    },
+    "scope": "New5 R/C/seam/worker/pipe/fatal-error cases plus roster,tactic,captain,preview,news/vendor/provenance/table/runtime regressions; existing slow/optional guards retained.",
+    "seconds": 318.115,
+    "skipped": 12
+  },
+  "full_news_pipe": {
+    "cases": 1,
+    "passed": 1,
+    "result": {
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "events_hash": "bced27e1a2f8fea7f97f9083feacf5016b26ba03e043acfdf155589c8e8af93d",
+      "fixtures": 1,
+      "news": 1,
+      "observation_hash": "5880d888ac683ce5f471d48bb7208f41fb833509e07c7efaff7f2161f5d97a41",
+      "preview_hash": "c00033380c208a76ac6a190c1b0e5b23cabd329e62e5b0892d09af7d11ac21f1",
+      "state_hash": "9722e637f74a470663fcede6bebe09c558b3c6df088a293ed959eaba25f6fe7b",
+      "status": "complete"
+    },
+    "seconds": 72.341,
+    "slow": true
+  },
+  "issue": 753,
+  "links_json": 2684,
+  "platform_code_refs": {
+    "Linux": 43982762860,
+    "Windows": 43982762864
+  },
+  "preserved_overrides": {
+    "README.md": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+    "screens.py": "c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4"
+  },
+  "provenance_rows": 65,
+  "pull_request": 755,
+  "schema": "t170u-validation/1",
+  "scope": [
+    "Only accepted match/route_team copies; no port-body change",
+    "Numeric0..13 and explicit native club marker across XI/bench/pool",
+    "Same waiting decision survives invalid/bool/unknown/stale/mixed request and legal repair",
+    "Current preview tracks exact guest state/order while route boundary remains unchanged",
+    "Genuine RuntimeError remains fatal; no blanket ValueError recovery",
+    "No GUI/style/save changes or broader Prover claim; own/mark remain719"
+  ],
+  "sha256": {
+    "goal2/engine/original_match/match.py": "1c89cb6cb6b8e7e7b0386d82f5310092f88824ea92d39d6b7736e6950e70f7fc",
+    "goal2/engine/original_match/route_team.py": "08ce109445bf51e5d85c6f7819ac872a737a4ada8eb30c19b0a514a83549226d",
+    "goal2/game/prematch_seam.py": "9460b3bdb258ddae08e21b2bb1b18d3ae15f1b756d6093e3ff1dff73b8b5786e",
+    "goal2/game/season_worker.py": "9385b9e4a507b4f640a212959b5fa5493dd80029a8b1f15bea3e74a5f345874c",
+    "goal2/tests/test_prematch_positions_t170u.py": "a6f291c6d7225f8e401c4b2b5156fb8d3a580cfbe2a21cd163a1623d9dd3a9dc"
+  },
+  "tested_head": "3c0057caa2d3ed8017150c31ffa2fb46c09d26d7"
+}
