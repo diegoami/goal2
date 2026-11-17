@@ -14,7 +14,7 @@ from PySide6.QtWidgets import QFrame, QHBoxLayout, QWidget
 
 from goal2.ui import theme
 from goal2.ui.cells import CellEdit, CellLabel, CellPara, Cells, cell_w, row_px
-from goal2.ui.frame import Frame, FrameRule
+from goal2.ui.frame import Frame, FrameRule, PanelOutline
 from goal2.ui.screen import Clickable
 from goal2.ui.squad_card import CHARACTERISTIC_CELLS, LINE_COLOUR, NAME_MAX, SKILL_CELLS, Row, colour
 from goal2.ui.start_look import LineField
@@ -394,16 +394,17 @@ class CellFacts(Cells):
             self.labels[name], self.values[name] = rule, value
             self.edges.append(column+width)
             column += width
+        self.outline=PanelOutline(self,self._outline_segments)
 
-    def paintEvent(self,event):
-        # [designed: owner playtest, #754] Keep the original's fact-column dividers on the same cells.
-        super().paintEvent(event)
-        painter=QPainter(self);painter.setPen(QColor(theme.FRAME))
-        top=row_px(self)-1
+    def _outline_segments(self):
+        # [designed: owner playtest #778] Draw above visible fact values.
+        top=row_px(self)//2
+        lines=[]
         for edge in [0,*self.edges]:
             x=min(self.width()-1,round(edge*cell_w(self)))
-            painter.drawLine(x,top,x,self.height()-1)
-        painter.drawLine(0,self.height()-1,self.width()-1,self.height()-1);painter.end()
+            lines.append((x,top,x,self.height()-1))
+        lines.append((0,self.height()-1,self.width()-1,self.height()-1))
+        return lines
 
     def set(self, values, tone):
         for name, value in values.items():

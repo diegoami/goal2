@@ -3,14 +3,15 @@
 [confirmed: docs/original-game/images/t156-006-name-entry.png and t156-124-halftime-bench.png] The original separates
 panels and columns with connected horizontal and vertical lines. The owner requested these boundaries in the playtest.
 `FrameRule` interrupts a horizontal rule with its brown/red label and joins the sides; `Frame` continues the sides and
-bottom. Lines are painted without Qt borders, added padding or a body fill, preserving every cell of content.
+bottom. [designed: owner playtest #778] Foreground outlines keep content from painting over those edges.
+Lines are painted without Qt borders, added padding or a body fill, preserving every cell of content.
 
 [designed: T210, retained] The one-row heading and minimum label width remain on the 16 x 32 grid; a panel narrower
 than its complete label is reported by fixed_page.problems, never clipped. The textual rule API stays `-label---`.
 """
 from __future__ import annotations
 
-from PySide6.QtCore import QRectF, QSize, Qt
+from PySide6.QtCore import QEvent, QRectF, QSize, Qt
 from PySide6.QtGui import QColor, QFont, QPainter
 from PySide6.QtWidgets import QSizePolicy, QVBoxLayout, QWidget
 
@@ -31,6 +32,43 @@ def rule_text(label: str, cols: int) -> str:
     label = label.lower()
     cols = max(cols, len(label) + 2)
     return DASH + label + DASH * (cols - 1 - len(label))
+
+
+class PanelOutline(QWidget):
+    """[designed: owner playtest #778] Foreground rules that content cannot erase.
+
+    A transparent, mouse-transparent layer preserves content geometry and input.
+    Parent painting alone sits behind opaque child widgets and selected rows.
+    """
+    def __init__(self, parent, segments):
+        super().__init__(parent)
+        self.setObjectName('panelOutline')
+        self._segments=segments
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.setStyleSheet('background: transparent;')
+        parent.installEventFilter(self)
+        self._place()
+        self.show()
+
+    def _place(self):
+        self.setGeometry(self.parentWidget().rect())
+        self.raise_()
+        self.update()
+
+    def eventFilter(self, watched, event):
+        if event.type() in (QEvent.Type.Resize, QEvent.Type.Show,
+                            QEvent.Type.ChildAdded, QEvent.Type.LayoutRequest):
+            self._place()
+        return False
+
+    def paintEvent(self, event):
+        painter=QPainter(self)
+        painter.setPen(QColor(theme.FRAME))
+        for line in self._segments():
+            painter.drawLine(*line)
+        painter.end()
 
 
 class FrameRule(QWidget):
@@ -116,14 +154,11 @@ class Frame(QWidget):
         layout.setSpacing(0)
         layout.addWidget(self.rule, 0, Qt.AlignmentFlag.AlignTop)   # on top, whatever the body (or its absence) leaves
         layout.addLayout(self.body, 1)
+        self.outline=PanelOutline(self,self._outline_segments)
 
-    def paintEvent(self, event):
-        """[designed: owner playtest, #754] Outline panels without stealing a cell or filling the body."""
-        super().paintEvent(event)
-        painter=QPainter(self);painter.setPen(QColor(theme.FRAME))
-        top=max(0,self.rule.height()-1);bottom=self.height()-1;right=self.width()-1
-        painter.drawLine(0,top,0,bottom);painter.drawLine(right,top,right,bottom)
-        painter.drawLine(0,bottom,right,bottom);painter.end()
+    def _outline_segments(self):
+        top=max(0,self.rule.height()//2);bottom=self.height()-1;right=self.width()-1
+        return ((0,top,0,bottom),(right,top,right,bottom),(0,bottom,right,bottom))
 
     @property
     def label(self) -> str:
