@@ -182,7 +182,7 @@ records and marking words. `display_state()` gives existing card/TEAM decoders
 a detached current view, with optional identity overlays and no campaign.
 It supplies no backend reference, mutation API, publication or native career
 bootstrap. Pool permission is not inferred from legacy campaign metadata.
-Window widget/lifecycle wiring remains a subsequent leaf.
+Native bootstrap and the later match/session lifecycle remain separate.
 
 [designed: T170y/#770] `PrematchController` coordinates confirmed edit/captain
 transactions once the process owner has configured the held Match and obtained
@@ -200,6 +200,25 @@ Play refusal instead returns to a verified pre-match view. `detach` only severs
 presentation updates; the existing process/session owner must handle its lease,
 discard and close. This coordinator adds no bootstrap, pacing, resume, save or
 widget binding.
+
+[designed: T170z/#776] `goal2.ui.held_prematch.HeldPrematchFlow` binds the
+existing S15/S08/S09/S10/S16 widgets to an explicitly supplied ready controller,
+fixture and reply queue. The native session owner must already hold the exclusive
+lease, configure the Match and attach its verified current preview. All replies
+are consumed on the Qt owner thread. The facade reads confirmed current records;
+identity edits remain the existing word-keyed local overlay. Personal marking
+includes eligible outfield bench players and excludes keepers/unavailable/pool.
+Pending edits block further backend mutations while local navigation/help remain
+usable. Captain Enter sends a current XI word; C/timeout sends explicit null.
+Mandatory owner callbacks provide current-route tournament/statistics views,
+first-packet handoff and disposal. Handoff receives the intact first next packet
+once plus watch/replay preferences; prior edit events remain available through
+`controller.take_events()`. Close detaches and calls disposal once, except after
+handoff, when the continuing driver owns the session. The adapter never constructs
+another Match, confirms a legacy career, resumes/publishes a round or bootstraps
+a native career. The normal desktop entry and default route remain separate.
+Held A/Ins explains the existing T183 exception; outside-held assistant behavior
+is unchanged.
 
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping

@@ -120,6 +120,7 @@ class SquadScreen(Screen):
     _assistant_token = None   # Screen builds its Enter hint before subclass initialisation.
 
     def __init__(self, window, model):
+        if getattr(model, 'held_prematch', False):self.escape_text = 'match menu'
         super().__init__(window)
         self.model = model
         self._assistant_jobs = None
@@ -151,7 +152,7 @@ class SquadScreen(Screen):
                                           lambda: self.step_position(-1 if shift_held() else 1))
         # [designed: T183c/#766] The assistant action is explicit; no selection runs on screen entry.
         # [designed: T211] The twelve keys and the Enter hint are two rows of cells, a cell apart (the grid's bar).
-        last_on_the_bar(self, "desk")
+        last_on_the_bar(self, self.escape_text)
         self.set_enter("Move player", self.press_move)
         self.refresh()
 
@@ -223,10 +224,13 @@ class SquadScreen(Screen):
         self.squad_button.set_on(self.side == "squad")
         self.pool_button.set_on(self.side == "pool")
         if word is not None:
-            self.card.set_card(card(self.model.state, word, self.model.goaldat))
+            self.card.set_card(self.model.card(word) if getattr(self.model, 'held_prematch', False)
+                               else card(self.model.state, word, self.model.goaldat))
         self._show_filters(rows)
         if self._assistant_token is not None:
             self.message = ASSISTANT_WAIT
+        if getattr(self.model, 'held_block_reason', ''):
+            self.message = self.model.held_block_reason
         self.note.setText(self.message or (ASSISTANT_IDLE if self.side == 'squad' else
                                           'Left: show your squad for the assistant.'))
         if self.picked is not None and self._assistant_token is None:
@@ -339,6 +343,8 @@ class SquadScreen(Screen):
 
     def press_move(self):
         """Enter: pick a player, or put the picked one in place of this one (the model's exchange)."""
+        if getattr(self.model, 'held_block_reason', ''):
+            return self.say(self.model.held_block_reason)
         if self._assistant_blocked():
             return
         word = self.current()
@@ -418,7 +424,9 @@ class SquadScreen(Screen):
         try:
             self._assistant_jobs = self.model.assistant_jobs()
             self._assistant_token = self._assistant_jobs.start()
-        except ValueError:
+        except ValueError as exc:
+            if getattr(self.model, 'held_prematch', False):
+                return self.say(str(exc))
             return self.say("The assistant is not available right now.\nFinish the current action, then try again.")
         self.say(ASSISTANT_WAIT)
         self._assistant_timer.start()
@@ -503,7 +511,8 @@ class SquadScreen(Screen):
         from goal2.ui.s09_player_tactics import PlayerTacticsScreen
         word = self.current()
         if word is not None:
-            self.window_.push(PlayerTacticsScreen(self.window_, self.model, word))
+            self.window_.push(PlayerTacticsScreen(self.window_, self.model, word,
+                bench=self.model if getattr(self.model, 'held_prematch', False) else None))
 
     def new_name(self):
         if self._assistant_blocked():

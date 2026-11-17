@@ -298,6 +298,8 @@ class MenuScreen(Screen):
     def tactics(self, country):
         window, model = self.window_, self.model
         if country == model.state.managed_country and not self.during():
+            if getattr(model, 'held_prematch', False):
+                return self.day.open_team_tactics()
             from goal2.ui.s10_team_tactics import open_team_tactics
             return open_team_tactics(window, model)
         if country == model.state.managed_country and self.day.bench is not None:
@@ -322,6 +324,8 @@ class MenuScreen(Screen):
             model.state.managed_country if country is None else country], country=country))
 
     def tournament(self):
+        if getattr(self.model, 'held_prematch', False):
+            return self.day.open_tournament()
         from goal2.ui.s12_tournament import TournamentScreen
         return self.window_.push(TournamentScreen(self.window_, self.model))
 
