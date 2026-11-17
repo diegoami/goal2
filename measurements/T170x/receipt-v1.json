@@ -1,0 +1,291 @@
+{
+  "fail_before": {
+    "head": "edde6d08",
+    "result": "Module unavailable before implementation; .cache/t170x-before.log records import failure."
+  },
+  "fast_gate": {
+    "modules": 260,
+    "passed": 260,
+    "scope": "Default exact clean-head fast gate; full slow suite remains integrated milestone.",
+    "skipped": 239
+  },
+  "focused": {
+    "methods": 41,
+    "real_worker": {
+      "boundary_hash": "019fcd67ab1e91b1a8ee8a251729fc28e60ce48c87fb59e7c327113a15614c04",
+      "input_sha256": "f4a6935a46f500435163e2f0a2f762d34dcbc80c83476e3679758ece92ceb407",
+      "samples": [
+        {
+          "all16": [
+            4000,
+            16004,
+            0,
+            11684,
+            4000,
+            4000,
+            16018,
+            16014,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 1,
+          "managed": 7,
+          "memory_hash": "4a514e440ffb8cf918d4befee548e70388436c38ee14e3ca968cca2c1b806fa6",
+          "record_hash": "a3948e4846704f49d83b7d90aa14cef788685addff957aa41afc99e19f3a9260"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            22,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 2,
+          "managed": 7,
+          "memory_hash": "8447f07b47c86a56877d7e4ed9559f73d73803b1cffc80672b16e3897377d2f7",
+          "record_hash": "5e168f0c25c4046636e8cf453b03d7fc1d06cda2892f5076d57b48a0c1510a6c"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            22,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 3,
+          "managed": 7,
+          "memory_hash": "f52b57cbcc69db49d495bfea0264677cb7766bf85b66de32fdf9c854b3bbd334",
+          "record_hash": "b1e882f657abc1628abb3888befdf02bf1c26d154f6d64903b77ada39fec73ae"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            22,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 4,
+          "managed": 7,
+          "memory_hash": "f52b57cbcc69db49d495bfea0264677cb7766bf85b66de32fdf9c854b3bbd334",
+          "record_hash": "b1e882f657abc1628abb3888befdf02bf1c26d154f6d64903b77ada39fec73ae"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            22,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 5,
+          "managed": 7,
+          "memory_hash": "0d3b8e5bb36ba21530a6b6832e2d6cdda8d1b1d8c4f64edba1e9a3eaa5b3fbc5",
+          "record_hash": "b1e882f657abc1628abb3888befdf02bf1c26d154f6d64903b77ada39fec73ae"
+        },
+        {
+          "all16": [
+            4000,
+            16004,
+            0,
+            11684,
+            4000,
+            4000,
+            16018,
+            16014,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 6,
+          "managed": 7,
+          "memory_hash": "b0c4c7ec8267a4fbc2ca3fb5add3ecb9cdb069873d477391a3dc0d43fbd646ab",
+          "record_hash": "b4951e2487a143aaa13d828313862e80deb7119258d2ecad06269f3b789776de"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 7,
+          "managed": 7,
+          "memory_hash": "f4a5e8343ae3e1b75157432f1917a65f32826dccc11fb79e1c0d607ae1f9984f",
+          "record_hash": "7b19d181ce8219700b7092efb112ed27ddd1cca18ea7f3597a61e6bc1ad7b193"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 8,
+          "managed": 7,
+          "memory_hash": "9f2500d931157caa3947a5128590785d41c023c1011ef878a4ff202ca04b5343",
+          "record_hash": "f652119ae1a55d554c7c755c0a1e4416a3d61b4aa3be5cf0818ccfb626180ce4"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 9,
+          "managed": 7,
+          "memory_hash": "63b25cba9da6acf461c8911680fdfa2862c6da53202a270caa187f795a120df6",
+          "record_hash": "f652119ae1a55d554c7c755c0a1e4416a3d61b4aa3be5cf0818ccfb626180ce4"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "decision": 10,
+          "managed": 7,
+          "memory_hash": "98aa2deebef51cdf66c74faac1afe3e0aaa856e71e7598fac2341b666993cbbd",
+          "record_hash": "7b19d181ce8219700b7092efb112ed27ddd1cca18ea7f3597a61e6bc1ad7b193"
+        }
+      ]
+    },
+    "scope": "Final6 current-view methods plus unchanged live-card/player/country/TEAM/preview regressions. Includes actual parent pipe and10 current-machine snapshots; optional slow cases retain guards.",
+    "seconds": 72.606,
+    "skipped": 2
+  },
+  "issue": 768,
+  "links_json": 2830,
+  "new_methods": {
+    "methods": 6,
+    "seconds": 7.91,
+    "skipped": 0
+  },
+  "platform_code_refs": {
+    "Linux": 44150545248,
+    "Windows": 44150545410
+  },
+  "pull_request": 769,
+  "schema": "t170x-validation/1",
+  "scope": [
+    "Qt-free immutable current data paired to verified numbered preview and pending pre_match decision",
+    "Native current squad/pool/opponent order and records; no legacy fixed pool universe or guessed pool permission",
+    "Own defaults from actual player country; native status plus marking words distinguish inherit/zone/opponent; bench/pane/setup eligibility",
+    "Existing player and both-side TEAM decoders agree with independent actual held-machine reads through all edit arms",
+    "Projection leaves fullRAM/all16/state/replay/route unchanged; parent pipe confirms current bench-mark update and stale preview refusal",
+    "Display-only detached GameState retains supplied identity metadata but no campaign/calendar; no save/publication/bootstrap",
+    "No backend reference, mutation/controller/UI binding, wire/engine/default change or broad Prover claim"
+  ],
+  "sha256": {
+    "goal2/game/prematch_view.py": "df93a5bb50d325f936bdd681946c9f595fa20424e6a480cfa128f7390cf0bccb",
+    "goal2/tests/test_prematch_view_t170x.py": "7466b1a8eb0c726b463319ad9e4b3f560b932974bf782a8edef544032cb13f3b"
+  },
+  "tested_head": "a21ade6d7ab790fbb8626cc491108192dfb4a50e"
+}
