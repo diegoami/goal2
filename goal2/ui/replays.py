@@ -235,6 +235,7 @@ def name_recording(window, under, kind, data, done):
     from goal2.ui.screen import set_para
 
     class RecordingNameScreen(SaveScreen):
+        GRID = True   # [designed: owner, #667; T216]
         box_title = 'save goal' if kind == 'goal' else 'save match summary'
 
         def __init__(self):
@@ -281,10 +282,10 @@ def name_recording(window, under, kind, data, done):
 def open_list(window, model, kind):
     """[designed: T181; confirmed: T156-R1 245–256] F3/F4: a bounded list by stored name, Enter opens, Esc back."""
     from PySide6.QtCore import Qt
-    from goal2.ui.screen import Screen, label, para, set_para
-    from goal2.ui.squad_card import box
+    from goal2.ui.screen import Screen, set_para
 
     class RecordingsScreen(Screen):
+        GRID = True   # [designed: owner, #667; T216]
         title = 'saved goals' if kind == 'goal' else 'saved match summaries'
 
         def __init__(self):
@@ -292,17 +293,18 @@ def open_list(window, model, kind):
             self.entries = entries(window.target.root / 'recordings', kind)
             self.position = 0
             self.top = 0
-            frame, column = box(self.title)
-            self.rows = []
-            # [designed: T181] Eight rows keep the list within the fixed page; arrows scroll longer collections.
+            from goal2.ui.cells import Cells,CellPara
+            from goal2.ui.country_parts import framed
+            body=Cells(90,25,"recordingsBody");self.body_layout.addWidget(body,1)
+            frame,inner=framed(self.title,64,16)
+            self.rows=[]
             for index in range(8):
-                row = self.add_option('', lambda i=index: self.open_row(i), enter='Open')
-                column.addWidget(row)
+                row=self.add_option('',lambda i=index:self.open_row(i),enter='Open')
+                row.text_label.setTextFormat(Qt.TextFormat.PlainText)
+                inner.put(row,0,index*2,64,2)
                 self.rows.append(row)
-            self.body_layout.addWidget(frame)
-            self.note = para('', 'sub')
-            self.body_layout.addWidget(self.note)
-            self.body_layout.addStretch(1)
+            body.put(frame,13,1,64,17)
+            self.note=CellPara('','sub');body.put(self.note,13,20,64,5)
             self.bindings = [b for b in self.bindings if b.keys not in ((Qt.Key.Key_Up,), (Qt.Key.Key_Down,))]
             self.bind((Qt.Key.Key_Up,), '', lambda: self.move(-1), shown=False)
             self.bind((Qt.Key.Key_Down,), '', lambda: self.move(1), shown=False)
@@ -402,6 +404,12 @@ def play_saved(window, model, record):
             super().__init__(window, model, SavedController())
             self.set_enter('Match menu', self.escape)
             self.pitch.marks = record['data'].get('marks', self.pitch.marks)
+            # [designed: T212] a saved goal has no commentary: its column says what the record holds (the minute and the scorer, the score)
+            data = record['data']
+            names = data['countries']
+            from goal2.ui.pitch import HOME
+            self.lines = [f"{data['minute']}′ {data['scorer']} scores",
+                          f"{names[HOME]} {data['score'][HOME]} - {data['score'][1 - HOME]} {names[1 - HOME]}"]
             self.start_replay(record['data']['frames'], self.completed)
             self.set_enter('Match menu', self.escape)
 

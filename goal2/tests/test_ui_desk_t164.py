@@ -19,6 +19,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
+from goal2.tests.ui_assertions import assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -190,8 +191,7 @@ class App(unittest.TestCase):
 
     def fits(self, window):
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
-
+        assert_fits(self, window)
     def to_country_screen(self, window):
         window.start()
         self.key(window, Qt.Key.Key_N)
@@ -555,14 +555,14 @@ class CountryOrder(App):
     def test_continental_then_world_as_the_capture(self):
         window = self.window()
         screen = self.to_country_screen(window)
-        self.assertIn("CONTINENTAL RANK", screen.list_heading.text(), "the browser opens on continental (step 3)")
+        self.assertIn("continental rank", screen.list_heading.text(), "the browser opens on continental (step 3)")
         self.assertEqual(screen.visible_names()[:3], ["Denmark", "Germany", "Holland"], "t156-005")
         self.assertEqual(screen.visible_ranks(), [str(n) for n in range(1, 17)])
         self.assertEqual(screen.chosen()[1], "Denmark", "it opens on Denmark (T156-R1 step 3)")
         self.key(window, Qt.Key.Key_Down, 2)
         self.assertEqual(screen.chosen(), (HOLLAND, "Holland"))
         self.key(window, Qt.Key.Key_Insert)
-        self.assertIn("WORLD RANK", screen.list_heading.text())
+        self.assertIn("world rank", screen.list_heading.text())
         self.assertEqual(screen.chosen(), (HOLLAND, "Holland"), "Ins keeps the country")
         countries = screen.browser.countries()
         ranks = sorted(c[2] for c in countries)

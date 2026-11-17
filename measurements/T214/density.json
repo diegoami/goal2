@@ -1,0 +1,336 @@
+[
+  {
+    "picture": "docs/design/ui-2026-11/T162-screens/s01-import-first.png",
+    "sha256": "e95954b9a366391b782bcaf37a220228f3ae049477c5eaffdc54872e9b821f2c",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        8.60253100621319,
+        5.71917855482934,
+        3.607223287339626,
+        3.1008525998547554
+      ],
+      [
+        5.92857524893085,
+        5.004000279996773,
+        4.057509271362864,
+        2.013738741224885
+      ],
+      [
+        0.016331412894375855,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        3.7937441337852005,
+        5.17072222544985,
+        0.21673525377229078,
+        0.21536351165980797
+      ]
+    ],
+    "passed": null,
+    "comparison": "No original counterpart: S01 and re-import are GOAL2 additions (design README S01); standalone friendly is an addition (owner section 6 item 18). Density is reported without inventing an original threshold."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T162-screens/s01-import.png",
+    "sha256": "2ed893382a0417499b0e5f5943c66c720034126c44c2418fd83442f73e2f699e",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        8.60253100621319,
+        5.71917855482934,
+        3.607223287339626,
+        3.1008525998547554
+      ],
+      [
+        8.78563161865569,
+        7.220715215040746,
+        6.062759482772537,
+        5.001930119422256
+      ],
+      [
+        1.2853391858307106,
+        0.9981633890099251,
+        0.0,
+        0.0
+      ],
+      [
+        6.582234726055029,
+        7.209074805131932,
+        0.21673525377229078,
+        0.21536351165980797
+      ]
+    ],
+    "passed": null,
+    "comparison": "No original counterpart: S01 and re-import are GOAL2 additions (design README S01); standalone friendly is an addition (owner section 6 item 18). Density is reported without inventing an original threshold."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T162-screens/s01-reimport.png",
+    "sha256": "e4b61f44e36ac3439370cc75a648b901f966c5c3feec70a903bad13da7701a18",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        9.145790733478576,
+        4.1919989332687795,
+        3.607223287339626,
+        3.1008525998547554
+      ],
+      [
+        5.92857524893085,
+        5.004000279996773,
+        4.498066637618009,
+        3.8809501065117407
+      ],
+      [
+        0.016331412894375855,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        6.59339590736706,
+        7.779305873476967,
+        0.21673525377229078,
+        0.21536351165980797
+      ]
+    ],
+    "passed": null,
+    "comparison": "No original counterpart: S01 and re-import are GOAL2 additions (design README S01); standalone friendly is an addition (owner section 6 item 18). Density is reported without inventing an original threshold."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T177-screens/s02-friendly.png",
+    "sha256": "a4f276269d736332298189064c159cbd9e0d8a1062ec4496c533d50977cbf001",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        5.898096559348015,
+        3.1584318381344305,
+        3.3874586879690143,
+        10.32804254256435
+      ],
+      [
+        4.573726615831517,
+        1.8037743774711528,
+        0.6634793060598724,
+        7.606602407810861
+      ],
+      [
+        3.2793903824739776,
+        3.356490570483336,
+        1.7309740167836685,
+        9.6357051295086
+      ],
+      [
+        1.1089235116598082,
+        2.81035776002582,
+        7.102001136932139,
+        1.1753620842411037
+      ]
+    ],
+    "passed": null,
+    "comparison": "No original counterpart: S01 and re-import are GOAL2 additions (design README S01); standalone friendly is an addition (owner section 6 item 18). Density is reported without inventing an original threshold."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T163-screens/s02-start-empty.png",
+    "sha256": "7a19103b378acb83dfa8f6dd6349c7db9637c1e92c33cf64a47734eec870cf82",
+    "original": "docs/original-game/images/title-load-prompt.png",
+    "floor": 0.0,
+    "tiles": [
+      [
+        3.2322873662551457,
+        2.9639058347454195,
+        3.213877579278628,
+        1.8488717816509324
+      ],
+      [
+        0.0,
+        0.0,
+        0.9669114701847817,
+        1.783251796982168
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.1488934382312594,
+        4.0121274808359555,
+        2.012690782699911,
+        0.0
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T163-screens/s02-start-failed.png",
+    "sha256": "0ee11c398364e9bad0fc7c9fd102a5b6bf7f348cece58b455ae15731e3f5b09e",
+    "original": "docs/original-game/images/file-not-found-prompt.png",
+    "floor": 0.0,
+    "tiles": [
+      [
+        23.379720308238525,
+        20.742559202775762,
+        15.98877069797466,
+        3.335599971758252
+      ],
+      [
+        22.737873233276858,
+        22.98793289598965,
+        22.97437377713224,
+        21.506607235536194
+      ],
+      [
+        13.988424701847823,
+        10.959657657548613,
+        10.874231806665067,
+        4.246239749858792
+      ],
+      [
+        3.402422366658597,
+        2.4859009569918493,
+        1.5557465020576127,
+        0.00020585814572742688
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T163-screens/s02-start.png",
+    "sha256": "6a7a1f10e137e1be8506706991dbefdb9fff0ca8853710555a6f8ece19575e5d",
+    "original": "docs/original-game/images/title-load-prompt.png",
+    "floor": 0.0,
+    "tiles": [
+      [
+        23.379720308238525,
+        20.742559202775762,
+        15.98877069797466,
+        3.335599971758252
+      ],
+      [
+        21.067283191317692,
+        21.86595869684497,
+        20.829323338981666,
+        21.506607235536194
+      ],
+      [
+        13.83836772532883,
+        10.867304525135154,
+        10.728910653594781,
+        4.246196862745099
+      ],
+      [
+        0.9017927709190671,
+        0.906352912127814,
+        1.0667399782135072,
+        5.443970226740902
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T163-screens/s03-managers-later.png",
+    "sha256": "3cf16da4ef5b2e461f7bb55a50fdbc28dd6695a12eec59f2232fd07ec19ecb4c",
+    "original": "docs/original-game/images/title-player-count.png",
+    "floor": 0.0,
+    "tiles": [
+      [
+        4.982429027676916,
+        5.515269376260792,
+        2.5185178108609696,
+        0.6512220035503914
+      ],
+      [
+        2.041654225772612,
+        5.309424274187043,
+        7.134958801742918,
+        0.7742591729201972
+      ],
+      [
+        3.122287160493827,
+        5.885265329621557,
+        6.427298808198176,
+        2.0462561704187863
+      ],
+      [
+        2.211196021140966,
+        1.7096788509642542,
+        4.846244977810053,
+        0.0
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T163-screens/s03-new-game.png",
+    "sha256": "dd4e9b8b9456f1b0748a5054a3b154abfa61e32f80a5d133da30d4c2a72d800f",
+    "original": "docs/original-game/images/title-player-count.png",
+    "floor": 0.0,
+    "tiles": [
+      [
+        5.201907765674172,
+        5.42747788106189,
+        2.386830568062616,
+        0.6512220035503914
+      ],
+      [
+        5.770974572742675,
+        3.730231257161302,
+        5.000042342451386,
+        0.7742591729201972
+      ],
+      [
+        1.6207262607923814,
+        3.001659464213668,
+        3.545554390381666,
+        1.0361721818768663
+      ],
+      [
+        1.2996622076978945,
+        0.8610167634955218,
+        4.846244977810053,
+        0.0
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T163-screens/s04-players.png",
+    "sha256": "2202870369fe4c6f8b20d39d7805e7a46486ba500a7e4c4bf160d0116d632fec",
+    "original": "docs/original-game/images/m244-team-info-players-2030.png",
+    "floor": 0.009744166666666668,
+    "tiles": [
+      [
+        5.607137985959821,
+        3.9301576365690316,
+        4.230693239732107,
+        10.511882495763746
+      ],
+      [
+        18.423929910433305,
+        9.957108182038253,
+        8.219139381909145,
+        5.558278862260956
+      ],
+      [
+        9.576103332526428,
+        4.477042490922291,
+        6.612052384410557,
+        4.5548048067457465
+      ],
+      [
+        1.386751954329057,
+        0.011133439845073832,
+        1.4658206818365205,
+        2.6429445735495856
+      ]
+    ],
+    "passed": true
+  }
+]

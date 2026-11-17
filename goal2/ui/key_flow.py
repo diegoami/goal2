@@ -3,6 +3,11 @@ from PySide6.QtCore import QRect, QSize, Qt
 from PySide6.QtWidgets import QFrame, QLayout, QWidgetItem
 
 class KeyFlow(QLayout):
+    # [designed: T211] On the grid the rows touch (`line_spacing` 0 where the keys are a cell apart) and the keys sit on the
+    # bar's bottom rows (`bottom`), so a bar of fewer rows than it was given leaves its empty rows above.
+    line_spacing=None
+    bottom=False
+    rows=0   # the rows the bar always has, on the grid
     def __init__(self, parent=None):
         super().__init__(parent)
         self.items=[]
@@ -16,7 +21,12 @@ class KeyFlow(QLayout):
         self.invalidate()
     def expandingDirections(self): return Qt.Orientation(0)
     def hasHeightForWidth(self): return True
-    def heightForWidth(self,width): return self.arrange(QRect(0,0,width,0),True)
+    def heightForWidth(self,width):
+        height=self.arrange(QRect(0,0,width,0),True)
+        if self.rows and self.parentWidget() is not None:
+            from goal2.ui import cells
+            height=max(height,cells.span_px(self.parentWidget(),self.rows))
+        return height
     def setGeometry(self,rect):
         super().setGeometry(rect)
         self.arrange(rect,False)
@@ -29,12 +39,16 @@ class KeyFlow(QLayout):
     def arrange(self,rect,measure):
         margins=self.contentsMargins()
         area=rect.adjusted(margins.left(),margins.top(),-margins.right(),-margins.bottom())
+        gap=self.spacing() if self.line_spacing is None else self.line_spacing
+        if self.bottom and not measure:
+            used=self.arrange(rect,True)-margins.top()-margins.bottom()
+            area.moveTop(area.y()+max(0,area.height()-used))
         x,y,height=area.x(),area.y(),0
         for item in self.items:
             if item.isEmpty(): continue
             size=item.sizeHint()
             if x>area.x() and x+size.width()>area.right()+1:
-                x=area.x();y+=height+self.spacing();height=0
+                x=area.x();y+=height+gap;height=0
             if not measure: item.setGeometry(QRect(x,y,min(size.width(),area.width()),size.height()))
             x+=size.width()+self.spacing();height=max(height,size.height())
         return y+height-rect.y()+margins.bottom()

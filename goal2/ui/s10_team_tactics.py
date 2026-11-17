@@ -17,11 +17,10 @@ calls157D; F038; T202]. Complete live snapshots use the same immutable reader wi
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 from goal2.ui import theme
-from goal2.ui.screen import LINE_HEIGHT, Screen, label, para
-from goal2.ui.squad_card import (NOT_DECODED, KeyValues, Row, Strip, box, full_name, last_on_the_bar, rich,
+from goal2.ui.screen import LINE_HEIGHT, Screen
+from goal2.ui.squad_card import (NOT_DECODED, full_name, last_on_the_bar, rich,
                                  squad_rows)
 
 # [confirmed: F010 element order DS:6BBF; the names of goal2.game.country_card]
@@ -41,6 +40,7 @@ def words(state, element, *, memory=None):
 
 
 class TeamTacticsScreen(Screen):
+    GRID = True   # [designed: owner, #667; T212b]
     preserve_player_edits = True
     title = "team tactics"
     escape_text = "desk"
@@ -64,71 +64,57 @@ class TeamTacticsScreen(Screen):
         self.refresh()
 
     def _build(self):
-        main = QHBoxLayout()
-        main.setSpacing(18)
-        from goal2.ui.country_header import TeamHeader
-        from goal2.ui.team_card import CharacteristicPanel, LineBars
-        from goal2.ui.squad_card import FactsTable
-        left = QVBoxLayout()
-        left.setSpacing(10)
-        self.team_header = TeamHeader(self.window_.family, compact=True)
+        """[designed: owner, #667; T212b] TEAM and its bars, the editor and traits, and the twenty in three cell columns."""
+        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.cell_parts import CellTableRow, CellValues, CellFacts, GridStrip
+        from goal2.ui.country_parts import CellTeamHeader, CellLineBars, CellCharacteristics, framed
+        body = Cells(90, 25, "tacticsBody")
+        self.body_layout.addWidget(body, 1)
+        self.team_header = CellTeamHeader(self.window_.family)
         self.country = self.team_header.name
-        left.addWidget(self.team_header)
-        bars, bars_layout = box('Skills')
-        self.skills = LineBars()
-        bars_layout.addWidget(self.skills)
-        self.performance_heading = label('PERFORMANCE', 'boxHeading')
-        self.performance = LineBars()
-        bars_layout.addWidget(self.performance_heading)
-        bars_layout.addWidget(self.performance)
-        left.addWidget(bars)
-        self.facts = label('', 'sub')
-        self.facts.setWordWrap(True)
-        self.facts.setTextFormat(Qt.TextFormat.RichText)
-        left.addWidget(self.facts)
-        left.addStretch(1)
-        main.addLayout(left, 1)
-        table, table_layout = box()
-        table_layout.setSpacing(2)
-        self.team_heading = label('TEAM TACTICS', 'boxHeading')
-        table_layout.addWidget(self.team_heading)
-        self.defaults_heading = label('PLAYER DEFAULTS', 'boxHeading')
+        body.put(self.team_header, 0, 0, 34, 11)
+        skills, inner = framed("skills", 34, 4)
+        self.skills = CellLineBars()
+        inner.put(self.skills, 0, 0, 34, 4)
+        body.put(skills, 0, 11, 34, 5)
+        self.performance_heading, inner = framed("performance", 34, 4)
+        self.performance = CellLineBars()
+        inner.put(self.performance, 0, 0, 34, 4)
+        body.put(self.performance_heading, 0, 16, 34, 5)
+        self.facts = CellPara("", "sub")
+        body.put(self.facts, 0, 21, 34, 4)
         self.rows = []
-        for i in range(len(LINES)):
-            if i == 3:
-                table_layout.addSpacing(8)
-                table_layout.addWidget(self.defaults_heading)
-            line = Row(i, WIDTHS, margins=(8, 4, 8, 4), underline=True)
-            line.chosen.connect(self.click)
-            for cell in line.cells: cell.setWordWrap(True)
-            # Original1981 shows label/current value. Retain the alternative in
-            # the existing lines() API, without a duplicate visible table.
-            line.cells[2].hide()
-            table_layout.addWidget(line)
-            self.rows.append(line)
-        table_layout.addSpacing(8)
-        self.averages = FactsTable(('caps','age'))
-        table_layout.addWidget(self.averages)
-        self._characteristic_panel = CharacteristicPanel(self.window_.family)
-        self._characteristic_fallback = KeyValues(CHARACTERISTICS, label_width=110, tone=theme.TEXT_BRIGHT)
+        for caption, first, count, row in (("team tactics", 0, 3, 0), ("player defaults", 3, 5, 5)):
+            frame, inner = framed(caption, 34, count)
+            if first == 0:
+                self.team_heading = frame.rule
+            else:
+                self.defaults_heading = frame.rule
+            for i in range(first, first + count):
+                line = CellTableRow(i, (14, 19, 0), gaps=(0, 1, 0))
+                line.cells[2].hide()  # lines() retains the alternative; the original shows the current value only
+                line.chosen.connect(self.click)
+                inner.put(line, 0, i - first, 34)
+                self.rows.append(line)
+            body.put(frame, 35, row, 34, count + 1)
+        traits, inner = framed("characteristics", 34, 7)
+        self.averages = CellFacts({"caps": 17, "age": 17}, rows=2)
+        inner.put(self.averages, 0, 0, 34, 3)
+        self._characteristic_panel = CellCharacteristics()
+        self._characteristic_fallback = CellValues(CHARACTERISTICS, 34, 8)
         for name in CHARACTERISTICS:
             self._characteristic_fallback.set(name, NOT_DECODED)
-        for value in self._characteristic_fallback.values.values(): value.setWordWrap(True)
-        table_layout.addWidget(self._characteristic_panel)
-        table_layout.addWidget(self._characteristic_fallback)
+        inner.put(self._characteristic_panel, 0, 3, 25, 4)
+        inner.put(self._characteristic_fallback, 0, 3, 34, 4)
+        body.put(traits, 35, 12, 34, 8)
         self.characteristics = self._characteristic_panel if self.answer is None else self._characteristic_fallback
         self._characteristic_panel.setVisible(self.answer is None)
         self._characteristic_fallback.setVisible(self.answer is not None)
-        self.note = para('', 'sub')
-        self.note.setMinimumWidth(520)
-        table_layout.addWidget(self.note)
-        table_layout.addStretch(1)
-        main.addWidget(table, 2)
-        self.strip = Strip()
-        self.injury_hint = label('* injured', 'sub')
-        self.strip.layout().insertWidget(self.strip.layout().count()-1, self.injury_hint)
-        main.addWidget(self.strip)
-        self.body_layout.addLayout(main, 1)
+        self.note = CellPara("", "sub")
+        body.put(self.note, 35, 21, 34, 4)
+        self.strip = GridStrip(cols=20)
+        body.put(self.strip, 70, 0, 20, 23)
+        self.injury_hint = body.text("* injured", "sub", 70, 23, 20)
 
     def refresh(self):
         model, state = self.model, self.model.state

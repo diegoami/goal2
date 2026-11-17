@@ -187,6 +187,11 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 ![S04 Country and name](images/s04-country.png)
 
+[designed: owner playtest, 2026-11-16, #754] Choosing a country makes the name field visibly active, changes the prompt
+and heading to typing instructions, and shows Enter/Esc/Backspace hints. Clicking an already active name field focuses it;
+it never starts the career. Esc restores country selection. This clarifies the original's modal name entry without
+changing its 14-character limit or the game rules.
+
 ### S05 Bulletin
 
 - **Purpose**: the news: a new manager, the groups, after each round, at the end of a stage.
@@ -405,6 +410,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 
 ![S19 Bench](images/s19-bench.png)
 
+![S19 Bench, a refused pair](images/s19-bench-refused.png)
+
 ### S20 Match board
 
 - **Purpose**: the statistics at half time and full time, and a saved match summary.
@@ -424,6 +431,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 
 - **Purpose**: the name box and the yes/no questions of saving and quitting.
 - **Shows**: over the current screen, the question and the proposed name (the last name used).
+  [designed: #667; T216] The cell-aligned prompt sits at the foot of the main content, with a light 5% dim behind it;
+  the game context remains readable and the frame grows upward for a long error, without shrinking or clipping text.
 - **Actions**: **F7** save: type or accept the name, **Enter** save, **Esc** cancel. **F10** quit: *Are you
   sure you want to quit?* **Y**/**N**, then *Do you want to save this game?* **Y**/**N**. **F3** / **F4**: the
   saved goals or summaries, listed by name; **Enter** opens one (S15, then S17 or S20).
@@ -519,7 +528,7 @@ we can keep the rest"]
   [designed: owner #637] Keep readable selected-row contrast and explicit injury feedback.
 - [designed: owner, 2026-11-08, #611] Original screenshots are the visual acceptance baseline: compare rendered
   layout, colours, typography, table alignment, bars and prompts alongside the exercised keyboard flow.
-  Readability polish preserves the original visual structure and the explicitly accepted scalable24px text;
+  Readability polish preserves the original visual structure and the one 32 px text size that scales with the page;
   palette constants alone do not establish screen fidelity.
 - On the pitch, and in the names of the scoreboard, S15 and S20, each side wears its kit as the original computes
   it at kick-off from the country's three colour bytes, the keepers in the second colour (`goal2/ui/kits.py`).
@@ -529,10 +538,64 @@ we can keep the rest"]
   VGA-style font under CC BY-SA 4.0. It is vendored in [mockups/fonts/](mockups/fonts/PROVENANCE.md) with its
   licence and provenance. It is not the original game's font, and no byte of it comes from GOAL.EXE (CLAUDE.md
   rule 14).
-- **Text size**: designed at 1440×900. [designed: owner playtest #598, 2026-11-05] Normal text is 24 px and headings/names
-  are 32 px. Keyboard actions wrap as complete items, with full-size text. Squad rows and card columns
-  reserve room for the larger lettering. This supersedes the earlier 16 px/whole-cell-multiple choice. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
-  (T101).
+- **The cell, the grid, the text and the page**: [designed: owner, 2026-11-08; #666, #667; [fidelity-review.md §3](fidelity-review.md#3-the-decisions-owner-2026-11-08)]
+  - **The cell** is **16 × 32** pixels, twice the original's 8 × 16, and the page is a grid of **90 × 28** cells, 1440 × 896
+    (`goal2/ui/theme.py`: `CELL_W`, `CELL_H`, `COLS`, `ROWS`, `PAGE`). The vendored font at a pixel size of 32 is exactly one
+    cell: advance 16 and line height 32 [confirmed: measured 2026-11-09, `QFont` on the vendored PxPlus IBM VGA 8x16,
+    offscreen Qt; 24 px gives 12 and 24, off the grid].
+  - **One text size**, `theme.TEXT` = 32 px, on every screen: every glyph is one cell wide. A heading, a masthead, a brand or
+    a number is drawn at that size too. Hierarchy is colour (the palette above), frame and position, never size; anything
+    that must look large is **line-art** (#673–#675), not type scaled up. There is no heading size, no "big" and no "huge".
+  - **4:3**: the page is presented as DOSBox shows the original, with a **1.2 vertical stretch**: vertical lengths scale by
+    1.2 × s and horizontal ones by s, where s is the page's width over 1440, and the text is the same font taller and
+    narrowed back by `QFont` stretch so that a glyph keeps its 16 px advance. A 90 × 28 page is 1440 × 1075, half a per cent
+    short of an exact 4:3 1440 × 1080, so the page's rectangle is the largest 4:3 rectangle in the window, centred on black:
+    the window letterboxes the remainder and never re-flows or stretches a cell unevenly. At 1440 × 1080 the scale is 1.
+    (`goal2/desktop/fixed_page.py`, which also says why the page stays native widgets scaled by their lengths.)
+  - **The frame** [designed: owner, 2026-11-08, #666, #670; T210; fidelity-review.md §3 and §2.4] A panel's frame is **a rule with its
+    lowercase label sitting on it, the rule continuing as dashes to the panel's edge**, brown or red: `-rankings-----`,
+    `-characteristics-` (the proposal draws it: [proposal/](proposal/README.md), `grid.py` `Screen.rule`). Panels touch and nest;
+    there is no padding, no fill and no card, so the bordered box with its uppercase cyan heading (`#box`, `#boxHeading` in
+    `theme.stylesheet`) goes screen by screen as the layout tasks reach it. It is `goal2/ui/frame.py`: `Frame` (the rule on top,
+    `Frame.body` under it) and `FrameRule`, one row of cells drawn glyph by glyph at the cell (16 px across, one row down, at the
+    page's scale and stretch), never a Qt border with the label drawn over it. The label is brown (`theme.CARD_LABEL`) or, for a
+    heading panel, red (`theme.CARD_HEADING`); the leading dash and the dashes are the dark frame grey (`theme.FRAME_DARK`), as the
+    proposal draws them [designed: T210]. A panel narrower than its label and a dash on each side is reported by
+    `fixed_page.problems`, never clipped.
+  - **Connected boundaries** [designed: owner playtest, 2026-11-16, #754; supersedes the top-rule-only treatment above]:
+    panels now continue their labelled rule into thin vertical sides and a bottom rule, and player facts retain visible
+    column dividers. The original country/name and half-time bench captures show these boundaries. They are line-art:
+    no extra layout padding, smaller text, fill or cyan card headings. Table rows preserve the panel edge beneath them.
+  - **The grid check** [designed: owner, 2026-11-08, #668; T210] Every edge of a panel is a whole number of cells.
+    `goal2/ui/grid_check.py` walks a window's visible widgets and reports each rectangle whose x, y, width or height is not a
+    multiple of the cell (to a pixel: a row is 38 pixels in a layout and 38.4 in the grid, and the few pixels the 4:3 page has
+    over its 28 rows are taken up by the widget that stretches, never by the cell) and each card still drawn. A screen is on the
+    grid when `grid_check.violations(window)` is empty. [designed: T215] Every screen now uses
+    `goal2/tests/ui_assertions.py`'s unconditional fit/grid/room checks. Both transitional pending modules and their
+    exemptions are removed. `test_ui_grid_t210.PendingGrid.test_grid_pending_is_empty` and
+    `test_ui_cell_t209.PendingReflow.test_pending_reflow_is_empty` retain the landing gates and require those modules
+    to remain absent, on every branch. The full screenshot journey and career walk check every reached screen.
+
+  - **A screen on the grid** [designed: owner, 2026-11-09, #667; T211] The desk (S06) and the squad (S08) are the first screens laid out
+    on the cell, and what they use is the way the others follow (T211b, T212–T214); [designed: T211b] the country, team info and fixtures
+    screens (S04, S07, S11) are the second group, with `goal2/ui/country_parts.py` for the country card's panels and `CellTableRow` for a list;
+    [designed: T212] the selection screens (S16 captain and taker, S17 pitch and its saved variant, S19 bench) are the third: S16 and S19 are the squad's card (`GridCard`) and a strip beside it, S19's
+    twenty with rows to spare so that a name followed by a live injury takes two (`WrapStrip`), and S17 is the score, the pitch (64 × 18 cells, its drawing untouched: T179) with the commentary in a frame at its right, the stop box (S18) over it in whole cells. A screen sets `GRID = True` (`goal2/ui/screen.py`)
+    and places its panels **by cell** (`goal2/ui/cells.py`): `Cells` puts a child at a column and a row for so many columns and rows,
+    `CellLabel` is a line of text one row high whose size is its characters' cells, not the font's line box (a platform's font may
+    round the advance or add a pixel to a line: a measured Windows runner did), `CellPara` is a paragraph wrapped at the cells its
+    width holds. The page is a fixed 90 × 28 whatever the window, so nothing is measured from the text. A row is the rounded cell (38
+    pixels at scale 1), so nested panels add up with no rounding and the 4:3 page's few spare pixels fall under the last row. The
+    title is one row; a key of the bottom bar is its caption and its word joined (`F1help`: no key cap box) in rows of cells a cell
+    apart, never fewer than two rows, so the page does not move when the Enter hint changes; an option is a box of two rows (the
+    original's, its border one pixel at the edge of the box) or a line of one. The panels are `Frame`s, or `FrameRule` and a value
+    under it for a fact; the desk's strip and the squad's card are `goal2/ui/cell_parts.py`. A screen that does not set `GRID` keeps its
+    old layout until it is reflowed, and the flag goes when the last one is.
+  - **This supersedes the owner's #598** (24 px normal text, 32 px headings and names, 48 and 64 px titles) in the direction
+    it went: the text is larger again, and the headings are gone. #598's other rules stay: keyboard actions wrap as whole
+    items, and rows and card columns reserve room for the lettering. The approved screens, flow and keys (#526) are not
+    reopened. A screen that does not fit its page at this size is a layout defect to fix in the layout
+    (`fixed_page.problems` finds it), never by shrinking, clipping or dropping text.
 - [designed: owner, 2026-11-08; #666] Why the built window does not yet read as GOAL2, with
   measurements taken from it, is [fidelity-review.md](fidelity-review.md). A **drawn proposal** for the whole look — the cell, one
   text size, the rule-and-label frame, dash leaders, bars of cells, line-art titles and the
@@ -677,8 +740,13 @@ with some modification for the sake of the UX."
     **Scheduled after the first playable version** (owner, 2026-11-03: "the look of the players is fine, an
     improvment with disk is post playable"). T179 (#573) is `post-playable`.
 
-[designed: owner playtest #598, 2026-11-05] At the 24px baseline the fixture window shows fourteen
-rows; arrows still reach the complete list. Recent commentary keeps whole wrapped entries within its
+[designed: owner playtest #598, 2026-11-05; the 24 px baseline is superseded by the 32 px text of §3, T209] At the 24px baseline the fixture window showed fourteen
+rows; on the 16 × 32 grid (T211b) it shows sixteen, as the original's list does (`fixtures-watch.png`); arrows still reach the complete list. Recent commentary keeps whole wrapped entries within its
 panel, with more room in the reading view. No engine event is removed from the transcript or recording.
 
 The owner-requested [manual-to-build fidelity audit](manual-fidelity.md) maps each manual section and S01–S22 action to source, exercised evidence, explicit differences and outstanding acceptance.
+
+[designed: owner playtest, 2026-11-16, #754] S19's twenty names stay on uniform one-row baselines. The name, two status
+cells and right-aligned original position code are separate columns. `I` means injured, `*` the first marked player,
+`^` put on and `v` taken off; the legend and selected player's complete injury description retain those meanings.
+The XI/bench separator remains a line and every row keeps its original click index, regardless of injury count.

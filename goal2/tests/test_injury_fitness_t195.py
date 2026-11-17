@@ -2,6 +2,7 @@
 import copy
 import unittest
 from goal2.tests import requires
+from goal2.tests.ui_assertions import assert_fits
 
 @requires.need(modules=('unicorn',),files=('e006-r0001-main.sav','GOAL.DAT'))
 class InjuryFitness(unittest.TestCase):
@@ -57,9 +58,16 @@ class InjuryFitnessScreen(unittest.TestCase):
             bar,word_label=self.bench.card.characteristics.rows['fitness']
             self.assertEqual(word_label.text(),'injured')
             self.assertEqual(bar.value,(0,14))
-            self.assertTrue(bar.filled.isHidden())
+            # [designed: T212] the bench's card is the grid's (`CellBar` paints its two parts itself: no `filled` widget): the empty bar
+            # has no light grey (the filled colour) in it, and is the empty colour all along
+            from PySide6.QtGui import QColor
+            from goal2.ui import theme
+            image=bar.grab().toImage()
+            colours=[image.pixelColor(x,image.height()//2).name() for x in range(image.width())]
+            self.assertNotIn(QColor(theme.BAR_FILLED).name(),colours)
+            self.assertIn(QColor(theme.BAR_EMPTY).name(),colours)
             self.assertIn('INJURED',self.bench.card.readiness.text())
-            self.assertEqual(fixed_page.problems(self.window),[])
+            assert_fits(self, self.window)
         self.assertEqual(self.model.state,before)
 
 if __name__=='__main__':unittest.main()

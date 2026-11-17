@@ -126,7 +126,12 @@ python -m pip wheel --no-deps -w dist/wheel .
 python tools/build_portable.py build --wheel dist/wheel/goal2-<version>-py3-none-any.whl
 ```
 
-The folder and the ZIP land in `dist/`. `--development` adds `goal2-new.cmd`.
+The folder and the ZIP land in `dist/`. `--development` adds `goal2-new.cmd`. [designed: T215] For an owner
+playtest from a pinned development branch, manually dispatch `package.yml` with `development=true`.
+Only that explicit dispatch adds the new launcher; PR and main builds keep the release default.
+The artifact is not a published release. Import the owner's private `WINDOW_MANIFEST` files through
+`goal2-new.cmd`; they never enter the ZIP.
+
 
 ## The player's data folder
 

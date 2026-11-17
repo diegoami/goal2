@@ -25,6 +25,11 @@ on:
     branches: [main]
     paths-ignore: ['docs/**', 'measurements/**', '**/*.md']
   workflow_dispatch:
+    inputs:
+      development:
+        description: Include the redesigned-window launcher for the owner playtest
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -84,13 +89,18 @@ jobs:
           python tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"
           echo "present=true" >> "$GITHUB_OUTPUT"
       - name: Build the folder and the ZIP
+        env:
+          # [designed: T215] Explicit owner-playtest dispatch only; PR/main builds keep the release default.
+          DEVELOPMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.development == true }}
         run: |
           python -m pip install -q --upgrade pip
           python -m pip wheel -q --no-deps -w "$RUNNER_TEMP/wheel" .
-          python tools/build_portable.py build --wheel "$(ls "$RUNNER_TEMP"/wheel/goal2-*.whl)" \
+          development=()
+          [ "$DEVELOPMENT" = true ] && development=(--development)
+          python tools/build_portable.py build "${development[@]}" --wheel "$(ls "$RUNNER_TEMP"/wheel/goal2-*.whl)" \
             --downloads "$RUNNER_TEMP/downloads" --out "$RUNNER_TEMP/portable" --stats "$RUNNER_TEMP/build-stats.json"
           ls -l "$RUNNER_TEMP"/portable/*.zip
-      - name: The ZIP holds no original-game file and no development launcher; its file list
+      - name: The ZIP holds no original-game file and obeys its declared build type; its file list
         run: |
           originals=
           [ "${{ steps.originals.outputs.present }}" = true ] && originals="--originals .cache"

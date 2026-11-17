@@ -1,0 +1,96 @@
+{
+  "tested_head": "d888e6153b82d74aa8946aaff726b3fbbe0b6e32",
+  "issue": 754,
+  "scope": "Actual slow fit/font/grid/start/bench/replay UI cases; separate module processes, two workers; Linux then Windows; all cases, no filter",
+  "captures": 144,
+  "small_captures": 50,
+  "all_geometry_checks_passed": true,
+  "runtimes": {
+    "linux": "CPython 3.14.4, PySide6 6.12.0, PyPy 3.11",
+    "windows": "CPython 3.13.15, PySide6 6.12.0, PyPy 3.11.17"
+  },
+  "platforms": {
+    "linux": {
+      "modules": {
+        "test_ui_cell_t209": {
+          "tests": 16,
+          "seconds": 164.607,
+          "exit": 0,
+          "log_sha256": "084750c5fbeca6ed34774342ffb21c51f177df61ab55675944a7a919cc153d40"
+        },
+        "test_ui_grid_t210": {
+          "tests": 17,
+          "seconds": 173.65,
+          "exit": 0,
+          "log_sha256": "16165f8dc10812cb0e487c3cb046d32dfe43159aee722c9d9b53f2dce0c9b8b0"
+        },
+        "test_ui_start_t163": {
+          "tests": 21,
+          "seconds": 10.514,
+          "exit": 0,
+          "log_sha256": "a4e6469d7ae5fc4537158bc3e0972fdd756c95f938b406bf81de9562929374a9"
+        },
+        "test_readable_ui_t186": {
+          "tests": 10,
+          "seconds": 6.595,
+          "exit": 0,
+          "log_sha256": "5c9f31e31f25fcdda377c7e17fbd68ba067427c14c4ae511c7d7d9115d67b6bc"
+        },
+        "test_ui_grid_screens_t212": {
+          "tests": 33,
+          "seconds": 142.774,
+          "exit": 0,
+          "log_sha256": "77b4636ec81e0749a4c00778bf0ff03f5d4b82e71327fcd2a3a4471aa99b4d47"
+        },
+        "test_ui_replay_t181": {
+          "tests": 15,
+          "seconds": 144.295,
+          "exit": 0,
+          "log_sha256": "32c3c8f72e3f00ca34e026bf4a73983add0edd31ab1927be0790d2c21d7d9ea7"
+        }
+      },
+      "total_tests": 112
+    },
+    "windows": {
+      "modules": {
+        "test_ui_grid_t210": {
+          "tests": 17,
+          "seconds": 846.342,
+          "exit": 0,
+          "log_sha256": "365e4c5a815b4657acbade09c34d40bba69a62257d7f889fa0570e914ada44d2"
+        },
+        "test_ui_cell_t209": {
+          "tests": 16,
+          "seconds": 848.219,
+          "exit": 0,
+          "log_sha256": "7693e9714f095fc53cdc027687b87cfa8a857e55b2a3e4f2e35fe6625e2c85a7"
+        },
+        "test_ui_start_t163": {
+          "tests": 21,
+          "seconds": 28.818,
+          "exit": 0,
+          "log_sha256": "53b22dfd951f046c4bbbd6c69e902e904bf786f81a318b4d931751b930c03e31"
+        },
+        "test_readable_ui_t186": {
+          "tests": 10,
+          "seconds": 27.268,
+          "exit": 0,
+          "log_sha256": "645dc626bd3edd096f712ba171ceacd078b94269886c863d37ad2bb19e5a29c1"
+        },
+        "test_ui_grid_screens_t212": {
+          "tests": 33,
+          "seconds": 683.197,
+          "exit": 0,
+          "log_sha256": "a8805d66f001664e1af4ec0d1f307e86a319dd40a413307bc12a5702318e1bc1"
+        },
+        "test_ui_replay_t181": {
+          "tests": 15,
+          "seconds": 648.481,
+          "exit": 0,
+          "log_sha256": "322ea002e8a9bd0ceea18bc083d3e480347914250e04d4d6a9ed36b1d9224b5f"
+        }
+      },
+      "total_tests": 112
+    }
+  }
+}

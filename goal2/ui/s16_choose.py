@@ -26,20 +26,35 @@ t156-056-corner-taker.png; E031 C38-C38b]
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QHBoxLayout
 
 from goal2.ui import theme
-from goal2.ui.screen import Screen, label
-from goal2.ui.squad_card import PlayerCard, Strip, full_name
+from goal2.ui.cell_parts import GridCard, GridStrip
+from goal2.ui.cells import CellPara, Cells
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import colour, full_name
 
 WAIT_MS = 10_000   # [confirmed: F030, 0791:CC7B wait_or_key(1000) of 10 nominal ms]
 ROLES = {1: "captain", 2: "corner", 3: "penalty", 4: "free kick", 5: "goal kick"}   # [confirmed: F030, DS:0A29]
 
+# [designed: T212; docs/design/ui-2026-11/proposal/README.md, s08-squad] S16 on the 16 x 32 grid, in the squad's cells (90 columns, the 25
+# rows between the title row and the two key rows): what the match waits for across the top (the headline and up to three rows of its
+# words), then the card (69 x 18, the squad's) with the eleven in a frame at its right, a cell apart and level with the card's foot (the
+# original's list is lower right too, and no region of the page is left empty), and under them the penalty order's lines.
+BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
+WAIT_AT, WAIT_ROWS = 0, 4
+CARD_AT = WAIT_AT + WAIT_ROWS
+STRIP_COLS = 20
+STRIP_ROWS = 12   # its rule and the eleven
+STRIP_AT = BODY_COLS - STRIP_COLS
+STRIP_ROW = CARD_AT + GridCard.ROWS - STRIP_ROWS
+ORDER_AT = CARD_AT + GridCard.ROWS
+
 
 class ChooseScreen(Screen):
-    """`mode`: 'captain', 'taker' or 'order'. `eleven`: the player words in the strip's order; `current` where the
-    highlight starts; `available`: who can be chosen; `answer(value)` gets the choice once: a player word (or None
-    for no key / C on a taker), or the order's list."""
+    GRID = True   # [designed: T212] laid out on the 16 x 32 grid, no card
+    # `mode`: 'captain', 'taker' or 'order'. `eleven`: the player words in the strip's order; `current` where the highlight starts;
+    # `available`: who can be chosen; `answer(value)` gets the choice once: a player word (or None for no key / C on a taker), or
+    # the order's list.
     escape_text = None
 
     def __init__(self, window, model, mode, eleven, current, answer, *, available=None, role=1, takers=0,
@@ -62,6 +77,29 @@ class ChooseScreen(Screen):
         what = ROLES.get(role, "taker")
         self.title = f"{match} · {'penalty order' if mode == 'order' else what}"
         self.name_label.setText(self.title)
+        self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), shown=False)
+        self.bind((Qt.Key.Key_Down,), "", lambda: self.move(1), shown=False)
+        self.bind((), "player", None, captions=("↑", "↓"))
+        self.bind((Qt.Key.Key_C,), "computer select", self.computer_select)
+        if mode == "order":
+            self.bind((Qt.Key.Key_Escape,), "undo a pick", self.undo)
+        body = Cells(BODY_COLS, BODY_ROWS, "chooseBody")
+        self.body_layout.addWidget(body, 1)
+        self.area = body
+        # what the match waits for, across the top, in the cells the squad gives its pick's words
+        self.main_layout.removeWidget(self.wait_box)
+        body.put(self.wait_box, 0, WAIT_AT, BODY_COLS, WAIT_ROWS)
+        self.wait_box.layout().addStretch(1)   # a headline over two rows of words is not spread over the four rows the box has
+        colour(self.wait_detail, theme.TEXT_BRIGHT)   # the words are what the screen is for: bright, not the normal text's grey
+        self.card = GridCard()
+        body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
+        self.strip = GridStrip(STRIP_COLS, count=11)
+        self.strip.chosen.connect(self.click)
+        body.put(self.strip, STRIP_AT, STRIP_ROW, STRIP_COLS, STRIP_ROWS)
+        # the order so far: the picks wrap in the rows under the words (eleven picks of the longest names fit)
+        self.order_label = CellPara("", "sub")
+        colour(self.order_label, theme.VALUE)
+        body.put(self.order_label, 0, ORDER_AT, BODY_COLS, BODY_ROWS - ORDER_AT)
         if mode == "captain":
             self.wait_for("Choose your captain to kick off",
                           "The match starts as soon as a captain is chosen. The highlight starts on the computer's "
@@ -78,24 +116,7 @@ class ChooseScreen(Screen):
                           f"Pick {takers} takers in order; Enter adds the highlighted player, Esc undoes a pick, "
                           "C leaves the rest to the original's order.")
             enter = "Add to the order"
-        self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), shown=False)
-        self.bind((Qt.Key.Key_Down,), "", lambda: self.move(1), shown=False)
-        self.bind((), "player", None, captions=("↑", "↓"))
-        self.bind((Qt.Key.Key_C,), "computer select", self.computer_select)
-        if mode == "order":
-            self.bind((Qt.Key.Key_Escape,), "undo a pick", self.undo)
         self.set_enter(enter, self.choose)
-        row = QHBoxLayout()
-        row.setSpacing(18)
-        self.card = PlayerCard()
-        row.addWidget(self.card, 1)
-        self.strip = Strip()
-        self.strip.chosen.connect(self.click)
-        row.addWidget(self.strip)
-        self.body_layout.addLayout(row, 1)
-        self.order_label = label("", "sub")
-        self.order_label.setStyleSheet(f"color: {theme.VALUE}; background: transparent;")
-        self.body_layout.addWidget(self.order_label)
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.timer.setInterval(WAIT_MS)
@@ -107,7 +128,9 @@ class ChooseScreen(Screen):
     def _show(self):
         names = self.model.goaldat.country_names
         rows = [(c["role"], c["line"], c["full_name"]) for c in self.cards]
-        self.strip.show_rows(f"{names[self.model.state.managed_country]}'s eleven", rows, self.index, False)
+        # [designed: T212] the frame's rule is the country, as the original's box at the foot of its strip (`Holland--------`,
+        # t156-043-captain.png): the longest country, with "'s eleven", is wider than the 20 cells the strip has.
+        self.strip.show_rows(names[self.model.state.managed_country], rows, self.index, False)
         self.card.set_card(self.cards[self.index])
         if self.mode == "order":
             picked = ", ".join(full_name(self.model, w) for w in self.picks) or "none yet"

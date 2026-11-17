@@ -12,8 +12,23 @@ def recent_text(lines,metrics,width,height,maximum=15):
     return "\n".join(kept)
 
 
+import textwrap
+
 from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QLabel, QSizePolicy
+
+from goal2.ui import cells
+
+
+def recent_cells(lines,columns,rows,maximum=15):
+    """[designed: T212] `recent_text` in cells: the newest of `lines` (at most `maximum`), each wrapped at `columns` characters
+    (as `cells.CellPara` wraps), as many whole entries as fit in `rows` rows, oldest first, one entry to a line of the text."""
+    kept,used=[],0
+    for text in reversed(lines[-maximum:]):
+        need=len(textwrap.wrap(text,max(1,columns),drop_whitespace=True) or [""])
+        if used+need>rows:break
+        kept.insert(0,text);used+=need
+    return "\n".join(kept)
 
 class Excerpt(QLabel):
     """[designed: owner #598] One-line header preview; the full entry stays in commentary."""
@@ -25,8 +40,9 @@ class Excerpt(QLabel):
     def setText(self,text):
         self._full_text=text
         self._fit()
-    def sizeHint(self): return QSize(250,self.fontMetrics().height())
-    def minimumSizeHint(self): return QSize(0,self.fontMetrics().height())
+    # [designed: T212] a row of the cell, not the font's line box (a pixel taller at some sizes): the preview is one row on the grid
+    def sizeHint(self): return QSize(250,cells.row_px(self))
+    def minimumSizeHint(self): return QSize(0,cells.row_px(self))
     def resizeEvent(self,event):
         super().resizeEvent(event)
         self._fit()

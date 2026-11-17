@@ -25,6 +25,7 @@ import unittest
 from pathlib import Path
 
 from goal2.tests import requires
+from goal2.tests.ui_assertions import assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -205,7 +206,7 @@ class App(unittest.TestCase):
         screen = window.current()
         self.assertIsInstance(screen, kind)
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window)
         return screen
 
     def back_to_desk(self, window, desk):
@@ -299,7 +300,7 @@ class Fixtures(App):
         self.key(window, Qt.Key.Key_Return)
         screen = window.current()
         self.assertIsInstance(screen, FixturesScreen)
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window)
         expected = model.fixture_list(number)["rows"]
         self.assertTrue(all(name in (row[1], row[3]) for row in screen.shown_rows()))
         self.assertEqual(len(screen.shown_rows()), min(VISIBLE, len(expected)))
@@ -321,7 +322,7 @@ class Tournament(App):
                                            str(r["lost"]), str(r["goals_for"]), str(r["goals_against"]),
                                            str(r["points"])) for r in table["rows"]], "row by row")
         self.assertEqual(TABS[screen.tab][0], table["continent"])
-        self.assertIn(f"GROUP {'ABCDEFGH'[table['group'] - 1]}", screen.table_heading.text())
+        self.assertIn(f"group {'ABCDEFGH'[table['group'] - 1].lower()}", screen.table_heading.text())
         group = next(g for g in model.tournament()["groups"] if g["managed"])
         self.assertEqual(screen.matches(), [(m["first_name"], "v", m["second_name"]) for m in group["matches"]])
         self.assertIn("European Championship", screen.banner.text())
@@ -363,11 +364,11 @@ class Tournament(App):
         before = copy.deepcopy(model.state)
         for display in ("FINALS", "CHAMPIONSHIP"):
             self.key(window, Qt.Key.Key_Right)
-            self.assertIn(f"{display} · NOT REACHED YET", screen.table_heading.text())
+            self.assertIn(f"{display.lower()} · not reached yet", screen.table_heading.text())
             self.assertEqual(screen.table(), [])
             self.assertEqual(screen.matches(), [])
             self.assertIn("FINALS", screen.banner.text())
-            self.assertEqual(fixed_page.problems(window), [])
+            assert_fits(self, window)
         self.key(window, Qt.Key.Key_Insert)
         self.assertIn("not reach", screen.message_label.text())
         self.key(window, Qt.Key.Key_Left, 2)

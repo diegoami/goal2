@@ -19,6 +19,7 @@ from pathlib import Path
 from unittest import mock
 
 from goal2.tests import requires
+from goal2.tests.ui_assertions import assert_fills, assert_fits
 
 requires.require(modules=("PySide6",))
 
@@ -89,9 +90,9 @@ class App(unittest.TestCase):
         QTest.mouseClick(widget, Qt.MouseButton.LeftButton)
         self.app.processEvents()
 
-    def fits(self, window):
+    def fits(self, window, capture=None):
         self.app.processEvents()
-        self.assertEqual(fixed_page.problems(window), [])
+        assert_fits(self, window, capture=capture)
 
     def reference(self, country, year, name):
         model = DesktopModel.open(self.target.data / data_setup.TEMPLATE_NAME, self.target.goal_dat,
@@ -132,7 +133,7 @@ class NewGame(App):
         self.assertFalse(start.list_box.isVisible())
         self.assertFalse(start.load_item.isVisible())
         self.assertEqual(start.enter_text.text(), "New game")
-        self.fits(window)
+        self.fits(window, capture="StartScreen with no save")   # the saves' list is what overflows
         with mock.patch.object(DesktopModel, "new_campaign", autospec=True,
                                side_effect=DesktopModel.new_campaign) as new_campaign:
             self.key(window, Qt.Key.Key_N)
@@ -282,6 +283,29 @@ class StartAndBusy(App):
 
 @CAREER
 class CountryKeys(App):
+    def test_name_entry_is_explicit_and_clicking_the_active_field_does_not_submit(self):
+        """[designed: owner playtest, #754] Typing mode must look active; clicking it only focuses it."""
+        self.data();window=self.window();screen=self.to_country_screen(window)
+        self.key(window,Qt.Key.Key_Return)
+        self.assertIn("Type your name",screen.name_note.text())
+        self.assertIn("Esc",screen.name_note.text())
+        self.assertIn("name",screen.prompt.text().lower())
+        self.assertTrue(screen.field.active)
+        self.type(window,"K Ees")
+        self.click(screen.field)
+        self.assertIs(window.current(),screen,"a click to focus must not start the career")
+        self.assertEqual(screen.field.text,"K Ees")
+        self.assertTrue(all(not b.shown for b in screen.country_keys))
+        from goal2.ui.screen import Clickable
+        erase=next(w for w in screen.key_bar.findChildren(Clickable) if getattr(w,'binding',None) is screen.erase_key)
+        self.click(erase)
+        self.assertEqual(screen.field.text,"K Ee")
+        self.key(window,Qt.Key.Key_Backspace)
+        self.assertEqual(screen.field.text,"K E")
+        self.key(window,Qt.Key.Key_Escape)
+        self.assertFalse(screen.naming)
+        self.assertIn("choose your country",screen.prompt.text())
+
     def test_groups_ranking_players_and_the_name_line(self):
         self.data()
         window = self.window()
@@ -297,14 +321,14 @@ class CountryKeys(App):
         self.assertIn("32 of 128", screen.group_note.text())
         self.key(window, Qt.Key.Key_Left)
         self.assertEqual(screen.visible_names(), [c[1] for c in countries[:16]])
-        self.assertIn("CONTINENTAL RANK", screen.list_heading.text())
+        self.assertIn("continental rank", screen.list_heading.text())
         self.key(window, Qt.Key.Key_Insert)
-        self.assertIn("WORLD RANK", screen.list_heading.text())
+        self.assertIn("world rank", screen.list_heading.text())
         world = s04_country.ordered(screen.browser.countries(), False)
         start = screen.index // 16 * 16   # the highlight stays on Denmark, in his world group
         self.assertEqual(screen.visible_ranks(), [str(c[2]) for c in world[start:start + 16]])
         self.key(window, Qt.Key.Key_Insert)
-        self.assertIn("CONTINENTAL RANK", screen.list_heading.text())
+        self.assertIn("continental rank", screen.list_heading.text())
         self.click(screen.rows[3])
         self.assertEqual(screen.chosen()[0], 27, "a click highlights a country, as ↑↓ do")
         screen.settle()
@@ -317,7 +341,8 @@ class CountryKeys(App):
         self.assertIsInstance(players, PlayersScreen)
         self.assertEqual(len(players.cards), 20)
         self.assertEqual(sorted(c["id"] for c in players.cards), sorted(screen.browser.state.managed_squad))
-        self.assertIsInstance(players.card, squad_card.PlayerCard, "T165's S08 card, read only")
+        from goal2.ui.cell_parts import GridCard
+        self.assertIsInstance(players.card, GridCard, "S08's grid card, read only")
         self.key(window, Qt.Key.Key_Down)
         self.assertEqual(players.player_name.text(), players.cards[1]["full_name"])
         skill_words = [word.text() for _, word in players.card.skills.rows.values()]
@@ -535,7 +560,7 @@ class Help(App):
         self.fits(window)
         window.resize(720, 450)
         self.app.processEvents()
-        self.assertGreaterEqual(screen.viewer.height(), 0.7 * window.page.height(), "at every scale")
+        assert_fills(self, window, screen.viewer, 0.7, "at every scale")
 
 
 class HelpImport(App):
@@ -609,13 +634,13 @@ class Bulletin(App):
 
 
 class Look(unittest.TestCase):
-    def test_the_added_sheet_uses_the_palette_and_whole_cells(self):
+    def test_the_added_sheet_uses_the_palette_and_the_one_text_size(self):
         sheet = start_look.stylesheet()
         colours = {c.lower() for c in re.findall(r"#[0-9a-fA-F]{6}\b", sheet)}
         self.assertTrue(colours)
         self.assertLessEqual(colours, set(theme.PALETTE.values()))
         sizes = [int(s) for s in re.findall(r"font-size:\s*(\d+)px", sheet)]
-        self.assertEqual([s for s in sizes if s % theme.CELL], [])
+        self.assertEqual([s for s in sizes if s != theme.TEXT], [], "no heading, masthead or brand size [T209]")
 
     def test_ng9_start_years(self):
         self.assertEqual([s03_new_game.start_year(y) for y in (1989, 1990, 1991, 2026, 2027)],

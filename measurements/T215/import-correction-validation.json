@@ -1,0 +1,113 @@
+{
+  "tested_head": "90c212bc2066a6999c530496af024ce365aca9f8",
+  "baseline_head": "4c68c563b28ef996ae84233b56219ebaaaa3be7a",
+  "linux_full": {
+    "run": 43909679878,
+    "result": "250/250 modules pass; 15 recorded skips"
+  },
+  "windows_full": {
+    "run": 43919622545,
+    "result": "249/250 modules pass; failed only test_ui_cell_t209; failed baseline retained"
+  },
+  "change": "Only import error allocation grows from six to eight rows in existing panel; added regression and richer diagnostics. No engine/game/dependency/fixture changes.",
+  "capture_count": 144,
+  "all_geometry_checks_passed": true,
+  "affected": {
+    "linux": {
+      "modules": {
+        "linux-test_ui_foundation_t162": {
+          "tests": 18,
+          "seconds": 0.42,
+          "exit": 0,
+          "log_sha256": "8856c3fb2b03842af5beabd5f5fa5548b3fb45ed9aa96a6590e6b1dd35b37f22"
+        },
+        "linux-test_readable_ui_t186": {
+          "tests": 10,
+          "seconds": 4.394,
+          "exit": 0,
+          "log_sha256": "bc8f6443cf6a1d6c7387bc326ac1f9d9756837cc6dcfd814fcf63b25b4a34c4f"
+        },
+        "linux-test_ui_grid_screens_t214": {
+          "tests": 5,
+          "seconds": 9.399,
+          "exit": 0,
+          "log_sha256": "15e1fcb5b2c37a78ac27e9bf0e84c20d3a5b098dbe933e812a3e02835e4d7a8e"
+        },
+        "linux-test_ui_desk_t164": {
+          "tests": 15,
+          "seconds": 17.623,
+          "exit": 0,
+          "log_sha256": "362cb1539067ad698a929082664a74114951d0938e37f90461a8f7d78604ed86"
+        },
+        "linux-test_ui_start_t163": {
+          "tests": 20,
+          "seconds": 7.347,
+          "exit": 0,
+          "log_sha256": "d1ffbdf17111fbcafb21ed7103b3884d5c2c0d88e332b4f33c0d43abeda84d84"
+        },
+        "linux-test_ui_cell_t209": {
+          "tests": 16,
+          "seconds": 135.134,
+          "exit": 0,
+          "log_sha256": "4d86e06b05b0dcd1c21239ac426dc6c83c4c54ae5f9d942343c7285853a5f7a7"
+        },
+        "linux-test_ui_grid_t210": {
+          "tests": 16,
+          "seconds": 140.259,
+          "exit": 0,
+          "log_sha256": "65dedf0038ed2752c0cb7a9f730ce86fe3be3429c2ca651c2c03685d08c5588c"
+        }
+      },
+      "total_tests": 100,
+      "scope": "GOAL2_SLOW=1; GOAL2_CASES unset; isolated module processes"
+    },
+    "windows": {
+      "modules": {
+        "windows-test_ui_foundation_t162": {
+          "tests": 18,
+          "seconds": 4.714,
+          "exit": 0,
+          "log_sha256": "ae0721c2083f89e3fe560129c077bd6db244b2fcd962a6ee46083fff8dc787a9"
+        },
+        "windows-test_readable_ui_t186": {
+          "tests": 10,
+          "seconds": 54.435,
+          "exit": 0,
+          "log_sha256": "900ecc4faf958ce4dd890b563572ee0d0161d02c6aadad3e11021865796cb9c7"
+        },
+        "windows-test_ui_grid_screens_t214": {
+          "tests": 5,
+          "seconds": 91.085,
+          "exit": 0,
+          "log_sha256": "1890193b8fb23840fec60abb3f669a686b3c7b68a183584b1e91bc434ffaba30"
+        },
+        "windows-test_ui_desk_t164": {
+          "tests": 15,
+          "seconds": 203.012,
+          "exit": 0,
+          "log_sha256": "92cd50fac7b783e6555a6755c4cc0446808dad0e955da0be376852e9816f7710"
+        },
+        "windows-test_ui_start_t163": {
+          "tests": 20,
+          "seconds": 82.466,
+          "exit": 0,
+          "log_sha256": "53222bc9795697492dbff21a0e2e62a781e319596e79fc84603262d868ddffa5"
+        },
+        "windows-test_ui_cell_t209": {
+          "tests": 16,
+          "seconds": 902.445,
+          "exit": 0,
+          "log_sha256": "bbf88914d35fd244209e560dafad3d73830874ce87ceffdf91be531f9e6ee811"
+        },
+        "windows-test_ui_grid_t210": {
+          "tests": 16,
+          "seconds": 171.786,
+          "exit": 0,
+          "log_sha256": "fd801e9239fdbc1eadcfee7a118cf4bcc966a4a3242746321a81921d5f39dba4"
+        }
+      },
+      "total_tests": 100,
+      "scope": "GOAL2_SLOW=1; GOAL2_CASES unset; isolated module processes"
+    }
+  }
+}

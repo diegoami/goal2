@@ -1,8 +1,12 @@
 {
-  "source_commit": "61f4568944d422cc0425853beb82c9885d7b540b",
-  "normal_text_px": 24,
+  "source_commit": "d888e6153b82d74aa8946aaff726b3fbbe0b6e32",
+  "normal_text_px": 32,
   "capture_environment": "Qt offscreen on this computer; native Windows/package checks separate",
   "dimensions": [
+    [
+      1440,
+      1080
+    ],
     [
       1440,
       900
@@ -12,18 +16,19 @@
       1213
     ]
   ],
-  "captures": 96,
+  "captures": 144,
   "all_geometry_checks_passed": true,
   "producer": "tools/ui_readability_screenshots.py",
-  "producer_sha256": "7dabd1e38eef4f5a2f1a443a0021f52b16e29e40fdc4d2b9d17262ee0e488907",
+  "producer_sha256": "4e92ad72a79bdd568070acdfa4b1c89e9b533bd7586e6c201acb6f12760274ed",
+  "screens_with_problems": [],
   "selected": [
     {
       "screen": "DeskScreen",
       "phase": null,
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s06-hub.png",
-      "sha256": "4a1af82f07ff8ba38c07f9b6189ae6c017e4d27035b8cb0b574f60a906cb3088"
+      "sha256": "da859af01b2b6427c9d91af114d7f16f98dece39418a0aa3df1f94f852fa1de6"
     },
     {
       "screen": "DeskScreen",
@@ -31,15 +36,15 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s06-hub.png",
-      "sha256": "d89b24e8670374a9b10c5d2f418c399b13d2d935e38ebe29ed9f15a84c60238a"
+      "sha256": "4a6c25307bf177a75c0a16ae08d40855fc7718ce2034da39a500e92c9a8905ae"
     },
     {
       "screen": "MenuScreen",
       "phase": "before",
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s15-match-menu.png",
-      "sha256": "8ae58a679177afee7452354beed411445236a793f14aa3b733a9d7e4567accdc"
+      "sha256": "0cea3d2d93a4a33f2d5591ff48cc1df3a3d9159d88b9b38cda1813f1caa4e50c"
     },
     {
       "screen": "MenuScreen",
@@ -47,15 +52,15 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s15-match-menu.png",
-      "sha256": "7d8e1bcb0d3abc6c7169772dfd7e42a9f3768b4f1b3d9d34ad43e542ac1c3254"
+      "sha256": "e51c473f7b7fabd92f82d8ecf5e65ecf1ef2669449c343df92de359a29294eda"
     },
     {
       "screen": "BenchScreen",
       "phase": null,
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s19-bench.png",
-      "sha256": "656553c43314bdca01506273d0dafb3e98e86f509da36a7b28c58aaa19eedea3"
+      "sha256": "4d248f166b28e5335615c67485a35568dd43ba5a30008b611967f2c27f63a058"
     },
     {
       "screen": "BenchScreen",
@@ -63,15 +68,15 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s19-bench.png",
-      "sha256": "2ee3093383a7664d9bce97d11ed42ded087a34875553c51624e2e553b23d54e4"
+      "sha256": "c94ace989bc904290f31910845cc16ea650a58d7f896e397e06b878978011904"
     },
     {
       "screen": "BenchScreen",
       "phase": null,
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s19-bench-refused.png",
-      "sha256": "f3cecc2caa7506b6eaa82f9c1a93b46fed33830e5f39357d8830acd954edae19"
+      "sha256": "0435f2ef81ab482c65443df6fb27d656b3574715cbc889c438c26f4a251033b6"
     },
     {
       "screen": "BenchScreen",
@@ -79,15 +84,15 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s19-bench-refused.png",
-      "sha256": "c8108da698254d9436f23b909d75d2952a61ac597a552607c4b5bbc8c2e19246"
+      "sha256": "488a2f3181ddb7ac31ff67df637065dd038a9312ba475aa72b89036abb9eb7df"
     },
     {
       "screen": "PitchScreen",
       "phase": null,
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s17-pitch.png",
-      "sha256": "d1933181e399cef8e1f4100bea57fdfcf7eea80c2564f312b7955cef939002ef"
+      "sha256": "a979f5a24f00371cfd3b2b691451ecbe5f1a9a5116069a2df918b3d93afacd1e"
     },
     {
       "screen": "PitchScreen",
@@ -95,15 +100,15 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s17-pitch.png",
-      "sha256": "7ca9bdecca88320565780baec20997b1d17610157754ec9f90333438a5884fa9"
+      "sha256": "2eb03544aaa037dfb8fb0e1ea66a5d8d7a3f6f8b1401ac705cdb0d8d1bfc373e"
     },
     {
       "screen": "BoardScreen",
       "phase": "full",
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s20-board.png",
-      "sha256": "546580cfc69614c45c2b64d2e2c0946c9d95f6296e126a76d029bd0d35cccf8e"
+      "sha256": "06ec204af07f190e259dcf18fcb2372470889fccfe2dd8761e77196988490e9e"
     },
     {
       "screen": "BoardScreen",
@@ -111,15 +116,15 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s20-board.png",
-      "sha256": "af3055d8ddcb0f5e494e1236c062ac454447a15a5419c304ab9bf71c9f078a0a"
+      "sha256": "a069cd7af0e24be286c6254b9bd17981f0d7e3ed0649f8f3c9160dab9b5d9440"
     },
     {
       "screen": "FixturesScreen",
       "phase": null,
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s11-fixtures.png",
-      "sha256": "f68b7b664cbeaab2e91f6c1dfd777e9d2948eb7adf7c7659f5261af0753d02a9"
+      "sha256": "d2ddb05e0e0ed1b9d946c59192b8348c178db73524fb83daf4961ff32d3dd5ca"
     },
     {
       "screen": "FixturesScreen",
@@ -127,15 +132,15 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s11-fixtures.png",
-      "sha256": "82f0903658661049f4e5fcad2e6510535df3f7779ca0f3b44132a6072b23884b"
+      "sha256": "64e394053222da947335a8dcba0718da78ce3804ec52f6a2c068b93c20e2a1c7"
     },
     {
       "screen": "RoundScreen",
       "phase": null,
       "width": 1440,
-      "height": 900,
+      "height": 1080,
       "path": "docs/design/ui-2026-11/images/s14-round.png",
-      "sha256": "f8d6b3e5383868ed142accd8a79c773621651240181c6abc4e3119b770b1e760"
+      "sha256": "0300f241dce0ec9651c26e0681ca55a0ca141fcf321a1c6524fea168fe113aeb"
     },
     {
       "screen": "RoundScreen",
@@ -143,8 +148,72 @@
       "width": 2110,
       "height": 1213,
       "path": "docs/design/ui-2026-11/images/t186-large/s14-round.png",
-      "sha256": "8a8d5229d340b974a3a6b901eb00382a22749bc37afc3c776aa960e81b86a49b"
+      "sha256": "76c39987659e3ca707ce7e5807d90dcf76af3550bd8dcfacdd43701c5c5f3f6f"
+    },
+    {
+      "screen": "CountryScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s04-country.png",
+      "sha256": "7d2465cd3aecb0fe3095179eb53f318e9d442f06ff9eb096a7fa74daef1a4d9e"
+    },
+    {
+      "screen": "CountryScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s04-country.png",
+      "sha256": "dd0cf2f14f8ddfa5ac2c37b5452c2bd57b3c208c2caaf285993aaeb678e39e0b"
+    },
+    {
+      "screen": "TeamInfoScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s07-team-info.png",
+      "sha256": "d867721b961909e25fa909c9ee13f831077080802f9f0d19f873660deba2746d"
+    },
+    {
+      "screen": "TeamInfoScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s07-team-info.png",
+      "sha256": "264c137bc487f7f4a45d1a4e814a20834b6b087ad41949a15fa0aa9eeda613cd"
+    },
+    {
+      "screen": "ChooseScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s16-captain.png",
+      "sha256": "c6706a65dec0bf4709902aeca8dd216c3e8f7f5ecd3072acf5aea3d3c6ec2f81"
+    },
+    {
+      "screen": "ChooseScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s16-captain.png",
+      "sha256": "4a18c33a491dae423e7282845393089ed9e5bda7ef17a315ec0a6ed7a653bc1f"
+    },
+    {
+      "screen": "PitchScreen",
+      "phase": null,
+      "width": 1440,
+      "height": 1080,
+      "path": "docs/design/ui-2026-11/images/s18-match-stop.png",
+      "sha256": "aef22de8f86bf8001ea5d312ce2aa96910a092136b3a196ef6f00c9cb88e4e94"
+    },
+    {
+      "screen": "PitchScreen",
+      "phase": null,
+      "width": 2110,
+      "height": 1213,
+      "path": "docs/design/ui-2026-11/images/t186-large/s18-match-stop.png",
+      "sha256": "938c302e220a9be448bcafeddaed4146e2538d7120b815aace0c4905ace7278e"
     }
   ],
-  "report_sha256": "7ef46e2e3b25da06da302d35cdefdbcc110a6ef6e97d377cb99a6cae4819d441"
+  "report_sha256": "bf9b778b05a8809b4070cb3644f18d49410b193fdebf173ff369a40877e1a98b"
 }

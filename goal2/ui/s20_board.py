@@ -28,12 +28,11 @@ the board S15's *match stats* opens, there is no bench: Esc continues as Enter d
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout
 
 from goal2.ui import theme
 from goal2.ui.pitch import HOME
-from goal2.ui.screen import Screen, label, para
-from goal2.ui.squad_card import Row, box, colour, full_name
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import colour, full_name
 
 # The design's nine counters, in the original board's order. [confirmed: the kit's STAT_NAMES; s20-board.html]
 COUNTERS = (("corners", "corners"), ("free_kicks", "free kicks"), ("penalties", "penalties"), ("shots", "shots"),
@@ -73,6 +72,7 @@ def board(events, phase, quick):
 
 
 class BoardScreen(Screen):
+    GRID = True   # [designed: owner, #667; T213]
     escape_text = "bench"
 
     def __init__(self, window, model, names, kind, phase, data, onward, kits, bench=None, save_summary=False):
@@ -86,90 +86,84 @@ class BoardScreen(Screen):
         self.countries, self.kind, self.kits = list(names), kind, kits
         self.save_summary = save_summary
         home, away = HOME, 1 - HOME
-        self.title = f"{names[home]} v {names[away]} · {TIMES[phase].lower()}"
+        self.title = f"match statistics · {names[home]} v {names[away]} · {TIMES[phase].lower()}"
         self.name_label.setText(self.title)
         self.set_enter("Continue", self.go_on)
-        head, inner = box(None)
-        row = QHBoxLayout()
-        row.setSpacing(24)
-        inner.addLayout(row)
-        first = label(names[home], "h1")
-        colour(first, kits.colour(home))
-        row.addWidget(first)
+        # [designed: owner, #667; T213] The score and man of the match over the scorers and the complete original board.
+        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.cell_parts import CellTableRow
+        from goal2.ui.country_parts import framed
+        body = Cells(90,25,"boardBody")
+        self.body_layout.addWidget(body,1)
+        first = body.text(names[home],"h1",0,0,16)
+        colour(first,kits.colour(home))
         score = data["score"]
-        self.score_label = label(f"{score[home]}  {score[away]}", "h1")
-        row.addWidget(self.score_label)
-        second = label(names[away], "h1")
-        colour(second, kits.colour(away))
-        row.addWidget(second)
-        row.addWidget(label(TIMES[phase], "h1"))
+        self.score_label = body.text(f"{score[home]}  {score[away]}","h1",17,0,10)
+        second = body.text(names[away],"h1",28,0,16)
+        colour(second,kits.colour(away))
+        time = body.text(TIMES[phase],"h1",46,0,44)
+        time.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         half = data["half_time"]
-        detail = (f"half time {half[home]}:{half[away]} · " if half is not None and phase != "half" else "") + kind
-        row.addWidget(label(detail, "sub"))
-        row.addStretch(1)
+        detail = (f"half time {half[home]}:{half[away]} · " if half is not None and phase!="half" else "")+kind
+        detail_text = CellPara(detail,"sub")
+        detail_text.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
+        body.put(detail_text,0,1,90)
         motm = data["man_of_the_match"]
-        motm_name = data['motm_name'] if 'motm_name' in data else full_name(model, motm) if motm else ''
-        self.motm = label(f"MAN OF THE MATCH {motm_name}" if motm_name else "", "value")
-        colour(self.motm, theme.VALUE)
-        row.addWidget(self.motm)
-        self.body_layout.addWidget(head)
-        middle = QHBoxLayout()
-        middle.setSpacing(18)
+        motm_name = data["motm_name"] if "motm_name" in data else full_name(model,motm) if motm else ""
+        self.motm = body.text(f"MAN OF THE MATCH {motm_name}" if motm_name else "","value",0,2,90)
+        colour(self.motm,theme.VALUE)
         self.scorer_texts = []
-        scorer_boxes = []
-        for team in (home, away):
-            frame, column = box(f"{names[team]} scorers")
-            frame.setFixedWidth(300)
-            frozen = data.get('scorer_names')
-            lines = [f"{frozen[team][i] if frozen is not None else full_name(model, w) if w else '?'} {m}′"
-                     for i, (w, m) in enumerate(data['scorers'][team])] or ['—']
-            self.scorer_texts.append(lines)
-            for line in lines:
-                column.addWidget(label(line, "value"))
-            column.addStretch(1)
-            scorer_boxes.append(frame)
-        stats, column = box("Match statistics")
+        for team in (home,away):
+            frozen = data.get("scorer_names")
+            self.scorer_texts.append([f"{frozen[team][i] if frozen is not None else full_name(model,w) if w else '?'} {m}′"
+                                     for i,(w,m) in enumerate(data["scorers"][team])] or ["—"])
+        scorer_rows = max((len(lines)+1)//2 for lines in self.scorer_texts)
+        for column,team,lines in zip((0,46),(home,away),self.scorer_texts):
+            frame,inner = framed(f"{names[team]} scorers",44,scorer_rows)
+            for row in range((len(lines)+1)//2):
+                inner.text(" · ".join(lines[2*row:2*row+2]),"value",0,row,44)
+            body.put(frame,column,3,44,scorer_rows+1)
+        dense = scorer_rows > 3
+        stats,inner = framed("match statistics",90,12 if dense else 15)
         self.stat_rows = []
         if data["quick"]:
-            banner = label("QUICK RESULT", "h1")
-            banner.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            colour(banner, theme.KEY_HINT)
-            column.addStretch(1)
-            column.addWidget(banner)
-            column.addStretch(1)
-            self.banner = banner
+            self.banner = inner.text("QUICK RESULT","h1",0,5,90)
+            self.banner.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            colour(self.banner,theme.KEY_HINT)
         else:
             self.banner = None
-            heading = Row(-1, (220, 0, 220))
-            heading.set((names[home], "", names[away]), (theme.HEADING,) * 3)
-            column.addWidget(heading)
-            for key, text in COUNTERS:
+            for col,team in ((0,home),(60,away)):
+                heading = inner.text(names[team],"sub",col,0,30)
+                heading.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            for row,(key,text) in enumerate(COUNTERS,1):
                 values = data["counters"][key]
-                line = Row(-1, (220, 0, 220), underline=True)
+                line = CellTableRow(-1,(30,30,30),aligns=(Qt.AlignmentFlag.AlignHCenter,)*3)
                 if values is None:
-                    line.set((NOT_YET, text, NOT_YET), (theme.TEXT_NORMAL, theme.TEXT_NORMAL, theme.TEXT_NORMAL))
+                    line.set((NOT_YET,text,NOT_YET),(theme.TEXT_NORMAL,)*3)
                 else:
-                    line.set((str(values[home]), text, str(values[away])),
-                             (theme.TEXT_BRIGHT, theme.TEXT_NORMAL, theme.TEXT_BRIGHT))
-                for cell in line.cells:
-                    cell.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    line.set((str(values[home]),text,str(values[away])),(theme.TEXT_BRIGHT,theme.TEXT_NORMAL,theme.TEXT_BRIGHT))
                 line.setCursor(Qt.CursorShape.ArrowCursor)
-                column.addWidget(line)
+                inner.put(line,0,row if dense else (1,2,3,5,6,7,9,10,11)[row-1],90)
                 self.stat_rows.append(tuple(line.texts()))
-            bars = data["bars"]
-            for name, values in zip(("possession", "territory"), bars or (None, None)):
+            for row,(name,values) in enumerate(zip(("possession","territory"),data["bars"] or (None,None))):
                 text = (f"{name}: {values[home]} · {values[away]} (the board's counts; its bar is not decoded)"
                         if values is not None else f"{name}: {NOT_YET}")
-                text_label=label(text, "sub")
-                text_label.setWordWrap(True)
-                column.addWidget(text_label)
-            column.addStretch(1)
-        middle.addWidget(scorer_boxes[0])
-        middle.addWidget(stats, 1)
-        middle.addWidget(scorer_boxes[1])
-        self.body_layout.addLayout(middle, 1)
-        self.note = para("", "sub")
-        self.body_layout.addWidget(self.note)
+                cols = 65 if row == 0 and len(text) <= 65 else 90
+                bar_text = inner.text(text,"sub",0,(10 if dense else 13)+row,cols)
+                if row == 1 or cols == 65:
+                    bar_text.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        if not dense and not data["quick"]:
+            # [designed: owner, #667; T213] Split the counters at their existing gaps. Repeat the countries at the
+            # discipline section so its columns still name the sides; these are headings, never new match values.
+            from goal2.ui.frame import FrameRule
+            inner.put(FrameRule("goal attempts"),0,4,90)
+            inner.put(FrameRule(names[home]),0,8,17)
+            inner.put(FrameRule("discipline"),18,8,54)
+            inner.put(FrameRule(names[away]),73,8,17)
+            inner.put(FrameRule("possession and territory"),0,12,90)
+        body.put(stats,0,4+scorer_rows if dense else 7,90,13 if dense else 16)
+        self.note = CellPara("","sub")
+        body.put(self.note,0,23,90,2)
         if save_summary:
             from goal2.ui.screen import set_para
             set_para(self.note, 'Do you want to save the match summary? (Y/N)')

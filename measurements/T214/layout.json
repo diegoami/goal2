@@ -1,0 +1,522 @@
+[
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import-first.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import-first.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import-first.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import-first.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ImportScreen",
+    "picture": "s01-import.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-empty.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-empty.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-empty.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-empty.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-new-game.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-new-game.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-new-game.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-new-game.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-managers-later.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-managers-later.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-managers-later.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "NewGameScreen",
+    "picture": "s03-managers-later.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-failed.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-failed.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-failed.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "StartScreen",
+    "picture": "s02-start-failed.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "FriendlyScreen",
+    "picture": "s02-friendly.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "FriendlyScreen",
+    "picture": "s02-friendly.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "FriendlyScreen",
+    "picture": "s02-friendly.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "FriendlyScreen",
+    "picture": "s02-friendly.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayersScreen",
+    "picture": "s04-players.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayersScreen",
+    "picture": "s04-players.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayersScreen",
+    "picture": "s04-players.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "PlayersScreen",
+    "picture": "s04-players.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ReimportScreen",
+    "picture": "s01-reimport.png",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ReimportScreen",
+    "picture": "s01-reimport.png",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ReimportScreen",
+    "picture": "s01-reimport.png",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": []
+  },
+  {
+    "screen": "ReimportScreen",
+    "picture": "s01-reimport.png",
+    "requested": [
+      1440,
+      1061
+    ],
+    "actual": [
+      1440,
+      1061
+    ],
+    "problems": []
+  }
+]
