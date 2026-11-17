@@ -432,3 +432,5 @@ operational status.
 - [T230](T230.md): T100's budget test keeps its delay loop under T223 (#705).
 
 - [T170w](T170w.md): adopt accepted native pre-match marking with distinct inherit/protected-zone/opponent goals in the held worker (#763; upstream T137/#726).
+
+- [T170x](T170x.md): immutable decision-bound current pre-match window data, including native squad/pool/opponent cards and marking (#768).
