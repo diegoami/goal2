@@ -63,7 +63,8 @@ def records(image):
     return dict(players=bytes(image.memory[image.far(0xA91B):image.far(0xA91B) + 3061 * 20]),
                 countries=bytes(image.memory[image.far(0xA917):image.far(0xA917) + 129 * 191]),
                 managers=bytes(image.memory[image.far(0xA91F):image.far(0xA91F) + 135 * 3]),
-                game=bytes(image.memory[game:game + 0x100]),
+                # [confirmed: F031, 1771:027B] The saved game block is 0x10E bytes.
+                game=bytes(image.memory[game:game + 0x10E]),
                 squad=[int.from_bytes(image.memory[squad + 2*i:squad + 2*i + 2], 'little') for i in range(20)],
                 pool=[int.from_bytes(image.memory[pool + 2*(base+i):pool + 2*(base+i) + 2], 'little') for i in range(80)],
                 seeds=(image.rd(0x7B62), image.rd(0x8336)))
