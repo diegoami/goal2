@@ -438,3 +438,5 @@ operational status.
 - [T170x](T170x.md): immutable decision-bound current pre-match window data, including native squad/pool/opponent cards and marking (#768).
 
 - [T170y](T170y.md): confirmed single-flight held-Match edit/captain coordinator using the accepted current view (#770).
+
+- [T170z](T170z.md): actual pre-match screen bindings over an explicitly owned held session, preserving native edits/current views/captain handoff (#776).
