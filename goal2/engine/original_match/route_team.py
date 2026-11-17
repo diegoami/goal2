@@ -41,8 +41,17 @@ def choose_eleven(squad, player):
 class PreMatchPlan(S.MenuPlan):
     """DEA6 before play, rather than E022's substitutions during play."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, side, tactics=None, subs=None, positions=None, **kwargs):
+        super().__init__(side, tactics=tactics, subs=subs, **kwargs)
+        # [T135/#720] Preserve MenuPlan's sub/position/own order without
+        # coercing the distinct native C action into a numeric R goal.
+        at = next((i for i, job in enumerate(self.jobs) if job[0] == "own"), len(self.jobs))
+        self.jobs[at:at] = [("position", int(p), c) for p, c in (positions or {}).items()]
+        if positions and "select" not in self.steps:
+            self.steps.insert(-1, "select")
+        self._position_visit = None
+        self._position_observed = False
+        self._position_entered = False
         self.pool_pane = False          # the SELECT screen opens in the squad view (E009-r0001)
         self._expected_swap = None
         self._swap_observed = False
@@ -66,7 +75,60 @@ class PreMatchPlan(S.MenuPlan):
             raise MatchError("original pre-match word swap differs from requested pair")
         self._swap_observed = True
 
+    def observe_position_entry(self, player, key):
+        visit = self._position_visit
+        if (visit is None or self._position_entered or player != visit[0]
+                or key != (ord("C") if visit[2] else S.KEY_R)):
+            raise MatchError("original pre-match position entry differs from requested input")
+        self._position_entered = True
+
+    def observe_position(self, player, position, key):
+        if not self._position_entered or self._position_visit != (player, position, key):
+            raise MatchError("original pre-match position return differs from requested input")
+        self._position_observed = True
+
+    def _position_key(self, s, job):
+        player, goal = job[1:]
+        in_pool = player not in s["squad"]
+        if in_pool and player not in s.get("pool", ()):
+            raise MatchError("pre-match position player left squad/pool")
+        if self.pool_pane != in_pool:
+            self.pool_pane = in_pool
+            return self.act(S.LEFT)
+        if in_pool:
+            # [confirmed: F011/T128] Made-pool list index = scroll+cursor-2.
+            here = s["pool_scroll"] + s["pool_cursor"]
+            target = s["pool"].index(player) + 2
+            if here != target:
+                self.moves += 1
+                if self.moves > 2 * MAX_MOVES:
+                    raise ScreenError("pool cursor did not reach position player")
+                return S.DOWN if here < target else S.UP
+        else:
+            target = s["squad"].index(player) + 1
+            if s["cursor"] != target:
+                return self.move(s["cursor"], target)
+        if goal == "club":
+            self._position_visit = (player, s["club_position"](player), ord("C"))
+            return self.act(ord("C"))
+        if s["position"](player) == goal:
+            self.done.append(job)
+            self._next_job()
+            return self.select_key(s)
+        # [confirmed: 1771:4925/4952] R wraps0..13 and clears A976 before return.
+        self._position_visit = (player, (s["position"](player) + 1) % S.N_POSITIONS, 0)
+        return self.act(S.KEY_R)
+
     def select_key(self, s):
+        if self._position_visit is not None:
+            if not self._position_observed:
+                raise MatchError("original pre-match position input has no return witness")
+            self._position_visit = None
+            self._position_observed = False
+            self._position_entered = False
+            if self.jobs[self.job][2] == "club":
+                self.done.append(self.jobs[self.job])
+                self._next_job()
         if self.pending_check is not None:
             job = self.pending_check
             self.pending_check = None
@@ -79,8 +141,16 @@ class PreMatchPlan(S.MenuPlan):
             self._expected_swap = None
             self.done.append(job)
         if self.job == len(self.jobs):
+            # [designed: T135] Keep T132's continued SELECT entry in the
+            # squad pane, which each subsequent plan starts from. Use the
+            # original toggle, never a private pane/cursor write.
+            if self.pool_pane:
+                self.pool_pane = False
+                return self.act(S.LEFT)
             return self.act(S.ESC)
         job = self.jobs[self.job]
+        if job[0] == "position":
+            return self._position_key(s, job)
         if job[2] not in s["squad"] and job[2] in s.get("pool", ()):
             return self._pool_key(s, job)
         # Mark the nonzero incoming player first: DEA6 refuses to mark an empty outgoing slot.

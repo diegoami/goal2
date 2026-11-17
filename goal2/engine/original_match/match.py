@@ -690,10 +690,10 @@ class Match:
             # [T132, #709] A configured pre-match decision takes the team tactics and/or
             # swap pairs anywhere within the twenty or out of the made pool (the generic validation
             # below checks the squad-or-pool membership); DEA6's pre-play swaps have no
-            # budget gate and are not deferred.
+            # budget gate and are not deferred. T135 also drives R/C positions through4952.
             pre_match = (context == "pre_match" and self.opts.get("pre_match_edits")
-                         and (tactics is not None or substitutions)
-                         and not (positions or marking or own_tactics))
+                         and (tactics is not None or substitutions or positions)
+                         and not (marking or own_tactics))
             if (not (legal_bench or paused_tactics or pre_match or request_substitution is not None) or quick
                     or speed is not None or taker is not None or shootout_order is not None):
                 raise ValueError("edit_only needs a legal stopped bench, a tactics-only paused menu "
@@ -757,9 +757,27 @@ class Match:
             elif off not in squad[:11] or on not in squad[11:]:
                 raise ValueError(f"substitution ({off}, {on}): the first must be in the eleven, the second "
                                  "on the bench or, at a pre-match edit, in the pool")
-        positions = {int(p): int(c) for p, c in (positions or {}).items()}
-        if any(p not in squad or not 0 <= c <= 13 for p, c in positions.items()):
-            raise ValueError("positions: {player of the managed squad: position code 0..13}")
+        # [T135/#720; F010 4952] R/C are pre-match edit inputs, never
+        # ignored fields on Play. C is explicit even when its value is unchanged.
+        if context == "pre_match" and positions and not pre_match_pairs:
+            raise ValueError("pre-match positions need configured edit_only")
+        if pre_match_pairs:
+            if positions is not None and not isinstance(positions, dict):
+                raise ValueError("pre-match positions need a player map")
+            if any(type(p) not in (int, str) for p in (positions or {})):
+                raise ValueError("pre-match position player must be a word")
+            try:
+                positions = {int(p): c for p, c in (positions or {}).items()}
+            except ValueError as exc:
+                raise ValueError("pre-match position player must be a word") from exc
+            if any(not p or p not in squad + pool or not
+                   ((type(c) is int and 0 <= c <= 13) or (type(c) is str and c == "club"))
+                   for p, c in positions.items()):
+                raise ValueError("pre-match positions: current squad/pool word to code0..13 or club")
+        else:
+            positions = {int(p): int(c) for p, c in (positions or {}).items()}
+            if any(p not in squad or not 0 <= c <= 13 for p, c in positions.items()):
+                raise ValueError("positions: {player of the managed squad: position code 0..13}")
         other = self._squad(self.opts[TEAM_KEYS[1 - self.side]])
         marking = {int(p): int(o) for p, o in (marking or {}).items()}
         if any(p not in squad[:11] or (o and o not in other[:11]) for p, o in marking.items()):
@@ -792,13 +810,29 @@ class Match:
         if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
             observe({"squad": self._squad(self.opts["managed"]), "pool": self._pool()})
 
+    def _on_pre_match_position_entry(self, replay):
+        # [confirmed: F010; 4952 prologue] Far entry has player at stack+4.
+        observe = getattr(self._menu, "observe_position_entry", None)
+        if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
+            observe(self.m.stack_word(4), self.m.rd(KEY, 1))
+
+    def _on_pre_match_position(self, replay):
+        # [confirmed: E722/E725/E72A, retf2 at49B5] After the call, the
+        # discarded player argument remains at stack-2. Entry plus return
+        # distinguishes the real call from E710's gated no-call branch.
+        observe = getattr(self._menu, "observe_position", None)
+        if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
+            player = self.m.stack_word(-2)
+            observe(player, self._player(player, PLAYER_POSITION), self.m.rd(KEY, 1))
+
     def _new_plan(self, answer, context=None):
         if context == "pre_match":
             # [T132, #709] DEA6's own pre-play route for the swaps (route_team.PreMatchPlan:
             # marks the incoming player first, validates each swap the original made), the
             # shared tactics step and Play for the menu itself; no budget gate, no requests.
             from .route_team import PreMatchPlan
-            plan = PreMatchPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"))
+            plan = PreMatchPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
+                                positions=answer.get("positions"))
         else:
             plan = S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
                               positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"),
@@ -895,6 +929,8 @@ class Match:
         m.at(WAIT, self._on_wait)
         m.at("0791:D010", self._on_taker_accepted)
         m.at("0791:DF29", self._on_pre_match_swap)
+        m.at("1771:4952", self._on_pre_match_position_entry)
+        m.at("0791:E72A", self._on_pre_match_position)
         m.at(TICK, self._on_tick)
         m.at(PLAY_MATCH, self._on_play)
         m.at(MATCH_PLAYED, self._on_played)
@@ -1054,7 +1090,8 @@ class Match:
                 # [T132] a pre-match plan drives the pool pane too; MenuPlan ignores the keys,
                 # and surgical controls with stub machines never reach here.
                 pool_scroll, pool_cursor = self._pool_state()
-                state.update(pool=self._pool(), pool_scroll=pool_scroll, pool_cursor=pool_cursor)
+                state.update(pool=self._pool(), pool_scroll=pool_scroll, pool_cursor=pool_cursor,
+                             club_position=lambda p: self._player(p, 7))  # F010 club byte
             key = self._menu.select_key(state)
             if key == S.ESC and getattr(self._menu, "edit_only", False):
                 # Keep SELECT TEAM open between edits: leaving/reentering it runs original
@@ -1186,7 +1223,8 @@ class Match:
         name, _ = self._text()
         for job in plan.done:
             if job[0] == "position":
-                self._emit("position", player=job[1], name=name(job[1]), position=job[2])
+                self._emit("position", player=job[1], name=name(job[1]),
+                           position=self._player(job[1], PLAYER_POSITION) if job[2] == "club" else job[2])
             elif job[0] == "own":
                 slot = self._squad(self.opts["managed"]).index(job[1]) + 1
                 mark = self.m.rd(S.MARKING - 2 + 0x28 * self.side + 2 * slot)

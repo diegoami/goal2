@@ -11,6 +11,8 @@ tests/test_route_prematch_input_t132.py] The pre-match decision takes tactics an
 pairs within the twenty or out of the made pool edit_only, an empty answer plays, and an
 edited answer returns a fresh `pre_match` decision. [T170m] The pool exchange is the seam's
 own answer now that T170l vendored the pool arm; T170k's named refusal retired with it.
+[confirmed: T135/fc6b5294; T170u] Numeric positions use original R across squad/pool;
+an explicit club action uses original C, even when the position is already equal.
 """
 
 
@@ -43,6 +45,16 @@ class PrematchSeam:
         the kit's pre-match arm accepts a pool word as the incoming (archaeology #713's DEA6
         pool pane route; the pool is published in the decision beside the bench)."""
         self.match.answer(edit_only=True, substitutions=[[int(outgoing), int(incoming)]])
+
+    def set_position(self, player, position):
+        """[confirmed: T135/fc6b5294, F010] Numeric0..13 goal through native R."""
+        if type(position) is not int or not 0 <= position <= 13:
+            raise ValueError('position must be an integer code0..13')
+        self.match.answer(edit_only=True, positions={player: position})
+
+    def club_position(self, player):
+        """[confirmed: T135/fc6b5294] Native C once, including already-equal values."""
+        self.match.answer(edit_only=True, positions={player: 'club'})
 
     def play(self, *, captain=_UNSET_CAPTAIN):
         """[T170p/T133] Play after edits: optional current-XI captain, or None for
