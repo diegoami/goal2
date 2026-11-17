@@ -1,0 +1,217 @@
+{
+  "boundaries": [
+    "Already-configured explicitly owner-reserved session only; owner supplies reply queue, native route views, handoff and disposal callbacks.",
+    "No normal desktop/native career bootstrap, in-match driver/pacing, round resume/publication, save/load or default ZIP switch.",
+    "Held A/Ins keeps explicit T183 exception; accepted outside-held assistant behavior preserved.",
+    "Broader Prover/raw original comparison and milestone full validation remain separate."
+  ],
+  "ci": {
+    "Linux": {
+      "attempt": 1,
+      "gate": {
+        "held_methods": 14,
+        "held_module_seconds": 215,
+        "held_skipped": 0,
+        "modules": 264,
+        "passed": 264,
+        "skipped": 239
+      },
+      "head": "7715e834fb58b1a7778c5a7319bd38c43e18b1bf",
+      "jobs": [
+        {
+          "completed_at": "2026-11-17T22:42:42Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192642977/job/134425768599",
+          "id": 134425768599,
+          "name": "changes",
+          "started_at": "2026-11-17T22:42:29Z"
+        },
+        {
+          "completed_at": "2026-11-17T22:46:00Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192642977/job/134425915794",
+          "id": 134425915794,
+          "name": "native-scaling (2)",
+          "started_at": "2026-11-17T22:42:45Z"
+        },
+        {
+          "completed_at": "2026-11-17T22:43:48Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192642977/job/134425915940",
+          "id": 134425915940,
+          "name": "native-scaling (1)",
+          "started_at": "2026-11-17T22:42:45Z"
+        },
+        {
+          "completed_at": "2026-11-17T23:02:01Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192642977/job/134425916583",
+          "id": 134425916583,
+          "name": "linux",
+          "started_at": "2026-11-17T22:43:01Z"
+        }
+      ],
+      "run_id": 44192642977,
+      "url": "https://github.com/diegoami/goal2/actions/runs/44192642977"
+    },
+    "Windows": {
+      "attempt": 1,
+      "gate": {
+        "held_methods": 14,
+        "held_module_seconds": 198,
+        "held_skipped": 0,
+        "modules": 264,
+        "passed": 264,
+        "skipped": 255
+      },
+      "head": "7715e834fb58b1a7778c5a7319bd38c43e18b1bf",
+      "jobs": [
+        {
+          "completed_at": "2026-11-17T22:42:45Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192643315/job/134425771521",
+          "id": 134425771521,
+          "name": "changes",
+          "started_at": "2026-11-17T22:42:29Z"
+        },
+        {
+          "completed_at": "2026-11-17T22:44:02Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192643315/job/134425948432",
+          "id": 134425948432,
+          "name": "native-scaling (2)",
+          "started_at": "2026-11-17T22:42:48Z"
+        },
+        {
+          "completed_at": "2026-11-17T22:43:55Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192643315/job/134425948565",
+          "id": 134425948565,
+          "name": "native-scaling (1)",
+          "started_at": "2026-11-17T22:42:49Z"
+        },
+        {
+          "completed_at": "2026-11-17T23:20:13Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44192643315/job/134425949211",
+          "id": 134425949211,
+          "name": "windows",
+          "started_at": "2026-11-17T22:43:02Z"
+        }
+      ],
+      "native_scenarios": "Passed worker, management, launch, campaign-friendlies, redesign shell/overview/squad/pool and watched scenarios.",
+      "run_id": 44192643315,
+      "url": "https://github.com/diegoami/goal2/actions/runs/44192643315"
+    }
+  },
+  "claims": [
+    "One original retained session/Match and parent PyPy PID per actual test; only answer/next/preview emitted by screen controller.",
+    "Both pool pick orders, native sort under help, R/Shift+R/C in squad and pool, names/CP437/cancel, search/filter, four personal rows, bench marking and invalid-target repair.",
+    "Eight team elements with actual mouse clicks, current opponent read-only views, explicit owner route callbacks, watch/replay preference.",
+    "Changed current-XI captain word via arrows/Enter, C/null and timeout/null; separate Play, native invalid-XI refusal visible, first reply/event handoff once.",
+    "Pure refusal repair, pending/no optimistic records, send/backend loss, late detach, actual Window.close owner disposal callback and no disposal callback after handoff.",
+    "Actual native route-boundary state and supplied owner display records remain unchanged by pre-match edits; raw originals never committed."
+  ],
+  "code_head": "7715e834fb58b1a7778c5a7319bd38c43e18b1bf",
+  "fail_before": [
+    {
+      "head": "bac9060ad0b3fdbfddd9086eefd23f8e12808942",
+      "result": "Archive baseline lacks held adapter; new test module import fails."
+    },
+    {
+      "head": "b1fdefb2da43ee2e15725e54a9333c00d5200aa8",
+      "methods": 2,
+      "result": "Send failure leaves team UI pending; actual Window.close omits owner disposal. Both pass after fix."
+    }
+  ],
+  "final_gate": {
+    "head": "7715e834fb58b1a7778c5a7319bd38c43e18b1bf",
+    "held_methods": 14,
+    "held_module_seconds": 149,
+    "held_skipped": 0,
+    "modules": 264,
+    "passed": 264,
+    "scope": "Default clean-head gate, including final fourteen actual held-window tests without skips. Full slow remains milestone.",
+    "skipped": 241
+  },
+  "focused": {
+    "affected": {
+      "head": "b1fdefb2da43ee2e15725e54a9333c00d5200aa8",
+      "methods": 82,
+      "seconds": 145.275,
+      "skipped": 17
+    },
+    "held_focused_initial": {
+      "methods": 14,
+      "runtime_head": "f7678b3272c2e87d4771ba6c96287e22f6dc74e2",
+      "seconds": 72.649,
+      "skipped": 0
+    },
+    "legacy_full": {
+      "head": "f7678b3272c2e87d4771ba6c96287e22f6dc74e2",
+      "methods": 15,
+      "seconds": 519.963,
+      "skipped": 0
+    }
+  },
+  "implementation_agent": "Codex (GPT-6 family, primary session; no subagents or per-PR reviewer)",
+  "issue": 776,
+  "pending_test_correction": {
+    "contract": "All fixtures/cases/values/domains/assertions retained; pause UI timer delivery until the pending assertions are made, then deliver the actual queued worker replies through the same poll/settle path.",
+    "failed_gate": "263/264 modules,241 skips; only pending test counted legitimate next/preview progress between Qt keys",
+    "failed_head": "b8fe9ceac5bdf4b3b9d83278e77a0cab46f0352f",
+    "final_exact_head_module_seconds": 149,
+    "fixed_head": "7715e834fb58b1a7778c5a7319bd38c43e18b1bf",
+    "focused_methods": 14,
+    "focused_scope": "Core delivery scheduling correction; final exact-head local/platform gates include the final team-loss delivery hold and all fourteen methods.",
+    "focused_seconds": 76.718,
+    "focused_skipped": 0
+  },
+  "pr": 779,
+  "receipt_reuse": "Final code7715e834 includes all personal-row/captain-arrow assertions, omits raw-byte failure diagnostics and explicitly pauses only UI reply delivery during pending-interval assertions; the real worker queue remains in use. Final clean-head/platform gates exercise the complete final test module. Legacy code branches are unchanged; their fifteen full journey cases pass separately.",
+  "schema": "goal2/t170z-screen-receipt/1",
+  "screenshots": {
+    "layout": [
+      {
+        "height": 1080,
+        "problems": [],
+        "screen": "S15-held",
+        "width": 1440
+      },
+      {
+        "height": 1080,
+        "problems": [],
+        "screen": "S08-held-select-squad",
+        "width": 1440
+      },
+      {
+        "height": 1080,
+        "problems": [],
+        "screen": "S09-held-bench-marking",
+        "width": 1440
+      },
+      {
+        "height": 1080,
+        "problems": [],
+        "screen": "S10-held-team",
+        "width": 1440
+      },
+      {
+        "height": 1080,
+        "problems": [],
+        "screen": "S16-held-captain",
+        "width": 1440
+      }
+    ],
+    "pixels": "Private only: goal2-keep/T170z/captures. Existing widgets and style; no owner look redesign."
+  },
+  "sha256": {
+    "goal2/tests/test_held_prematch_t170z.py": "9d46e2ae3b800c1bb7d27facd3bf2890d8f5e644f25a7ff3801cf592776a823a",
+    "goal2/ui/held_prematch.py": "f329f0d3187ddd8a15bd131a5441ea3d53f4c1ff2a35fc441376c5001a94739d",
+    "goal2/ui/kits.py": "7502929ee8abb43ea86d235d5f91dfc1196e9390d7b380f33e2e4c0edb8b416b",
+    "goal2/ui/s08_squad.py": "8c4fd37104e152a44adc455f49de0703b9816e45bdf03e8949aafb89669bcaf3",
+    "goal2/ui/s09_player_tactics.py": "c2546fbe858160ec8986a0fef5ddc0f389805170b0fba50e9cd9eb944e8fe2c8",
+    "goal2/ui/s15_match_menu.py": "69a834440d89ac0563735e0664a510c495d92d86a06b51c39085828b2ca9fba3"
+  },
+  "task": "T170z"
+}
