@@ -30,7 +30,7 @@ from goal2.ui.frame import Frame  # noqa: E402
 from goal2.ui.cell_parts import GridCard, GridStrip  # noqa: E402
 from goal2.ui.frame import FrameRule  # noqa: E402
 from goal2.ui.s06_desk import DeskScreen  # noqa: E402
-from goal2.ui.s08_squad import ADDITION, COMING_LATER, SquadScreen, open_squad  # noqa: E402
+from goal2.ui.s08_squad import ADDITION, ASSISTANT_UNAVAILABLE, SquadScreen, open_squad  # noqa: E402
 from goal2.ui.screen import Clickable  # noqa: E402
 from goal2.ui.window import Window  # noqa: E402
 
@@ -200,7 +200,7 @@ class SquadOnTheGrid(Base):
 
         def picked(screen):
             screen.press_move()
-            screen.say(COMING_LATER)   # the longest message, with the pick's own text under the card
+            screen.say(ASSISTANT_UNAVAILABLE)   # current assistant boundary, plus the pick's own text
 
         def pool(screen):
             screen.show_side("pool")
@@ -310,7 +310,7 @@ class SquadOnTheGrid(Base):
 
     def test_the_longest_message_takes_the_rows_it_has(self):
         window, screen = self.canonical(self.make)
-        screen.say(COMING_LATER)
+        screen.say(ASSISTANT_UNAVAILABLE)
         self.relayout(window)
         self.assertLessEqual(len(screen.note.lines()), screen.note.height() // cells.row_px(screen))
 

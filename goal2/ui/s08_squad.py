@@ -17,9 +17,10 @@ the model's own (`DesktopModel`, route (b), #527 D2): the screen holds no rule o
   player swap in and out, two starters change places (`DesktopModel.swap`, which publishes the eleven as `confirm`
   does). An unavailable starter can be moved to the bench this way. Two bench players keep the squad's order (the
   model says why). [designed: T165] Enter on another pool player moves the pick to him.
-- **Ins**, the assistant's recommended 20, is on the bar marked *coming later* and only says so: the original's
-  assistant (`0791:DC7E`, F024/F031) is not ported, and today's *Suggest* runs it under Unicorn on the Core route,
-  which m3 removes. [designed: owner, 2026-11-03, #509]
+- **Ins**, the assistant's recommended 20, explicitly asks the original assistant through the owner's shared
+  PyPy process. [confirmed: T183a/F031] The original orders the selection; [derived: T183b] current opening-career
+  metadata supplies its input. [designed: owner, T183c] Progress and cancellation stay responsive; only a current,
+  verified result is published. Full later native-calendar acceptance remains T183's separate gate.
 - **R** the next position, **Shift+R** the previous one, **C** the club position (`set_position`,
   `club_position`); **T** his tactics (S09); **F2** a new name, typed in the card's name line (`rename_player`);
   **Esc** back to the desk.
@@ -38,7 +39,7 @@ the model's own (`DesktopModel`, route (b), #527 D2): the screen holds no rule o
 """
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QApplication, QHBoxLayout
 
 from goal2.ui import theme
@@ -60,8 +61,8 @@ WAIT_AT, WAIT_ROWS = GridStrip.PAGE + 2, 3
 SEARCH_MAX = 12   # [designed: T177] a surname's length on this route (`rename_player`'s 12 characters)
 # [designed: owner, §6 item 18; T177] the extra's words on the screen
 ADDITION = "GOAL2 ADDITION · POOL SEARCH"
-COMING_LATER = ("The assistant's recommended 20 is coming later: the original's assistant is not ported yet. "
-                "Nothing was changed.")
+ASSISTANT_WAIT = "The assistant is choosing twenty.\nEsc: cancel and return to desk."
+ASSISTANT_UNAVAILABLE = "The assistant is not available for this career yet.\nYour selection is unchanged."
 
 
 def shift_held():
@@ -115,10 +116,16 @@ class SquadScreen(Screen):
     picked = None     # (side, player) once a player is picked for a move
     editing = False   # the name line is open (F2)
     searching = False   # the pool's search line is open (/) [designed: T177]
+    _assistant_token = None   # Screen builds its Enter hint before subclass initialisation.
 
     def __init__(self, window, model):
         super().__init__(window)
         self.model = model
+        self._assistant_jobs = None
+        self._assistant_token = None
+        self._assistant_timer = QTimer(self)
+        self._assistant_timer.setInterval(20)
+        self._assistant_timer.timeout.connect(self._poll_assistant)
         self.side = "squad"
         self.cursor = {"squad": 0, "pool": 0}
         self.message = ""
@@ -131,7 +138,7 @@ class SquadScreen(Screen):
         self.bind((Qt.Key.Key_Left,), "", lambda: self.show_side("squad"), captions=("",), shown=False)
         self.bind((Qt.Key.Key_Right,), "", lambda: self.show_side("pool"), captions=("",), shown=False)
         self.bind((), "squad / pool", None, captions=("←", "→"))
-        self.bind((Qt.Key.Key_Insert,), "coming later", self.assistant)
+        self.bind((Qt.Key.Key_Insert,), "assistant", self.assistant)
         self.bind((Qt.Key.Key_R,), "next position", lambda: self.reposition(-1 if shift_held() else 1))
         self.bind((Qt.Key.Key_C,), "club position", self.club_position)
         self.bind((Qt.Key.Key_T,), "his tactics", self.his_tactics)
@@ -140,7 +147,7 @@ class SquadScreen(Screen):
         self.search_binding = self.bind((Qt.Key.Key_Slash,), "search", self.open_search)
         self.position_binding = self.bind((Qt.Key.Key_P,), "position",
                                           lambda: self.step_position(-1 if shift_held() else 1))
-        # [designed: T165] Ins reads "coming later" (the hint at the title row names it: the assistant's recommended 20).
+        # [designed: T183c] Ins is explicit; no selection runs on screen entry.
         # [designed: T211] The twelve keys and the Enter hint are two rows of cells, a cell apart (the grid's bar).
         last_on_the_bar(self, "desk")
         self.set_enter("Move player", self.press_move)
@@ -216,8 +223,10 @@ class SquadScreen(Screen):
         if word is not None:
             self.card.set_card(card(self.model.state, word, self.model.goaldat))
         self._show_filters(rows)
+        if self._assistant_token is not None:
+            self.message = ASSISTANT_WAIT
         self.note.setText(self.message)
-        if self.picked is not None:
+        if self.picked is not None and self._assistant_token is None:
             detail = ("Enter on another player of the twenty swaps them; → to the pool, then Enter on the player "
                       "who replaces him. Enter on him again keeps the squad as it is." if self.picked[0] == "squad"
                       else "← to the squad, then Enter on the player he replaces. Enter on him again keeps the squad "
@@ -246,6 +255,8 @@ class SquadScreen(Screen):
         return f"{roles.tables(self.model.state)[0][self.position]} · {roles.names(self.model.state)[self.position]}"
 
     def enter_hint_text(self):
+        if self._assistant_token is not None:
+            return "Please wait"
         if self.searching:
             return "Keep search"
         if self.editing:
@@ -325,6 +336,8 @@ class SquadScreen(Screen):
 
     def press_move(self):
         """Enter: pick a player, or put the picked one in place of this one (the model's exchange)."""
+        if self._assistant_blocked():
+            return
         word = self.current()
         if word is None:
             return None
@@ -352,6 +365,8 @@ class SquadScreen(Screen):
     # The pool's search and position filter. [designed: owner, §6 item 18; T177]
     def open_search(self):
         """/: the pool, with the search line open."""
+        if self._assistant_blocked():
+            return
         if self.editing:
             return None
         if self.side != "pool":
@@ -377,7 +392,7 @@ class SquadScreen(Screen):
 
     def step_position(self, step):
         """P: the next of the original's fourteen position codes, then all again; Shift+P the other way."""
-        if self.editing or self.searching:
+        if self._assistant_blocked() or self.editing or self.searching:
             return None
         if self.side != "pool":
             self.show_side("pool")
@@ -390,9 +405,79 @@ class SquadScreen(Screen):
         return self.refresh()
 
     def assistant(self):
-        self.say(COMING_LATER)
+        if self._assistant_blocked():
+            return
+        if self.editing or self.searching:
+            return self.say("Finish the entry with Enter or Esc first.")
+        # [confirmed: E44F E772..E788] Ins acts from the squad pane only.
+        if self.side != 'squad':
+            return self.say("Left: show your squad, then Ins for the assistant.")
+        try:
+            self._assistant_jobs = self.model.assistant_jobs()
+            self._assistant_token = self._assistant_jobs.start()
+        except ValueError:
+            return self.say("The assistant is not available right now.\nFinish the current action, then try again.")
+        self.say(ASSISTANT_WAIT)
+        self._assistant_timer.start()
+
+    def _assistant_blocked(self):
+        if self._assistant_token is not None:
+            self.say(ASSISTANT_WAIT)
+            return True
+        return False
+
+    def _poll_assistant(self):
+        from goal2.game.best_twenty_jobs import AssistantStale
+        try:
+            result = self._assistant_jobs.poll(self._assistant_token)
+        except AssistantStale:
+            result = {'status':'stale'}
+        except ValueError:
+            result = {'status':'error','reason':'failed'}
+        if result is None:
+            return
+        self._assistant_timer.stop()
+        self._assistant_token = None
+        status = result['status']
+        if status == 'complete':
+            self.picked = None
+            count = result['recruited']
+            message = (f"Recruited {count} player{'s' if count != 1 else ''}.\nReview your twenty before playing."
+                       if count else "No stronger players found.\nYour twenty is ready to review.")
+        elif status == 'refused':
+            message = { 'finals': 'Cannot alter squad during finals.',
+                        'tour': 'Cannot alter squad whilst on tour.' }.get(result['reason'], 'The assistant could not select a squad.')
+        elif status == 'cancelled':
+            message = 'Assistant selection cancelled.'
+        elif status == 'stale':
+            message = 'Your career changed.\nAsk the assistant again.'
+        elif result.get('reason') == 'unavailable':
+            message = ASSISTANT_UNAVAILABLE
+        else:
+            message = 'The assistant could not finish.\nYour selection is unchanged; try again.'
+        self.say(message)
+
+    def stop_assistant(self, *, close=False):
+        """[designed: T183c] No late reply may outlive this view/career/window."""
+        pending = self._assistant_token is not None
+        self._assistant_timer.stop()
+        if self._assistant_jobs is not None:
+            if self._assistant_token is not None:
+                self._assistant_jobs.cancel(self._assistant_token)
+            if close:
+                self._assistant_jobs.close()
+        self._assistant_token = None
+        if pending:
+            self.message = 'Assistant selection cancelled.'
+            self.refresh()
+
+    def escape(self):
+        self.stop_assistant()
+        return super().escape()
 
     def edit(self, change):
+        if self._assistant_blocked():
+            return
         word = self.current()
         if word is None:
             return
@@ -410,12 +495,16 @@ class SquadScreen(Screen):
         self.edit(self.model.club_position)
 
     def his_tactics(self):
+        if self._assistant_blocked():
+            return
         from goal2.ui.s09_player_tactics import PlayerTacticsScreen
         word = self.current()
         if word is not None:
             self.window_.push(PlayerTacticsScreen(self.window_, self.model, word))
 
     def new_name(self):
+        if self._assistant_blocked():
+            return
         word = self.current()
         if word is None:
             return

@@ -92,6 +92,9 @@ class Window(QMainWindow):
         """Empty the stack and start from `screen`."""
         while self.stack:
             old = self.stack.pop()
+            stop = getattr(old, 'stop_assistant', None)
+            if stop is not None:
+                stop(close=True)
             self.page.removeWidget(old)
             old.deleteLater()
         return self.push(screen)
@@ -109,6 +112,11 @@ class Window(QMainWindow):
         desk (S06), the career's home. [designed: owner, 2026-11-03, #509] The Python route has no bulletins yet, so
         a new career goes straight to the desk until the news is ported. [designed: T164, #538]"""
         from goal2.ui.s06_desk import DeskScreen
+        if self.career is not None and self.career is not model:
+            from goal2.game.best_twenty_jobs import close_model
+            from goal2.ui.match_day import close_window
+            close_model(self.career)
+            close_window(self)
         self.career = model
         pages = list(pages)
         if pages:
@@ -148,6 +156,15 @@ class Window(QMainWindow):
         progress (the model's `unsaved`), the window stays and asks *Do you want to save this game?* (S21): Y the name
         box then close, N close, Esc stay, with the cancelled match's screens gone. Nothing unsaved closes at once.
         [designed: T168, #542; T87's question, docs/desktop-management.md]"""
+        # [designed: T183c] Assistant cleanup does not classify S08 as a match
+        # screen, so cancelling the save-on-close question keeps its old stack.
+        from goal2.game.best_twenty_jobs import close_model
+        if self.career is not None:
+            close_model(self.career)
+        for screen in self.stack:
+            stop = getattr(screen, 'stop_assistant', None)
+            if stop is not None:
+                stop(close=True)
         running = [screen for screen in self.stack if getattr(screen, "closing", None) is not None]
         for screen in reversed(running):
             screen.closing()

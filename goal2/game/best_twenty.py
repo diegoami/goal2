@@ -14,13 +14,15 @@ def _words(image, address, count):
     return [int.from_bytes(image.memory[address + 2*i:address + 2*i + 2], 'little') for i in range(count)]
 
 
-def recommend(state):
+def recommend(state, *, check_cancel=None):
     """Return a completed private candidate; caller owns publication/refusal policy.
 
     No live input is mutated. The state includes original-owned refusal effects;
     callers must not publish it on refusal. All registered calls are real ports,
     never draw stubs or a Unicorn fallback.
     """
+    if check_cancel is not None:
+        check_cancel()
     tables = engine_tables.load()
     image = Image.from_state(state, tables)
     ds = image.DS * 16
@@ -64,6 +66,10 @@ def recommend(state):
                 real._add(entry)
         specs.append((real, variant))
     inst = port.install(m, specs, keys=Keys())
+    # [designed: T183c] Cancellation observes the private operation only; it
+    # never changes a guest answer, strength comparison or retained live game.
+    if check_cancel is not None:
+        m.at('1771:377E', lambda replay: check_cancel())
     result = dict(allowed=True, refusal=None, country=country, manager=manager)
 
     def message(replay):
@@ -88,6 +94,8 @@ def recommend(state):
     m.run(m.lin('0791:E788'), fresh=True)
     if m.frames or m.reg('sp') != sp + 2:
         raise RuntimeError('assistant did not return with its original near ABI')
+    if check_cancel is not None:
+        check_cancel()
     image.memory[:MEM_SIZE] = m.read(0, MEM_SIZE)
     squad, pool = _words(image, squad_at, 20), _words(image, pool_at, 80)
     if set(squad + pool) != set(initial) or len(set(squad + pool)) != 100:

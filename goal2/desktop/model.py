@@ -171,6 +171,11 @@ class DesktopModel:
         campaign_pool.view(candidate,self.goaldat)
         self.state=candidate
 
+    def assistant_jobs(self):
+        """[designed: T183c] Explicit asynchronous best-twenty requests, shared engine."""
+        from goal2.game.best_twenty_jobs import for_model
+        return for_model(self)
+
     # -- Player and team edits of the squad screens (T165). Each validates a copied candidate before publication.
     # [confirmed: goal2-archaeology F029 at b519d999673c9458211279fd4da8a8325b9f56fe, "The C key of the select-squad
     # screen": 0791:E44F's R and C call 1771:4952; C sets the position +6 to the club position +7, R cycles +6.]

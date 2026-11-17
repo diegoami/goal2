@@ -173,8 +173,14 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
   Enter on the picked player again drops the pick. [T164, #555] Enter on a squad player and then on another squad
   player swaps them (`DesktopModel.swap`): a starter and a bench player swap in and out, the incoming one taking the
   starter's place in the eleven; two starters change places. It is how the eleven is chosen, and how an injured or
-  suspended starter goes to the bench. Two bench players keep the squad's order, and the screen says so. **Ins** reads *coming later* and only says so, until the
-  original's assistant (`0791:DC7E`) is ported [designed: owner, 2026-11-03, #509]. **R** / **Shift+R** the next or
+  suspended starter goes to the bench. Two bench players keep the squad's order, and the screen says so.
+  **Ins** from the squad pane explicitly asks the original assistant through the shared PyPy process
+  [confirmed: T183a/F031; designed: owner fast-track, T183c]. The current opening-career projection is
+  T183b's, not the inherited halftime context. A progress note explains Esc cancellation; only a current
+  verified candidate is published. Refusal, cancellation, stale replies and failures leave the selection
+  untouched; feedback distinguishes recruits from no stronger players. Data edits wait for completion,
+  while navigation/help stay responsive. Finish a name entry before asking. Later native-season contexts
+  remain T183's separate acceptance gate. **R** / **Shift+R** the next or
   previous position, **C** the club position, **T** S09, **F2** the name line in the card's header (at most 12
   characters; Enter gives the name, Esc keeps the old one), **Esc** back. **/** and **P**, the pool's search and
   position filter, are T177's (below).

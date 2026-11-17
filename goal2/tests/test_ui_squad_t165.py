@@ -152,6 +152,8 @@ class Screens(unittest.TestCase):
         self.win.show()
         self.app.processEvents()
         self.addCleanup(lambda: (self.win.close(), self.win.deleteLater(), self.app.processEvents()))
+        from goal2.game.best_twenty_jobs import close_model
+        self.addCleanup(close_model,self.model)
 
     # Helpers.
     def key(self, key, modifier=Qt.KeyboardModifier.NoModifier):
@@ -206,15 +208,33 @@ class Screens(unittest.TestCase):
         self.assertFalse(screen.wait_box.isVisible())
         self.assertEqual(screen.current(), incoming, "the card shows the player put here")
 
-    def test_ins_says_coming_later_and_changes_nothing(self):
+    def test_ins_starts_one_explicit_request_and_does_not_publish_before_reply(self):
+        import threading
+        from unittest.mock import patch
+        from goal2.game import best_twenty_jobs
         screen = self.squad()
-        item = self.bar_key(screen, "coming later")
+        item = self.bar_key(screen, "assistant")
         self.assertEqual(item.binding.captions, ("Ins",))
-        self.key(Qt.Key.Key_Insert)
-        self.assertIn("coming later", screen.note.text())
-        self.assertSame()
-        self.click(item)
-        self.assertSame()
+        entered,release=threading.Event(),threading.Event()
+        real=best_twenty_jobs.prepare
+        def held(value):
+            entered.set()
+            if not release.wait(10):raise RuntimeError('test did not release preparation')
+            return real(value)
+        with patch.object(best_twenty_jobs,'prepare',held):
+            try:
+                self.key(Qt.Key.Key_Insert)
+                self.assertTrue(entered.wait(5))
+                token=screen._assistant_token
+                self.assertIsNotNone(token)
+                self.assertIn("choosing twenty",screen.note.text())
+                self.assertSame()
+                self.click(item)
+                self.assertEqual(screen._assistant_token,token)
+                self.assertSame()
+                screen.stop_assistant()
+            finally:
+                release.set()
 
     def test_paging_the_pool_reaches_all_80(self):
         screen = self.squad()
