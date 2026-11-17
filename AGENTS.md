@@ -71,8 +71,9 @@ Preserve those accepted controls, the isolated owner apps/data and all fidelity
 cases; held-season assistant integration still needs its explicit contract.
 The parent's native-season/UI acceptance remains open. #771 supplies the genuine
 G4B native finals refusal/acknowledgement and exact PyPy equality; archaeology#725
-is fulfilled. T183e/#773 scopes the next independent SeasonSession manager-boundary
-operation before separate worker/UI delivery. Preserve that session and checkout.
+is fulfilled. T183e/#774 supplies the synchronous native SeasonSession assistant
+at completed manager boundaries. T183f/#775 scopes private proposals and explicit
+commit/abort before separate cancellable worker/UI delivery. Preserve that session and checkout.
 The redesigned-UI look items
 #666–#680 stay owner-scoped alongside.
 

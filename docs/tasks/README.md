@@ -346,6 +346,7 @@ operational status.
 - [T183b](T183b.md): project current opening-career metadata for the assistant and prepare a private, consistent candidate; no UI activation or native-season bootstrap.
 - [T183c](T183c.md): explicit async Ins/mouse action over the shared PyPy pipe for supported current careers; retain the parent's full native-season/finals gates.
 - [T183e](T183e.md): native manager-boundary assistant within SeasonSession; preserve held matches and round/key/delta identity, ahead of separate worker/UI delivery (#773).
+- [T183f](T183f.md): private native assistant proposals with explicit one-use commit/abort; preserve cancellation ownership before worker/UI delivery (#775).
 - [T188a](T188a.md): authoritative edits while the original remains stopped (#599).
 - [T188b](T188b.md): apply stopped substitutions immediately in the squad (#599).
 - [T189](T189.md): focused PR checks and full validation at integrated milestones (#606).
