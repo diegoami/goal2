@@ -430,3 +430,5 @@ operational status.
 - [T228](T228.md): the sound's note shows on a host slower than the original's pacing (#705, #455).
 - [T229](T229.md): publish a release from a green Package run's own ZIP (#705).
 - [T230](T230.md): T100's budget test keeps its delay loop under T223 (#705).
+
+- [T170w](T170w.md): adopt accepted native pre-match marking with distinct inherit/protected-zone/opponent goals in the held worker (#763; upstream T137/#726).
