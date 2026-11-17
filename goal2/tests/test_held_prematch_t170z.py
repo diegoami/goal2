@@ -96,6 +96,7 @@ class WindowPipe(unittest.TestCase):
         self.assertEqual(self.owner.state.players,self.before.players)
         self.assertEqual(self.owner.state.countries,self.before.countries)
         self.assertEqual(self.owner.state.campaign,self.before.campaign)
+        self.assertLessEqual({action for action,_ in self.sent},{'answer','next','preview'})
 
     def squad(self):
         self.key(Qt.Key.Key_Space);self.assertIsInstance(self.win.current(),SquadScreen)
@@ -157,7 +158,12 @@ class WindowPipe(unittest.TestCase):
         for goal in (None,False,True,None):
             self.key(Qt.Key.Key_Return);self.settle();self.assertIs(self.c.view.own_override(bench,1),goal,
                 (self.c.message,self.sent,p.word,p.line,self.c.view.record(bench).hex()))
-        p.choose(4)
+        for element in (2,3,4):
+            self.key(Qt.Key.Key_Down);self.assertEqual(p.line,element-1)
+            before=self.c.view.own_override(bench,element)
+            goal=False if before is None else True if before is False else None
+            self.key(Qt.Key.Key_Return);self.settle();self.assertIs(self.c.view.own_override(bench,element),goal)
+        self.key(Qt.Key.Key_Down);self.assertEqual(p.line,4)
         self.assertIsNone(self.c.view.marking_goal(bench))
         self.key(Qt.Key.Key_Return);self.settle();self.assertEqual(self.c.view.marking_goal(bench),0)
         self.key(Qt.Key.Key_Return);self.settle();self.assertEqual(self.c.view.marking_goal(bench),self.c.view.marking_targets[0])
@@ -253,6 +259,12 @@ class WindowPipe(unittest.TestCase):
 
     def captain(self,mode):
         self.key(Qt.Key.Key_Return);p=self.win.current();self.assertIsInstance(p,ChooseScreen)
+        if mode=='word':
+            original=p.highlighted();self.key(Qt.Key.Key_Down)
+            for _ in range(11):
+                if p.highlighted() in p.available:break
+                self.key(Qt.Key.Key_Down)
+            self.assertNotEqual(p.highlighted(),original)
         expected=p.highlighted() if mode=='word' else None
         if mode=='word':self.key(Qt.Key.Key_Return)
         elif mode=='computer':self.key(Qt.Key.Key_C)
