@@ -214,7 +214,7 @@ class Screens(unittest.TestCase):
         from goal2.game import best_twenty_jobs
         screen = self.squad()
         item = self.bar_key(screen, "assistant")
-        self.assertEqual(item.binding.captions, ("Ins",))
+        self.assertEqual(item.binding.captions, ("A",))
         entered,release=threading.Event(),threading.Event()
         real=best_twenty_jobs.prepare
         def held(value):

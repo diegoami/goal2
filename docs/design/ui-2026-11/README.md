@@ -244,7 +244,7 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
   pool on the right. Once a pool player is picked, the Enter hint reads *put here*, as in the original
   (T156-R1 step 17).
 - **Actions**: **↑↓** player, **←→** squad / pool, **Enter** move player (Enter on a pool player,
-  ← back, Enter on the player he replaces), **Ins** the assistant's recommended 20, **R** next position
+  ← back, Enter on the player he replaces), **A** (or **Ins**) the assistant's recommended 20 [designed: owner playtest #766], **R** next position
   (Shift+R back), **C** club position, **T** his tactics, **F2** new name, **Esc** desk.
 - **Replaces**: `m244-squad`, `m244-squad-next`, `m244-pool`, `m244-pool-next`, `m244-position-next`,
   `m244-position-club`, `t156-014-squad`, `t156-016-pool`, `t156-017-pool-put-here`, `t156-029-pool-pick-done`,

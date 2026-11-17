@@ -98,6 +98,29 @@ class AssistantUI(unittest.TestCase):
         self.assertEqual(len(set(self.model.state.managed_squad+self.model.state.campaign.reserve_ids)),100)
         assert_fits(self,self.win)
 
+    def test_a_shortcut_selects_native_twenty_and_is_visible(self):
+        # [designed: owner playtest, #766] A works without an Insert key.
+        expected=self.expected()
+        self.key(Qt.Key.Key_A);self.finished()
+        self.assertEqual(self.model.state,expected)
+        item=next(w for w in self.screen.key_bar.findChildren(Clickable,'keyItem') if w.binding.text=='assistant')
+        self.assertEqual(item.binding.captions,('A',))
+        self.assertIn('A assistant',self.screen.hint.text())
+        assert_fits(self,self.win)
+
+    def test_a_in_name_or_search_stays_text(self):
+        before=copy.deepcopy(self.model.state)
+        self.screen.new_name()
+        edit=self.screen.card.name_line.edit
+        QTest.keyClicks(edit,'Ada');self.app.processEvents()
+        self.assertEqual(edit.text(),'Ada')
+        self.assertIsNone(self.screen._assistant_token)
+        self.screen.close_name();self.screen.open_search()
+        QTest.keyClicks(self.win,'a');self.app.processEvents()
+        self.assertEqual(self.screen.query,'a')
+        self.assertIsNone(self.screen._assistant_token)
+        self.assertEqual(self.model.state,before)
+
     def test_heartbeat_and_cancel_before_send_never_publish(self):
         before=copy.deepcopy(self.model.state);entered,release,control=self.gated()
         beats=[];timer=QTimer();timer.setInterval(10);timer.timeout.connect(lambda:beats.append(1));timer.start()

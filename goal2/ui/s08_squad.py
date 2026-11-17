@@ -17,7 +17,7 @@ the model's own (`DesktopModel`, route (b), #527 D2): the screen holds no rule o
   player swap in and out, two starters change places (`DesktopModel.swap`, which publishes the eleven as `confirm`
   does). An unavailable starter can be moved to the bench this way. Two bench players keep the squad's order (the
   model says why). [designed: T165] Enter on another pool player moves the pick to him.
-- **Ins**, the assistant's recommended 20, explicitly asks the original assistant through the owner's shared
+- **A** (or **Ins**), the assistant's recommended 20, explicitly asks the original assistant through the owner's shared
   PyPy process. [confirmed: T183a/F031] The original orders the selection; [derived: T183b] current opening-career
   metadata supplies its input. [designed: owner, T183c] Progress and cancellation stay responsive; only a current,
   verified result is published. Full later native-calendar acceptance remains T183's separate gate.
@@ -63,7 +63,7 @@ SEARCH_MAX = 12   # [designed: T177] a surname's length on this route (`rename_p
 ADDITION = "GOAL2 ADDITION · POOL SEARCH"
 ASSISTANT_WAIT = "The assistant is choosing twenty.\nEsc: cancel and return to desk."
 ASSISTANT_UNAVAILABLE = "The assistant is not available for this career yet.\nYour selection is unchanged."
-ASSISTANT_IDLE = "Ins: ask your assistant to choose twenty.\nThe full squad and pool are considered."
+ASSISTANT_IDLE = "A: ask your assistant to choose twenty.\nThe full squad and pool are considered."
 
 
 def shift_held():
@@ -139,7 +139,8 @@ class SquadScreen(Screen):
         self.bind((Qt.Key.Key_Left,), "", lambda: self.show_side("squad"), captions=("",), shown=False)
         self.bind((Qt.Key.Key_Right,), "", lambda: self.show_side("pool"), captions=("",), shown=False)
         self.bind((), "squad / pool", None, captions=("←", "→"))
-        self.bind((Qt.Key.Key_Insert,), "assistant", self.assistant)
+        # [designed: owner playtest, #766] A is accessible without an Insert key.
+        self.bind((Qt.Key.Key_A, Qt.Key.Key_Insert), "assistant", self.assistant, captions=("A",))
         self.bind((Qt.Key.Key_R,), "next position", lambda: self.reposition(-1 if shift_held() else 1))
         self.bind((Qt.Key.Key_C,), "club position", self.club_position)
         self.bind((Qt.Key.Key_T,), "his tactics", self.his_tactics)
@@ -148,7 +149,7 @@ class SquadScreen(Screen):
         self.search_binding = self.bind((Qt.Key.Key_Slash,), "search", self.open_search)
         self.position_binding = self.bind((Qt.Key.Key_P,), "position",
                                           lambda: self.step_position(-1 if shift_held() else 1))
-        # [designed: T183c] Ins is explicit; no selection runs on screen entry.
+        # [designed: T183c/#766] The assistant action is explicit; no selection runs on screen entry.
         # [designed: T211] The twelve keys and the Enter hint are two rows of cells, a cell apart (the grid's bar).
         last_on_the_bar(self, "desk")
         self.set_enter("Move player", self.press_move)
@@ -168,7 +169,7 @@ class SquadScreen(Screen):
         self.pool_button.clicked.connect(lambda: self.show_side("pool"))
         body.put(self.squad_button, 0, 0, len("Squad (20)") + 2)
         body.put(self.pool_button, len("Squad (20)") + 3, 0, len("Pool") + 2)
-        self.hint = CellLabel("←→ squad / pool · Ins assistant", "sub")
+        self.hint = CellLabel("←→ squad / pool · A assistant", "sub")
         self.name_label.parentWidget().layout().addWidget(self.hint)
         # [designed: owner, §6 item 18; T177] the pool's search and position filter, tagged as a goal2 addition
         body.text(ADDITION, "tagNew", len("Squad (20)") + len("Pool") + 6, 0)
@@ -413,7 +414,7 @@ class SquadScreen(Screen):
             return self.say("Finish the entry with Enter or Esc first.")
         # [confirmed: E44F E772..E788] Ins acts from the squad pane only.
         if self.side != 'squad':
-            return self.say("Left: show your squad, then Ins for the assistant.")
+            return self.say("Left: show your squad, then A for the assistant.")
         try:
             self._assistant_jobs = self.model.assistant_jobs()
             self._assistant_token = self._assistant_jobs.start()
