@@ -434,3 +434,5 @@ operational status.
 - [T170w](T170w.md): adopt accepted native pre-match marking with distinct inherit/protected-zone/opponent goals in the held worker (#763; upstream T137/#726).
 
 - [T170x](T170x.md): immutable decision-bound current pre-match window data, including native squad/pool/opponent cards and marking (#768).
+
+- [T170y](T170y.md): confirmed single-flight held-Match edit/captain coordinator using the accepted current view (#770).
