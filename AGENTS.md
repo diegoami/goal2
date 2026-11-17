@@ -45,9 +45,8 @@ over the same held Match: read T170i's mapping and T170r's inventory, then write
 next bounded consumer contract. The legacy assistant-only current-career projection
 (`best_twenty_state.prepare`) is not a native season bootstrap. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
-complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. Then the complete
-window action flow over the same held Match (T170i's mapping and T170r's matrix), in-match/resume,
-and save/load semantics. Preserve the explicit existing T183 assistant exception. Then the
+complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. After that
+window flow, finish in-match/resume and save/load semantics. Preserve the explicit existing T183 assistant exception. Then the
 **Prover comparison** (T132 Done-when 2, archaeology #709, independent of the focused seam
 receipts), **#702** (oracle no-fixture round, awaiting milestone round 20), T170f (#693's nine
 ports) and T183, then **T169 flips the ZIP**. The bug queue #697/#698/#682/#684 is swept.
