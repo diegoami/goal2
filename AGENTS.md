@@ -36,13 +36,19 @@ and opponent goals;10 Native/manual/API scenarios,38 guards,19 exact PyPy replay
 checkpoints,107 inherited methods and all12 full CI groups pass. Parent #719 is closed;
 T170w/#765 adopts it in the seam/worker: exact goals, same-decision repair,
 current status/table previews and separate Play are proven; all pre-match input
-arms are now available in the worker. Original marking-menu
+arms are now available in the worker. T170x/#769 adds the verified immutable
+PrematchView window read boundary: native current squad/pool/opponent records,
+marking/status/domains and existing card/TEAM decoding, no career publication.
+Six methods,10 actual worker snapshots and parent-pipe proof pass;260-module
+local/Linux/Windows/native gates pass. Windows's first unchanged T223 timing
+failure is retained; the same-head retry passes without bound/case changes.
+Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
 Next, in order: **worker activation**, now the complete **window action flow**
-over the same held Match: read T170i's mapping and T170r's inventory, then write the
-next bounded consumer contract. The legacy assistant-only current-career projection
+over the same held Match: use the accepted T170x view, read T170i's mapping and
+T170r's inventory, then write the next bounded controller/mutation consumer contract. The legacy assistant-only current-career projection
 (`best_twenty_state.prepare`) is not a native season bootstrap. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
 complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. After that
@@ -52,10 +58,10 @@ receipts), **#702** (oracle no-fixture round, awaiting milestone round 20), T170
 ports) and T183, then **T169 flips the ZIP**. The bug queue #697/#698/#682/#684 is swept.
 UI2 foundation T215/#748 merged at3b561483 after renewed owner review/playtest
 and approval (#754 closed). The other session owns the T183 fast-track: T183a/#759
-and T183b/#761 are merged; T183c PR764/#762 async Ins is its active delivery under #594.
-Its checkout stays at824 while pinned-runtime native checks/finisher run; preserve
-that source, artifact app3fec, installed apps/data and all original fidelity cases.
-Main's later marking adoption does not claim those assistant delivery checks.
+and T183b/#761 are merged; T183c/#764 delivers async assistant action for supported
+opening careers, and #767 makes A its visible shortcut (Ins remains compatible).
+Preserve those accepted controls, the isolated owner apps/data and all fidelity
+cases; held-season assistant integration still needs its explicit contract.
 The parent's native-later/finals acceptance remains open; #725 now has verified
 retained G4B/C/D finals-flag candidates, not yet a native Ins-refusal proof. Preserve
 that session and checkout. The redesigned-UI look items
