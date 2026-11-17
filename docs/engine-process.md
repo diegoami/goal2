@@ -168,7 +168,24 @@ records and marking words. `display_state()` gives existing card/TEAM decoders
 a detached current view, with optional identity overlays and no campaign.
 It supplies no backend reference, mutation API, publication or native career
 bootstrap. Pool permission is not inferred from legacy campaign metadata.
-Window mutation/controller wiring remains a subsequent leaf.
+Window widget/lifecycle wiring remains a subsequent leaf.
+
+[designed: T170y/#770] `PrematchController` coordinates confirmed edit/captain
+transactions once the process owner has configured the held Match and obtained
+its first decision/preview. Its sender is that owner's existing `season_request`;
+replies must be marshalled to the controller's owner thread. It sends one answer,
+and its process owner must reserve this session exclusively until handoff/detach;
+no other client may advance or answer that same session while attached. It then
+waits for the fresh pre-match decision and verifies the preview before replacing
+the accepted view. It never optimistically patches records. Pure answer refusals
+retain the view/decision; malformed/lost replies invalidate without replay.
+Play distinguishes omitted captain, null/native default and an exact word.
+The first bounded next reply is retained intact in `handoff`; its events are
+excluded from `take_events` to give the next driver one delivery path. A native
+Play refusal instead returns to a verified pre-match view. `detach` only severs
+presentation updates; the existing process/session owner must handle its lease,
+discard and close. This coordinator adds no bootstrap, pacing, resume, save or
+widget binding.
 
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping

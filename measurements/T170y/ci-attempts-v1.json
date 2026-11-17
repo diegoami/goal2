@@ -1,0 +1,36 @@
+{
+  "first_linux_factor1": {
+    "error": "curl56 connection reset by peer",
+    "job": 134342317204,
+    "phase": "download before tests",
+    "result": "failure",
+    "retained_log": "/home/diego/projects/goal2-keep/T170y/native-linux-scale1-attempt1.log",
+    "sha256": "ff7117c79347c5cfc6f5c675d3219d955d4a7f670e1bda95196dd63f082d857e"
+  },
+  "linux": {
+    "attempt": 2,
+    "game_gate": {
+      "modules": 261,
+      "passed": 261,
+      "skipped": 239
+    },
+    "native_scaling": "both success; only factor1 retried",
+    "result": "success",
+    "run": 44168848157
+  },
+  "schema": "t170y-ci-attempts/1",
+  "scope": "Single failed native-scaling job retried only after Linux game workflow finished naturally. No running job stopped; no source/test/fixture/case/threshold change or failed-run relabelling.",
+  "tested_head": "37a24dc74e091c08ff23d4b05b64194d8158edfe",
+  "windows": {
+    "attempt": 1,
+    "game_gate": {
+      "modules": 261,
+      "passed": 261,
+      "skipped": 255
+    },
+    "native_desktop": "success",
+    "native_scaling": "both success",
+    "result": "success",
+    "run": 44168848037
+  }
+}

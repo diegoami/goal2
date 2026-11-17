@@ -51,6 +51,13 @@ decoders and preserves supplied identity metadata. It carries no career
 calendar and cannot replace a native season bootstrap or round publication.
 The full window action/mutation flow below still needs its controller wiring.
 
+[designed: T170y/#770] The Qt-free `PrematchController` now supplies the confirmed
+edit/captain transaction state machine for an already-owned configured session.
+It keeps the old view while one answer/decision/preview sequence is pending,
+retains a pure refusal for repair, and invalidates on loss without replay.
+Its first Play reply belongs only to the explicit handoff. The actual screen
+bindings, session/bootstrap ownership and later match lifecycle remain separate.
+
 ## Action matrix
 
 [confirmed: goal2 `31989d87`, handlers linked below; original `fb6d3093`]
