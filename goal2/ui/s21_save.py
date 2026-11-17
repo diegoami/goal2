@@ -25,14 +25,12 @@ screen, dimmed, as the mockup draws it [designed: s21-save-quit.html].
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QVBoxLayout
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy
 
-from goal2.ui import saves
+from goal2.ui import saves, theme
 from goal2.ui.s22_help import Scrim
-from goal2.ui.screen import Clickable, Screen, kbd, label, para, set_para
-from goal2.ui.start_look import LineField
+from goal2.ui.screen import Screen, set_para
 
-WIDTH = 640   # [designed: s21-save-quit.html, the dialog's width at 1440x900]
 # [designed: s21-save-quit.html] the box's words; the prompt is the original's "Please enter name of saved game"
 # [confirmed: t156-233-save-name-prompt]
 SAVE_HEAD = "Save the game"
@@ -42,80 +40,103 @@ QUIT_TEXT = "Are you sure you want to quit?"            # [confirmed: t156-239-q
 SAVE_QUESTION = "Do you want to save this game?"        # [confirmed: t156-240-quit-save-prompt]
 
 
-def button(text, caption, handler, primary=False):
-    """A button of the box, its key cap at the right, as the mockup's `.btn` (`.primary`: the highlight bar)."""
-    item = Clickable("enterHint" if primary else "option")
-    row = QHBoxLayout(item)
-    row.setContentsMargins(18, 10, 18, 10)
-    row.setSpacing(10)
-    row.addWidget(label(text, "enterText" if primary else "optionText"))
-    row.addWidget(kbd(caption))
-    item.clicked.connect(handler)
-    return item
+def button(text,caption,handler,primary=False):
+    """[designed: T216] The same direct action and key caption, without padding taking space from its cells."""
+    from goal2.ui.cell_parts import CellKeyItem
+    return CellKeyItem(text,caption,handler,len(text)+len(caption)+1,primary=primary)
 
 
 class BoxScreen(Screen):
-    """A box over the screen it was opened from: that screen as it was, dimmed, and the box in the middle, as S22's.
-    Its title is the screen's under it and the box's (*manager's desk · save*), as the mockup's."""
-    escape_text = "cancel"
-    offers_help = False
-    box_title = ""
+    """A bottom-anchored prompt frame over readable main content; the current title and key bar remain visible."""
+    GRID = True   # [designed: owner, #667; T216]
+    escape_text="cancel"
+    offers_help=False
+    box_title=""
+    COLS=48
 
-    def __init__(self, window, under):
-        self.title = f"{under.title} · {self.box_title}" if under is not None and under.title else self.box_title
+    def __init__(self,window,under):
+        self.title=f"{under.title} · {self.box_title}" if under is not None and under.title else self.box_title
         super().__init__(window)
-        self.under = under
-        backdrop = QLabel()
-        backdrop.setObjectName("backdrop")
-        if under is not None:
-            backdrop.setPixmap(under.grab(under.body.parentWidget().geometry()))
-        backdrop.setScaledContents(True)
-        backdrop.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.body_layout.addWidget(backdrop)
-        self.scrim = Scrim(self)
-        self.scrim.setObjectName("scrim")
-        outer = QVBoxLayout(self.scrim)
-        outer.addStretch(1)
-        row = QHBoxLayout()
-        row.addStretch(1)
-        self.dialog = QFrame()
-        self.dialog.setObjectName("dialog")
-        self.dialog.setFixedWidth(WIDTH)
-        self.box = QVBoxLayout(self.dialog)
-        self.box.setContentsMargins(30, 24, 30, 26)
-        self.box.setSpacing(14)
-        self.head = label("", "h2")
-        self.box.addWidget(self.head)
-        self.text = para("", "value")
-        self.box.addWidget(self.text)
-        row.addWidget(self.dialog)
-        row.addStretch(1)
-        outer.addLayout(row)
-        outer.addStretch(1)
+        from PySide6.QtCore import QEvent
+        from goal2.ui.cells import Cells,CellLabel,CellPara
+        from goal2.ui.frame import Frame
+        self.under=under
+        backdrop=QLabel();backdrop.setObjectName("backdrop")
+        if under is not None:backdrop.setPixmap(under.grab(under.body.parentWidget().geometry()))
+        backdrop.setScaledContents(True);backdrop.setSizePolicy(QSizePolicy.Policy.Ignored,QSizePolicy.Policy.Ignored)
+        from PySide6.QtWidgets import QStackedLayout,QWidget
+        host=QWidget();host.setObjectName("overlayHost")
+        stack=QStackedLayout(host);stack.setContentsMargins(0,0,0,0)
+        stack.setStackingMode(QStackedLayout.StackingMode.StackAll)
+        self.scrim=Scrim(host,alpha=theme.PROMPT_SCRIM_ALPHA);self.scrim.setObjectName("scrim")
+        stack.addWidget(backdrop);stack.addWidget(self.scrim);stack.setCurrentWidget(self.scrim)
+        self.body_layout.addWidget(host,1)
+        layout=QHBoxLayout(self.scrim);layout.setContentsMargins(0,0,0,0)
+        self.canvas=Cells(90,25,"dialogBody");layout.addWidget(self.canvas)
+        self.dialog=Frame(self.box_title or "question")
+        self.dialog.setAttribute(Qt.WidgetAttribute.WA_StyledBackground,True)
+        self.dialog.setStyleSheet("#frame { background: "+theme.GROUND+"; }")
+        self.box=self.dialog.body
+        self.head=CellLabel("","h2");self.box.addWidget(self.head)
+        self.text=CellPara("","value");self.box.addWidget(self.text)
+        self.canvas.put(self.dialog,(90-self.COLS)//2,0,self.COLS,1)
+        self._box_rows=None;self._placing=False
+        self.dialog.installEventFilter(self)
 
-    def buttons(self, items):
-        """The box's buttons, at its right end."""
-        row = QHBoxLayout()
-        row.setSpacing(12)
-        row.addStretch(1)
-        for item in items:
-            row.addWidget(item)
-        self.box.addLayout(row)
-        return row
+    def buttons(self,items):
+        from PySide6.QtCore import QEvent
+        from goal2.ui.cells import Cells
+        from goal2.ui import theme
+        class Buttons(Cells):
+            def __init__(self):
+                super().__init__(BoxScreen.COLS,1,"dialogButtons")
+                self.setFixedHeight(theme.CELL_H)
+                self.buttons=list(items)
+                for item in self.buttons:self.put(item,0,0,item.cols);item.installEventFilter(self)
+                self.reflow()
+            def reflow(self):
+                visible=[item for item in self.buttons if not item.isHidden()]
+                at=self.cols-sum(item.cols for item in visible)-max(0,len(visible)-1)
+                for item in visible:self.move(item,at,0,item.cols);at+=item.cols+1
+            def eventFilter(self,obj,event):
+                if event.type() in (QEvent.Type.ShowToParent,QEvent.Type.HideToParent):self.reflow()
+                return super().eventFilter(obj,event)
+            def resizeEvent(self,event):
+                super().resizeEvent(event);self.reflow()
+        row=Buttons();self.box.addWidget(row);return row
 
-    def resizeEvent(self, event):
+    def _place_box(self):
+        if self._placing:return
+        import math
+        from goal2.ui.cells import cell_w,row_px
+        self._placing=True
+        try:
+            width=round(self.COLS*cell_w(self))
+            height=self.dialog.layout().totalHeightForWidth(width)
+            if height<0:height=self.dialog.minimumSizeHint().height()
+            rows=max(1,math.ceil(height/row_px(self)))
+            if rows!=self._box_rows:
+                self._box_rows=rows
+                self.canvas.move(self.dialog,(90-self.COLS)//2,max(0,25-rows),self.COLS,rows)
+        finally:self._placing=False
+
+    def eventFilter(self,obj,event):
+        from PySide6.QtCore import QEvent
+        if obj is getattr(self,"dialog",None) and event.type()==QEvent.Type.LayoutRequest:self._place_box()
+        return super().eventFilter(obj,event)
+
+    def resizeEvent(self,event):
         super().resizeEvent(event)
-        self.scrim.setGeometry(self.rect())
-        self.scrim.raise_()
+        self._place_box()
 
     def shown(self):
-        self.scrim.setGeometry(self.rect())
-        self.scrim.raise_()
+        self._place_box()
 
 
 class QuestionScreen(BoxScreen):
     """A yes/no question: **Y**, **N**, and **Esc** to cancel when `cancel` is given (else Esc is N)."""
+
+    GRID = True   # [designed: owner, #667; T216]
 
     def __init__(self, window, under, title, head, question, yes, no, cancel=None):
         self.box_title = title
@@ -142,6 +163,7 @@ class QuestionScreen(BoxScreen):
 class SaveScreen(BoxScreen):
     """F7's name box: the proposed name, typed over or accepted; Enter saves, Esc cancels. `done` runs once saved,
     `cancelled` on Esc (default: back to the screen under the box)."""
+    GRID = True   # [designed: owner, #667; T216]
     box_title = "save"
 
     def __init__(self, window, under, model, done=None, cancelled=None):
@@ -150,14 +172,16 @@ class SaveScreen(BoxScreen):
         self.replacing = None   # the other save's file while the box asks whether to replace it
         self.head.setText(SAVE_HEAD)
         set_para(self.text, SAVE_TEXT)
-        self.field = LineField(saves.NAME_MAX)
+        from goal2.ui.cell_parts import CellLineField
+        from goal2.ui.cells import CellPara
+        self.field = CellLineField(saves.NAME_MAX)
         self.field.set_text(saves.last_name(model) or "")
         self.field.set_active(True)
         self.fresh = bool(self.field.text)   # the proposal: the first key typed replaces it
         self.box.addWidget(self.field)
-        self.note = para(SAVE_NOTE, "sub")
+        self.note = CellPara(SAVE_NOTE, "sub")
         self.box.addWidget(self.note)
-        self.problem = para("", "error")
+        self.problem = CellPara("", "error")
         self.problem.hide()
         self.box.addWidget(self.problem)
         self.save_buttons = [button("Cancel", "Esc", self.escape), button("Save", "Enter", self.press_enter, True)]

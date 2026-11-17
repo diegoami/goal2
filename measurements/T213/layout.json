@@ -1,0 +1,390 @@
+{
+  "journey": [
+    {
+      "screen": "TournamentScreen",
+      "phase": null,
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "16-TournamentScreen-1440x1080.png",
+          "sha256": "bc30f5d37cd661e05abfe66d6a1d66453ef17ac274d8be28448788c3db7ff593"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "16-TournamentScreen-1440x900.png",
+          "sha256": "a21770f4dbbf6a67d7a16a53e85339f283309bdb4794eda36aa3ddddc3d44a90"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "16-TournamentScreen-2110x1213.png",
+          "sha256": "cea7155075ccae83c9576840eb1e02677e568c3e99a748ee8b65dc92b6166976"
+        }
+      ],
+      "journey": "s12-tournament.png"
+    },
+    {
+      "screen": "HistoryScreen",
+      "phase": null,
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "17-HistoryScreen-1440x1080.png",
+          "sha256": "8620c63ee356a6695adaf4ffe12da36a7f2b78280e4581154f5b019c4db5f2e6"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "17-HistoryScreen-1440x900.png",
+          "sha256": "ac319f30f805bf4270778b44a53d33649ab9855500665ea3b2bdc2a7af1ccab4"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "17-HistoryScreen-2110x1213.png",
+          "sha256": "49df726b9dceef78632a30ba829e9e09017c009505e32f9f00a9ddefceb38391"
+        }
+      ],
+      "journey": "s13-history.png"
+    },
+    {
+      "screen": "MenuScreen",
+      "phase": "before",
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "19-MenuScreen-1440x1080.png",
+          "sha256": "20c601f017cd814613b17b4ea20eb32d3e00e1bfbc499a316dc6861690b5fc41"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "19-MenuScreen-1440x900.png",
+          "sha256": "8aeece372f90b28cb82781fad7d4e6b2c88c3ad1adb86d52e1ef39e2541a1bc3"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "19-MenuScreen-2110x1213.png",
+          "sha256": "5433d2d09fa958fa3f3d534728ea3b808e551c272741b1c741c6e0cd4d10ef91"
+        }
+      ],
+      "journey": "s15-match-menu.png"
+    },
+    {
+      "screen": "BoardScreen",
+      "phase": "half",
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "28-BoardScreen-1440x1080.png",
+          "sha256": "bf179efa8678c6a8549aeedcfe354db62fe098aff7b095689533f6f93f494ea4"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "28-BoardScreen-1440x900.png",
+          "sha256": "ad6f877396872fb59095e1636521e7a82175a1da91a5232ff682d270db9aba90"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "28-BoardScreen-2110x1213.png",
+          "sha256": "cb06971fc464e33458385c64d860f20164be76c9c161e7367a8ba0ebb0429bff"
+        }
+      ],
+      "journey": "s20-board-half.png"
+    },
+    {
+      "screen": "MenuScreen",
+      "phase": "half",
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "29-MenuScreen-1440x1080.png",
+          "sha256": "5cd7a0ba225959b9d9ebfb32ec0be33ae4d04fb40221529958b2e634512abeb3"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "29-MenuScreen-1440x900.png",
+          "sha256": "ad74b42bb75835d81185bff2b3f1c07c549a2f993b1b87e71e35ba3f6f274f30"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "29-MenuScreen-2110x1213.png",
+          "sha256": "eeb819da066c177f88a6d2e3e54c60a23473db8ed87c32b067d7bd0355e4df96"
+        }
+      ],
+      "journey": "s15-match-menu-half.png"
+    },
+    {
+      "screen": "BoardScreen",
+      "phase": "full",
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "30-BoardScreen-1440x1080.png",
+          "sha256": "762f4397fc5c6833879e01253147d35f1370e6f8dbebc9dc9bf9cfeabc2e65de"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "30-BoardScreen-1440x900.png",
+          "sha256": "a09ce59d40f6692d8a9a4119a79db1b4fb7629c6a819c10602aa11098ba80db5"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "30-BoardScreen-2110x1213.png",
+          "sha256": "dfad538856ae2ade3ab7f2633f62683a7ff6eea87dbc13b4fba23bbc1cd78a5b"
+        }
+      ],
+      "journey": "s20-board-full.png"
+    },
+    {
+      "screen": "BoardScreen",
+      "phase": "full",
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "31-BoardScreen-1440x1080.png",
+          "sha256": "762f4397fc5c6833879e01253147d35f1370e6f8dbebc9dc9bf9cfeabc2e65de"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "31-BoardScreen-1440x900.png",
+          "sha256": "a09ce59d40f6692d8a9a4119a79db1b4fb7629c6a819c10602aa11098ba80db5"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "31-BoardScreen-2110x1213.png",
+          "sha256": "dfad538856ae2ade3ab7f2633f62683a7ff6eea87dbc13b4fba23bbc1cd78a5b"
+        }
+      ],
+      "journey": "s20-save-summary-question.png"
+    },
+    {
+      "screen": "SavedGoalMenu",
+      "phase": null,
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "35-SavedGoalMenu-1440x1080.png",
+          "sha256": "f5498930840e0cbb62117c68919db159f4ca4e3e42741b4a94132f0ffa66152e"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "35-SavedGoalMenu-1440x900.png",
+          "sha256": "735230e9c6fcb9d1eb9a71614ee4d84b938d9f180be1de6b5e28c73d95fac562"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "35-SavedGoalMenu-2110x1213.png",
+          "sha256": "04f3ef20f578809776af1c1b3e1822b4ba12130177dda082b1aa490e4c9fe467"
+        }
+      ],
+      "journey": "s15-saved-goal-menu.png"
+    },
+    {
+      "screen": "BoardScreen",
+      "phase": "full",
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "38-BoardScreen-1440x1080.png",
+          "sha256": "0a71714c8b00d4a3ac2943a76e4ec9f8eddb0eb05c52d649ef14cdf82ba8daf1"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "38-BoardScreen-1440x900.png",
+          "sha256": "140df28b9003ba4779309a6e3b2d5c0243cc89a1187bb3e885c6d75ef90befb9"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "38-BoardScreen-2110x1213.png",
+          "sha256": "9043a345a2c369ca7f308939b923e31f9acd13a4c8b35134e0bbc213a5722ce8"
+        }
+      ],
+      "journey": "s20-saved-summary.png"
+    },
+    {
+      "screen": "HistoryScreen",
+      "phase": null,
+      "sizes": [
+        {
+          "width": 1440,
+          "height": 1080,
+          "problems": [],
+          "path": "44-HistoryScreen-1440x1080.png",
+          "sha256": "d8ba413b202eceef83059d9dd30ff9e41c4c3a581a0e29afecb15efc0efe7c03"
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "problems": [],
+          "path": "44-HistoryScreen-1440x900.png",
+          "sha256": "1858dad9e9fbcdf9c4653ac3a42711faf24c06e17096ac179aa9306833bd24e5"
+        },
+        {
+          "width": 2110,
+          "height": 1213,
+          "problems": [],
+          "path": "44-HistoryScreen-2110x1213.png",
+          "sha256": "5971b2d714763e7a322be4962972a0b20752c3a4bb7acbc54d0768a9f5e0f4ed"
+        }
+      ],
+      "journey": "s13-history-round2.png"
+    }
+  ],
+  "rounds": [
+    {
+      "phase": "before",
+      "requested": [
+        1440,
+        1080
+      ],
+      "actual": [
+        1440,
+        1080
+      ],
+      "path": "s14-round-before-1440x1080.png",
+      "problems": []
+    },
+    {
+      "phase": "before",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "path": "s14-round-before-1440x900.png",
+      "problems": []
+    },
+    {
+      "phase": "before",
+      "requested": [
+        2110,
+        1213
+      ],
+      "actual": [
+        2110,
+        1213
+      ],
+      "path": "s14-round-before-2110x1213.png",
+      "problems": []
+    },
+    {
+      "phase": "before",
+      "requested": [
+        1440,
+        1061
+      ],
+      "actual": [
+        1440,
+        1061
+      ],
+      "path": "s14-round-before-1440x1061.png",
+      "problems": []
+    },
+    {
+      "phase": "after",
+      "requested": [
+        1440,
+        1080
+      ],
+      "actual": [
+        1440,
+        1080
+      ],
+      "path": "s14-round-after-1440x1080.png",
+      "problems": []
+    },
+    {
+      "phase": "after",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "path": "s14-round-after-1440x900.png",
+      "problems": []
+    },
+    {
+      "phase": "after",
+      "requested": [
+        2110,
+        1213
+      ],
+      "actual": [
+        2110,
+        1213
+      ],
+      "path": "s14-round-after-2110x1213.png",
+      "problems": []
+    },
+    {
+      "phase": "after",
+      "requested": [
+        1440,
+        1061
+      ],
+      "actual": [
+        1440,
+        1061
+      ],
+      "path": "s14-round-after-1440x1061.png",
+      "problems": []
+    }
+  ]
+}

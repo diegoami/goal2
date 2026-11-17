@@ -1,0 +1,410 @@
+[
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/home.png",
+    "sha256": "134b2067a2220b6a186863479d13cd40836f0a549e6ea3c04539722066c6e95b",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        1.7225000282417497,
+        0.9984261720325991,
+        0.0,
+        0.0
+      ],
+      [
+        2.908175562817719,
+        5.030044057129026,
+        3.5174909352053576,
+        1.1016641587993226
+      ],
+      [
+        0.15020576131687244,
+        0.24691358024691357,
+        0.24691358024691357,
+        0.15020576131687244
+      ],
+      [
+        0.41904960703623007,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s05-bulletin.png",
+    "sha256": "85f90da2587933648fa0a3dd721f9e38c45c8fe7eb002e0884d739bfb84dcabb",
+    "original": "docs/original-game/images/t156-011-bulletin-welcome.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        21.660123052529656,
+        12.030691867990003,
+        10.378686961994676,
+        14.998972063261531
+      ],
+      [
+        52.92890141934964,
+        27.54331236585179,
+        22.325550968288557,
+        40.029696596465534
+      ],
+      [
+        34.2400548696845,
+        26.073177503429438,
+        23.04705733882031,
+        38.55104526748954
+      ],
+      [
+        20.152529569111596,
+        14.975843743242176,
+        9.788338989752294,
+        10.764611248285329
+      ]
+    ],
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-quit.png",
+    "sha256": "85ba6139cdf532af9d8522aff7764e4e18ea95e118cd9f4d4e331958593953ec",
+    "original": "docs/original-game/images/quit-confirm.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        6.664478177196808,
+        12.292186782861297,
+        16.787579596546415,
+        3.77305114258049
+      ],
+      [
+        4.501354755103686,
+        2.98017893891713,
+        1.9252920931170816,
+        5.1772598313564115
+      ],
+      [
+        8.575604884208829,
+        5.594800569676427,
+        2.5385192132655536,
+        4.607351635600742
+      ],
+      [
+        3.5470151230533338,
+        3.845345335269912,
+        4.522900789962077,
+        2.247443495521665
+      ]
+    ],
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-replace.png",
+    "sha256": "abaf13fbe4316ce2c81c264e81b8c55255f3081b112b8934a52b368c83aff0cf",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        6.664478177196808,
+        12.260658591140164,
+        16.787579596546415,
+        3.77305114258049
+      ],
+      [
+        4.501354755103686,
+        2.98017893891713,
+        1.9252920931170816,
+        5.1772598313564115
+      ],
+      [
+        8.51221266360042,
+        5.23166633906237,
+        2.4514293084805936,
+        4.575556830468814
+      ],
+      [
+        7.687221362059227,
+        7.3596705027031355,
+        5.063462332768497,
+        2.438365522472363
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-save-failed.png",
+    "sha256": "024ed3d3cc3124182117ec2ae33fc164b421437d4f27e7eaec1beb0c06b13e53",
+    "original": "docs/original-game/images/t156-233-save-name-prompt.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        6.664478177196808,
+        12.260658591140164,
+        16.787579596546415,
+        3.77305114258049
+      ],
+      [
+        5.178575484547731,
+        7.824517363027518,
+        4.682946627128218,
+        5.208513409182607
+      ],
+      [
+        9.50409712579682,
+        14.605627764867265,
+        16.57805195432906,
+        5.291040123456786
+      ],
+      [
+        6.871737608327282,
+        5.89112942386831,
+        8.719907345275555,
+        2.6573633454369405
+      ]
+    ],
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-save-goal.png",
+    "sha256": "4ac8bb334abd08d274d38b5c3356b7fa1371acbf5ea1c6a0b150902c68ec8e8b",
+    "original": "docs/original-game/images/t156-176-save-goal-prompt.png",
+    "floor": 0.31970166666666666,
+    "tiles": [
+      [
+        6.664478177196808,
+        12.859061849431132,
+        16.787579596546415,
+        3.77305114258049
+      ],
+      [
+        4.501354755103686,
+        2.98017893891713,
+        1.9252920931170816,
+        5.1772598313564115
+      ],
+      [
+        8.65618034132172,
+        4.267518834826111,
+        2.1826124715565243,
+        4.501246447187928
+      ],
+      [
+        7.36339983700476,
+        13.750888117485667,
+        16.156716096990234,
+        3.113799019607842
+      ]
+    ],
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-save-question.png",
+    "sha256": "cb8f715263648c597b642ddbe6a341cafb0a808383629ca499e7d5f24c18214c",
+    "original": "docs/original-game/images/t156-240-quit-save-prompt.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        6.664478177196808,
+        12.292186782861297,
+        16.787579596546415,
+        3.77305114258049
+      ],
+      [
+        4.501354755103686,
+        2.98017893891713,
+        1.9252920931170816,
+        5.1772598313564115
+      ],
+      [
+        8.575604884208829,
+        5.594800569676427,
+        2.5385192132655536,
+        4.607351635600742
+      ],
+      [
+        3.4873780488985693,
+        3.8324142378762214,
+        4.6161536803033965,
+        2.247443495521665
+      ]
+    ],
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-save.png",
+    "sha256": "3edee79560d87c8af3147bf87da69ef27b80d10f65f8844306e28f48d4f5785e",
+    "original": "docs/original-game/images/t156-233-save-name-prompt.png",
+    "floor": 1.5,
+    "tiles": [
+      [
+        6.664478177196808,
+        12.260658591140164,
+        16.787579596546415,
+        3.77305114258049
+      ],
+      [
+        4.501354755103686,
+        2.98017893891713,
+        1.9252920931170816,
+        5.1772598313564115
+      ],
+      [
+        8.65618034132172,
+        4.593896026789317,
+        2.1827058048898578,
+        4.501246447187928
+      ],
+      [
+        7.31841956427015,
+        13.465198286129258,
+        18.295796543209875,
+        3.1191595618494303
+      ]
+    ],
+    "passed": true,
+    "comparison_note": "Original floor retained. Newspaper furniture and readable bottom prompts restore the visual treatment without altering source words or controls."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-saved-goals.png",
+    "sha256": "b72fc36ec5104673d8daf1a33847217b83236ff98f16578cd540c93aa5154c56",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        10.170503376099411,
+        19.539277225046387,
+        19.62962962962963,
+        8.353566529492456
+      ],
+      [
+        3.007269285887195,
+        3.1390456709432764,
+        1.4814814814814814,
+        0.8065843621399177
+      ],
+      [
+        1.9714497716452832,
+        2.313021840555152,
+        1.2345679012345678,
+        0.6426611796982168
+      ],
+      [
+        1.727605969498911,
+        2.995106751391915,
+        3.5508965609618324,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s21-saved-summaries.png",
+    "sha256": "44c9397c0bbbb454e0f5765ee42b3ce3dac5d08f283fd4206b5b062d46137695",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        2.7632148107802803,
+        0.9710231420963451,
+        0.12345679012345678,
+        0.17181069958847736
+      ],
+      [
+        0.18518518518518517,
+        0.0,
+        0.0,
+        0.18518518518518517
+      ],
+      [
+        0.29888435649156786,
+        0.2990165424029694,
+        0.24691358024691357,
+        0.22839506172839505
+      ],
+      [
+        2.119985616880497,
+        2.590418196562576,
+        3.3625950931977724,
+        0.0
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s22-help-missing.png",
+    "sha256": "f161a7daac6b2a32e9fed9afacfa019c2ad6c2eaa54cc7a53c76990c5738c388",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        8.228901094166067,
+        5.572103255063343,
+        5.41338949810377,
+        7.343244432340841
+      ],
+      [
+        7.575947388041639,
+        4.912141174049867,
+        5.871182871782455,
+        4.396853167110465
+      ],
+      [
+        0.23550738562091475,
+        0.0,
+        0.0,
+        0.06971677559912855
+      ],
+      [
+        1.9083798547567172,
+        0.72717348019043,
+        0.0,
+        0.017651093359154362
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  },
+  {
+    "picture": "docs/design/ui-2026-11/T215-playtest-754-small/s22-help.png",
+    "sha256": "867635f1f44fbfefdc7205c032f48fb768724b955c0494d731df6fad3107e997",
+    "original": null,
+    "floor": null,
+    "tiles": [
+      [
+        11.380067668845324,
+        1.8295656903090465,
+        0.12345679012345678,
+        4.523174944726861
+      ],
+      [
+        14.05301977729364,
+        4.012801743726289,
+        0.0,
+        0.1644880174291939
+      ],
+      [
+        14.864331655773407,
+        4.253326535947705,
+        0.0,
+        0.1644880174291939
+      ],
+      [
+        9.708015202937132,
+        3.165316271282174,
+        0.19790607601065116,
+        0.052888727507463894
+      ]
+    ],
+    "passed": null,
+    "comparison_note": "No exact original capture of this designed placeholder/help/bounded-list/replacement-confirmation state; density reported without an invented original floor."
+  }
+]

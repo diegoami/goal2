@@ -31,13 +31,12 @@ C36, C37]
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 from goal2.ui import theme
 from goal2.ui.pitch import HOME
-from goal2.ui.screen import Screen, label, para
+from goal2.ui.screen import Screen
 from goal2.ui.kits import for_fixture
-from goal2.ui.squad_card import Row, box, colour
+from goal2.ui.squad_card import colour
 
 TIMES = {"before": "before kick-off", "half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME",
          "stop": "SUBSTITUTION OPPORTUNITY", "pause": "PAUSED"}
@@ -48,6 +47,7 @@ WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do y
 
 
 class MenuScreen(Screen):
+    GRID = True   # [designed: owner, #667; T213]
     escape_text = "select Play / Exit"
 
     def __init__(self, window, day, phase, score=(0, 0)):
@@ -64,63 +64,58 @@ class MenuScreen(Screen):
         self.country_options = {}
         self.title = f"match menu · {names[self.home_country]} v {names[self.away_country]}"
         self.name_label.setText(self.title)
-        head, inner = box(None)
-        row = QHBoxLayout()
-        row.setSpacing(24)
-        inner.addLayout(row)
-        # [confirmed: t156-045, t156-192; #583] each name in its side's kit, as the original's scoreboard
+        # [designed: owner, #667; T213] Score and situation over the two elevens and the existing two-country menu.
+        from goal2.ui.cells import Cells, CellPara
         kits = for_fixture(model, fixture)
-        first = label(names[self.home_country], "h1")
+        body = Cells(90,25,"matchBody")
+        self.body_layout.addWidget(body,1)
+        head = Cells(90, 2, "matchHead")
+        first = head.text(names[self.home_country], "h1", 0, 0, 16)
         colour(first, kits.colour(HOME))
-        row.addWidget(first)
-        self.score_label = label(f"{score[HOME]}  v  {score[1 - HOME]}", "h1")
-        row.addWidget(self.score_label)
-        second = label(names[self.away_country], "h1")
-        colour(second, kits.colour(1 - HOME))
-        row.addWidget(second)
-        self.situation = label(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}",
-                               "sub")
-        self.situation.setWordWrap(True)
-        row.addWidget(self.situation)
-        row.addStretch(1)
-        self.replay_label = label("", "sub")
-        row.addWidget(self.replay_label)
-        self.body_layout.addWidget(head)
-        middle = QHBoxLayout()
-        middle.setSpacing(18)
+        self.score_label = head.text(f"{score[HOME]}  v  {score[1-HOME]}", "h1", 17, 0, 10)
+        second = head.text(names[self.away_country], "h1", 28, 0, 16)
+        colour(second, kits.colour(1-HOME))
+        self.situation = CellPara(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}", "sub")
+        head.put(self.situation, 0, 1, 90)
+        self.replay_label = head.text("", "sub", 56, 0, 34)
+        body.put(head,0,0,90,2)
+        middle = Cells(90,20,"matchMenuBody")
         self.lineups = {}
         self._accepted_projection = None
         self.lineup_words = {}
         self.lineup_rows = {}
         self.lineup_headings = {}
         boxes = {c: self._lineup(c) for c in (self.home_country, self.away_country)}
-        middle.addWidget(boxes[self.home_country])
-        centre = QVBoxLayout()
-        centre.setSpacing(12)
-        sides_row = QHBoxLayout()
-        sides_row.setSpacing(12)
-        for country in (self.home_country, self.away_country):
-            column = QVBoxLayout()
-            column.setSpacing(10)
+        middle.put(boxes[self.home_country],0,0,28,20)
+        from goal2.ui.cells import CellPara
+        def option(text, handler, **kwargs):
+            item = self.add_option(text, handler, rows=1, **kwargs)
+            old = item.text_label
+            item.layout().replaceWidget(old, CellPara(text,"optionText"))
+            item.text_label = item.findChildren(CellPara)[0]
+            old.setParent(None)
+            old.deleteLater()
+            return item
+        for column,country in enumerate((self.home_country,self.away_country)):
             mine = country == own
-            tactics = self.add_option(f"{names[country]} team tactics", (lambda c=country: self.tactics(c)),
-                                      key=Qt.Key.Key_T if mine else None, enter="Team tactics")
-            players = self.add_option(f"{names[country]} players", (lambda c=country: self.players(c)),
-                                      key=Qt.Key.Key_Space if mine else None, enter="Players")
-            self.country_options[country] = (tactics, players)
-            column.addWidget(tactics)
-            column.addWidget(players)
-            sides_row.addLayout(column, 1)
-        centre.addLayout(sides_row)
-        tournament = self.add_option("tournament", self.tournament, enter="Tournament")
-        stats = self.add_option("match stats", self.stats, enter="Match stats")
-        centre.addWidget(tournament)
-        centre.addWidget(stats)
+            tactics = option(f"{names[country]} team tactics", lambda c=country:self.tactics(c),
+                             key=Qt.Key.Key_T if mine else None,enter="Team tactics")
+            players = option(f"{names[country]} players", lambda c=country:self.players(c),
+                             key=Qt.Key.Key_Space if mine else None,enter="Players")
+            self.country_options[country] = (tactics,players)
+            middle.put(tactics,29+17*column,0,15,3)
+            middle.put(players,29+17*column,4,15,3)
+        tournament = option("tournament", self.tournament, enter="Tournament")
+        stats = option("match stats", self.stats, enter="Match stats")
+        for item in (tournament,stats):
+            item.text_label.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+        middle.put(tournament,29,8,32,2)
+        middle.put(stats,29,10,32,2)
         if phase == "full":
-            self.play = self.add_option("exit", day.exit, enter="Exit")
+            self.play = option("exit", day.exit, enter="Exit")
         else:
-            self.play = self.add_option(f"▶ play     {NEXT[phase]}", self.press_play, enter="Play")
-        centre.addWidget(self.play)
+            self.play = option(f"▶ play     {NEXT[phase]}", self.press_play, enter="Play")
+        middle.put(self.play,29,16,32,4)
         self.shared_options = (tournament, stats, self.play)
         # [confirmed: T156-R1 69-73; T184] Vertical keys follow visible rows. The two
         # country columns are horizontal alternatives, not extra vertical entries.
@@ -134,13 +129,17 @@ class MenuScreen(Screen):
         self.bind((Qt.Key.Key_Right,), "", lambda: self.select_country(self.away_country),
                   captions=("→",), shown=False)
         self.bind((), "country", None, captions=("←", "→"))
-        self.note = para("", "sub")
+        self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        centre.addWidget(self.note)
-        centre.addStretch(1)
-        middle.addLayout(centre, 1)
-        middle.addWidget(boxes[self.away_country])
-        self.body_layout.addLayout(middle, 1)
+        middle.put(self.note,29,12,32,4)
+        middle.put(boxes[self.away_country],62,0,28,20)
+        body.put(middle,0,2,90,20)
+        self.main_layout.removeWidget(self.wait_box)
+        body.put(self.wait_box,0,22,90,3)
+        for binding in self.bindings:
+            if binding.keys == (Qt.Key.Key_T,): binding.text = "team tactics"
+            elif binding.keys == (Qt.Key.Key_Space,): binding.text = "players"
+        self._refresh_bar()
         self.bind((Qt.Key.Key_Insert,), "action replay on/off", self.toggle_replay)
         self.watch_bindings = []
         self.highlight(self.options.index(self.play))
@@ -167,29 +166,30 @@ class MenuScreen(Screen):
             formation = "-".join(str(sum(1 for p in positions if p < 14 and lines[p] == line)) for line in (1, 2, 3))
         else:
             eleven, formation = info["players"][:11], info["formation"]
-        frame, column = box(f"{names[country]} · {formation}")
-        frame.setFixedWidth(300)
+        from goal2.ui.country_parts import framed
+        from goal2.ui.cell_parts import CellTableRow
+        frame, column = framed(f"{names[country]} · {formation}",28,19)
         rows = []
         widgets = []
         for word in eleven:
             c = bench.card(word) if bench is not None else card(state, word, model.goaldat)
             injured = bench is not None and word in bench.injured
-            line = Row(-1, (22, 0))
-            line.cells[1].setWordWrap(True)
+            line = CellTableRow(-1, (2,25), gaps=(0,1))
             from goal2.ui.squad_card import LINE_COLOUR
             line.set((c["role"], c["full_name"] + (" · INJURED" if injured else "")),
                      (LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL), theme.BAD if injured else LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL)))
+            if country == self.away_country:
+                line.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             line.setCursor(Qt.CursorShape.ArrowCursor)
-            column.addWidget(line)
+            column.put(line,0,min(2*len(widgets),len(widgets)+8),28)
             rows.append(tuple(line.texts()))
             widgets.append(line)
-        column.addStretch(1)
         if bench is not None:
             self._accepted_projection = self._lineup_signature(bench)
         self.lineup_words[country] = list(eleven)
         self.lineups[country] = (formation, rows)
         self.lineup_rows[country] = widgets
-        self.lineup_headings[country] = column.itemAt(0).widget()
+        self.lineup_headings[country] = frame.rule
         return frame
 
     @staticmethod
@@ -342,6 +342,7 @@ class SavedGoalMenu(Screen):
     The saved lineup display is frozen at kick-off. Live tactics, players and tournament actions are absent:
     this recording has no career or engine to change [designed: T181, #575].
     """
+    GRID = True   # [designed: owner, #667; T213]
     title = 'match menu · saved goal'
 
     def __init__(self, window, model, record):
@@ -350,27 +351,25 @@ class SavedGoalMenu(Screen):
         data = record['data']
         from goal2.ui.kits import Kits
         kits = Kits(tuple(data['kits']['shirt']), tuple(data['kits']['keeper']))
-        frame, column = box('SAVED GOAL')
-        countries, score = data['countries'], data['score']
-        column.addWidget(label(f'{countries[HOME]}  {score[HOME]} v {score[1 - HOME]}  {countries[1 - HOME]}', 'h1'))
-        column.addWidget(label(f"{data['kind']} · {data['scorer']} · {data['minute']}′", 'sub'))
-        self.body_layout.addWidget(frame)
-        middle = QHBoxLayout()
-        for team in (HOME, 1 - HOME):
-            saved = data.get('menu', {}).get(str(team), ['', []])
-            panel, inner = box(f'{countries[team]} · {saved[0]}')
-            inner.setSpacing(4)
-            for role, name in saved[1]:
-                text = label(f'{role}  {name}', 'value')
-                colour(text, kits.colour(team))
-                inner.addWidget(text)
-            middle.addWidget(panel)
-        self.body_layout.addLayout(middle)
-        self.play = self.add_option('▶ play', lambda: self.play_goal(window, model), enter='Play')
-        self.body_layout.addWidget(self.play)
-        self.body_layout.addWidget(self.add_option('exit', window.pop, enter='Exit'))
-        self.body_layout.addWidget(para('Saved goal: play the recording, or Esc back to the list.', 'sub'))
-        self.body_layout.addStretch(1)
+        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.country_parts import framed
+        body = Cells(90,25,"savedGoalBody")
+        self.body_layout.addWidget(body,1)
+        frame,inner = framed("saved goal",90,2)
+        countries,score = data["countries"],data["score"]
+        inner.text(f"{countries[HOME]}  {score[HOME]} v {score[1-HOME]}  {countries[1-HOME]}","h1",0,0,90)
+        inner.text(f"{data['kind']} · {data['scorer']} · {data['minute']}′","sub",0,1,90)
+        body.put(frame,0,0,90,3)
+        for column,team in enumerate((HOME,1-HOME)):
+            saved = data.get("menu",{}).get(str(team),["",[]])
+            panel,inner = framed(f"{countries[team]} · {saved[0]}",44,11)
+            for index,(role,name) in enumerate(saved[1]):
+                colour(inner.text(f"{role}  {name}","value",14,index,30),kits.colour(team))
+            body.put(panel,46*column,4,44,12)
+        self.play = self.add_option("▶ play",lambda:self.play_goal(window,model),enter="Play")
+        body.put(self.play,0,18,90,2)
+        body.put(self.add_option("exit",window.pop,enter="Exit"),0,20,90,2)
+        body.put(CellPara("Saved goal: play the recording, or Esc back to the list.","sub"),0,24,90)
         self.highlight(0)
 
     def play_goal(self, window, model):

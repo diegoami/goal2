@@ -44,19 +44,39 @@ from __future__ import annotations
 import copy
 import time
 
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QSizePolicy
+from PySide6.QtCore import QSize, Qt, QTimer
+from PySide6.QtGui import QColor, QPainter
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel
 
 from goal2.desktop.match_view import MAX_BACKLOG, PLAYBACK_RATE, Display
 from goal2.desktop.pygame_viewer import MARKS
-from goal2.ui import theme
+from goal2.ui import cells, theme
+from goal2.ui.cells import CellLabel, CellPara, Cells
+from goal2.ui.frame import Frame
 from goal2.ui.kits import for_fixture
 from goal2.ui.pitch import HOME, PitchWidget, side_colour
-from goal2.ui.screen import Clickable, Screen, label
-from goal2.ui.squad_card import box, colour
+from goal2.ui.readable_text import Excerpt, recent_cells
+from goal2.ui.screen import Clickable, Screen
+from goal2.ui.squad_card import colour
 
 TICK_MS = 4            # the controller's poll; the fastest speed shows 240 samples a second [designed: T166]
 COMMENTARY_ROWS = 15   # the lines the commentary box shows [designed: s17-pitch.png, the box's height]
+# [designed: T212; docs/design/ui-2026-11/proposal/README.md, s17-pitch] S17 on the 16 x 32 grid, in cells (90 columns, the 25 rows between the
+# title row and the two key rows): the score across the top (three rows: the two sides and their goals and the minute at the left, at
+# the right the frame of the kind of match with the last two events in it), the pitch under it (64 x 18 cells: 1024 x 576, the mockup's
+# 1000 x 560 to the cell; its drawing is T179's and is not touched) and the commentary in a frame at its right (25 columns, a cell
+# apart: the commentary, the speed and the display, your side's colour) and, under the pitch, what the bench or a key said. The reading
+# pause's banner takes the score's rows.
+BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
+HEAD_ROWS = 3             # the two sides and the minute, and at the right the frame of the kind of match: its rule and the last two events
+PITCH_COLS, PITCH_ROWS = 64, 18
+PITCH_AT = HEAD_ROWS
+SIDE_COLS = 15            # a country's name: the longest is 15 characters
+KIND_AT = 40              # the frame of the kind of match starts where the original's does (t156-045-kick-off.png: column 42 of 80)
+DIGIT_COLS = 3
+COMMENTARY_AT = PITCH_COLS + 1
+COMMENTARY_COLS = BODY_COLS - COMMENTARY_AT
+COMMENT_ROWS = 13   # the commentary's rows: more would put the speed and your side lower, and leave the middle of the column empty before a match has said much
 HANG_ON = "HANG ON A TICK"   # [confirmed: t156-267-quick-hang-on.png, "HANG ON"; T156-R1 step 2's full words]
 NO_SOUND = "F9: goal2 has no sound, so the key does nothing."
 REQUESTED = "Bench requested: the bench opens when the original stops for it."
@@ -472,7 +492,35 @@ def commentary_line(event):
     return f"{event['minute']}′ ── {STOPS.get(context, str(context).upper())}: your answer"
 
 
+class ScoreDigit(QFrame):
+    """A side's goals: a digit in a box of three cells by a row, its border drawn at the edge so the digit keeps its cell. [designed: T212]"""
+
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("scoreDigit")
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        self.text = CellLabel("0", "digitText")
+        self.text.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.text)
+
+    def sizeHint(self):
+        return QSize(int(DIGIT_COLS * cells.cell_w(self)), cells.row_px(self))
+
+    def minimumSizeHint(self):
+        return self.sizeHint()
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        painter = QPainter(self)
+        painter.setPen(QColor(theme.FRAME_DARK))
+        painter.drawRect(self.rect().adjusted(0, 0, -1, -1))
+        painter.end()
+
+
 class PitchScreen(Screen):
+    GRID = True   # [designed: T212] laid out on the 16 x 32 grid, no card
     title = "watching"
     escape_text = "bench"
 
@@ -504,9 +552,10 @@ class PitchScreen(Screen):
         self.set_enter("Bench", self.request_bench)
         from goal2.ui.s18_stop import StopBox
         self.stop_box = StopBox(self)   # S18, over the pitch [designed: T180]
-        self.request_badge = QLabel("SUBSTITUTION REQUESTED", self.pitch)
+        self.request_badge = CellLabel("SUBSTITUTION REQUESTED", "requestBadge", self.pitch)
         self.request_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.request_badge.setStyleSheet("color:#000000;background:#aaaaaa;font-weight:700;padding:6px;")
+        # [designed: T212] a row of the pitch's cells, black on the highlight bar's grey, with no padding
+        self.request_badge.setStyleSheet("color:#000000;background:#aaaaaa;font-weight:700;")
         self.request_badge.hide()
         self.timer = QTimer(self)
         self.timer.setInterval(TICK_MS)
@@ -516,80 +565,66 @@ class PitchScreen(Screen):
         if controller.quick:
             self.quick_result()
 
-    # Building. [designed: s17-pitch.html]
+    # Building. [designed: s17-pitch.html; T212 on the cells]
     def _build(self, names):
-        managed = self.controller.display.managed
-        head = QFrame()
-        head.setObjectName("box")
-        row = QHBoxLayout(head)
-        row.setContentsMargins(18, 10, 18, 10)
-        row.setSpacing(30)
-        score = QHBoxLayout()
-        score.setSpacing(18)
-        # [confirmed: t156-045-kick-off.png; #562, #583] the home side first, each name in its side's kit
+        body = Cells(BODY_COLS, BODY_ROWS, "pitchBody")
+        self.body_layout.addWidget(body, 1)
+        self.area = body
+        # The score: the home side first, each name in its side's kit [confirmed: t156-045-kick-off.png; #562, #583]
         self.kits = getattr(self.controller, 'kits', None) or for_fixture(self.model, self.controller.pending)
-        self.home = label(names[HOME], "h1")
+        head = Cells(BODY_COLS, HEAD_ROWS, "scoreHead")
+        self.home = CellLabel(names[HOME], "h1", reserve=SIDE_COLS)
         colour(self.home, side_colour(HOME, self.kits))
-        self.away = label(names[1 - HOME], "h1")
+        self.away = CellLabel(names[1 - HOME], "h1", reserve=SIDE_COLS)
         colour(self.away, side_colour(1 - HOME, self.kits))
         self.goals = []
-        score.addWidget(self.home)
-        for _ in (0, 1):
-            digit = QFrame()
-            digit.setObjectName("digit")
-            digit.setFixedSize(46, 46)
-            inner = QHBoxLayout(digit)
-            inner.setContentsMargins(0, 0, 0, 0)
-            text = label("0", "digitText")
-            text.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            inner.addWidget(text)
-            self.goals.append(text)
-            score.addWidget(digit)
-        score.addWidget(self.away)
-        row.addLayout(score)
-        self.minute = label("0′", "h1")
-        row.addWidget(self.minute)
-        self.kind = label(self.controller.display.kind.upper(), "sub")
-        row.addWidget(self.kind)
-        from goal2.ui.readable_text import Excerpt
-        recent = QVBoxLayout()
-        recent.setSpacing(4)
-        self.recent = [Excerpt(),Excerpt()]
-        for widget in self.recent:
-            widget.setAlignment(Qt.AlignmentFlag.AlignRight)
-            recent.addWidget(widget)
-        row.addLayout(recent,1)
+        head.put(self.home, 0, 0, SIDE_COLS)
+        head.put(self.away, 0, 1, SIDE_COLS)
+        for row in (0, 1):
+            digit = ScoreDigit()
+            head.put(digit, SIDE_COLS + 1, row, DIGIT_COLS)
+            self.goals.append(digit.text)
+        self.minute = CellLabel("0′", "h1")
+        head.put(self.minute, 0, 2, 5)
+        # The original's frame of the kind of match, its label on the rule (`-friendly----`) and the last two events inside it
+        # [confirmed: docs/original-game/images/t156-045-kick-off.png; designed: T212, the grammar of the frame].
+        self.kind = Frame(self.controller.display.kind, "red")
+        shown = Cells(BODY_COLS - KIND_AT, HEAD_ROWS - 1, "recentRows")
+        self.kind.add(shown, 1)
+        self.recent = [Excerpt(), Excerpt()]
+        for number, widget in enumerate(self.recent):
+            widget.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            shown.put(widget, 0, number, shown.cols)
+        head.put(self.kind, KIND_AT, 0, shown.cols, HEAD_ROWS)
         self.score_head = head
-        self.body_layout.addWidget(head)
-        middle = QHBoxLayout()
-        middle.setSpacing(18)
+        body.put(head, 0, 0, BODY_COLS, HEAD_ROWS)
+        # The reading pause's banner (`wait_for`) is on the score's rows: the score hides while it shows.
+        self.main_layout.removeWidget(self.wait_box)
+        body.put(self.wait_box, 0, 0, BODY_COLS, 2)
+        # The pitch, under the score. The commentary is beside it, in a frame down to the foot.
         self.pitch = PitchWidget(self.display, self.painted, self.window_.family)
         self.pitch.kits = self.kits
-        middle.addWidget(self.pitch, 0, Qt.AlignmentFlag.AlignTop)
-        commentary, inner = box("Commentary")
-        self.commentary = QLabel("")
-        self.commentary.setObjectName("value")
-        self.commentary.setTextFormat(Qt.TextFormat.PlainText)
-        self.commentary.setWordWrap(True)
-        self.commentary.setSizePolicy(QSizePolicy.Policy.Ignored,QSizePolicy.Policy.Expanding)
-        self.commentary.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-        inner.addWidget(self.commentary, 1)
-        self.status = label("", "sub")
-        self.status.setWordWrap(True)
-        inner.addWidget(self.status)
+        body.put(self.pitch, 0, PITCH_AT, PITCH_COLS, PITCH_ROWS)
+        managed = self.controller.display.managed
+        frame = Frame("commentary", "red")
+        inner = Cells(COMMENTARY_COLS, COMMENT_ROWS + 3, "commentaryRows")
+        frame.add(inner, 1)
+        self.commentary = CellPara("", "value")
+        inner.put(self.commentary, 0, 0, COMMENTARY_COLS, COMMENT_ROWS)
+        # Under the commentary, as the original's page and the proposal have them: the speed and the display (two rows) and your
+        # side's colour (one).
+        self.status = CellPara("", "sub")
+        inner.put(self.status, 0, COMMENT_ROWS, COMMENTARY_COLS, 2)
         side = self.kits.name(managed) if managed is not None else "none"
-        tag_row = QHBoxLayout()
-        self.side_tag = label(f"YOUR SIDE: {side}", "tag")
-        tag_row.addWidget(self.side_tag)
-        tag_row.addStretch(1)
-        inner.addLayout(tag_row)
-        self.note = QLabel("")
-        self.note.setObjectName("note")
-        self.note.setWordWrap(True)
+        self.side_tag = CellLabel(f"YOUR SIDE: {side}", "tag")
+        inner.put(self.side_tag, 0, COMMENT_ROWS + 2, COMMENTARY_COLS)
+        # a row under the pitch's top: the commentary's first lines are then in the page's second band (and the pitch's surround, its first
+        # row of dots, is not beside a rule)
+        body.put(frame, COMMENTARY_AT, PITCH_AT + 1, COMMENTARY_COLS, COMMENT_ROWS + 4)
+        # Under the pitch, across its 64 cells: what the bench or a key said (four rows: a pair is thirty characters, eight fit).
+        self.note = CellPara("", "note")
         colour(self.note, theme.VALUE)
-        inner.addWidget(self.note)
-        middle.addWidget(commentary, 1)
-        self.body_layout.addLayout(middle, 1)
+        body.put(self.note, 0, PITCH_AT + PITCH_ROWS, PITCH_COLS, BODY_ROWS - PITCH_AT - PITCH_ROWS)
 
     # The poll and what is shown.
     def display(self):
@@ -687,8 +722,7 @@ class PitchScreen(Screen):
             self.resume({"opportunity": "timeout" if key is None else "accept"})
         self.stop_box.show_opportunity(decision.data, respond)
         from goal2.ui.s18_stop import substitution_text
-        from goal2.ui.screen import set_para
-        set_para(self.stop_box.detail, substitution_text(self.model, decision))
+        self.stop_box.detail.setText(substitution_text(self.model, decision))
         colour(self.stop_box.detail, "#55ffff" if decision.data["keeper_unavailable"] else "#000000")
         self.stop_box.detail.show()
         self.stop_box.place()
@@ -714,6 +748,12 @@ class PitchScreen(Screen):
         super().resizeEvent(event)
         if self.stop_box.open:
             self.stop_box.place()
+        self._place_badge()
+
+    def _place_badge(self):
+        """[designed: T212] The badge is a row of the pitch's cells, a cell in from each side and a row from the top."""
+        cell, row = cells.cell_w(self.pitch), cells.row_px(self.pitch)
+        self.request_badge.setGeometry(round(cell), row, max(1, round((round(self.pitch.width() / cell) - 2) * cell)), row)
 
     def dismiss(self):
         """A key on a notice or a refusal: the display plays on."""
@@ -741,9 +781,9 @@ class PitchScreen(Screen):
         texts = [e["data"].get("text", "") for e in shown if e["kind"] == "commentary"][-2:]
         for widget, text in zip(self.recent, [""] * (2 - len(texts)) + texts):
             widget.setText(text)  # Excerpt owns the full text as well as its visible preview.
-        from goal2.ui.readable_text import recent_text
-        _set(self.commentary,recent_text(self.lines,self.commentary.fontMetrics(),
-                                         self.commentary.width(),self.commentary.height(),COMMENTARY_ROWS))
+        # [designed: T212] the newest whole entries that fit the commentary's cells (the paragraph wraps at the characters its width holds)
+        _set(self.commentary,recent_cells(self.lines,self.commentary.columns(),
+                                          max(1,self.commentary.height()//cells.row_px(self.commentary)),COMMENTARY_ROWS))
         _set(self.status, f"Speed {controller.display.speed_markers()} · {controller.display.speed_name().lower()}"
                           f" · marks: {MARKS[self.pitch.marks].lower()}")
         _set(self.note, controller.note)
@@ -752,7 +792,7 @@ class PitchScreen(Screen):
         self.request_badge.setText("SUBSTITUTION OPPORTUNITY" if opportunity else "SUBSTITUTION REQUESTED")
         self.request_badge.setVisible((requested or opportunity) and not self.stop_box.open)
         if requested or opportunity:
-            self.request_badge.setGeometry(12, 12, max(1,self.pitch.width()-24), max(48,self.request_badge.sizeHint().height()))
+            self._place_badge()
             self.request_badge.raise_()
         if self.pitch.enlarged:
             self.pitch.commentary = self.lines

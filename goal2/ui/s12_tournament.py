@@ -24,12 +24,12 @@ from __future__ import annotations
 import html
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import QHBoxLayout
 
 from goal2.desktop.model import CHAMPIONSHIPS
 from goal2.ui import theme
-from goal2.ui.screen import Clickable, Screen, label, para, set_para
-from goal2.ui.squad_card import Row, box, colour, last_on_the_bar
+from goal2.ui.screen import Clickable, Screen, label, set_para
+from goal2.ui.squad_card import colour, last_on_the_bar
 
 DISPLAYS = ("Qualifying", "Finals", "Championship")   # [confirmed: t156-227, the display buttons]
 # (continent number, tab) in the tabs' order. [confirmed: t156-227's continent buttons; F007 numbers 1..4 Europe,
@@ -37,8 +37,8 @@ DISPLAYS = ("Qualifying", "Finals", "Championship")   # [confirmed: t156-227, th
 TABS = ((1, "Europe"), (3, "Africa"), (2, "Americas"), (4, "Asia"))
 GROUPS = 8   # [confirmed: F023 §3, eight groups per continent]
 LETTERS = "ABCDEFGH"   # [confirmed: t156-227 "Group C"]
-TABLE = (None, 60, 60, 60, 60, 60, 60, 60)   # team, P W D L F A T [designed: s12-tournament.html]
-MATCH = (0, 70, 0)   # first side, score or v, second side
+TABLE = (17, 4, 4, 4, 4, 4, 4, 4)   # team, P W D L F A T [designed: s12-tournament.html]
+MATCH = (17, 10, 17)   # first side, score or v, second side
 MATCH_ROWS = 12   # [confirmed: F023 §3, a double round robin of four: twelve matches; t156-227 lists twelve]
 NOT_REACHED = "not reached yet"
 LATER = ("The {display} display is not reached yet: this route plays only the opening stage until T170, and keeps "
@@ -66,6 +66,7 @@ class Tab(Clickable):
 
 
 class TournamentScreen(Screen):
+    GRID = True   # [designed: owner, #667; T213]
     title = "tournament"
     escape_text = "desk"
 
@@ -79,7 +80,8 @@ class TournamentScreen(Screen):
         self.tab = next(i for i, (number, _) in enumerate(TABS) if number == continent)
         self.group = own["group"] - 1 if own else 0
         self.message = ""
-        self.banner = label("", "who")
+        from goal2.ui.cells import CellLabel
+        self.banner = CellLabel("", "who")
         self.banner.setTextFormat(Qt.TextFormat.RichText)
         self.name_label.parentWidget().layout().addWidget(self.banner)
         self.bind((Qt.Key.Key_Up,), "", lambda: self.move_group(-1), shown=False)
@@ -95,66 +97,61 @@ class TournamentScreen(Screen):
         self._show()
 
     def _build(self):
-        tabs = QHBoxLayout()
-        tabs.setSpacing(10)
-        tabs.addWidget(label("display", "sub"))
-        self.display_tabs = [Tab(text, lambda i=i: self.choose_display(i)) for i, text in enumerate(DISPLAYS)]
-        for tab in self.display_tabs:
-            tabs.addWidget(tab)
-        tabs.addSpacing(30)
-        tabs.addWidget(label("continent", "sub"))
-        self.continent_tabs = [Tab(text, lambda i=i: self.choose_continent(i)) for i, (_, text) in enumerate(TABS)]
-        for tab in self.continent_tabs:
-            tabs.addWidget(tab)
-        tabs.addStretch(1)
-        self.body_layout.addLayout(tabs)
-        main = QHBoxLayout()
-        main.setSpacing(18)
-        table, inner = box()
-        self.table_heading = label("", "boxHeading")
-        inner.addWidget(self.table_heading)
-        inner.setSpacing(0)
-        inner.addSpacing(10)
-        self.header = Row(-1, TABLE, margins=(8, 4, 8, 4), underline=True)
-        self.header.set(("TEAM", "P", "W", "D", "L", "F", "A", "T"), (theme.HEADING,) * len(TABLE))
+        """[designed: owner, #667; T213] Tabs over the table and the twelve matches, in two framed cell columns."""
+        from goal2.ui.cells import Cells, CellPara, CellLabel
+        from goal2.ui.cell_parts import CellTableRow
+        from goal2.ui.country_parts import framed
+        body = Cells(90, 25, "tournamentBody")
+        self.body_layout.addWidget(body, 1)
+        body.text("display", "sub", 0, 0, 8)
+        body.text("continent", "sub", 45, 0, 9)
+        self.display_tabs = []
+        self.continent_tabs = []
+        for labels, store, start, step, width, choose in (
+                (DISPLAYS,self.display_tabs,0,15,15,self.choose_display),
+                ([name for _,name in TABS],self.continent_tabs,45,11,11,self.choose_continent)):
+            for i, text in enumerate(labels):
+                tab = Tab(text, lambda i=i, choose=choose: choose(i))
+                tab.setObjectName("gridLine")
+                tab.layout().setContentsMargins(0,0,0,0)
+                old = tab.text_label
+                tab.layout().removeWidget(old)
+                old.setParent(None)
+                old.deleteLater()
+                tab.text_label = CellLabel(text,"optionText")
+                tab.layout().addWidget(tab.text_label)
+                body.put(tab,start+i*step,1,width)
+                store.append(tab)
+        table, inner = framed("", 45, 19)
+        self.table_area = inner
+        self.table_heading = table.rule
+        self.header = CellTableRow(-1,TABLE)
+        self.header.set(("team","P","W","D","L","F","A","T"),(theme.HEADING,)*8)
         self.header.setCursor(Qt.CursorShape.ArrowCursor)
         self._centre(self.header)
-        inner.addWidget(self.header)
+        inner.put(self.header,0,0,45)
         self.table_rows = []
         for i in range(4):
-            row = Row(i, TABLE, margins=(8, 5, 8, 5), underline=True)
+            row = CellTableRow(i,TABLE)
             row.setCursor(Qt.CursorShape.ArrowCursor)
             self._centre(row)
-            inner.addWidget(row)
+            inner.put(row,0,(2,6,10,18)[i],45)
             self.table_rows.append(row)
-        inner.addSpacing(12)
-        self.note = para("", "sub")
-        inner.addWidget(self.note)
-        inner.addSpacing(8)
-        self.message_label = para("", "sub")
-        colour(self.message_label, theme.VALUE)
-        inner.addWidget(self.message_label)
-        inner.addStretch(1)
-        main.addWidget(table, 1)
-        matches, inner = box()
-        matches.setFixedWidth(480)
-        self.matches_heading = label("", "boxHeading")
-        inner.addWidget(self.matches_heading)
-        inner.setSpacing(0)
-        inner.addSpacing(10)
+        self.note = CellPara("","sub")
+        inner.put(self.note,0,14,45,3)
+        self.message_label = CellPara("","sub")
+        colour(self.message_label,theme.VALUE)
+        inner.put(self.message_label,0,11,45,3)
+        body.put(table,0,4,45,20)
+        matches, inner = framed("",44,19)
+        self.matches_heading = matches.rule
         self.match_rows = []
         for i in range(MATCH_ROWS):
-            row = Row(i, MATCH, margins=(8, 5, 8, 5), underline=True)
+            row = CellTableRow(i,MATCH,aligns=(Qt.AlignmentFlag.AlignRight,Qt.AlignmentFlag.AlignHCenter,None))
             row.setCursor(Qt.CursorShape.ArrowCursor)
-            row.cells[0].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-            row.cells[1].setAlignment(Qt.AlignmentFlag.AlignCenter)
-            inner.addWidget(row)
+            inner.put(row,0,round(i*18/11),44)
             self.match_rows.append(row)
-        inner.addStretch(1)
-        main.addWidget(matches)
-        column = QVBoxLayout()
-        column.addLayout(main, 1)
-        self.body_layout.addLayout(column, 1)
+        body.put(matches,46,4,44,20)
 
     @staticmethod
     def _centre(row):
@@ -182,6 +179,8 @@ class TournamentScreen(Screen):
         group = self.shown_group()
         own = self.model.state.managed_country
         if group is None:
+            self.table_area.move(self.note,0,3,45,5)
+            self.table_area.move(self.message_label,0,10,45,6)
             self.table_heading.setText((DISPLAYS[self.display] + " · " + NOT_REACHED).upper())
             self.matches_heading.setText("MATCHES")
             self.header.hide()
@@ -189,6 +188,8 @@ class TournamentScreen(Screen):
                 row.hide()
             set_para(self.note, NO_GROUPS if self.display == 0 else LATER.format(display=DISPLAYS[self.display]))
         else:
+            self.table_area.move(self.note,0,14,45,3)
+            self.table_area.move(self.message_label,0,11,45,3)
             letter = LETTERS[group["group"] - 1]
             stage = self.view["stage"]
             what = ("World Cup qualifying" if stage >= 5

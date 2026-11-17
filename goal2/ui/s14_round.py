@@ -16,11 +16,10 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QVBoxLayout
 
 from goal2.ui import theme
-from goal2.ui.screen import Screen, label, para
-from goal2.ui.squad_card import Row, box, colour
+from goal2.ui.screen import Screen
+from goal2.ui.squad_card import colour
 
 PACES = (1600, 1000, 600, 300, 120)   # ms between two results [designed: T167]
 PACE = 2                              # the pace a round opens at [designed: T167]
@@ -33,9 +32,29 @@ def score_text(row):
     return "v" if row["score"] is None else f"{row['score'][0]} - {row['score'][1]}"
 
 
+from goal2.ui.cell_parts import CellTableRow
+
+
+class RoundRow(CellTableRow):
+    """[designed: T213, #667] Keep the results table's row separators without a CSS border taking a pixel from its cells."""
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        import math
+        from PySide6.QtGui import QColor, QPainter, QPen
+        from goal2.desktop import fixed_page
+        width = max(1, math.ceil(2 * fixed_page.scale_y_of(self)))
+        painter = QPainter(self)
+        painter.setPen(QPen(QColor(theme.FRAME_DARK), width))
+        y = self.height() - (width + 1) // 2
+        painter.drawLine(0, y, self.width(), y)
+        painter.end()
+
+
 class RoundScreen(Screen):
     """`before`: DesktopModel.round_before(); `after`: round_after(your fixture) once your match is published.
     `onward` is what Enter does."""
+    GRID = True   # [designed: owner, #667; T213]
     escape_text = None
 
     def __init__(self, window, before, onward, after=None):
@@ -63,26 +82,34 @@ class RoundScreen(Screen):
         self.bind((Qt.Key.Key_Right,), "", lambda: self.step_pace(1), captions=("→",), shown=False)
         self.bind((), "speed", lambda: self.step_pace(1), captions=("←", "→"))
         self.set_enter("To your match" if after is None else "To the desk", self.go_on)
-        frame, inner = box(f"Round {number} · the results so far")
-        inner.setSpacing(0)
+        # [designed: owner, #667; T213] Seventeen results across the page; the final column wraps a long stage and match note.
+        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.cell_parts import CellTableRow
+        from goal2.ui.country_parts import framed
+        body = Cells(90, 25, "roundBody")
+        self.body_layout.addWidget(body, 1)
+        frame, inner = framed(f"round {number} · the results so far", 90, 19)
+        self.results_area = inner
         self.rows = []
         for i in range(ROWS + 1):
-            row = Row(i, (300, 110, 260, 0), underline=True)
+            row = RoundRow(i, (16, 9, 16, 49), aligns=(Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignHCenter,None,None))
+            # The last result may name the stage and "your match is next": it has three rows while ordinary results take one.
+            old = row.cells[3]
+            text = CellPara("", "rowCell")
+            row.area.layout().takeAt(3)
+            old.setParent(None)
+            old.deleteLater()
+            row.area.put(text, 41, 0, 49, 3 if i == ROWS else 1)
+            row.cells[3] = text
             row.setCursor(Qt.CursorShape.ArrowCursor)
-            row.cells[0].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-            row.cells[1].setAlignment(Qt.AlignmentFlag.AlignCenter)
-            inner.addWidget(row)
+            inner.put(row, 0, i, 90, 3 if i == ROWS else 1)
             self.rows.append(row)
-        inner.addSpacing(14)
-        inner.addWidget(para(HINT, "sub"))
-        self.state_label = label("", "sub")
+        body.put(frame, 0, 0, 90, 20)
+        hint = CellPara(HINT, "sub")
+        hint.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
+        body.put(hint, 0, 21, 90, 3)
+        self.state_label = body.text("", "sub", 0, 24, 90)
         colour(self.state_label, theme.VALUE)
-        inner.addWidget(self.state_label)
-        inner.addStretch(1)
-        column = QVBoxLayout()
-        column.setContentsMargins(140, 0, 140, 0)
-        column.addWidget(frame, 1)
-        self.body_layout.addLayout(column, 1)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.arrive)
         self.timer.setInterval(PACES[self.pace])
@@ -95,9 +122,11 @@ class RoundScreen(Screen):
         rows = self.shown_rows[-ROWS:] if self.mine is not None else self.shown_rows[-(ROWS + 1):]
         mine = self.mine
         for i, widget in enumerate(self.rows):
+            widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
             if i < len(rows):
                 r = rows[i]
                 if "note" in r:
+                    widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
                     widget.set((r["home_name"], score_text(r), r["away_name"], f"{r['kind_name']} · {r['note']}"),
                                (theme.VALUE,) * 4)
                 else:
@@ -105,12 +134,21 @@ class RoundScreen(Screen):
                                (theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_NORMAL))
                 widget.show()
             elif i == len(rows) and mine is not None:
+                widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
                 widget.set((mine["home_name"], score_text(mine), mine["away_name"],
                             f"{mine['kind_name']} · {mine['note']}"), (theme.VALUE,) * 4)
                 widget.show()
             else:
                 widget.set(("", "", "", ""))
                 widget.hide()
+        at = 0
+        for widget in self.rows:
+            if widget.isHidden():
+                continue
+            height = 3 if len(widget.cells[3].text()) > 49 else 1
+            self.results_area.move(widget, 0, at, 90, height)
+            widget.area.move(widget.cells[3], 41, 0, 49, height)
+            at += height
         if self.arriving:
             state = "paused" if self.paused else "the results are arriving"
         else:

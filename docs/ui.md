@@ -11,7 +11,7 @@ and the portable build's default until T169 switches over. [designed: owner, 202
 It opens S01 while the per-user data folder lacks a file the new window needs, otherwise S02 Start. `--data-root`
 names the per-user goal2 folder (its `data` holds the imported files). `--import FOLDER` imports FOLDER as S01 does
 (`WINDOW_MANIFEST`, GOAL.HLP too when the folder has it), then starts; S22's message names it as the way to add
-GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` writes PNGs at 1440×900 from a
+GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` writes PNGs at 1440×1080 (the 4:3 page at its own size, `theme.PICTURE`) from a
 temporary data folder of its own and exits: S01, the placeholder home and S22 (with a stand-in help text) always;
 S02 with two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages (labelled so), S06
 the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, the match day of the career's
@@ -47,6 +47,10 @@ loaded here is the one the model makes, and the screens copy no career rule.
 - **The home** of an open career is the desk (S06). `goal2/ui/home.py` stays only as the screen with no career open
   (T162's tests and the screenshot tool's `home.png`).
 
+[designed: T215] The desk reserves seven cells for rank labels (including Americas and Oceania).
+Its managers panel keeps the full manager name and country on separate rows in their existing colours,
+so the longest country name and a maximum-length manager fit without shrinking or dropping text.
+
 ## Saved games
 
 [designed: owner decisions 4 and 8, #526; T163] Saves live in the data root's `saves` folder, one file per save,
@@ -65,7 +69,7 @@ progress stays unsaved. `model.save_name` is the name a career was last saved or
 
 | Module | What it holds |
 | --- | --- |
-| `goal2/ui/theme.py` | The palette, one named constant per role of the design's §3 table (`PALETTE` is the table); the vendored font, loaded with `QFontDatabase` from `goal2/ui/fonts/`; the text sizes (16 px, the font's 8×16 cell, and 32 px); the style sheet. |
+| `goal2/ui/theme.py` | The palette, one named constant per role of the design's §3 table (`PALETTE` is the table); the vendored font, loaded with `QFontDatabase` from `goal2/ui/fonts/`; the one 32 px text size over the font's 8×16 source cell; the style sheet. |
 | `goal2/ui/fonts/` | "PxPlus IBM VGA 8x16" (CC BY-SA 4.0) with its `LICENSE.TXT` and `PROVENANCE.md`; package data, so the wheel and the portable build carry the licence beside the font. |
 | `goal2/ui/window.py` | `Window`: one main window holding one screen at a time on a stack. |
 | `goal2/ui/screen.py` | `Screen`, the base class of every screen. |
@@ -75,18 +79,18 @@ progress stays unsaved. `model.save_name` is the name a career was last saved or
 | `goal2/ui/s02_start.py` | S02 Start: Continue, the named saves, Y load, N new game, a failed load's Y/N; F the standalone friendly (T177). |
 | `goal2/ui/friendly.py` | The standalone friendly (T177): two countries chosen, played on S17, back to S02; nothing saved. |
 | `goal2/ui/s03_new_game.py` | S03 New game: 1–6 managers (2–6 later, #551), the optional starting year by NG-9. |
-| `goal2/ui/s04_country.py` | S04 Country and name: the card (`CountryCard`, shared with S07, with the twenty's average caps and age), the list in groups of 16 in the ranking's order (`ordered`), Ins, the name line; `PlayersScreen`, a country's twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
+| `goal2/ui/s04_country.py` | S04 Country and name [designed: T211b: on the 16 × 32 grid]: the card (`CountryCard`, shared with S07: two columns of frames, with the twenty's average caps and age), the list in groups of 16 in the ranking's order (`ordered`) in a frame, Ins, the name line in a frame under it; `PlayersScreen`, a country's twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
 | `goal2/ui/s05_bulletin.py` | S05 Bulletin: pages *n of m*, any key onward. |
 | `goal2/ui/s06_desk.py` | S06 The manager's desk (T164), its *manager's name* and *new career* (T177), and `ReimportScreen`, S01 over the data folder. |
-| `goal2/ui/s07_team_info.py` | S07 Team info (T164): S04's card for any country, the list, the next opponent marked; a country's twenty and its tactics, read only. |
-| `goal2/ui/s11_fixtures.py` | S11 Fixtures (T178): the coming round, or a country's coming fixtures. |
+| `goal2/ui/s07_team_info.py` | S07 Team info (T164; on the 16 × 32 grid, T211b): S04's card for any country, the list, the next opponent marked; a country's twenty and its tactics, read only. |
+| `goal2/ui/s11_fixtures.py` | S11 Fixtures (T178; on the 16 × 32 grid, T211b): the coming round, or a country's coming fixtures. |
 | `goal2/ui/s12_tournament.py` | S12 Tournament (T178): the displays and continents as tabs, a group's table beside its matches, the banner. |
 | `goal2/ui/s13_history.py` | S13 History (T178): this career's results by season; the boxes without a source. |
 | `goal2/ui/match_day.py` | The match day (T167): `MatchDay`, the window's bridges and the order of S14, S15, S16, S17 and S20; the desk's `play_next_game`; the watch question's rule (`asks_watch`). |
 | `goal2/ui/s14_round.py` | S14 Round results (T167). |
 | `goal2/ui/s15_match_menu.py` | S15 Match menu (T167). |
-| `goal2/ui/s16_choose.py` | S16 Choose a player: the captain, a set-piece taker, the penalty order (T167). |
-| `goal2/ui/s17_pitch.py` | S17 Pitch (T166): the screen, `MatchController` over the match day's bridge, the suggested captain (`best_leader`). |
+| `goal2/ui/s16_choose.py` | S16 Choose a player: the captain, a set-piece taker, the penalty order (T167; on the 16 × 32 grid, T212: what the match waits for across the top, the squad's card (`GridCard`) with the eleven in a frame of 20 cells at its right, level with its foot, the order wrapped under them). |
+| `goal2/ui/s17_pitch.py` | S17 Pitch (T166): the screen, `MatchController` over the match day's bridge, the suggested captain (`best_leader`). [designed: T212] On the 16 × 32 grid: the score across three rows, the pitch (64 × 18 cells), the commentary (the speed and your side's colour under it) in a frame at its right and what a key said under the pitch; the pitch's drawing is T179's and is not touched. |
 | `goal2/ui/s20_board.py` | S20 Match board (T167). |
 | `goal2/ui/pitch.py` | S17's pitch widget: lines, surround, marks coloured by side, the ball, the enlarged commentary. |
 | `goal2/ui/saves.py` | The named save format (Qt-free). |
@@ -124,9 +128,11 @@ of the bottom bar and a click on the Enter hint all reach the same handler.
 `replace_home(screen)` empties the stack and starts again from `screen`; `open_career(model, pages=())` makes `model`
 the open career (`window.career`) and shows its pages (S05), then the home. Keys go to the current screen
 (`Screen.handle_key`). Closing the window first calls `closing()` on every screen on the stack that has one (S17
-cancels its match) [designed: T166]. The page is composed for 1440×900 and scales as a whole with the window: the central widget is
-today's `goal2.desktop.fixed_page.FixedPage`, reused, which multiplies every length of the page, its style sheet's
-text sizes included (T101). Its `problems(window)` check (no scroll bar, nothing clipped or squeezed) applies to every
+cancels its match) [designed: T166]. The page is composed for 90 × 28 cells of 16 × 32 (1440×896) and scales as a whole with the window, presented at 4:3
+[designed: owner, 2026-11-08, #667; T209; docs/design/ui-2026-11/README.md §3] — the central widget is
+today's `goal2.desktop.fixed_page.FixedPage` with its stretch (the legacy window keeps it uniform), which multiplies every
+length of the page, its style sheet's text size included, by the scale (vertical ones by 1.2 × the scale) and sets the
+font stretch that keeps a glyph one cell wide (T101). The text is one size, `theme.TEXT` (32 px). Its `problems(window)` check (no scroll bar, nothing clipped or squeezed) applies to every
 screen of the new window too.
 
 ## The look
@@ -154,8 +160,10 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
 
 | Module | What it holds |
 | --- | --- |
+| `goal2/ui/cells.py`, `goal2/ui/cell_parts.py` | [designed: T211] The grid's parts: text and panels placed by cell (`CellLabel`, `CellPara`, `Cells`), and the strip, card, bars and typed line S06 and S08 are made of (shared by S09 and S10 after T212b). [designed: T211b] `CellTableRow`: a row of a list or a table, its cells at columns, the highlight bar behind them (S04 and S07's lists, S11's rows). |
+| `goal2/ui/country_parts.py` | [designed: T211b] The country card's parts on the grid (S04, S07): the four lines' bars, the strips, the characteristics' rows, the caps and age on a line, a panel as a frame over cells (`framed`). T212b shares the cell-based header with S10. |
 | `goal2/ui/squad_card.py` | The parts the three share: the player card (every field of `goal2.game.player_card.card`), the strip on the right (the eleven, a gap, the bench; or a page of the pool), bars, label-value lines, table rows, the name line. |
-| `goal2/ui/s08_squad.py` | S08 Squad and pool. |
+| `goal2/ui/s08_squad.py` | S08 Squad and pool. [designed: T211] On the 16 × 32 grid: the card (`cell_parts.GridCard`: the name and the facts as rules with their values under them, the skills, the tactics over the characteristics) and the twenty (`GridStrip`) side by side, a cell apart; the pool's filters and the goal2 addition's tag above the card; the message under it and what a pick waits for across the foot. |
 | `goal2/ui/s09_player_tactics.py` | S09 Player tactics. |
 | `goal2/ui/s10_team_tactics.py` | S10 Team tactics. |
 
@@ -198,6 +206,15 @@ files. `tools/ui_squad_screenshots.py DIR` writes the screens' pictures (they ar
 [designed: owner, 2026-11-03, #526 decisions 1 and 14, #527 D2; T164, #538] A new career or a loaded save lands on S06,
 the manager's desk, the career's home: every management screen returns to it with Esc, and it has no Esc of its own.
 
+[designed: owner, 2026-11-09, #667; T211b] S07 is on the grid too: the card (60 cells: the frames *team*, *skills*, *team tactics* in a column of 34 and *ranking*, *line-up*, *characteristics*, *player defaults* in one of 25, a cell apart, one row between them; *performance* under the skills when the card is in a match context) and at its right the original's heading of the list (*check out all the competitors*) over the sixteen countries in a frame, 29 cells, their names right-aligned and *next opponent* in the cells after the highlighted one's; S04 is the same card and list under the prompt, the level of difficulty and the first match, with the manager's name in a frame under the list (a line, then what it says in three rows). The lists' ranking is on S04's frame rule (*continental rank*, *world rank*) and in S07's note under the list.
+
+[designed: owner, 2026-11-09, #667; T211] The desk is laid out on the 16 × 32 grid, in cells (90 columns, the 25 rows between the one-row
+title and the two key rows), three columns a cell apart and no card: at the left the frames *manager*, *team*, *next opponents* and
+*managers* (a rule with its lowercase label, goal2/ui/frame.py) with the hint and the screen's message under them; in the middle the
+six options as boxes of two rows (a row between them, as the original's) and under the *GOAL2 ADDITION* tag the extras as boxes; at the
+right the twenty in a frame named for the country. Its pieces are `goal2/ui/cells.py` and `goal2/ui/cell_parts.py`; the rules are in
+[design/ui-2026-11/README.md §3](design/ui-2026-11/README.md#3-rules-for-the-whole-ui).
+
 - **S06** shows the manager (name; rating *unknown*: the route keeps none), the team with its world and continental
   rankings, the next opponents with theirs and the match's kind with home or away (*friendly away*, T167, #562), the managers, and the twenty with role codes, the eleven above the bench; the competition at the title
   bar's right end, named as the original's hub names it (T178, #563: *2028 European Championship · QUALIFYING*). The
@@ -231,7 +248,7 @@ stage the route has not reached says so instead of showing rows.
   *European Championship* and *American Championship* as the captures print them, *African* and *Asian
   Championship* from the adjectives at `DS:690A` [derived], *World Cup* from stage 5; QUALIFYING or FINALS by
   stage. Stage 6 (the play-offs) is in no capture and keeps the route's words.
-- **S11** lists the round, each fixture's kind (*friendly*, *qualifying*), ✓ on your own match and what happens at
+- **S11** (on the 16 × 32 grid, T211b: the list in a frame across the 90 columns, its heading on the rule, the column names in brown over sixteen rows, the original's own number) lists the round, each fixture's kind (*friendly*, *qualifying*), ✓ on your own match and what happens at
   kick-off (*your match*, *auto result*); **↑↓** scroll, **Esc** back. Enter on your own match says it is always
   watched (owner decision 1). The original's ✓ toggle on another country's match is not built: the engine plays only
   the managed country's match watched (`prepare_watched` refuses another fixture, and the world refuses a watched
@@ -268,7 +285,11 @@ acknowledgements, and the match the player watched is the match the engine publi
   the last two events; the pitch (`goal2/ui/pitch.py`: the lines and boxes of the samples' grid, the green surround,
   one character per grid cell in the original's drawing order, keepers as faces, the ball on an empty cell); the
   commentary, the speed, the display and your side's colour. The home side is the fixture's side B, named first
-  (`DesktopModel.home`, #562; T167).
+  (`DesktopModel.home`, #562; T167). [designed: T212] On the 16 × 32 grid: the two sides with their goals and the minute at the left of
+  three rows, at the right the original's frame of the kind of match (`-friendly-----`) with the last two events in it; the pitch is 64 × 18 cells
+  (the widget is as large as the cells it is given and paints at the scale of its size: its drawing is T179's) with the commentary in a frame
+  of 25 cells at its right (thirteen rows, the speed and the display, your side's colour); what the bench or a key said is under the pitch.
+  A saved goal's replay has no commentary and says what its record holds there (the minute and the scorer, the score).
 - **Keys** [confirmed: E031 C39–C40, C08; T156-R1 steps 45, 267]: **←→** speed, **↑↓** the five display styles
   (role codes first), **Space** a larger commentary reading panel and back, **R** quick result (every sample is
   acknowledged as it arrives; *HANG ON A TICK* stands where *R result* was, `t156-267-quick-hang-on`), **F9** says
@@ -318,7 +339,9 @@ answer the engine receives, sent once, through the bridge, in the order the engi
 - **S16** asks the captain before kick-off ("Choose your captain to kick off"; the highlight on T143's pick; **↑↓**,
   **Enter**, **C** the computer's), confirmed through `DesktopModel.confirm` before the engine is asked; a set-piece
   taker during play (the engine's `set_piece` decision, over the bridge and the pipe: `prompts`); and the shoot-out
-  order (Enter adds, **Esc** undoes). With no key the current pick stands after the original's wait, 10 s (F030).
+  order (Enter adds, **Esc** undoes). With no key the current pick stands after the original's wait, 10 s (F030). [designed: T212] On the
+  16 × 32 grid S16 is what the match waits for across the top, under it the squad's card (69 × 18 cells) with the eleven in a frame of 20 cells at
+  its right, level with the card's foot (its rule is the country, as the original's box under its list), and the penalty order's lines under them.
 - **S20** shows what the events and the outcome give: the score, the half-time score, the scorers and minutes; at full
   time the original's board as the engine read it (its nine counters, the bars' raw words, the man of the match); at
   half time bookings and red cards from the events, and the rest say *at full time*. After a quick result the QUICK
@@ -345,7 +368,14 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
   player injured, or the stoppage after a request; the original's refused eleven is said there), any key to S15
   (phase *stop*), whose *players* opens S19; the other side's substitution (*SUBSTITUTION X on for Y*), any key plays
   on; the penalty shoot-out's notice before S16's order. T181's goal questions use the same box (below).
-- **S19** (`goal2/ui/s19_bench.py`) shows the card, live eleven/bench and the engine's remaining budget.
+- **S18's box** [designed: T212, on the 16 × 32 grid] is 40 cells wide and as many rows as its words take (the tag, the headline, the detail, the
+  key line, one empty cell at each edge: its border is drawn at the edge), centred over the pitch's cells; the timed opportunity is a bar at the pitch's
+  foot as wide as the pitch less two cells (24 to 46). The request badge is a row of the pitch's cells.
+- **S19** (`goal2/ui/s19_bench.py`) shows the card, live eleven/bench and the engine's remaining budget. [designed: T212, on the 16 × 32 grid] At the left
+  the mode and its button, the match's words, the substitution's words in a frame of five rows and the squad's card; at the right the twenty in a frame
+  down to the foot, the budget at the right of the title row. A live injury is said after the name (*· INJURED*) and the name then takes two rows of the
+  strip, which has three more than the twenty and the gap need: three injured players fit and a fourth is more than the page has rows for
+  (`fixed_page.problems` says so). The card's *readiness* is a paragraph of two rows (*INJURED — live match*).
   [designed: owner playtest2026-11-05, #599; supersedes T180's queued/deferred UI] At a legal stop, **Enter** on
   two players in either order sends one edit-only answer. The original's returned decision updates the squad
   and counter immediately, before Play; repeat input is held until that reply. Refused pairs stay at the usable
@@ -469,6 +499,6 @@ saved-goal menu and F3/F4 lists.
 
 [confirmed: original0791:ED8A; measurements/610-live-team-tactics/original-esc-v1; owner #610/#612] Esc returns from player tactics to the squad, and from the squad to the match menu. At an active pause, half-time, substitution or extra-time menu, Esc resumes through the same XI validation as Play. Before kick-off and after full time, Esc selects and explains Play/Exit. A held Esc/Enter does not repeat across these transitions; directional repeats and later discrete key presses remain usable. Stop arrival consumes the outstanding “bench requested” status; dropped/failed requests and match cancellation cannot retain that obsolete note. Pending edits keep their screen until the engine confirms or refuses them. The manual/player-card audit (#611) remains separate required work.
 
-[designed: owner611; T193, based on original1771:42BC/T156] Player cards use aligned labelled cells for age/caps/goals/height/foot/performance, then position/club/cards. Fact headings use the red card-heading palette role, attribute labels brown, and values the player-line colour. Facts retain24px type, all20roster rows and existing rename/selection/readiness/bench controls. Compact bench spacing allows long card statuses and refusal text to fit at fractional native font metrics. This presentation change does not make saved player data live; that snapshot contract remains separate611 work.
+[designed: owner611; T193, based on original1771:42BC/T156] Player cards use aligned labelled cells for age/caps/goals/height/foot/performance, then position/club/cards. Fact headings use the red card-heading palette role, attribute labels brown, and values the player-line colour. Facts retain the one text size (`theme.TEXT`), all20roster rows and existing rename/selection/readiness/bench controls. Compact bench spacing allows long card statuses and refusal text to fit at fractional native font metrics. This presentation change does not make saved player data live; that snapshot contract remains separate611 work.
 
 [confirmed: original1771:3827; T192] Player cards display the original1–9 performance stars and leave the0x7FFF sentinel blank. The raw stored word remains available internally; the visible card no longer calls that known encoding undecoded. This display rule does not certify live-match data freshness: #611 separately requires a current engine player-record snapshot.
