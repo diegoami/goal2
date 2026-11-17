@@ -55,8 +55,22 @@ The full window action/mutation flow below still needs its controller wiring.
 edit/captain transaction state machine for an already-owned configured session.
 It keeps the old view while one answer/decision/preview sequence is pending,
 retains a pure refusal for repair, and invalidates on loss without replay.
-Its first Play reply belongs only to the explicit handoff. The actual screen
-bindings, session/bootstrap ownership and later match lifecycle remain separate.
+Its first Play reply belongs only to the explicit handoff. Session/bootstrap
+ownership and the later match lifecycle remain separate.
+
+[designed: T170z/#776] `HeldPrematchFlow` supplies the actual existing-widget
+binding for an explicitly provided configured session/controller. S08/S09/S10
+read confirmed current cards, native order and marking eligibility through its
+facade. S15 opens those same editors and current opponent views; mandatory owner
+callbacks supply tournament/stats from the current native route. S16 sends one
+separate Play with a word or explicit null. Pending/refusal/loss are visible;
+help/local selection remain usable, including a native reorder under help.
+Close detaches and invokes owner disposal once unless handed off. The owner
+retains bootstrap/transport/lease, the first-packet handoff and later match,
+round/resume/save responsibilities. This explicit entry does not switch the
+normal desktop/default route. The matrix's historical handler/API-gap descriptions
+remain the T170r audit; the T170z binding resolves its screen hooks and preserves
+the explicit held-assistant T183 exception.
 
 ## Action matrix
 

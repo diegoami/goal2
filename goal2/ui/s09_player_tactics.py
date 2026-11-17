@@ -44,6 +44,9 @@ class PlayerTacticsScreen(Screen):
         self.model, self.word, self.bench = model, word, bench
         # [confirmed: 1771:49B8] the mark line only with a match set up, for a player of the eleven
         self.marks = bench is not None and word in bench.eleven
+        if getattr(bench, 'held_prematch', False):
+            # [confirmed: archaeology T137/87d92501, 1771:49B8] Available outfield bench too.
+            self.marks = bench.can_mark(word)
         self.line = 0
         self._build()
         self.bind((Qt.Key.Key_Up,), "", lambda: self.choose(self.line - 1), captions=("",), shown=False)
@@ -97,6 +100,9 @@ class PlayerTacticsScreen(Screen):
         return card(self.model.state, self.word, self.model.goaldat)
 
     def refresh(self):
+        if getattr(self.bench, 'held_prematch', False):
+            self.explain.setText(self.bench.held_block_reason or
+                                'Changes are confirmed as you edit. Play remains separate.')
         card = self.card()
         self.code.setText(card["role"])
         colour(self.code, LINE_COLOUR.get(card["line"], theme.TEXT_NORMAL))
@@ -117,7 +123,8 @@ class PlayerTacticsScreen(Screen):
             words, table = self.bench.words(), roles.tables(self.model.state)
             shown = [roles.role(self.model.state, self.bench.position(w), cache=table) + (full_name(self.model, w),)
                      for w in words]
-            self.strip.show_rows(self.model.view()["country_name"], shown, words.index(self.word),
+            self.strip.show_rows(self.model.view()["country_name"], shown,
+                                 words.index(self.word) if self.word in words else -1,
                                  len(self.bench.eleven) == 11)
             return
         rows, eleven = squad_rows(self.model)
@@ -142,6 +149,13 @@ class PlayerTacticsScreen(Screen):
     def alter(self):
         """Enter: the highlighted line one step on, through the model (rows 1..4 are elements 1..4); during a match
         in the bench's answer, the mark line to the next opponent."""
+        if getattr(self.bench, 'held_prematch', False):
+            try:
+                if self.line == len(LINES):self.bench.step_mark(self.word)
+                else:self.bench.own_tactic(self.word, self.line + 1)
+            except ValueError as exc:
+                self.explain.setText(str(exc));return
+            return self.refresh()
         if self.bench is None:
             self.model.own_tactic(self.word, self.line + 1)
         elif self.line == len(LINES):

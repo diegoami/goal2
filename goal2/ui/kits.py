@@ -60,6 +60,8 @@ def compute(read, team0: int, team1: int) -> Kits:
 
 def for_fixture(model, fixture) -> Kits:
     """The kits of a fixture: side A is team 0, side B team 1, read from the model's template image."""
+    if getattr(model, 'held_prematch', False):
+        return model.prematch_kits(fixture)
     from goal2.engine.original_match.image import Image
     image = Image.from_savestate(bytes(model.template_bytes))
     return compute(lambda off: image.rd(off, 1), fixture.side_a, fixture.side_b)
