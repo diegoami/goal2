@@ -1,0 +1,787 @@
+{
+  "accepted_upstream": "87d925013da43b266f72bd198fda7a7a2c67dac8",
+  "fail_before": {
+    "cases": 2,
+    "failures": [
+      "missing set_marking seam method",
+      "unsupported marking validation not repairable in old worker"
+    ],
+    "head": "534f4c5d",
+    "seconds": 1.439
+  },
+  "fast_gate": {
+    "modules": 257,
+    "passed": 257,
+    "scope": "Default clean-head fast gate; explicit full news/round proof above, full slow suite remains milestone.",
+    "skipped": 237
+  },
+  "focused": {
+    "cases": 64,
+    "marking_result": {
+      "after_play_events_hash": "4fb17bcf17c21ec2f783a49da36961ccfdee23e4a4aa6a9731d39a650ce1ef06",
+      "all16": [
+        160,
+        4,
+        0,
+        0,
+        31588,
+        1608,
+        16022,
+        16018,
+        70,
+        38668,
+        4020,
+        11684,
+        11684,
+        14453,
+        0,
+        0
+      ],
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "calls": [
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ],
+        [
+          2630,
+          1
+        ]
+      ],
+      "commands": [
+        {
+          "edit_only": true,
+          "marking": {
+            "123": null
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "123": 0
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "123": 0
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "123": 540
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "123": 540
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "123": null
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "134": null
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "134": 0
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "134": 0
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "134": 540
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "134": 540
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "134": null
+          }
+        },
+        {
+          "edit_only": true,
+          "marking": {
+            "123": 0,
+            "2630": 540
+          },
+          "own_tactics": {
+            "2630": {
+              "1": false,
+              "2": true
+            }
+          },
+          "positions": {
+            "2630": 2
+          },
+          "substitutions": [
+            [
+              135,
+              2630
+            ]
+          ],
+          "tactics": {
+            "1": false
+          }
+        }
+      ],
+      "entries": [
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          134,
+          1
+        ],
+        [
+          123,
+          1
+        ],
+        [
+          2630,
+          1
+        ]
+      ],
+      "events_hash": "27ebfb3d3ec0b2b5a3293f4a1672af0819ac62c219531af4991b41a058f6f914",
+      "input_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+      "memory": "0a426a301af695d5c50fc1be5d53fa09965b33b3accfecf685e7216dc3f90fb6",
+      "stages": [
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              123,
+              0,
+              540
+            ]
+          ],
+          "memory": "b1c5edd6de7c729254f3b257e4a27831275500ee51e5473fbcfabb21d6c269e5",
+          "preview_hash": "10bff6c5c4b4203ecf23d11e967c5d977b32776c7cecf8b0815a2aa7480def1c"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              123,
+              64,
+              0
+            ]
+          ],
+          "memory": "10f3fd13785c6724b5a256b757272dd97b0b2909974034eff65230a84f114b4d",
+          "preview_hash": "6b1749f4419a1f0c420f9b4ce0705ee2613c23962c0c60da8d1047d5b74ab276"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              123,
+              64,
+              0
+            ]
+          ],
+          "memory": "10f3fd13785c6724b5a256b757272dd97b0b2909974034eff65230a84f114b4d",
+          "preview_hash": "6b1749f4419a1f0c420f9b4ce0705ee2613c23962c0c60da8d1047d5b74ab276"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              123,
+              64,
+              540
+            ]
+          ],
+          "memory": "054b9b94b90f9f9bbaa86beacb5f37db67d27681231324158ce4c459369ca00b",
+          "preview_hash": "747b3d414cc2e9c58c7720640a1ccd7ce88959e78cfe8471ca4a5d20c8650f58"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              123,
+              64,
+              540
+            ]
+          ],
+          "memory": "054b9b94b90f9f9bbaa86beacb5f37db67d27681231324158ce4c459369ca00b",
+          "preview_hash": "747b3d414cc2e9c58c7720640a1ccd7ce88959e78cfe8471ca4a5d20c8650f58"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              123,
+              0,
+              540
+            ]
+          ],
+          "memory": "5dbcd526ede9b3f4366dd59d5802bab25a344bae4e71dcad92040d743b7b352d",
+          "preview_hash": "6e410feb7cad9f03e9cdfda78b4db713385e47de3c5a6ac19d6fab35224e6bcf"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              134,
+              0,
+              0
+            ]
+          ],
+          "memory": "20c2160c19f309d06fc2423679f3c4070d238e89647d22e5fb8cae61d5bcd34e",
+          "preview_hash": "45dac1bf3d0d77fbf862006b25876eb4d6371ece72ab4417a00383ccaf2a8090"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              134,
+              64,
+              0
+            ]
+          ],
+          "memory": "9ce44b5899b223557e30de2f5df5eeafb8222572e2b1f77e5c97a355e9d67541",
+          "preview_hash": "ca054268c9671a315daa87e97566c5e1efde1f2cfe11d8de004d303e18b6e6fb"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              134,
+              64,
+              0
+            ]
+          ],
+          "memory": "9ce44b5899b223557e30de2f5df5eeafb8222572e2b1f77e5c97a355e9d67541",
+          "preview_hash": "ca054268c9671a315daa87e97566c5e1efde1f2cfe11d8de004d303e18b6e6fb"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              134,
+              64,
+              540
+            ]
+          ],
+          "memory": "47e8a713d336bf66ae41be28dc090ef3f0b9cc493ee59581e0ed47653b533f49",
+          "preview_hash": "0b1ccb72bd9c82852622b0128da71dc72f4a8ab621536f36d9a53f7d0bb3f280"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              134,
+              64,
+              540
+            ]
+          ],
+          "memory": "47e8a713d336bf66ae41be28dc090ef3f0b9cc493ee59581e0ed47653b533f49",
+          "preview_hash": "0b1ccb72bd9c82852622b0128da71dc72f4a8ab621536f36d9a53f7d0bb3f280"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            70,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              134,
+              0,
+              0
+            ]
+          ],
+          "memory": "1e9c962447289214ae46678335e940ea71f02da564f3f243ae3cb96f740ab826",
+          "preview_hash": "3d35c40b826193cf8dc412c174aa85c19ba171f176132aa60ff6d5a43f6bceb5"
+        },
+        {
+          "all16": [
+            4000,
+            15984,
+            0,
+            11684,
+            4000,
+            4000,
+            16016,
+            15994,
+            22,
+            2269,
+            10606,
+            11684,
+            47104,
+            14453,
+            0,
+            0
+          ],
+          "marks": [
+            [
+              2630,
+              64,
+              540
+            ],
+            [
+              123,
+              64,
+              0
+            ]
+          ],
+          "memory": "b1de0bc1f89fa308c8403f3e802d6644386847dac4323c84784ee5e63defb7fe",
+          "preview_hash": "3fa5d6643c52857c9d291fba1ddafefdf66d5eda2d23c8ae4cc7cfb21349c047"
+        }
+      ]
+    },
+    "pure_guard_result": {
+      "cases": 10,
+      "input_sha256": "f4a6935a46f500435163e2f0a2f762d34dcbc80c83476e3679758ece92ceb407",
+      "unavailable_word": 134
+    },
+    "scope": "Five new marking/seam/direct/worker/actual-pipe/fatal-error cases plus own,position,roster,captain,preview,news,vendor,provenance,table and runtime regressions; existing slow/optional guards retained.",
+    "seconds": 140.348,
+    "skipped": 12
+  },
+  "full_news_pipe": {
+    "cases": 1,
+    "passed": 1,
+    "result": {
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "events_hash": "bced27e1a2f8fea7f97f9083feacf5016b26ba03e043acfdf155589c8e8af93d",
+      "fixtures": 1,
+      "news": 1,
+      "observation_hash": "5880d888ac683ce5f471d48bb7208f41fb833509e07c7efaff7f2161f5d97a41",
+      "preview_hash": "c00033380c208a76ac6a190c1b0e5b23cabd329e62e5b0892d09af7d11ac21f1",
+      "state_hash": "9722e637f74a470663fcede6bebe09c558b3c6df088a293ed959eaba25f6fe7b",
+      "status": "complete"
+    },
+    "seconds": 75.403,
+    "slow": true
+  },
+  "issue": 763,
+  "links_json": 2802,
+  "platform_code_refs": {
+    "Linux": 44124417321,
+    "Windows": 44124417319
+  },
+  "preserved_overrides": {
+    "README.md": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+    "screens.py": "c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4"
+  },
+  "provenance_rows": 65,
+  "pull_request": 765,
+  "schema": "t170w-validation/1",
+  "scope": [
+    "Exact accepted match/route_team copies only; no port bodies or other vendored bytes changed",
+    "Exact None/inherit vs0/protected-zone vs opponent word across XI and eligible bench",
+    "13 edit stages, repeats/already-met goals, positive mixed pair/position/team/own/mark edit and separate Play",
+    "Ten pure invalid/bool/unknown/keeper/sweeper/pool/unavailable/mixed controls; actual pipe stale decision and same-decision legal repair",
+    "Current preview reconstructs native marking table and player status; unchanged season route boundary",
+    "Full memory/all16/event equality against direct answers; genuine backend RuntimeError still invalidates",
+    "No UI/assistant/EngineProcess/EngineServer/save changes, broader Prover claim or window activation"
+  ],
+  "sha256": {
+    "goal2/engine/original_match/match.py": "086feff8846eb02578b203932eec85f8f3af11c7d03bd6052704464847fcfb05",
+    "goal2/engine/original_match/route_team.py": "9bd56e3973f0b201cf60eafae6d5226a0f53b939b9779ec26b3923838cf41588",
+    "goal2/game/prematch_seam.py": "95290f67af26e777fcf46c4a0f541f175b4eba1bf5ede6e20ec6dabcd0d5c355",
+    "goal2/game/season_worker.py": "e03a121b6ce269ce382571ebea4e55abc2eed78dc52bf5d2ba79d45e47bc454b",
+    "goal2/tests/test_prematch_marking_t170w.py": "90474d2deb757705f886228de933379810ed404a639e18b2a918590efdf5abc6"
+  },
+  "tested_head": "1d5c43793dc5bd0502e578c43e54463a6d0716aa"
+}
