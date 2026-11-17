@@ -343,6 +343,7 @@ operational status.
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
 - [T183](T183.md): restore original assistant best-twenty selection on S08; required m3 parity (#594), after T170 and reviewed upstream T125.
 - [T183a](T183a.md): fast-track native assistant/preparation proof before T170; retain the parent's UI and current-context acceptance.
+- [T183b](T183b.md): project current opening-career metadata for the assistant and prepare a private, consistent candidate; no UI activation or native-season bootstrap.
 - [T188a](T188a.md): authoritative edits while the original remains stopped (#599).
 - [T188b](T188b.md): apply stopped substitutions immediately in the squad (#599).
 - [T189](T189.md): focused PR checks and full validation at integrated milestones (#606).
