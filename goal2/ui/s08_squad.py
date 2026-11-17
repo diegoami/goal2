@@ -63,6 +63,7 @@ SEARCH_MAX = 12   # [designed: T177] a surname's length on this route (`rename_p
 ADDITION = "GOAL2 ADDITION · POOL SEARCH"
 ASSISTANT_WAIT = "The assistant is choosing twenty.\nEsc: cancel and return to desk."
 ASSISTANT_UNAVAILABLE = "The assistant is not available for this career yet.\nYour selection is unchanged."
+ASSISTANT_IDLE = "Ins: ask your assistant to choose twenty.\nThe full squad and pool are considered."
 
 
 def shift_held():
@@ -225,7 +226,8 @@ class SquadScreen(Screen):
         self._show_filters(rows)
         if self._assistant_token is not None:
             self.message = ASSISTANT_WAIT
-        self.note.setText(self.message)
+        self.note.setText(self.message or (ASSISTANT_IDLE if self.side == 'squad' else
+                                          'Left: show your squad for the assistant.'))
         if self.picked is not None and self._assistant_token is None:
             detail = ("Enter on another player of the twenty swaps them; → to the pool, then Enter on the player "
                       "who replaces him. Enter on him again keeps the squad as it is." if self.picked[0] == "squad"
