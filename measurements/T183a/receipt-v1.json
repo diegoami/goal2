@@ -1,0 +1,65 @@
+{
+  "schema": "goal2/T183a-validation/1",
+  "application_source": "60dc4bc60609d4b12d8885fa73e169dc24982bec",
+  "strengthened_test_source": "bcde25566839a5835e7bd5080eef9a33cc490ab7",
+  "fast_gate": {
+    "source": "60dc4bc60609d4b12d8885fa73e169dc24982bec",
+    "modules_passed": 254,
+    "expected_scope_skips": 235,
+    "exit": 0
+  },
+  "focused": {
+    "scope": "GOAL2_SLOW=1; all five methods, including eight actual original-key/native comparisons; no GOAL2_CASES filter; complete 0x10E game block",
+    "linux": {
+      "tests": 5,
+      "skips": 0,
+      "exit": 0,
+      "python": "3.14.4"
+    },
+    "native_windows": {
+      "tests": 5,
+      "skips": 0,
+      "exit": 0,
+      "python": "3.13.15",
+      "engine": "PyPy 3.11.17"
+    },
+    "execution_order": [
+      "linux",
+      "native_windows"
+    ]
+  },
+  "reuse": "The strengthened-test commit changes only the complete-game-block comparison from 0x100 to source-documented 0x10E. Application code, dependencies and fixtures are identical. Both full focused platform scopes rerun after this strengthening; the preceding fast regression receipt retains its tested SHA. Final clean-head checks and hosted checks remain required.",
+  "mutation": "Omitting original 52CC preparation fails actual countries equality; source restored.",
+  "record_fields": [
+    "all 3061 player records",
+    "all 129 country records",
+    "all 135 manager records",
+    "all 0x10E game bytes",
+    "ordered twenty-player squad",
+    "ordered eighty-player pool",
+    "both RNG words"
+  ],
+  "denial": "Native child positively denies Unicorn imports and GOAL.EXE reads; no stubs/fallback",
+  "limits": [
+    "No worker/UI/save/vendor changes or working Ins claim",
+    "Retained annual-1 is later-career equality, not natural finals/tour refusal coverage",
+    "Parent T183 still needs the current GameState/calendar/manager/pool bridge, natural refusals, async/cancel/stale/atomic-publication and S08 proofs"
+  ],
+  "logs": {
+    ".cache/T183a-tests-before.log": {
+      "sha256": "015f1d84806b7d47790c5a2a05aab246a1086928e443ec6173998fd87fcf8965"
+    },
+    ".cache/T183a-preparation-mutation.log": {
+      "sha256": "9afa673d1090ecb3bf8d130d09c7630c13fc301848f1b3b651de325410a676d9"
+    },
+    ".cache/jobs/T183a-fast-final.log": {
+      "sha256": "47ac2e18eb6f7f8333f3e2c61c9043a50a77b4811fe2aad2525664216f37289e"
+    },
+    ".cache/T183a-linux-final.log": {
+      "sha256": "8115c5ec6bdae9245a34792f091b3d708c0ff1fbcdce4e3b18a6d4c6f87e5ac7"
+    },
+    ".cache/T183a-windows-final.log": {
+      "sha256": "7ff8c619eabb249419febd23f023911165d7a4a87b31bf2647fee300cf2e9a68"
+    }
+  }
+}

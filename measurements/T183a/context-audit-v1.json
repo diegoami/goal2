@@ -1,0 +1,20 @@
+{
+  "before_exchange": {
+    "campaign_stage": 5,
+    "template_game_stage": 2,
+    "template_match_flags": [
+      1,
+      1
+    ],
+    "template_pool_matches_current": false
+  },
+  "after_exchange": {
+    "campaign_stage": 5,
+    "template_game_stage": 2,
+    "template_match_flags": [
+      1,
+      1
+    ],
+    "template_pool_matches_current": false
+  }
+}
