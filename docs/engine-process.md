@@ -177,8 +177,8 @@ true or null (inherit). `PrematchSeam.set_own_tactic` preserves all three values
 Inheritance uses the player's country default, including pool players. Edit-only
 requests run the original T menu on the held Match; Play remains separate. Pure
 invalid own inputs retain the decision and current preview for repair; genuine
-backend failures still lose the session. Marking remains upstream #719 before
-window activation.
+backend failures still lose the session. Marking is accepted upstream as
+T137/87d92501; T170w/#763 must deliberately adopt it before window activation.
 
 [designed: T170p; confirmed: archaeology T133/#715] After accepted pre-match
 edits, `answer={"captain": word}` plays with a current eligible XI member, including
