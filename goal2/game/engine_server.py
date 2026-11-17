@@ -263,6 +263,8 @@ class Server:
             try:
                 if op == "season":
                     self._season(header, payload)
+                elif op == "assistant":
+                    self._assistant(header, payload)
                 elif op == "open":
                     self._open(payload)
                     self.send("opened")
@@ -270,7 +272,7 @@ class Server:
                     self._match(header)
                 elif op == "quit":
                     return 0
-                elif op in ("ack", "pause", "answer", "cancel"):
+                elif op in ("ack", "pause", "answer", "cancel", "assistant_cancel"):
                     # [designed: T159] A command sent before the window read the end of the match it was for.
                     continue
                 else:
@@ -281,6 +283,55 @@ class Server:
                 import traceback
                 traceback.print_exc(file=sys.stderr)
                 self.send("error", f"{type(exc).__name__}: {exc}")
+
+    def _assistant(self, header, payload):
+        """[designed: T183c] Copied state/2 query, not a retained-season edit."""
+        from goal2.game.best_twenty import recommend
+        from goal2.game.season import canonical_hash
+        number = header.get('request')
+
+        def poll():
+            while True:
+                try:
+                    item = self.inbox.get_nowait()
+                except queue.Empty:
+                    return
+                if item is _EOF:
+                    raise WindowGone
+                control, data = item
+                op = control.get('op')
+                if op == 'quit':
+                    raise WindowGone
+                if op == 'assistant_cancel':
+                    if type(control.get('request')) is int and control['request'] == number:
+                        raise Cancelled
+                elif op not in ('ack', 'pause', 'answer', 'cancel'):
+                    raise ValueError('invalid request during assistant selection')
+                if data:
+                    raise ValueError('unexpected assistant control payload')
+
+        try:
+            if (type(number) is not int or number < 1
+                    or set(header) != {'op', 'request', 'input_hash', 'size'}):
+                raise ValueError('invalid assistant request')
+            value = json.loads(payload.decode('utf8'))
+            if not isinstance(value, dict) or value.get('schema') != 'original_match.state/2':
+                raise ValueError('assistant input must be state/2')
+            digest = canonical_hash(value)
+            if header['input_hash'] != digest:
+                raise ValueError('assistant input hash mismatch')
+            result = recommend(value, check_cancel=poll)
+            state = result.pop('state')
+            data = json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
+            poll()
+            self.send('assistant', {'request': number, 'input_hash': digest,
+                                   'output_hash': canonical_hash(state), 'result': result}, data)
+        except Cancelled:
+            self.send('assistant_cancelled', {'request': number})
+        except WindowGone:
+            raise
+        except Exception as exc:
+            self.send('assistant_error', {'request': number, 'error': f'{type(exc).__name__}: {exc}'})
 
     def _open(self, payload):
         from goal2.game.session_save import decode

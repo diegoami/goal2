@@ -228,7 +228,7 @@ class SearchAndFilter(App):
     def test_the_original_s_keys_keep_their_meaning(self):
         window, screen, model, same = self.squad()
         bar = self.bar(screen)
-        for caps, text in ((("Ins",), "coming later"), (("R",), "next position"), (("C",), "club position"),
+        for caps, text in ((("Ins",), "assistant"), (("R",), "next position"), (("C",), "club position"),
                            (("T",), "his tactics"), (("F2",), "new name"), (("Esc",), "desk"),
                            (("↑", "↓"), "player"), (("←", "→"), "squad / pool")):
             self.assertEqual(bar.get(caps), text, caps)

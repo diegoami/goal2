@@ -16,6 +16,7 @@ It belongs to today's window and goes with it (T170).
 | The engine (child) | `goal2/game/engine_server.py`, run as `python -m goal2.game.engine_server` |
 | The window (parent) | `goal2/game/engine_process.py`, `EngineProcess` |
 | The window's matches (T160) | `goal2/game/watched_jobs.py`, `MatchEngine`, under `WatchedJobs` and `CompetitiveJobs` |
+| The explicit squad assistant (T183c) | `goal2/game/best_twenty_jobs.py`, on the same owner's `MatchEngine` |
 | Tests | `goal2/tests/test_engine_pipe_t159.py`, `goal2/tests/test_matches_on_pipe_t160.py` |
 
 ## Packets
@@ -42,6 +43,8 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | `cancel` | | Ends the running match. |
 | `quit` | | Ends the process. |
 | `season` | `request` (positive integer), `action`, fields below | Operates on one retained sealed season; separate from the legacy fresh-match requests. |
+| `assistant` | positive integer `request`, `input_hash`; binary JSON state/2 payload | Computes a copied private best-twenty candidate; never edits the retained season or cached legacy game. |
+| `assistant_cancel` | positive integer `request` | Cancels only that query; late controls cannot cancel another operation. |
 
 ## Replies (engine to window), by `kind`, with `value`
 
@@ -60,8 +63,35 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | `error` | its text; the process stays up for the next request |
 | `season` | `request`, `action`, and the detached operation result described below |
 | `season_error` | `request`, `error`, `lost` (whether the transient season was invalidated) |
+| `assistant` | `request`, `input_hash`, `output_hash`, `result`; binary JSON state/2 payload |
+| `assistant_error` | `request`, `error`; no payload |
+| `assistant_cancelled` | `request`; no payload |
 
 The window adds one of its own: `death` {`code`, `stderr`, `error`} (below).
+
+## Explicit assistant (T183c)
+
+[designed: owner fast-track, T183c] `EngineProcess.assistant(state)` returns a request
+number immediately; its terminal reply is bound to that request and canonical input/output
+hashes. Result metadata contains strict allowed/refusal flags, country/manager, ordered squad
+and pool, recruits and original call evidence. The client validates packet/schema/hash/type
+bounds. A mismatched reply ends the child; a rejected copied context leaves it reusable.
+Busy, close and death include the assistant request. Cancellation is request-specific,
+including results already in transit; its deadline cannot kill a later operation/process.
+
+`AssistantJobs` joins the existing `MatchEngine`; it starts no sidecar. It snapshots current
+state on its owner thread, prepares/executes/builds the private candidate off that thread,
+and only owner-thread `poll` validates and installs it. Cancellation remains accepted through
+validation until the atomic commit; state identity/value are rechecked at that boundary.
+Refusal/cancel/stale/failure install nothing. Leaving the view cancels its request; closing or
+replacing the career closes its bridge without leaking replies into the next match.
+
+[derived: T183b] The current legacy window projects its supported opening phase (2/5),
+including its actual world prefix and current XI/pool, into transient assistant input. It
+preserves immutable tables and opaque fields. This is not a whole native calendar/bootstrap
+or later-stage migration; T183's full native later-season/finals acceptance remains required.
+The engine operation itself accepts genuine outside-match state/2 and runs the original
+preparation and DC7E under PyPy without Unicorn or a GOAL.EXE read.
 
 ## Retained season (T170o)
 

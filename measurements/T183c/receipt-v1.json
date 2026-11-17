@@ -1,0 +1,281 @@
+{
+  "schema": "goal2/T183c-validation/1",
+  "source": "8241317d068a00084d18fb7492936fc368197dcc",
+  "application_source": "3fec1221bdb0398199def62ea705c967c628a474",
+  "fast": {
+    "passed": 258,
+    "expected_scope_skips": 238,
+    "exit": 0
+  },
+  "prior_fast": {
+    "source": "3fec1221bdb0398199def62ea705c967c628a474",
+    "passed": 257,
+    "total": 258,
+    "exit": 1,
+    "sole_failure": "test_ui_extras_t177 obsolete coming-later caption; corrected assertion retains Ins and all other key checks"
+  },
+  "focused": {
+    "source": "e0e9248cf75aae512fc49e007a54f12f698721c8",
+    "tests": 48,
+    "skips": 0,
+    "exit": 0,
+    "scope": "all actual slow/new pipe/UI/native/adapter cases; late cancellation fixed before this pass"
+  },
+  "affected": {
+    "linux": {
+      "test_engine_pipe_t159": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_engine_pipe_t159.log",
+        "tests": 16,
+        "skips": 0,
+        "sha256": "5abc87ded1e2ced08957773644d22297f0d34e7c56c36a2c58c7747efddaa5c9",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_matches_on_pipe_t160": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_matches_on_pipe_t160.log",
+        "tests": 7,
+        "skips": 0,
+        "sha256": "a4eaaeae6585535254800d7ed1055b98d7c24e63f39512cb533647167b29ae61",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_completion_boundary_t199": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_completion_boundary_t199.log",
+        "tests": 10,
+        "skips": 0,
+        "sha256": "784a979cf02470f406104b43dd907e992a3859f1537afda2b4f0ebcc5d4dd3d3",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_season_worker_t170o": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_season_worker_t170o.log",
+        "tests": 8,
+        "skips": 0,
+        "sha256": "08fa33aab58c354420081708cb65258020eedc9234a54cb5eaccd87f052e1d44",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_ui_assistant_t183c": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_ui_assistant_t183c.log",
+        "tests": 8,
+        "skips": 0,
+        "sha256": "d34dd090b024927a49365aa0d378b889a0aca434205d67367d646da500e23587",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_ui_squad_t165": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_ui_squad_t165.log",
+        "tests": 13,
+        "skips": 0,
+        "sha256": "277c667b077a30fa372e43aea98600bf3ee4ed169de3636ef6462f5610084133",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_ui_grid_screens_t211": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_ui_grid_screens_t211.log",
+        "tests": 17,
+        "skips": 0,
+        "sha256": "a789529170500a183616800ba4c30ba76a1726070746c8da3540e45210e479c2",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_ui_grid_t210": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_ui_grid_t210.log",
+        "tests": 17,
+        "skips": 0,
+        "sha256": "a63225b273eb61020cc5d57b0b4b7a44022d8a00994b9d1ccd20a71d09cc4159",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_ui_save_t168": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_ui_save_t168.log",
+        "tests": 14,
+        "skips": 0,
+        "sha256": "3aaed99c0b4a1324423c32147a83440141607c438ebe42ec4848d374b8bce080",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      },
+      "test_ui_extras_t177": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/linux-test_ui_extras_t177.log",
+        "tests": 11,
+        "skips": 0,
+        "sha256": "5dca717b22071532258d84c871335039f282c155a2c07b1acd24aee945ec559a",
+        "tested_source": "91919f395d42f96be771cceb0841c973c74b3cd1"
+      }
+    },
+    "windows": {
+      "test_assistant_pipe_t183c": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_assistant_pipe_t183c.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 15,
+        "skips": 0,
+        "sha256": "0c7332482743bbca1a535490d62cfd5a7f28d5cb2e9c589c239ac658681406ac"
+      },
+      "test_ui_assistant_t183c": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_ui_assistant_t183c.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 8,
+        "skips": 0,
+        "sha256": "96c49151f9ebef44401c9f8117b354d9ef3133c0e002d9bf19f715b4c29d08a7"
+      },
+      "test_ui_squad_t165": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_ui_squad_t165.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 13,
+        "skips": 0,
+        "sha256": "b2f58c5408a4ce89dc2780e957f53cfe2b78b87ff081bd5a890f4339609afdec"
+      },
+      "test_best_twenty_t183a": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_best_twenty_t183a.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 6,
+        "skips": 0,
+        "sha256": "4be5f3187e6c7265dbbf395cfe7836e2cb51d09c1ad16e5e7df890bdc5710b71"
+      },
+      "test_best_twenty_state_t183b": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_best_twenty_state_t183b.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 6,
+        "skips": 0,
+        "sha256": "c2b1af8b7dc10ca0d27cb180496b8a7fa5e44f7d0565b8a1a0cc30b138fbc615"
+      },
+      "test_matches_on_pipe_t160": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_matches_on_pipe_t160.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 7,
+        "skips": 0,
+        "sha256": "70957f8bd5c8f8a7ef79eda67c87e6e9d1dfed0451b2d1a96118130d09c89920"
+      },
+      "test_completion_boundary_t199": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_completion_boundary_t199.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 10,
+        "skips": 0,
+        "sha256": "5f6c8fe8041b0bd696a316fc2f6fe87cabacc62d66bcc3eefe9246b613296ec2"
+      },
+      "test_season_worker_t170o": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_season_worker_t170o.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 8,
+        "skips": 0,
+        "sha256": "e2157471b519e356a72b6cc467337b476b0776feea94a7f1e9f343fcd07b0345"
+      },
+      "test_ui_grid_screens_t211": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_ui_grid_screens_t211.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 17,
+        "skips": 0,
+        "sha256": "60323f630c5869f9df81757490f2c69b927710c184289741bacab3459503da54"
+      },
+      "test_ui_grid_t210": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_ui_grid_t210.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 17,
+        "skips": 0,
+        "sha256": "2129a99a7f6c4980b37f0c16aa5a96e0590ba37cbfb79d90c555ddecb660cb77"
+      },
+      "test_ui_save_t168": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_ui_save_t168.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 14,
+        "skips": 0,
+        "sha256": "9a68055d72d936fa3d9ff82c1a821bc287675903a0816353fcb9d0ecfcd52743"
+      },
+      "test_ui_extras_t177": {
+        "exit": 0,
+        "log": "/home/diego/projects/goal2/.cache/T183c-validation-pinned/windows-test_ui_extras_t177.log",
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "tests": 11,
+        "skips": 0,
+        "sha256": "d6ed401fbde608b7fde9a17a7066e1269b71d681eb89a329e3d48ad336482854"
+      },
+      "test_engine_pipe_t159": {
+        "tested_source": "8241317d068a00084d18fb7492936fc368197dcc",
+        "runtime": "PyPy3.11.15/7.3.23 (shipping pin)",
+        "exit": 0,
+        "tests": 16,
+        "skips": 0,
+        "log": "/home/diego/projects/goal2/.cache/jobs/T183c-windows-pinned-full-pipe.log",
+        "sha256": "8dfcb2af1d0e7384043965040378bc5c180de1e8b19df43d1e9329a1de1554d9"
+      }
+    }
+  },
+  "captures": {
+    "assistant": 15,
+    "journey": {
+      "exit": 0,
+      "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/readability-captures.log"
+    },
+    "density_floor": 1.5,
+    "failures": 0
+  },
+  "hosted": {
+    "44120255057": {
+      "conclusion": "success",
+      "headSha": "8241317d068a00084d18fb7492936fc368197dcc",
+      "status": "completed"
+    },
+    "44120256584": {
+      "conclusion": "success",
+      "headSha": "8241317d068a00084d18fb7492936fc368197dcc",
+      "status": "completed"
+    }
+  },
+  "runtime_comparison": {
+    "failed_runtime": "PyPy3.11.17/8.0.1",
+    "failed_exit": "0xC0000005 in unchanged T159 watched bench",
+    "shipping_runtime": "PyPy3.11.15/7.3.23",
+    "unchanged_T159_tests": 16,
+    "shipping_exit": 0,
+    "log": "/home/diego/projects/goal2/.cache/jobs/T183c-windows-pinned-full-pipe.log"
+  },
+  "transport_correction": {
+    "linux": {
+      "tests": 15,
+      "exit": 0,
+      "log": "/home/diego/projects/goal2/.cache/T183c-pipe-linux-corrected.log"
+    },
+    "windows": {
+      "tests": 15,
+      "exit": 0,
+      "runtime": "runner8.0.1; shipping scope rerun below",
+      "log": "/home/diego/projects/goal2/.cache/jobs/T183c-windows-transport-reuse.log"
+    }
+  },
+  "prior_windows_failure": {
+    "test_assistant_pipe_t183c": {
+      "exit": 1,
+      "log": "/home/diego/projects/goal2/.cache/T183c-validation-final/windows-test_assistant_pipe_t183c.log"
+    }
+  },
+  "development_package": {
+    "run": 44111879995,
+    "conclusion": "success",
+    "headSha": "3fec1221bdb0398199def62ea705c967c628a474",
+    "status": "completed"
+  },
+  "reuse": "All application/dependency/fixture bytes unchanged; only new bounded transport test and main docs/evidence differ. Original full-match suites/seeds/events/memory/RNG/budgets unchanged. Prior Linux modules/journey retain tested SHA; corrected full pipe scope rerun on both platforms. Corrected transport scope rerun15/15 on both platforms; original full-match suites unchanged. Final evidence commit changes no application/test/tool/workflow/dependency files. Failed gates retain their actual sources/statuses.",
+  "boundary": "Supported current opening careers2/5 only; full T183 native-later/finals upstream725 still required. No default/tag/release change.",
+  "runtime_versions": {
+    "linux": "CPython3.14.4/PyPy3.11.15/7.3.23",
+    "shipping_windows": "CPython3.13.15/PyPy3.11.15/7.3.23",
+    "additional_failed_windows": "PyPy3.11.17/8.0.1 access violation retained separately"
+  },
+  "evidence_index": "goal2-keep/T183c/source-path-sha256.json",
+  "totals": {
+    "linux": 121,
+    "windows": 148
+  }
+}

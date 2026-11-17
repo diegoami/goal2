@@ -71,6 +71,9 @@ class EngineProcess:
         self._season_active = False
         self._season_request = None
         self._season_requests = 0
+        self._assistant_request = None
+        self._assistant_requests = 0
+        self._assistant_cancelled = False
 
     # --- state ---------------------------------------------------------------------------------------------------
 
@@ -92,7 +95,53 @@ class EngineProcess:
 
     @property
     def busy(self) -> bool:
-        return self._match is not None or self._completion is not None or self._season_request is not None
+        return (self._match is not None or self._completion is not None
+                or self._season_request is not None or self._assistant_request is not None)
+
+    def assistant(self, state):
+        """[designed: T183c] Ask on a private state/2; replies are request/hash bound."""
+        import json
+        from goal2.game.season import canonical_hash
+        if not isinstance(state, dict) or state.get('schema') != 'original_match.state/2':
+            raise ValueError('assistant input must be state/2')
+        payload = json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
+        digest = canonical_hash(state)
+        with self._lock:
+            self._usable()
+            if self.busy:
+                raise ValueError('the engine has a pending request')
+            if self._life is None:
+                self._start()
+            number = self._assistant_requests + 1
+            self._assistant_request = (number, digest)
+            self._assistant_cancelled = False
+            try:
+                self._send({'op': 'assistant', 'request': number, 'input_hash': digest}, payload)
+            except Exception:
+                self._assistant_request = None
+                raise
+            self._assistant_requests = number
+            return number
+
+    def cancel_assistant(self, number):
+        """Cancel this query only, including a result already in transit."""
+        with self._lock:
+            if (type(number) is not int or self._assistant_request is None
+                    or number != self._assistant_request[0] or self._life is None):
+                return False
+            self._assistant_cancelled = True
+            self._send({'op': 'assistant_cancel', 'request': number})
+            timer = threading.Timer(self.cancel_deadline, self._assistant_overdue,
+                                    args=(self._life, number))
+            timer.daemon = True
+            timer.start()
+            return True
+
+    def _assistant_overdue(self, life, number):
+        with self._lock:
+            if (self._life is life and self._assistant_request is not None
+                    and self._assistant_request[0] == number):
+                life.process.kill()
 
     @property
     def season_active(self):
@@ -349,6 +398,8 @@ class EngineProcess:
             self._life = None
             self._season_active = False
             self._season_request = None
+            self._assistant_request = None
+            self._assistant_cancelled = False
             self._match = None
             self._take_completion()
             self.ready = None
@@ -366,11 +417,56 @@ class EngineProcess:
         value = _restore_json_value(header.get("value"), "engine reply")
         with self._lock:
             if self._life is not life:
+                if kind in ('assistant', 'assistant_error', 'assistant_cancelled'):
+                    return None
                 return kind, value
             if kind == "ready":
                 if not isinstance(value, dict):
                     raise ProtocolError("invalid ready reply")
                 self.ready = value
+            elif kind in ('assistant', 'assistant_error', 'assistant_cancelled'):
+                import json
+                from goal2.game.season import canonical_hash
+                pending = self._assistant_request
+                if (pending is None or not isinstance(value, dict)
+                        or type(value.get('request')) is not int or value['request'] != pending[0]):
+                    raise ProtocolError('stale or unexpected assistant reply')
+                if kind == 'assistant':
+                    if set(value) != {'request', 'input_hash', 'output_hash', 'result'} or value['input_hash'] != pending[1]:
+                        raise ProtocolError('invalid assistant input binding')
+                    try:
+                        state = json.loads(payload.decode('utf8'))
+                    except (ValueError, UnicodeDecodeError) as exc:
+                        raise ProtocolError('invalid assistant state payload') from exc
+                    result = value['result']
+                    if (not isinstance(state, dict) or state.get('schema') != 'original_match.state/2'
+                            or value['output_hash'] != canonical_hash(state)
+                            or not isinstance(result, dict)
+                            or set(result) != {'allowed', 'refusal', 'country', 'manager', 'squad', 'pool', 'changed', 'recruited', 'calls'}
+                            or type(result['allowed']) is not bool or type(result['changed']) is not bool
+                            or result['refusal'] not in (None, 'finals', 'tour')
+                            or result['allowed'] != (result['refusal'] is None)
+                            or type(result['country']) is not int or not 1 <= result['country'] <= 128
+                            or type(result['manager']) is not int or not 1 <= result['manager'] <= 6
+                            or any(not isinstance(result[k], list)
+                                   or any(type(w) is not int or not 1 <= w <= 3060 for w in result[k])
+                                   for k in ('squad', 'pool', 'recruited'))
+                            or len(result['squad']) != 20 or len(result['pool']) != 80
+                            or len(set(result['squad'] + result['pool'])) != 100
+                            or len(set(result['recruited'])) != len(result['recruited'])
+                            or not set(result['recruited']) <= set(result['squad'])
+                            or not isinstance(result['calls'], dict)
+                            or any(not isinstance(k, str) or type(n) is not int or n < 1
+                                   for k,n in result['calls'].items())):
+                        raise ProtocolError('invalid assistant result')
+                    result['state'] = state
+                elif (payload or set(value) != ({'request', 'error'} if kind == 'assistant_error' else {'request'})
+                      or (kind == 'assistant_error' and not isinstance(value['error'], str))):
+                    raise ProtocolError('invalid assistant terminal reply')
+                if self._assistant_cancelled:
+                    kind, value = 'assistant_cancelled', {'request': pending[0]}
+                self._assistant_request = None
+                self._assistant_cancelled = False
             elif kind in ('season', 'season_error'):
                 import json
                 pending = self._season_request
@@ -481,6 +577,8 @@ class EngineProcess:
                 value = None
                 self._match = None
             elif kind == "error":
+                if self._assistant_request is not None:
+                    raise ProtocolError('unbound error during assistant request')
                 if not isinstance(value, str):
                     raise ProtocolError("invalid error reply")
                 self._match = None

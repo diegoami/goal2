@@ -370,6 +370,8 @@ class DeskScreen(Screen):
     def closing(self):
         """The window closes: the match day's bridges close, and with them the engine process (D3, #417)."""
         from goal2.ui.match_day import close_window
+        from goal2.game.best_twenty_jobs import close_model
+        close_model(self.model)
         close_window(self.window_)
 
     def reimport(self):

@@ -1,0 +1,257 @@
+[
+  {
+    "picture": "1440x1080/idle.png",
+    "context": "No assistant request on screen entry",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": [],
+    "sha256": "e1b01895e050e1b099c4f952aa9c383f8c82735ec6994caf3f336ad42df82487",
+    "density_floor": 1.5,
+    "minimum": 3.235832927459048,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x1080/busy.png",
+    "context": "Controlled held preparation; real explicit request, no publication",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": [],
+    "sha256": "0908251430b0042d45212b2cd132d8bd5dde0292244dbfa8400df8fa5577c11e",
+    "density_floor": 1.5,
+    "minimum": 3.235832927459048,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x1080/complete.png",
+    "context": "Actual PyPy result atomically published",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": [],
+    "sha256": "0f24b9aee84758e21a9dc0d465401b383aa62a67c2db000be6888345184e0427",
+    "density_floor": 1.5,
+    "minimum": 3.161888999435164,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x1080/no-improvement.png",
+    "context": "Actual repeated request on the same engine, no new recruits",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": [],
+    "sha256": "59a24a068f11e5c2c5ddf91982bfcdbb8fe9d7dba099d4ccad6cc59eddcf26fa",
+    "density_floor": 1.5,
+    "minimum": 3.235832927459048,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x1080/unavailable.png",
+    "context": "Authored missing-current-calendar control, not an original refusal case",
+    "requested": [
+      1440,
+      1080
+    ],
+    "actual": [
+      1440,
+      1080
+    ],
+    "problems": [],
+    "sha256": "34ba52898c959eb08a94779d9053d74b29cf1a82afef13b6d1124632058e2dda",
+    "density_floor": 1.5,
+    "minimum": 3.235832927459048,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x900/idle.png",
+    "context": "No assistant request on screen entry",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": [],
+    "sha256": "62685b3250f5e08e9f1086a72b1e771af60b80300ca4a046f4418cb6310e525f",
+    "density_floor": 1.5,
+    "minimum": 2.4082258494311315,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x900/busy.png",
+    "context": "Controlled held preparation; real explicit request, no publication",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": [],
+    "sha256": "ec1426be315a3511ac50c2e3c2716c2a49e75860f68f54654811a04cdfe88405",
+    "density_floor": 1.5,
+    "minimum": 2.4082258494311315,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x900/complete.png",
+    "context": "Actual PyPy result atomically published",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": [],
+    "sha256": "94fb05484047b490b85e9aa77a7e156b03387ffbf841eaff4cbf63758b945791",
+    "density_floor": 1.5,
+    "minimum": 2.408225849431131,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x900/no-improvement.png",
+    "context": "Actual repeated request on the same engine, no new recruits",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": [],
+    "sha256": "7414b81b3e6c81eee83bd1ad6ee2cd3364694d1eeb819bc5ab7ffd24c1c58565",
+    "density_floor": 1.5,
+    "minimum": 2.4082258494311315,
+    "density_passed": true
+  },
+  {
+    "picture": "1440x900/unavailable.png",
+    "context": "Authored missing-current-calendar control, not an original refusal case",
+    "requested": [
+      1440,
+      900
+    ],
+    "actual": [
+      1440,
+      900
+    ],
+    "problems": [],
+    "sha256": "f205f884aca3c7fe81478961519b8f21791f5d5389eac0360454b98f8493251b",
+    "density_floor": 1.5,
+    "minimum": 2.4082258494311315,
+    "density_passed": true
+  },
+  {
+    "picture": "2110x1213/idle.png",
+    "context": "No assistant request on screen entry",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": [],
+    "sha256": "e1eca279ece2dacaa9b0ef63c92912fee471d878bb32f3a36804616c23926d31",
+    "density_floor": 1.5,
+    "minimum": 1.7715325023649817,
+    "density_passed": true
+  },
+  {
+    "picture": "2110x1213/busy.png",
+    "context": "Controlled held preparation; real explicit request, no publication",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": [],
+    "sha256": "d9f6498f0fe29d4e974f8415ddd5f7d7db5136fde315dd6f5f8c711a0b4174a3",
+    "density_floor": 1.5,
+    "minimum": 1.7715325023649817,
+    "density_passed": true
+  },
+  {
+    "picture": "2110x1213/complete.png",
+    "context": "Actual PyPy result atomically published",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": [],
+    "sha256": "c6dd357a7095469ab8138f836ce5531f775dda39a9146f24cc1ddacecf5a3017",
+    "density_floor": 1.5,
+    "minimum": 1.7661785917417208,
+    "density_passed": true
+  },
+  {
+    "picture": "2110x1213/no-improvement.png",
+    "context": "Actual repeated request on the same engine, no new recruits",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": [],
+    "sha256": "16a135fc314cea1cc764c4adaecee75719076f792f20e4c487c2dd450f5bbfe6",
+    "density_floor": 1.5,
+    "minimum": 1.7715325023649817,
+    "density_passed": true
+  },
+  {
+    "picture": "2110x1213/unavailable.png",
+    "context": "Authored missing-current-calendar control, not an original refusal case",
+    "requested": [
+      2110,
+      1213
+    ],
+    "actual": [
+      2110,
+      1213
+    ],
+    "problems": [],
+    "sha256": "fa79f5c3bb5ec2676a316360290020bd28c594762c51fd07fe27e564afa9290e",
+    "density_floor": 1.5,
+    "minimum": 1.7715325023649817,
+    "density_passed": true
+  }
+]
