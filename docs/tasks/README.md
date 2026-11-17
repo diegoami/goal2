@@ -405,6 +405,8 @@ operational status.
 
 - [T170u](T170u.md): adopt accepted native pre-match R/C position inputs and repairable refusals (#753; upstream T135/#721).
 
+- [T170v](T170v.md): adopt accepted native pre-match personal tactic overrides with exact false/on/inherit semantics (#756; upstream T136/#723).
+
 - [T220](T220.md): catalogue the penalty and free-kick taker screens (#695).
 
 - [T222](T222.md): boot the core from the player's own GOAL.EXE, v0.1 (#705).
