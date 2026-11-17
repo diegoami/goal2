@@ -62,9 +62,11 @@ and T183b/#761 are merged; T183c/#764 delivers async assistant action for suppor
 opening careers, and #767 makes A its visible shortcut (Ins remains compatible).
 Preserve those accepted controls, the isolated owner apps/data and all fidelity
 cases; held-season assistant integration still needs its explicit contract.
-The parent's native-later/finals acceptance remains open; #725 now has verified
-retained G4B/C/D finals-flag candidates, not yet a native Ins-refusal proof. Preserve
-that session and checkout. The redesigned-UI look items
+The parent's native-season/UI acceptance remains open. #771 supplies the genuine
+G4B native finals refusal/acknowledgement and exact PyPy equality; archaeology#725
+is fulfilled. T183e/#773 scopes the next independent SeasonSession manager-boundary
+operation before separate worker/UI delivery. Preserve that session and checkout.
+The redesigned-UI look items
 #666–#680 stay owner-scoped alongside.
 
 Durable task decisions/status live on the relevant GitHub issues/PRs; supporting evidence is in `/home/diego/projects/goal2-keep`. The owner's final naming scope (2026-10-26) is only the existing33 authored profiles: canonical top32 plus Greece,80 surnames each, unchanged. Drop the128-country expansion; unlisted countries retain original names. Do not restart extra-country surname research.
