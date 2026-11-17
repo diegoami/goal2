@@ -157,7 +157,7 @@ class WindowPipe(unittest.TestCase):
         self.assertIs(self.c.view.own_override(bench,1),True)
         for goal in (None,False,True,None):
             self.key(Qt.Key.Key_Return);self.settle();self.assertIs(self.c.view.own_override(bench,1),goal,
-                (self.c.message,self.sent,p.word,p.line,self.c.view.record(bench).hex()))
+                (self.c.message,self.sent,p.word,p.line))
         for element in (2,3,4):
             self.key(Qt.Key.Key_Down);self.assertEqual(p.line,element-1)
             before=self.c.view.own_override(bench,element)
