@@ -13,6 +13,8 @@ edited answer returns a fresh `pre_match` decision. [T170m] The pool exchange is
 own answer now that T170l vendored the pool arm; T170k's named refusal retired with it.
 [confirmed: T135/fc6b5294; T170u] Numeric positions use original R across squad/pool;
 an explicit club action uses original C, even when the position is already equal.
+[confirmed: T136/46315dcf; T170v] Own tactics preserve explicit off/on/inherit
+through the original T menu across squad/pool, using player-country defaults.
 """
 
 
@@ -55,6 +57,14 @@ class PrematchSeam:
     def club_position(self, player):
         """[confirmed: T135/fc6b5294] Native C once, including already-equal values."""
         self.match.answer(edit_only=True, positions={player: 'club'})
+
+    def set_own_tactic(self, player, element, value):
+        """[confirmed: T136/46315dcf, F010] Native own row1..4, exact False/True/None."""
+        if type(element) is not int or not 1 <= element <= 4:
+            raise ValueError('own tactic element must be integer1..4')
+        if value is not None and type(value) is not bool:
+            raise ValueError('own tactic value must be False, True or None')
+        self.match.answer(edit_only=True, own_tactics={player: {element: value}})
 
     def play(self, *, captain=_UNSET_CAPTAIN):
         """[T170p/T133] Play after edits: optional current-XI captain, or None for

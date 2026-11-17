@@ -49,7 +49,8 @@ API field whitelists are not evidence of pre-match semantic support.
 “Preview” in this table means #746, “personal API” means
 [archaeology #719](https://github.com/diegoami/goal2-archaeology/issues/719).
 [confirmed: T170u, archaeology `fc6b5294`] The held position/club input arm exists;
-the remaining personal API work is own tactics and marking. The historical T170r
+the remaining personal API work is marking. T170v adopts own overrides from
+archaeology T136/46315dcf; current previews carry their native results. The historical T170r
 audit records the older refusals; its assumption-checking probe intentionally
 detects drift when run against a later kit. Current R/C proofs live in T170u tests.
 The remaining issues and the existing T183 issue are explicit activation prerequisites;
@@ -69,7 +70,7 @@ an existing scoped assistant placeholder remains the approved T183 exception.
 | S08 P / Shift+P | `step_position`; owner extras / T177 | Local fourteen-position filter, preview position | Cursor resets within visible result; selected word survives only if still valid |
 | S08 Esc | `escape` | Local cancel text editor, otherwise pop to S15 when invoked there | Accepted engine/identity edits persist; no extra answer or kick-off |
 | S09 arrows | `choose`, arrow bindings; original own menu | Local row cursor; actual eligible four/five rows | Re-evaluate after position/availability/pane change; never infer original eligibility solely from XI membership |
-| S09 Enter on four personal rows | `alter` → `model.own_tactic`; original 4B61 | Personal API, own byte and team defaults from preview; inherit → own false → own true → inherit | Currently rejected; inherited/default semantics must remain distinct, including false values; all eligible squad/pool players |
+| S09 Enter on four personal rows | `alter` → `model.own_tactic`; original 4B61 | Supported `PrematchSeam.set_own_tactic(word, element, value)` for elements1..4; exact False/True/None through the original T menu | Fresh preview carries own byte and player-country defaults, including pool; inherit → own false → own true → inherit. Invalid values repair the same decision; window wiring remains required |
 | S09 Enter on marking row | `alter` → stopped `bench.step_mark`; original 49B8 | Personal API plus own side, opponent squad/availability, setup and pane context; inherit/protect zone/opponent cycle | Original offers row for available outfield **bench as well as XI**, in squad pane during setup; pool/keeper controls have four rows. Current pre-match UI has none: fix context predicate and API before activation |
 | S09 Esc | Esc binding / screen pop | Local return to S08 card (or S19 during match) | Keep accepted edits; do not convert return into Play |
 | S10 ↑↓ | `choose`; original 1981 menu | Local eight-row cursor | Display order maps to bits **5,6,7,1,2,3,4,8**, not row numbers |

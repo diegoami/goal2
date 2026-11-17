@@ -52,6 +52,9 @@ class PreMatchPlan(S.MenuPlan):
         self._position_visit = None
         self._position_observed = False
         self._position_entered = False
+        self._own_visit = None
+        self._own_entered = self._own_returned = False
+        self._own_initial = 0
         self.pool_pane = False          # the SELECT screen opens in the squad view (E009-r0001)
         self._expected_swap = None
         self._swap_observed = False
@@ -119,6 +122,59 @@ class PreMatchPlan(S.MenuPlan):
         self._position_visit = (player, (s["position"](player) + 1) % S.N_POSITIONS, 0)
         return self.act(S.KEY_R)
 
+    def observe_own_entry(self, player, pane, key, own_set):
+        if self._own_visit != (player, pane) or self._own_entered or key != S.KEY_T:
+            raise MatchError("original pre-match own entry differs from requested input")
+        self._own_entered = True
+        self._own_initial = own_set
+
+    def observe_own(self, player, pane, own_set, key, default):
+        if not self._own_entered or self._own_visit != (player, pane) or key != S.ESC:
+            raise MatchError("original pre-match own return differs from requested input")
+        for element, goal in self.jobs[self.job][2].items():
+            has = bool(own_set & (1 << (element + 3)))
+            value = bool(own_set & (1 << (element - 1)))
+            if goal is None:
+                if has or (self._own_initial & (1 << (element + 3)) and
+                           value != bool(default & (1 << (element - 1)))):
+                    raise MatchError("original pre-match own inheritance was not reached")
+            elif not has or value != goal:
+                raise MatchError("original pre-match own value was not reached")
+        self._own_returned = True
+
+    def _own_select_key(self, s, job):
+        player = job[1]
+        if self.in_own:
+            if not self._own_returned or self.own_failed:
+                raise MatchError("original pre-match own input has no completed visit")
+            self.done.append(job)
+            self.in_own = False
+            self._own_visit = None
+            self._own_entered = self._own_returned = False
+            self._next_job()
+            return self.select_key(s)
+        in_pool = player not in s["squad"]
+        if in_pool and player not in s.get("pool", ()):
+            raise MatchError("pre-match own player left squad/pool")
+        if self.pool_pane != in_pool:
+            self.pool_pane = in_pool
+            return self.act(S.LEFT)
+        if in_pool:
+            here = s["pool_scroll"] + s["pool_cursor"]
+            target = s["pool"].index(player) + 2  # F011/T128
+            if here != target:
+                self.moves += 1
+                if self.moves > 2 * MAX_MOVES:
+                    raise ScreenError("pool cursor did not reach own-tactic player")
+                return S.DOWN if here < target else S.UP
+        else:
+            target = s["squad"].index(player) + 1
+            if s["cursor"] != target:
+                return self.move(s["cursor"], target)
+        self.in_own, self.own_failed, self.presses = True, False, 0
+        self._own_visit = (player, int(not in_pool))
+        return self.act(S.KEY_T)
+
     def select_key(self, s):
         if self._position_visit is not None:
             if not self._position_observed:
@@ -151,6 +207,8 @@ class PreMatchPlan(S.MenuPlan):
         job = self.jobs[self.job]
         if job[0] == "position":
             return self._position_key(s, job)
+        if job[0] == "own":
+            return self._own_select_key(s, job)
         if job[2] not in s["squad"] and job[2] in s.get("pool", ()):
             return self._pool_key(s, job)
         # Mark the nonzero incoming player first: DEA6 refuses to mark an empty outgoing slot.
