@@ -76,3 +76,12 @@ class ClosedFrames(unittest.TestCase):
         self.assertIs(target,button)
         QTest.mouseClick(target,Qt.MouseButton.LeftButton,Qt.KeyboardModifier.NoModifier,target.mapFromGlobal(point))
         self.assertEqual(clicked,[True])
+
+    def test_never_shown_layout_places_outline_at_actual_panel_size(self):
+        panels=[Frame('hidden'),CellFacts({'age':8,'caps':8},rows=2)]
+        for panel in panels:
+            with self.subTest(panel=type(panel).__name__):
+                self.addCleanup(panel.close)
+                panel.resize(256,96)
+                panel.layout().invalidate();panel.layout().activate()
+                self.assertEqual(panel.outline.geometry(),panel.rect())

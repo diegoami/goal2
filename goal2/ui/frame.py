@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import QEvent, QRectF, QSize, Qt
 from PySide6.QtGui import QColor, QFont, QPainter
-from PySide6.QtWidgets import QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QGridLayout, QSizePolicy, QVBoxLayout, QWidget
 
 from goal2.desktop import fixed_page
 from goal2.ui import cells, theme
@@ -149,12 +149,16 @@ class Frame(QWidget):
         self.body = QVBoxLayout()
         self.body.setContentsMargins(0, 0, 0, 0)
         self.body.setSpacing(0)
-        layout = QVBoxLayout(self)
+        layout = QGridLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
-        layout.addWidget(self.rule, 0, Qt.AlignmentFlag.AlignTop)   # on top, whatever the body (or its absence) leaves
-        layout.addLayout(self.body, 1)
+        layout.addWidget(self.rule, 0, 0, 1, 1, Qt.AlignmentFlag.AlignTop)
+        layout.addLayout(self.body, 1, 0)
+        layout.setRowStretch(1, 1)
         self.outline=PanelOutline(self,self._outline_segments)
+        # Layout placement also runs for never-shown widgets; Qt defers their
+        # resize events, so event-filter placement alone leaves stale bounds.
+        layout.addWidget(self.outline,0,0,2,1)
 
     def _outline_segments(self):
         top=max(0,self.rule.height()//2);bottom=self.height()-1;right=self.width()-1

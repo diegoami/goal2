@@ -10,7 +10,9 @@ The [receipt](receipt.json) records the pinned before source, screenshot hashes
 and three window sizes. Every changed screenshot pixel becomes the existing
 frame colour; no text or content is moved. The opaque-body reproduction loses
 336side-edge pixels before the fix and zero afterwards. Its regression also
-checks late-added content, resizing, fact values and click-through behavior.
+checks late-added content, resizing, fact values, click-through behavior and
+geometry in never-shown layouts. Outlines are layout-managed so they do not
+keep Qt's initial640×480 size while resize events are deferred.
 All15 assistant-state captures retain the existing fit/density checks.
 
 | Window | Before | After |

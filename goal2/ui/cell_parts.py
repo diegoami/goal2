@@ -395,6 +395,7 @@ class CellFacts(Cells):
             self.edges.append(column+width)
             column += width
         self.outline=PanelOutline(self,self._outline_segments)
+        self.grid.addWidget(self.outline)
 
     def _outline_segments(self):
         # [designed: owner playtest #778] Draw above visible fact values.

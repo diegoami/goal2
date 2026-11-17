@@ -53,12 +53,25 @@
   ],
   "opaque_body_before_edge_gaps": 336,
   "opaque_body_after_edge_gaps": 0,
-  "new_regression_methods": 4,
+  "new_regression_methods": 5,
   "linux_with_existing_grid_methods": 21,
   "linux_existing_expected_slow_skip": 1,
-  "windows_new_methods": 4,
+  "windows_new_methods": 5,
   "windows_skips": 0,
   "assistant_states": 15,
   "assistant_fit_density_failures": 0,
-  "boundary": "No roster, selection, save, font-size or layout-padding change"
+  "boundary": "No roster, selection, save, font-size or layout-padding change",
+  "linux_focused_existing_and_new_methods": 70,
+  "hidden_layout_regression": "Initially failed on never-shown Frame and CellFacts; actual layouts now own foreground geometry; original grid checks unchanged",
+  "first_fast": {
+    "passed": 261,
+    "total": 264,
+    "exit": 1,
+    "source": "dc72091d73b423b699151529ed5e8ef1190612d8",
+    "failed_modules": [
+      "test_ui_grid_screens_t211",
+      "test_ui_grid_screens_t211b",
+      "test_ui_grid_screens_t214"
+    ]
+  }
 }

@@ -139,11 +139,11 @@ class CellGrid(QLayout):
     def __init__(self, parent: QWidget, cols: int, rows: int):
         super().__init__(parent)
         self.cols, self.rows = cols, rows
-        self.items: list[tuple[QWidgetItem, tuple[int, int, int, int]]] = []
+        self.items: list[tuple[QWidgetItem, tuple[int, int, int, int] | None]] = []
         self.setContentsMargins(0, 0, 0, 0)
 
     def addItem(self, item) -> None:   # QLayout's own: a plain item takes the whole area
-        self.items.append((item, (0, 0, self.cols, self.rows)))
+        self.items.append((item, None))
 
     def put(self, widget: QWidget, col: int, row: int, cols: int, rows: int = 1) -> QWidget:
         self.addChildWidget(widget)
@@ -181,7 +181,13 @@ class CellGrid(QLayout):
     def setGeometry(self, rect: QRect) -> None:
         super().setGeometry(rect)
         across, down = self.pitch(rect)
-        for item, (col, row, cols, rows) in self.items:
+        for item, placement in self.items:
+            if placement is None:
+                # A foreground decoration covers the whole area, including
+                # fractional-row slack, without reserving a content cell.
+                item.setGeometry(rect)
+                continue
+            col, row, cols, rows = placement
             left, right = round(col * across), round((col + cols) * across)
             top, bottom = round(row * down), round((row + rows) * down)   # `down` is whole unless the area is short
             item.setGeometry(QRect(rect.x() + left, rect.y() + top, right - left, bottom - top))
