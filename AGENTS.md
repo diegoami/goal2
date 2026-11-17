@@ -15,7 +15,7 @@ clone `/home/diego/projects/goal2-archaeology-engine`; the other archaeology ses
 Do not resume Unicorn performance optimization or old-career migration. Preserve accepted scoped UI
 work. No obsolete #253 automatic sequence.
 
-Status (2026-11-17): v0.1 shipped and closed (milestone #705, tag `m2.1-v0.1-core-route`).
+Status (2026-11-18): v0.1 shipped and closed (milestone #705, tag `m2.1-v0.1-core-route`).
 The held-Match team-tactic/roster seam is in the kit through T170w (#765), including own/marking overrides, pool
 exchanges, full-twenty pair domains, late captain Play and budgets. T170o/#736 retains the actual
 SeasonSession/Match in the PyPy worker. T170s/#750 supplies pure decision-bound current previews;
@@ -48,18 +48,30 @@ loss invalidation/no replay, native Play refusal and intact first-packet handoff
 Nine methods,11 actual edit stages/direct fullRAM/all16/event equality and real
 parent pipe pass;47 focused methods and261-module platform gates pass. It owns
 no session/transport/widget lifecycle; detach is not backend cancellation.
+T170z/#779 now binds the existing S15/S08/S09/S10/S16 widgets through
+`HeldPrematchFlow` to an explicitly supplied configured native session/controller.
+All14 actual parent-PyPy/window cases pass unskipped on local/Linux/Windows;
+264-module gates, both native scales per platform and Windows native scenarios pass.
+The existing full legacy two-match journey15/15 and five native-screen layouts pass.
+Native XI refusal, pending/loss/close and once-only handoff are covered; the first
+parallel gate's test scheduling race is retained and corrected without runtime,
+fixture, case or bound changes. Receipts are in `measurements/T170z`.
+Owner callbacks still supply current-route views, handoff and disposal; this is
+not a normal desktop entry, native career bootstrap, round publication or ZIP flip.
 Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
-Next, in order: **worker activation**, now the complete **window action flow**
-over the same held Match: use the accepted T170x view and T170y coordinator,
-read T170i's mapping/T170r's inventory and existing screen/process owners, then
-write the next bounded actual screen-binding/session-owner consumer contract. The legacy assistant-only current-career projection
+Next, in order: **worker activation**: establish the concrete native
+session-owner/entry and valid initial-state contract, then connect T170z's intact
+first-packet handoff to in-match/resume and save/load. Use the accepted T170x view,
+T170y coordinator and T170z screen binding; read T170i's mapping/T170r's inventory
+and existing screen/process owners before the next bounded consumer contract.
+The legacy assistant-only current-career projection
 (`best_twenty_state.prepare`) is not a native season bootstrap. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
-complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. After that
-window flow, finish in-match/resume and save/load semantics. Preserve the explicit existing T183 assistant exception. Then the
+complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`.
+Preserve the explicit existing T183 assistant exception. Then the
 **Prover comparison** (T132 Done-when 2, archaeology #709, independent of the focused seam
 receipts), **#702** (oracle no-fixture round, awaiting milestone round 20), T170f (#693's nine
 ports) and T183, then **T169 flips the ZIP**. The bug queue #697/#698/#682/#684 is swept.
