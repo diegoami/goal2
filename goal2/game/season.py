@@ -72,16 +72,45 @@ class SeasonSession:
         """The actual ordinary Match, intentionally retained within this process."""
         return self._pending
 
-    def _observation(self,fixtures=(),pages=()):
-        image=Image.from_state(self._state,self._tables)
+    def _observation(self,fixtures=(),pages=(),*,state=None):
+        value=self._state if state is None else state
+        image=Image.from_state(value,self._tables)
         memory=image.memory;ds=image.DS*16
         words=tuple(int.from_bytes(memory[ds+off:ds+off+2],'little') for off in route.SEEDS.values())
-        return SeasonObservation(self._call_number,self._status,self._input_hash,canonical_hash(self._state),
+        return SeasonObservation(self._call_number,self._status,self._input_hash,canonical_hash(value),
                                  deepcopy(tuple(fixtures)),deepcopy(tuple(pages)),words)
 
     def observe(self):
         """Read detached current boundary data without delivering deltas again."""
         return self._observation()
+
+    def select_twenty(self):
+        """[designed: T183e/#773] Explicit assistant at a completed manager boundary.
+
+        [confirmed: T183a/F031 and #771] Use the original preparation/selection
+        on private native state. A refusal never publishes its prepared state.
+        This synchronous owner operation consumes no round or persistent key;
+        worker cancellation and window delivery belong to their own contract.
+        """
+        if (self._status not in ('ready','complete') or self._pending is not None
+                or self._continuation is not None):
+            raise ValueError('the assistant needs a completed manager boundary without a held match')
+        from goal2.game.best_twenty import recommend
+        answer=recommend(deepcopy(self._state))
+        allowed=answer['allowed']
+        if type(allowed) is not bool:
+            raise ValueError('invalid assistant completion')
+        selection=deepcopy(dict(allowed=allowed,refusal=answer['refusal'],
+                                country=answer['country'],manager=answer['manager'],
+                                changed=answer['changed'] if allowed else False,
+                                recruited=answer['recruited'] if allowed else []))
+        value=deepcopy(answer['state']) if allowed else self._state
+        # Validate and construct all return data before the single commit.
+        # Round identity, key policy and delta cursors deliberately stay put.
+        observed=self._observation(state=value)
+        if allowed:
+            self._state=value
+        return dict(selection=selection,observation=observed)
 
     def _accept(self,step,new_call=False,input_hash=None):
         # Upstream observations are shallow. Copy every nested published value.

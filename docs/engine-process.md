@@ -95,6 +95,20 @@ preparation and DC7E under PyPy without Unicorn or a GOAL.EXE read.
 
 ## Retained season (T170o)
 
+[designed: T183e/#773; confirmed: T183a/F031 and native finals proof#771]
+The in-process owner API `SeasonSession.select_twenty()` explicitly applies the
+accepted copied assistant to actual native session state at a ready/complete
+manager boundary. It returns detached `selection` metadata and an `observation`;
+read `session.state` for the authoritative retained state. An allowed, validated
+candidate is retained once; refusal/error leaves that state unchanged. Refusals
+report no committed change/recruits and expose no private candidate bytes.
+Round call/input identity, persistent keys and fixture/news delivery cursors
+stay intact. A held Match/continuation or deferred terminal boundary refuses
+before entering the assistant. This synchronous owner operation adds no pipe
+action: cancellable worker delivery and the responsive UI remain separately
+required before native-season activation. The existing A/Ins opening-career
+query and its cancellation/publication guards keep their current behavior.
+
 [designed: T170o/#735] `EngineProcess.season_open(state, keys=None)` explicitly opens
 accepted state/2 in the same PyPy process. It sends `action=open`, with a binary
 UTF-8 JSON payload containing `state` and `keys`. The worker owns one `SeasonSession`,
