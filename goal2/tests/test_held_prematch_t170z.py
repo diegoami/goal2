@@ -108,10 +108,14 @@ class WindowPipe(unittest.TestCase):
     def test_squad_pool_positions_identity_and_native_sorting(self):
         s=self.squad();view=self.c.view
         a=next(w for w in view.eleven if view.can_mark(w));b=next(w for w in view.bench if view.can_mark(w))
+        # Hold UI delivery while asserting the pending interval. The real worker
+        # still replies into its real queue; settle delivers those replies later.
+        self.flow.timer.stop()
         self.pick(s,a);self.key(Qt.Key.Key_Return);self.pick(s,b);self.key(Qt.Key.Key_Return)
         self.assertIs(self.c.view,view);sent=len(self.sent)
         self.key(Qt.Key.Key_Return);self.assertEqual(len(self.sent),sent)
-        self.settle();self.assertIn(b,self.c.view.eleven);self.assertIn(a,self.c.view.bench)
+        self.settle();self.flow.timer.start()
+        self.assertIn(b,self.c.view.eleven);self.assertIn(a,self.c.view.bench)
         self.assertEqual(s.current(),b)
         for _ in range(2):
             off=next(w for w in self.c.view.bench if self.c.view.can_mark(w))
@@ -201,6 +205,7 @@ class WindowPipe(unittest.TestCase):
 
     def test_pending_sort_while_help_and_close_before_reply(self):
         s=self.squad();w=next(w for w in self.c.view.squad if self.c.view.record(w)[6]>=2)
+        self.flow.timer.stop()  # assert pending before delivering the queued acknowledgement
         self.pick(s,w);self.key(Qt.Key.Key_R);old=self.c.view;count=len(self.sent)
         self.key(Qt.Key.Key_R);self.assertEqual(len(self.sent),count);self.assertIs(self.c.view,old)
         self.key(Qt.Key.Key_F1);self.settle();self.key(Qt.Key.Key_Escape)
@@ -212,6 +217,7 @@ class WindowPipe(unittest.TestCase):
 
     def test_team_bits_readonly_opponent_callbacks_and_replay(self):
         menu=self.win.current();self.key(Qt.Key.Key_T);t=self.win.current();self.assertIsInstance(t,TeamTacticsScreen)
+        self.flow.timer.stop()  # actual clicks before reply delivery, then explicit settle
         for i,(_,element) in enumerate(LINES):
             t.choose(i);old=self.c.view;before=self.flow.model.team_tactics
             QTest.mouseClick(t.rows[i],Qt.MouseButton.LeftButton)
@@ -277,18 +283,18 @@ class WindowPipe(unittest.TestCase):
         self.assertEqual(self.owner.state,self.before)
 
     def test_loss_and_close_detach_late_replies(self):
-        s=self.squad();self.key(Qt.Key.Key_R);count=len(self.sent)
+        s=self.squad();self.key(Qt.Key.Key_R)
         self.replies.put(('death',{'code':1}));self.flow.poll()
-        self.assertEqual(self.c.status,'lost');self.key(Qt.Key.Key_R)
+        self.assertEqual(self.c.status,'lost');count=len(self.sent);self.key(Qt.Key.Key_R)
         self.assertEqual(len(self.sent),count);self.assertTrue(s.message)
         self.flow.close();self.flow.close();self.flow.poll()
         self.assertEqual(self.calls,['close']);self.assertEqual(self.c.status,'detached')
 
     def test_team_loss_releases_pending_ui_for_return(self):
-        self.key(Qt.Key.Key_T);t=self.win.current();self.key(Qt.Key.Key_Return)
-        self.assertTrue(t.pending);count=len(self.sent)
+        self.key(Qt.Key.Key_T);t=self.win.current();self.flow.timer.stop();self.key(Qt.Key.Key_Return)
+        self.assertTrue(t.pending)
         self.replies.put(('death',{'code':1}));self.flow.poll()
-        self.assertFalse(t.pending);self.assertTrue(t.message)
+        self.assertFalse(t.pending);self.assertTrue(t.message);count=len(self.sent)
         self.key(Qt.Key.Key_Escape);self.assertIsInstance(self.win.current(),MenuScreen)
         self.assertEqual(len(self.sent),count)
 
