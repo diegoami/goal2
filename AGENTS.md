@@ -16,7 +16,7 @@ Do not resume Unicorn performance optimization or old-career migration. Preserve
 work. No obsolete #253 automatic sequence.
 
 Status (2026-11-17): v0.1 shipped and closed (milestone #705, tag `m2.1-v0.1-core-route`).
-The held-Match team-tactic/roster seam is in the kit through T170q (#743), including pool
+The held-Match team-tactic/roster seam is in the kit through T170u (#755), including pool
 exchanges, full-twenty pair domains, late captain Play and budgets. T170o/#736 retains the actual
 SeasonSession/Match in the PyPy worker. T170s/#750 supplies pure decision-bound current previews;
 its complete PyPy Play/resume control preserves events, full RAM/all16 and round/news data.
@@ -25,14 +25,15 @@ complete actual PyPy pipe/direct-worker equality and once-only deltas proven.
 No desktop switch yet. T170r/#747 audits every accepted
 pre-match action in `docs/design/ui-2026-11/prematch-actions.md`. Native position/club inputs
 are accepted upstream as T135/#721 at `fc6b5294e1c9970f492ba8ddccf8a74333206ed9`:
-numeric goals drive R, explicit `"club"` drives C; both cover squad and pool. Root has not
-adopted them yet. Own tactics and marking remain upstream #719 leaves. Original marking-menu
+numeric goals drive R, explicit `"club"` drives C; both cover squad and pool. T170u/#755
+adopts them in the held seam/worker with repairable validation and fresh previews. Own tactics
+and marking remain upstream #719 leaves. Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
-Next, in order: **worker activation**, starting with **T170u/#753**'s deliberate adoption of
-accepted T135 positions (`docs/tasks/T170u.md`), then the remaining archaeology #719 own-tactic/
-marking leaves and their adoption. Read the owned upstream clone's instructions before source work; the
+Next, in order: **worker activation**, starting with the remaining **archaeology #719**
+own-tactic and marking leaves, then their deliberate adoption. Read the owned upstream
+clone's instructions and original menu evidence before writing each bounded source contract; the
 complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. Then the complete
 window action flow over the same held Match (T170i's mapping and T170r's matrix), in-match/resume,
 and save/load semantics. Preserve the explicit existing T183 assistant exception. Then the
