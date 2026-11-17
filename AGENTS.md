@@ -26,13 +26,15 @@ No desktop switch yet. T170r/#747 audits every accepted
 pre-match action in `docs/design/ui-2026-11/prematch-actions.md`. Native position/club inputs
 are accepted upstream as T135/#721 at `fc6b5294e1c9970f492ba8ddccf8a74333206ed9`:
 numeric goals drive R, explicit `"club"` drives C; both cover squad and pool. T170u/#755
-adopts them in the held seam/worker with repairable validation and fresh previews. Own tactics
-and marking remain upstream #719 leaves. Original marking-menu
+adopts them in the held seam/worker with repairable validation and fresh previews. Personal
+tactics False/True/inherit are accepted upstream as T136/#723 at
+`46315dcf391740018bb486416bce2a00062fda24`, across squad/pool through original T;
+Root has not adopted them yet. Marking remains the separate upstream #719 leaf. Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
-Next, in order: **worker activation**, starting with the remaining **archaeology #719**
-own-tactic and marking leaves, then their deliberate adoption. Read the owned upstream
+Next, in order: **worker activation**, starting with **T170v/#756**'s deliberate own-tactic
+adoption (`docs/tasks/T170v.md`), then the remaining archaeology #719 marking leaf and its adoption. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
 complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. Then the complete
 window action flow over the same held Match (T170i's mapping and T170r's matrix), in-match/resume,
