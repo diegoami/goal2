@@ -148,6 +148,7 @@ class HeldPrematchFlow(QObject):
         self.on_handoff,self.on_close,self.on_tournament,self.on_stats=on_handoff,on_close,on_tournament,on_stats
         self.replay_auto=self._settings().get('automatic_action_replay',False)
         self.closed=False;self.handed_off=False;self._tactics=None;self._refusal=''
+        self._seen_view=controller.view;self._seen_status=controller.status;self._seen_message=''
         self.timer=QTimer(self);self.timer.setInterval(20);self.timer.timeout.connect(self.poll)
         window.destroyed.connect(self.close)
 
@@ -162,6 +163,7 @@ class HeldPrematchFlow(QObject):
     def open(self):
         from goal2.ui.s15_match_menu import MenuScreen
         screen=MenuScreen(self.window,self,'before');screen._held_hash=self.model.snapshot.state_hash
+        screen.closing=self.close  # existing Window.closeEvent lifecycle, including a covered menu
         self.timer.start();return self.window.push(screen)
 
     def refresh_menu(self,menu):
@@ -169,6 +171,7 @@ class HeldPrematchFlow(QObject):
         if getattr(menu,'_held_hash',None)==self.model.snapshot.state_hash:return
         from goal2.ui.s15_match_menu import MenuScreen
         fresh=MenuScreen(self.window,self,'before');fresh._held_hash=self.model.snapshot.state_hash
+        fresh.closing=self.close
         fresh.restore_navigation(menu)
         # Replace the current frame without invoking an intermediate screen's
         # shown callback (which could reopen a different route).
@@ -204,15 +207,19 @@ class HeldPrematchFlow(QObject):
 
     def poll(self):
         if self.closed or self.handed_off:return
+        old,status,message=self._seen_view,self._seen_status,self._seen_message
+        if (self.replies.empty() and self.controller.view is old
+                and self.controller.status==status and self.message==message):return
         from goal2.ui.s08_squad import SquadScreen
         from goal2.ui.s09_player_tactics import PlayerTacticsScreen
-        screen=self.window.current();old=self.controller.view;status=self.controller.status
+        screen=self.window.current();received=False
         # Help may cover the editor while the reply arrives. Preserve the
         # editor's word, rather than an index in the old native sort order.
         selected={s:s.current() for s in self.window.stack if isinstance(s,SquadScreen)}
         while True:
             try:kind,value=self.replies.get_nowait()
             except queue.Empty:break
+            received=True
             self.controller.receive(kind,value)
             # [confirmed: T132/87d92501 Match._route_menu] EA09's XI refusal
             # is carried on the renewed decision, not necessarily a refused event.
@@ -223,11 +230,12 @@ class HeldPrematchFlow(QObject):
                         self._refusal=str(data['refused'])
         c=self.controller
         if c.view is not None:self.model._last=c.view
+        self._seen_view,self._seen_status,self._seen_message=c.view,c.status,self.message
         if c.status=='handoff':
             self.handed_off=True;self.timer.stop()
             self.on_handoff(self,c.handoff,{'watch':self.watch,'replay_auto':self.replay_auto})
             return
-        changed=c.view is not old or c.status!=status
+        changed=received or c.view is not old or c.status!=status or self.message!=message
         if not changed:return
         if c.status=='ready' and self._tactics is not None:
             target,self._tactics=self._tactics,None

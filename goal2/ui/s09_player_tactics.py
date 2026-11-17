@@ -39,7 +39,8 @@ class PlayerTacticsScreen(Screen):
     escape_text = "back to the card"
 
     def __init__(self, window, model, word, bench=None):
-        self.title = f"{'players' if bench is not None else 'select squad'} · {full_name(model, word)} · tactics"
+        during = bench is not None and not getattr(bench, 'held_prematch', False)
+        self.title = f"{'players' if during else 'select squad'} · {full_name(model, word)} · tactics"
         super().__init__(window)
         self.model, self.word, self.bench = model, word, bench
         # [confirmed: 1771:49B8] the mark line only with a match set up, for a player of the eleven

@@ -287,5 +287,17 @@ class WindowPipe(unittest.TestCase):
         p.timer.timeout.emit();self.key(Qt.Key.Key_Escape);self.key(Qt.Key.Key_C)
         self.assertEqual(self.sent,[]);self.assertEqual(self.c.status,'lost')
 
+    def test_send_failure_without_a_reply_releases_team_pending(self):
+        from unittest.mock import Mock
+        self.c._send=Mock(side_effect=BrokenPipeError('closed'))
+        self.key(Qt.Key.Key_T);t=self.win.current();self.key(Qt.Key.Key_Return)
+        self.flow.poll();self.assertEqual(self.c.status,'lost')
+        self.assertFalse(t.pending);self.assertIn('BrokenPipeError',t.message)
+
+    def test_window_close_invokes_owner_once(self):
+        self.win.leaving=True;self.win.close();self.app.processEvents()
+        self.assertTrue(self.flow.closed);self.assertEqual(self.c.status,'detached')
+        self.assertEqual(self.calls,['close'])
+
 
 if __name__=='__main__':unittest.main()

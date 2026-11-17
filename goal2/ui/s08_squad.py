@@ -120,6 +120,7 @@ class SquadScreen(Screen):
     _assistant_token = None   # Screen builds its Enter hint before subclass initialisation.
 
     def __init__(self, window, model):
+        if getattr(model, 'held_prematch', False):self.escape_text = 'match menu'
         super().__init__(window)
         self.model = model
         self._assistant_jobs = None
@@ -151,7 +152,7 @@ class SquadScreen(Screen):
                                           lambda: self.step_position(-1 if shift_held() else 1))
         # [designed: T183c/#766] The assistant action is explicit; no selection runs on screen entry.
         # [designed: T211] The twelve keys and the Enter hint are two rows of cells, a cell apart (the grid's bar).
-        last_on_the_bar(self, "desk")
+        last_on_the_bar(self, self.escape_text)
         self.set_enter("Move player", self.press_move)
         self.refresh()
 
