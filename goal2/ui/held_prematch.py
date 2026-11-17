@@ -88,6 +88,7 @@ class HeldModel:
 
     def _ready(self):
         if self.held_block_reason:raise ValueError(self.held_block_reason)
+        self.flow._refusal=''
 
     def swap(self,a,b):self._ready();self.flow.controller.swap(a,b)
 
@@ -146,9 +147,12 @@ class HeldPrematchFlow(QObject):
         self.model=HeldModel(self,owner);self.bench=None;self.watch=watch
         self.on_handoff,self.on_close,self.on_tournament,self.on_stats=on_handoff,on_close,on_tournament,on_stats
         self.replay_auto=self._settings().get('automatic_action_replay',False)
-        self.closed=False;self.handed_off=False;self._tactics=None
+        self.closed=False;self.handed_off=False;self._tactics=None;self._refusal=''
         self.timer=QTimer(self);self.timer.setInterval(20);self.timer.timeout.connect(self.poll)
         window.destroyed.connect(self.close)
+
+    @property
+    def message(self):return self.controller.message or self._refusal
 
     @property
     def kind_name(self):
@@ -181,10 +185,11 @@ class HeldPrematchFlow(QObject):
         return self.window.push(ChooseScreen(self.window,self.model,'captain',view.eleven,current,self.kick_off,
             available=view.captain_choices,computer=None,match=f'{names[self.fixture.side_a]} v {names[self.fixture.side_b]}'))
 
-    def kick_off(self,captain):self.controller.play(captain=captain)
+    def kick_off(self,captain):
+        self._refusal='';self.controller.play(captain=captain)
 
     def apply_tactic(self,screen,element,value):
-        self._tactics=screen
+        self._tactics=screen;self._refusal=''
         try:self.controller.set_team_tactic(element,value)
         except ValueError as exc:
             screen.pending=False;screen.message=str(exc);screen.refresh();self._tactics=None
@@ -209,7 +214,15 @@ class HeldPrematchFlow(QObject):
             try:kind,value=self.replies.get_nowait()
             except queue.Empty:break
             self.controller.receive(kind,value)
+            # [confirmed: T132/87d92501 Match._route_menu] EA09's XI refusal
+            # is carried on the renewed decision, not necessarily a refused event.
+            if kind=='season' and isinstance(value,dict) and isinstance(value.get('events'),list):
+                for event in value['events']:
+                    data=event.get('data') if isinstance(event,dict) else None
+                    if isinstance(event,dict) and event.get('kind')=='decision' and isinstance(data,dict) and data.get('refused'):
+                        self._refusal=str(data['refused'])
         c=self.controller
+        if c.view is not None:self.model._last=c.view
         if c.status=='handoff':
             self.handed_off=True;self.timer.stop()
             self.on_handoff(self,c.handoff,{'watch':self.watch,'replay_auto':self.replay_auto})
@@ -219,11 +232,16 @@ class HeldPrematchFlow(QObject):
         if c.status=='ready' and self._tactics is not None:
             target,self._tactics=self._tactics,None
             target.applied(self.model,{})
-            if c.message:target.message=c.message;target.refresh()
+            if self.message:target.message=self.message;target.refresh()
         elif c.status=='lost' and self._tactics is not None:
             target,self._tactics=self._tactics,None
             target.pending=False;target.message=c.message;target.refresh()
         from goal2.ui.s16_choose import ChooseScreen
+        if c.status=='lost':
+            for prompt in self.window.stack:
+                if isinstance(prompt,ChooseScreen):
+                    prompt.done=True;prompt.timer.stop()
+                    prompt.wait_for('The held session disconnected.',c.message)
         if c.status=='ready' and isinstance(screen,ChooseScreen) and screen.done:
             self.window.pop();screen=self.window.current()
         for editor,word in selected.items():
@@ -234,21 +252,19 @@ class HeldPrematchFlow(QObject):
             if editor.picked:
                 pane,w=editor.picked
                 if w not in [r['id'] for r in editor.rows(pane)]:editor.picked=None
-            editor.message=c.message or self.model.held_block_reason
+            editor.message=self.message or self.model.held_block_reason
             editor.refresh()
         for editor in self.window.stack:
             if isinstance(editor,PlayerTacticsScreen):
                 editor.refresh()
-                if c.message:editor.explain.setText(c.message)
+                if self.message:editor.explain.setText(self.message)
         if isinstance(screen,(SquadScreen,PlayerTacticsScreen)):return
         if hasattr(screen,'refresh'):
             screen.refresh()
-            if c.message and hasattr(screen,'explain'):screen.explain.setText(c.message)
+            if self.message and hasattr(screen,'explain'):screen.explain.setText(self.message)
         elif hasattr(screen,'phase'):
             self.refresh_menu(screen)
-            self.window.current().say(c.message or self.model.held_block_reason)
-        elif isinstance(screen,ChooseScreen) and c.status=='lost':
-            screen.wait_for('The held session disconnected.',c.message)
+            self.window.current().say(self.message or self.model.held_block_reason)
 
     def close(self,*_):
         if self.closed:return

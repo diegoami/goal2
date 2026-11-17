@@ -230,7 +230,8 @@ class WindowPipe(unittest.TestCase):
         self.key(Qt.Key.Key_Escape);self.key(Qt.Key.Key_Escape);self.key(Qt.Key.Key_Return)
         self.assertIsInstance(self.win.current(),ChooseScreen)
         self.key(Qt.Key.Key_C);self.settle();self.assertEqual(self.c.status,'ready')
-        self.assertIsInstance(self.win.current(),MenuScreen);self.assertTrue(self.c.message)
+        self.assertIsInstance(self.win.current(),MenuScreen);self.assertTrue(self.flow.message)
+        self.assertIn(self.flow.message,self.win.current().note.text())
         self.assertFalse(self.handoffs);self.assert_boundary()
 
     def test_captain_word_computer_timeout_and_handoff_once(self):
@@ -270,6 +271,21 @@ class WindowPipe(unittest.TestCase):
         self.assertEqual(len(self.sent),count);self.assertTrue(s.message)
         self.flow.close();self.flow.close();self.flow.poll()
         self.assertEqual(self.calls,['close']);self.assertEqual(self.c.status,'detached')
+
+    def test_team_loss_releases_pending_ui_for_return(self):
+        self.key(Qt.Key.Key_T);t=self.win.current();self.key(Qt.Key.Key_Return)
+        self.assertTrue(t.pending);count=len(self.sent)
+        self.replies.put(('death',{'code':1}));self.flow.poll()
+        self.assertFalse(t.pending);self.assertTrue(t.message)
+        self.key(Qt.Key.Key_Escape);self.assertIsInstance(self.win.current(),MenuScreen)
+        self.assertEqual(len(self.sent),count)
+
+    def test_captain_loss_under_help_stops_timeout(self):
+        self.key(Qt.Key.Key_Return);p=self.win.current();self.key(Qt.Key.Key_F1)
+        self.replies.put(('death',{'code':1}));self.flow.poll()
+        self.assertTrue(p.done);self.assertFalse(p.timer.isActive())
+        p.timer.timeout.emit();self.key(Qt.Key.Key_Escape);self.key(Qt.Key.Key_C)
+        self.assertEqual(self.sent,[]);self.assertEqual(self.c.status,'lost')
 
 
 if __name__=='__main__':unittest.main()
