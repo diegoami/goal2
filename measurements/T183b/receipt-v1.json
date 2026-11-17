@@ -1,0 +1,71 @@
+{
+  "schema": "goal2/T183b-validation/1",
+  "application_test_source": "203eda4f7d99def34fa5c206eb701b5d89cdb850",
+  "fast": {
+    "modules_passed": 256,
+    "expected_scope_skips": 236,
+    "exit": 0
+  },
+  "focused": {
+    "linux": {
+      "tests": 6,
+      "skips": 0,
+      "exit": 0
+    },
+    "native_windows": {
+      "tests": 6,
+      "skips": 0,
+      "exit": 0
+    },
+    "scope": "Both opening classes, actual original E44F\u2192Ins versus PyPy, edits/exchange/XI/tactics/names, captain retain/remove, result prefix/save roundtrip, private source and malformed/unsupported/refusal guards; all prepared cases"
+  },
+  "controls": [
+    "API absent before adapter -> ImportError",
+    "Keeping stale C1E/C1F -> actual projection assertions fail",
+    "Current team tactic vs stale country byte -> failed before comparison was corrected"
+  ],
+  "input_boundary": "Transient assistant projection from supported current opening phase2/5 metadata; not a whole native route/bootstrap, later-phase migration or provisional tour policy",
+  "candidate_boundary": "Private only; owner publication, worker and UI remain parent scope; native later-context and genuine finals coverage still required",
+  "evidence": {
+    "T183b-api-before.log": {
+      "source": ".cache/T183b-api-before.log",
+      "sha256": "e3d9672bf5a2a8b78cf0cce7459fe2a8ad756e1c35e21f07920a608210878707"
+    },
+    "T183b-context-mutation.log": {
+      "source": ".cache/T183b-context-mutation.log",
+      "sha256": "52c5a486dcf074e1796463b3503ecb7bbb691c75f3fd5fd61541d5a84e8aa914"
+    },
+    "T183b-tactics-before.log": {
+      "source": ".cache/T183b-tactics-before.log",
+      "sha256": "ed00cc742b89920d1076898688e60836ce408702c18152443160d138206fb580"
+    },
+    "T183b-focused-linux.log": {
+      "source": ".cache/T183b-focused-linux.log",
+      "sha256": "c74de0a0259aff068f009be18497fe4f4fde90f25e9d255a1a70f92741a4e6ed"
+    },
+    "T183b-focused-windows.log": {
+      "source": ".cache/T183b-focused-windows.log",
+      "sha256": "97741c2f373429c7003f6922ae541a55ddef43f38636a3d772b817f813b5fa49"
+    },
+    "T183b-fast.log": {
+      "source": ".cache/jobs/T183b-fast.log",
+      "sha256": "0c82d2d5fcea464855cc23d9762e61e7432b4b525fe8ea4684a0a7638ba61a11"
+    },
+    "T183b-fast.exit.json": {
+      "source": ".cache/jobs/T183b-fast.exit.json",
+      "sha256": "a587c5f806e31496843d71bd2daa816d6abef9eaa870ec3d9cfe07c79c4e9aea"
+    },
+    "T183b-native-validation.json": {
+      "source": ".cache/T183b-native-validation.json",
+      "sha256": "a70c1a2cbe047b9a0a4949176d8b68902282c0ef7ff509530da225ba0f509ab0"
+    },
+    "T183b-native-validation.py": {
+      "source": ".cache/T183b-native-validation.py",
+      "sha256": "91e3b8cb68c3debe182e928b12e0ec8e9487acf77802a66504eebbc21c7e8e43"
+    },
+    "T183b-windows-driver.py": {
+      "source": ".cache/T183b-windows-driver.py",
+      "sha256": "6758e262d50e6f52a1e8a83426184fee26e5cedd8d47d563d337cbccff3aed95"
+    }
+  }
+}
