@@ -30,13 +30,16 @@ adopts them in the held seam/worker with repairable validation and fresh preview
 tactics False/True/inherit are accepted upstream as T136/#723 at
 `46315dcf391740018bb486416bce2a00062fda24`, across squad/pool through original T;
 T170v/#757 adopts them with exact three-value seam/pipe inputs, repairable
-validation and fresh previews. Marking remains upstream T137/#724 (parent #719),
-whose main-owned contract is ready at a6209365. Original marking-menu
+validation and fresh previews. Native marking is accepted upstream as T137/#726 at
+`87d925013da43b266f72bd198fda7a7a2c67dac8`: None/inherit,0/protected-zone
+and opponent goals;10 Native/manual/API scenarios,38 guards,19 exact PyPy replay
+checkpoints,107 inherited methods and all12 full CI groups pass. Parent #719 is closed;
+root marking adoption is still required as T170w/#763. Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
-Next, in order: **worker activation**, starting with the remaining archaeology
-**T137/#724 marking leaf** (`docs/tasks/T137.md` in the owned upstream clone), then its deliberate root adoption. Read the owned upstream
+Next, in order: **worker activation**, starting with **T170w/#763 marking adoption**
+(`docs/tasks/T170w.md`), now ready after accepted upstream T137/#726. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
 complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. Then the complete
 window action flow over the same held Match (T170i's mapping and T170r's matrix), in-match/resume,
@@ -45,9 +48,11 @@ and save/load semantics. Preserve the explicit existing T183 assistant exception
 receipts), **#702** (oracle no-fixture round, awaiting milestone round 20), T170f (#693's nine
 ports) and T183, then **T169 flips the ZIP**. The bug queue #697/#698/#682/#684 is swept.
 UI2 foundation T215/#748 merged at3b561483 after renewed owner review/playtest
-and approval (#754 closed). The other session is assessing the owner-requested
-T183 fast-track on #594; its existing Merge-after stays until a reasoned main-owned
-amendment. Preserve that session and checkout. The redesigned-UI look items
+and approval (#754 closed). The other session owns the T183 fast-track: T183a/#759
+and T183b/#761 are merged; T183c/#762 async Ins is its next/current leaf under #594.
+The parent's native-later/finals acceptance remains open; #725 now has verified
+retained G4B/C/D finals-flag candidates, not yet a native Ins-refusal proof. Preserve
+that session and checkout. The redesigned-UI look items
 #666–#680 stay owner-scoped alongside.
 
 Durable task decisions/status live on the relevant GitHub issues/PRs; supporting evidence is in `/home/diego/projects/goal2-keep`. The owner's final naming scope (2026-10-26) is only the existing33 authored profiles: canonical top32 plus Greece,80 surnames each, unchanged. Drop the128-country expansion; unlisted countries retain original names. Do not restart extra-country surname research.
