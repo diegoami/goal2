@@ -1,0 +1,41 @@
+{
+  "first_windows_attempt": {
+    "gate": {
+      "modules": 260,
+      "passed": 259,
+      "skipped": 255
+    },
+    "method": "Serve.test_a_served_delay_takes_the_core_under_a_millisecond",
+    "module": "test_core_delay_t223",
+    "new_view_module": "passed25s",
+    "p99_seconds": 0.0020072000000936896,
+    "result": "failure",
+    "retained_log": "/home/diego/projects/goal2-keep/T170x/windows-code-attempt1.log",
+    "sha256": "90046ada1eccf9a7b226f3f5f7c438555fc657958cff7c0d204421efcacd6fc0",
+    "strict_bound_seconds": 0.001
+  },
+  "linux": {
+    "gate": {
+      "modules": 260,
+      "passed": 260,
+      "skipped": 239
+    },
+    "result": "success",
+    "run": 44150545248
+  },
+  "schema": "t170x-ci-attempts/1",
+  "scope": "Only failed Windows job rerun at same exact code; Linux/native scaling retained. No source/test/case/seed/budget/timing assertion change. First attempt is not relabelled; no timing bug fix claimed.",
+  "tested_head": "a21ade6d7ab790fbb8626cc491108192dfb4a50e",
+  "windows": {
+    "attempt": 2,
+    "gate": {
+      "modules": 260,
+      "passed": 260,
+      "skipped": 255
+    },
+    "native_desktop": "success",
+    "result": "success",
+    "run": 44150545410,
+    "timing_module": "unchanged test_core_delay_t223 passes; strict1ms p99 bound retained"
+  }
+}

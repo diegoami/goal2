@@ -43,6 +43,14 @@ decision for repair; transport/backend loss requires explicit reopen, never repl
 by the UI. Cursor movement, search, selection and text cancellation stay local.
 API field whitelists are not evidence of pre-match semantic support.
 
+[designed: T170x/#768] `goal2.game.prematch_view.PrematchView` supplies the
+detached window read model: current squad/pool/opponent records and order,
+country defaults, actual marking status/word, setup/pane eligibility and
+captain/target domains. Its display-only state reuses the existing card/TEAM
+decoders and preserves supplied identity metadata. It carries no career
+calendar and cannot replace a native season bootstrap or round publication.
+The full window action/mutation flow below still needs its controller wiring.
+
 ## Action matrix
 
 [confirmed: goal2 `31989d87`, handlers linked below; original `fb6d3093`]
