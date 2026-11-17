@@ -44,7 +44,7 @@ class CompetitiveTests(accepted.CompetitiveTests):
 
 class ConsumerAcceptanceTests(unittest.TestCase):
     def test_exact_source_and_scenario_selector(self):
-        self.assertEqual(SOURCE, "fc6b5294e1c9970f492ba8ddccf8a74333206ed9")     # [designed: T170a exact reviewed source; T170h/T170j re-vendor]
+        self.assertEqual(SOURCE, "46315dcf391740018bb486416bce2a00062fda24")     # [designed: T170a exact reviewed source; T170h/T170j re-vendor]
         self.assertEqual(verify_vendor(), 50)
         for index in range(3):
             tree = selected_source("def main():\n scenarios = [1,2,3]\n assert True\n", index)

@@ -112,7 +112,7 @@ def worker_guards(raw):
                 m._replay_events, copy.deepcopy(m._frame_state()), w.decision, w.session.state)
     cases = [dict(edit_only=True,positions={word:True}),dict(edit_only=True,positions={65535:3}),
              dict(edit_only=True,positions={word:14}),dict(positions={word:3}),
-             dict(edit_only=True,positions={word:3},own_tactics={word:{1:True}}),
+             dict(edit_only=True,positions={word:3},own_tactics={word:{5:True}}),
              dict(edit_only=True,positions={word:3},quick=True)]
     for fields in cases:
         before = snapshot()

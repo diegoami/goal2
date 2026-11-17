@@ -141,7 +141,14 @@ pre-match position validation errors reply `lost=false` and retain the same
 repairable decision. Driver/backend failures still invalidate the session.
 After a successful edit, consume its fresh decision and request a current preview;
 the season's route boundary stays unchanged. Play remains a separate answer.
-Own tactics and marking still require upstream #719 before window activation.
+[confirmed: T170v, archaeology T136/46315dcf] Pre-match `own_tactics`
+maps current squad or made-pool words to elements1..4 with exact JSON false,
+true or null (inherit). `PrematchSeam.set_own_tactic` preserves all three values.
+Inheritance uses the player's country default, including pool players. Edit-only
+requests run the original T menu on the held Match; Play remains separate. Pure
+invalid own inputs retain the decision and current preview for repair; genuine
+backend failures still lose the session. Marking remains upstream #719 before
+window activation.
 
 [designed: T170p; confirmed: archaeology T133/#715] After accepted pre-match
 edits, `answer={"captain": word}` plays with a current eligible XI member, including
