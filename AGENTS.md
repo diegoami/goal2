@@ -42,13 +42,20 @@ marking/status/domains and existing card/TEAM decoding, no career publication.
 Six methods,10 actual worker snapshots and parent-pipe proof pass;260-module
 local/Linux/Windows/native gates pass. Windows's first unchanged T223 timing
 failure is retained; the same-head retry passes without bound/case changes.
+T170y/#772 now supplies the owner-thread confirmed edit/captain coordinator:
+answer→fresh decision→verified preview, one pending edit, pure refusal/repair,
+loss invalidation/no replay, native Play refusal and intact first-packet handoff.
+Nine methods,11 actual edit stages/direct fullRAM/all16/event equality and real
+parent pipe pass;47 focused methods and261-module platform gates pass. It owns
+no session/transport/widget lifecycle; detach is not backend cancellation.
 Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
 Next, in order: **worker activation**, now the complete **window action flow**
-over the same held Match: use the accepted T170x view, read T170i's mapping and
-T170r's inventory, then write the next bounded controller/mutation consumer contract. The legacy assistant-only current-career projection
+over the same held Match: use the accepted T170x view and T170y coordinator,
+read T170i's mapping/T170r's inventory and existing screen/process owners, then
+write the next bounded actual screen-binding/session-owner consumer contract. The legacy assistant-only current-career projection
 (`best_twenty_state.prepare`) is not a native season bootstrap. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
 complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. After that
