@@ -1,0 +1,107 @@
+{
+  "block_lengths": [
+    2064,
+    33671,
+    3061,
+    1755,
+    135,
+    387,
+    129,
+    129,
+    129,
+    2580,
+    24639,
+    61220,
+    270,
+    962,
+    405,
+    19272,
+    9288,
+    129,
+    7168,
+    840,
+    840,
+    480
+  ],
+  "current_manager_offset": 1,
+  "finals_offset": "0x13 + current_manager; slots1..6 at0x14..0x19",
+  "game_length": 270,
+  "game_offset": 129899,
+  "layout_source": "46315dcf391740018bb486416bce2a00062fda24:static/goal-exe/named/seg_1771_01.c:1771:027B",
+  "observations": [
+    {
+      "bytes": 169553,
+      "current_manager": 1,
+      "current_manager_finals": 0,
+      "drive_path": "goal2drive:goal2-archaeology/390-existing-states-20261023/G4A.GL",
+      "file": "G4A.GL",
+      "finals_flags": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "meaning": "Holland year 4 (stage 7, World Cup 2030 finals in Italy) begun; Holland qualified (group A with Chile, Zambia, Germany)",
+      "sha256": "4ef805eb2846a1c44fb74451a596a96865fd2b824ff9cc922c6013f870e44c6f"
+    },
+    {
+      "bytes": 169553,
+      "current_manager": 1,
+      "current_manager_finals": 1,
+      "drive_path": "goal2drive:goal2-archaeology/390-existing-states-20261023/G4B.GL",
+      "file": "G4B.GL",
+      "finals_flags": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "meaning": "Holland World Cup 2030: W 2-1 Chile, W 3-1 Zambia; before Germany",
+      "sha256": "cfcea0ae6b01c2828e1c157ffd7036c2865dca301d9698586ea8015548e4f293"
+    },
+    {
+      "bytes": 169553,
+      "current_manager": 1,
+      "current_manager_finals": 1,
+      "drive_path": "goal2drive:goal2-archaeology/390-existing-states-20261023/G4C.GL",
+      "file": "G4C.GL",
+      "finals_flags": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "meaning": "Holland World Cup 2030: 2nd in group A, before the last 16 v Belgium",
+      "sha256": "06af479da77db6e1da7847de929bf43531349f2fcddcaeac3ba93e8b16da304d"
+    },
+    {
+      "bytes": 169553,
+      "current_manager": 1,
+      "current_manager_finals": 1,
+      "drive_path": "goal2drive:goal2-archaeology/390-existing-states-20261023/G4D.GL",
+      "file": "G4D.GL",
+      "finals_flags": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "meaning": "Holland World Cup 2030: beat Belgium 2-2 on penalties in the last 16 (watched, shoot-out order chosen)",
+      "sha256": "d79b07621d480dc91b4fe3cab8ec74cccfc3727519e91010e8de417e6f697acb"
+    }
+  ],
+  "remaining": "Load a flagged save in the original, reach the outside-match manager menu, follow SELECT TEAM\u2192Ins and ordinary refusal acknowledgement, retain actual original key/route trace and private fixture. Source725 stays open.",
+  "request": "goal2-archaeology#725",
+  "schema": "retained-finals-inventory/1",
+  "scope": "Read-only retained-save/hash/header inventory; no guest execution or native Ins refusal claimed.",
+  "source_inventory": "aba7487749f6a122bf78d2403750b27a8c9e9038:notes/390/inventory.json",
+  "source_save_table": "3cf746abec51dd11dadc695a65f4fb32df7701c8:experiments/E031-play-the-game/out/saves.tsv"
+}
