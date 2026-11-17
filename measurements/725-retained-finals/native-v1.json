@@ -1,0 +1,111 @@
+{
+  "schema": "goal2/T183-finals-native/1",
+  "save_sha256": "cfcea0ae6b01c2828e1c157ffd7036c2865dca301d9698586ea8015548e4f293",
+  "acquisition_source": "E031 g1 G4B.GL: World Cup2030 wins over Chile and Zambia, before Germany",
+  "source_head": "b519d999673c9458211279fd4da8a8325b9f56fe",
+  "driver_sha256": "2f3de700d98ab2e2fdf4d552e5fd3c7916400e0065ead228171f697d8c9b3027",
+  "producer_sha256": "f8a56b179cf86218f85fd01d18b5925608fce4d8bee72769defbc2daf859e416",
+  "dosbox_version": "2024.03.01",
+  "trace": [
+    {
+      "label": "title",
+      "key": null,
+      "sha256": "c2ff07ee94d18de6925726ff2d5981a476ca3fdc937bac0c66730c5c82e9840f",
+      "screen_sha256": "cd7f15fbf853b40471d05bad51cb6e6c14cbc8a7307893dba8f5f36c2315c612"
+    },
+    {
+      "label": "load-list",
+      "key": "y",
+      "sha256": "a3102a9b4dc8ace587d96746027c139b8932f331d3529e4235a7f0d255948ba9",
+      "screen_sha256": "ee0494ca768cbd7e369d0de7fb8febca4d38dffbfa148885c9455c4b4ab0022a"
+    },
+    {
+      "label": "loaded",
+      "key": "Return",
+      "sha256": "7e51ff96bc800475559265d46064b14885e488907ceb5efd832424679f6bc60a",
+      "screen_sha256": "a8b8fef89591ffda8806d1bf69866506bd6625e98508c5de1a7122a454857277"
+    },
+    {
+      "label": "down-1",
+      "key": "Down",
+      "sha256": "4ef97f2fdd9ad1c6ccd5b282567d256048c556431f7d881ba4aee6d954aa1cdd",
+      "screen_sha256": "f0aaff2baa25d4a7e07c5777ee98cfb3ea47edcee0c7371c7b4bbe3c227caeba"
+    },
+    {
+      "label": "down-2",
+      "key": "Down",
+      "sha256": "4e4740a5781e942166c4e494c666f1ae036b07ee3f4df84004e3cee2ed39462c",
+      "screen_sha256": "cbc40cf39a0b1d055409cd313ffac825b8ff277f759d0385ebea17be28698148"
+    },
+    {
+      "label": "down-3",
+      "key": "Down",
+      "sha256": "01c8fdb4281a122de9deeddc63753293044f1b72b8cbe77f7995732f1bccbf16",
+      "screen_sha256": "48642526b3b6813d95669a1331844c44ba11e701fa96932c78161da1b743bcfc"
+    },
+    {
+      "label": "down-4",
+      "key": "Down",
+      "sha256": "cccfda3645fcecf074c9601b455facdbd6e65935603c9d911f0771ce14cb94ca",
+      "screen_sha256": "33f112b546b4ddc788634000b1c9e1c3e03920dbd569946e93bde037e2a57d9e"
+    },
+    {
+      "label": "select-team",
+      "key": "Return",
+      "sha256": "28d891d1ce40243f7ab881da4f41fe504275c9b3b4ae2e6677005dfec4a2b5d1",
+      "screen_sha256": "dd11d590bd5c7779f97188f30355f9d4c794faf815612e260dd1a96585332501"
+    },
+    {
+      "label": "refusal",
+      "key": "Insert",
+      "sha256": "f70eebedb70ff2c38aa3e5ffe0572249905e4182f388240ed6fa53ff01cd1991",
+      "screen_sha256": "28be3b610a58769b73bbcc450a7220144cb8058aec27c82c3f79a7995694056e"
+    },
+    {
+      "label": "acknowledged",
+      "key": "Return",
+      "sha256": "1817d0c3235b8bb75186b2205b311f3daacfb2f21e9461b31e3e737594996683",
+      "screen_sha256": "dd11d590bd5c7779f97188f30355f9d4c794faf815612e260dd1a96585332501"
+    },
+    {
+      "label": "manager-return",
+      "key": "Escape",
+      "sha256": "ac859b9e8495ea76040e7f7348e10ad7632f8ad1ac3925b2a6cb18213df6cdb7",
+      "screen_sha256": "03ae36d23df946cbf4a9b08c94eabc4cbc75cd4f2f391b4bc7c87a7969aca813"
+    }
+  ],
+  "fixture": {
+    "name": "T183-finals-G4B-manager-v1.g2core",
+    "sha256": "0a243d12abe38247b37fbf12f5ba31145f7b36c730667b36ae84d0966af3a75f",
+    "bytes": 211218
+  },
+  "manager": 1,
+  "finals": 1,
+  "refusal": "finals",
+  "allowed": false,
+  "recruited": 0,
+  "equality": {
+    "players": "beb48c7a96d62cfb2599cf25ababd021c65066460b93f9bc2ba03e0a3dea34ac",
+    "countries": "54b2fe4a4e39f801264ebe7b45a12731a23479dc5a98aa7ed388af93af95be72",
+    "managers": "70e01c6d63b635d367501f5ac3f4b4b46621ff0a2529267a57fc45a9fcd1d158",
+    "game": "b509c735e581bc6b3c51849d1da9618053e2e3bef7c8679cda4b8595412aec08",
+    "squad": "8ecb5f0fdd896c4759bbbb38eed38f76163f17d7f1938d60db5d8470fef35481",
+    "pool": "da971a4fbe6cd14a3d678d8b2d793bd892bb8ce99ac85f430c2b8615d8800ac5",
+    "seeds": "c355b36bde15f3d448b12b3798930ce515b2d27d780280a8ac265aeddbf4c381"
+  },
+  "unchanged_after_select_team": true,
+  "unchanged_native_input": true,
+  "calls": {
+    "1771:52CC": 1,
+    "0791:DC7E": 1
+  },
+  "boundary": "Native finals refusal evidence only; no current-UI projection or full T183/m3 completion.",
+  "private_artifacts": {
+    "fixture": "goal2drive:T183-finals-G4B-manager-v1.g2core",
+    "bundle": "goal2drive:T183-finals-G4B-native-v1.zip",
+    "bundle_sha256": "3cede97fe5ce09d635d763fc85ecc19b280b79e48de03b37a10835dad309cd53",
+    "bundle_bytes": 2902319
+  },
+  "source_save_table": "3cf746abec51dd11dadc695a65f4fb32df7701c8:experiments/E031-play-the-game/out/saves.tsv",
+  "source_delivery_inventory": "aba7487749f6a122bf78d2403750b27a8c9e9038:notes/390/inventory.json"
+}
