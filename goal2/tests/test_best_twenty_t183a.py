@@ -170,3 +170,23 @@ class OriginalAction(unittest.TestCase):
                          'f3edb478fb566c7a4437cba570b8719ab0510ec022f285fa056bdb7591173d48')
         d = Driver(Core.load(raw, goal_dat=requires.CACHE/'GOAL.DAT'))
         self.compare(d)
+
+    @requires.need(slow=True, files=('g16-proof-279904b6-private.zip',))
+    def test_natural_tour_refusal_after_one_original_round(self):
+        import hashlib
+        from zipfile import ZipFile
+        from goal2.core import Core
+        from goal2.core.driver import Driver
+        from goal2.tests.eleven_repair import fix_eleven
+        bundle = requires.CACHE/'g16-proof-279904b6-private.zip'
+        self.assertEqual(hashlib.sha256(bundle.read_bytes()).hexdigest(),
+                         '2332459f7bf64be1afd2e92fc61d81f3b9489bf9d01208a3e6ad8edb469d4cd9')
+        with ZipFile(bundle) as z:
+            raw = z.read('.cache/T123-proof-r2/annual-3.g2core')
+        d = Driver(Core.load(raw, goal_dat=requires.CACHE/'GOAL.DAT'))
+        self.compare(d)  # An explicit original Ins, not silent legal-eleven selection.
+        d.play_round(fix_eleven=fix_eleven, on_taker=lambda *_: 13, on_replay=lambda *_: False)
+        answer = self.compare(d)
+        self.assertFalse(answer['allowed'])
+        self.assertEqual(answer['refusal'], 'tour')
+        self.assertEqual(answer['recruited'], [])
