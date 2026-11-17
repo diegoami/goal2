@@ -160,6 +160,16 @@ State/2 is never cached for automatic replay, nor is a pending Match serialized.
 `close()` retains its bounded quit/kill behavior. Later leaves wire the window,
 in-match pacing, round publication and save/load policy over these primitives.
 
+[designed: T170x/#768; confirmed: accepted state/2, T170s/T170w]
+`PrematchView.from_preview` is the Qt-free window data boundary. It pairs the
+pending pre-match decision with its numbered/hash-verified preview, verifies
+current records, context and native squad/pool order, then retains immutable
+records and marking words. `display_state()` gives existing card/TEAM decoders
+a detached current view, with optional identity overlays and no campaign.
+It supplies no backend reference, mutation API, publication or native career
+bootstrap. Pool permission is not inferred from legacy campaign metadata.
+Window mutation/controller wiring remains a subsequent leaf.
+
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping
 current squad/pool words to integer0..13 or explicit `"club"`. Numeric goals use
