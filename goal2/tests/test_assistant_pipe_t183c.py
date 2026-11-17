@@ -157,14 +157,23 @@ class NativePipe(PipeCase):
     @requires.need(slow=True)
     def test_helper_and_actual_match_share_process_and_reply_channels(self):
         from goal2.engine.original_match import Fixture
-        m=model();e,q=self.engine();e.assistant(state());self.wait(q,'assistant')
+        m=model();e,q=self.engine();e.assistant(state());first=self.wait(q,'assistant')['result']
         pid=e.pid;e.open(m.state,m.template_bytes);self.wait(q,'opened')
         f=m.state.campaign.next_fixture
         fixture=Fixture(first=f.side_a,second=f.side_b,index=int(f.fixture_id.split(':')[1]),kind=f.kind)
-        e.match('watched',fixture)
-        self.wait(q,'complete',timeout=120)
+        # Main-owned T183c clarification: this short conversation proves live
+        # transport ownership/cancellation. T159/T160 retain full completion,
+        # exact events/memory/RNG and their original reference case budgets.
+        e.match('watched',fixture,frames=True,bench=True)
+        frame=self.wait(q,'frame',timeout=120)
+        self.assertGreaterEqual(frame['sequence'],0)
+        self.assertTrue(e.cancel())
+        self.wait(q,'cancelled',timeout=120)
+        self.assertFalse(e.busy)
         self.assertEqual(e.pid,pid)
-        e.assistant(state());self.wait(q,'assistant');self.assertEqual(e.pid,pid)
+        e.assistant(state());again=self.wait(q,'assistant')['result']
+        self.assertEqual(again,first,'a cancelled match must not leak into the next assistant request')
+        self.assertEqual(e.pid,pid)
 
     @requires.need(modules=('unicorn',),slow=True,files=('g16-proof-279904b6-private.zip',))
     def test_actual_tour_refusal_crosses_pipe_unchanged(self):
