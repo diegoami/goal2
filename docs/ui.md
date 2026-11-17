@@ -174,8 +174,8 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
   player swaps them (`DesktopModel.swap`): a starter and a bench player swap in and out, the incoming one taking the
   starter's place in the eleven; two starters change places. It is how the eleven is chosen, and how an injured or
   suspended starter goes to the bench. Two bench players keep the squad's order, and the screen says so.
-  **Ins** from the squad pane explicitly asks the original assistant through the shared PyPy process
-  [confirmed: T183a/F031; designed: owner fast-track, T183c]. The current opening-career projection is
+  **A** (or **Ins**) from the squad pane explicitly asks the original assistant through the shared PyPy process
+  [confirmed: T183a/F031; designed: owner fast-track, T183c; owner shortcut playtest #766]. The current opening-career projection is
   T183b's, not the inherited halftime context. A progress note explains Esc cancellation; only a current
   verified candidate is published. Refusal, cancellation, stale replies and failures leave the selection
   untouched; feedback distinguishes recruits from no stronger players. Data edits wait for completion,
