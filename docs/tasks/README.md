@@ -3,6 +3,8 @@
 One file per task, `T<nn>.md`, from [`TEMPLATE.md`](TEMPLATE.md). The issue's `status:*` label is the
 status; this index carries none.
 
+- [T231](T231.md): optional22/24-player squad metadata, saves and balanced-extra policy; owner feature#777 (#781).
+
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
 | T01 | The walking skeleton: the package, the quick-engine seam, one fixture end to end | — | — |
