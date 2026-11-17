@@ -16,7 +16,7 @@ Do not resume Unicorn performance optimization or old-career migration. Preserve
 work. No obsolete #253 automatic sequence.
 
 Status (2026-11-17): v0.1 shipped and closed (milestone #705, tag `m2.1-v0.1-core-route`).
-The held-Match team-tactic/roster seam is in the kit through T170v (#757), including own overrides, pool
+The held-Match team-tactic/roster seam is in the kit through T170w (#765), including own/marking overrides, pool
 exchanges, full-twenty pair domains, late captain Play and budgets. T170o/#736 retains the actual
 SeasonSession/Match in the PyPy worker. T170s/#750 supplies pure decision-bound current previews;
 its complete PyPy Play/resume control preserves events, full RAM/all16 and round/news data.
@@ -34,12 +34,16 @@ validation and fresh previews. Native marking is accepted upstream as T137/#726 
 `87d925013da43b266f72bd198fda7a7a2c67dac8`: None/inherit,0/protected-zone
 and opponent goals;10 Native/manual/API scenarios,38 guards,19 exact PyPy replay
 checkpoints,107 inherited methods and all12 full CI groups pass. Parent #719 is closed;
-root marking adoption is still required as T170w/#763. Original marking-menu
+T170w/#765 adopts it in the seam/worker: exact goals, same-decision repair,
+current status/table previews and separate Play are proven; all pre-match input
+arms are now available in the worker. Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
-Next, in order: **worker activation**, starting with **T170w/#763 marking adoption**
-(`docs/tasks/T170w.md`), now ready after accepted upstream T137/#726. Read the owned upstream
+Next, in order: **worker activation**, now the complete **window action flow**
+over the same held Match: read T170i's mapping and T170r's inventory, then write the
+next bounded consumer contract. The legacy assistant-only current-career projection
+(`best_twenty_state.prepare`) is not a native season bootstrap. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
 complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`. Then the complete
 window action flow over the same held Match (T170i's mapping and T170r's matrix), in-match/resume,
@@ -49,7 +53,10 @@ receipts), **#702** (oracle no-fixture round, awaiting milestone round 20), T170
 ports) and T183, then **T169 flips the ZIP**. The bug queue #697/#698/#682/#684 is swept.
 UI2 foundation T215/#748 merged at3b561483 after renewed owner review/playtest
 and approval (#754 closed). The other session owns the T183 fast-track: T183a/#759
-and T183b/#761 are merged; T183c/#762 async Ins is its next/current leaf under #594.
+and T183b/#761 are merged; T183c PR764/#762 async Ins is its active delivery under #594.
+Its checkout stays at824 while pinned-runtime native checks/finisher run; preserve
+that source, artifact app3fec, installed apps/data and all original fidelity cases.
+Main's later marking adoption does not claim those assistant delivery checks.
 The parent's native-later/finals acceptance remains open; #725 now has verified
 retained G4B/C/D finals-flag candidates, not yet a native Ins-refusal proof. Preserve
 that session and checkout. The redesigned-UI look items
