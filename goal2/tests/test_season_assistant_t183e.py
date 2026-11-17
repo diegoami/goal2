@@ -98,6 +98,7 @@ def actual(value, advance=False):
     """Actual production Session operation under positive backend/EXE denial."""
     import builtins
     import io
+    import os
     import sys
     from pathlib import Path
     from goal2.engine.original_match import route
@@ -110,16 +111,17 @@ def actual(value, advance=False):
             raise ImportError('T183e Unicorn denied')
         return original_import(name, *args, **kwargs)
     def no_exe(file, *args, **kwargs):
-        if isinstance(file, (str, bytes, Path)) and str(file).lower().endswith('.exe'):
+        if isinstance(file, (str, bytes, Path)) and os.fsdecode(file).lower().endswith('.exe'):
             raise AssertionError('T183e EXE read denied')
         return original_open(file, *args, **kwargs)
     with patch('builtins.__import__', denied), patch('io.open', no_exe), patch('builtins.open', no_exe):
         try: __import__('unicorn')
         except ImportError: pass
         else: raise AssertionError('Unicorn denial inactive')
-        try: Path('GOAL.EXE').read_bytes()
-        except AssertionError: pass
-        else: raise AssertionError('EXE denial inactive')
+        for filename in ('GOAL.EXE', b'GOAL.EXE', Path('GOAL.EXE')):
+            try: builtins.open(filename, 'rb')
+            except AssertionError: pass
+            else: raise AssertionError('EXE denial inactive')
         expected = recommend(copy.deepcopy(value))
         keys = route.Keys(route.DEFAULT_KEYS)
         session = SeasonSession(value, keys=keys)
