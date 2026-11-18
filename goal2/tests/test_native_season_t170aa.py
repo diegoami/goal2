@@ -1,7 +1,11 @@
 """[designed: T170aa/#783] Shared native ownership; no original bytes embedded."""
 import copy
+import json
+import os
 from dataclasses import asdict
 import queue
+import signal
+import subprocess
 import sys
 import threading
 import time
@@ -197,6 +201,17 @@ class Pure(unittest.TestCase):
             self.assertEqual(len(joined),1);self.assertIsNot(joined[0],shared);self.assertFalse(joined[0].engine.closed)
             joined[0].leave(owner,second)
 
+    def test_interpreter_exit_finishes_retirement_without_a_window_or_poll(self):
+        run=subprocess.run([sys.executable,'-m',__name__,'--exit-control'],
+                           capture_output=True,text=True,timeout=45)
+        self.assertEqual(run.returncode,0,run.stderr)
+        value=json.loads(run.stdout.strip().splitlines()[-1])
+        try:self.assertTrue(value['disposed'],'Python exited before native cleanup completed')
+        finally:
+            if not value['disposed']:
+                try:os.kill(value['pid'],signal.SIGTERM)
+                except OSError:pass  # stop only this test's intentionally stalled child
+
     def test_foreign_hash_seeds_counter_fixture_and_played_prefix_never_attach(self):
         for field in ('output_hash','input_hash','rng_words','call_number'):
             n,e,p,d,_=self.make();self.opened(n,e,p);n.take_observations();n.advance()
@@ -317,4 +332,26 @@ class Actual(unittest.TestCase):
         self.assertEqual(shared.engine.opens,2);self.assertEqual(owner.state,before)
 
 
-if __name__=='__main__':unittest.main()
+def exit_control():
+    """Host-only lifecycle control: no game/assistant computation in CPython."""
+    import atexit
+    owner=SimpleNamespace();keeper=object();shared=MatchEngine.join(owner,keeper)
+    script='''import os,sys,time
+from goal2.game.engine_server import read_packet,write_packet
+read_packet(sys.stdin.buffer)
+write_packet(sys.stdout.buffer,{'kind':'ready','value':{'implementation':'host control','version':[3,11],'pid':os.getpid()}})
+time.sleep(60)
+'''
+    shared.engine.command=[sys.executable,'-u','-c',script];shared.engine.cancel_deadline=1
+    native=NativeSeasonOwner(owner,seed()[0]['state'])
+    end=time.monotonic()+30
+    while shared.engine.ready is None and time.monotonic()<end:time.sleep(.002)
+    assert shared.engine.ready is not None
+    pid=shared.engine.pid
+    atexit.register(lambda:print(json.dumps(dict(disposed=native.disposed,pid=pid)),flush=True))
+    native.close()  # deliberately no wait, poll or UI loop before interpreter exit
+
+
+if __name__=='__main__':
+    if sys.argv[-1]=='--exit-control':exit_control()
+    else:unittest.main()

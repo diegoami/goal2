@@ -267,7 +267,9 @@ class NativeSeasonOwner:
         if self._closing:return
         self._closing=True;self._phase='closing'
         if self.controller is not None:self.controller.detach()
-        threading.Thread(target=self._retire,name='goal2-native-season-close',daemon=True).start()
+        # Keep Python alive after the last window/event loop exits until the
+        # owned child is retired. The owner/UI thread still returns immediately.
+        threading.Thread(target=self._retire,name='goal2-native-season-close',daemon=False).start()
 
     def _retire(self):
         """No UI poll/window is needed to finish disposal; never release live work."""

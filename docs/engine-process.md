@@ -242,7 +242,8 @@ connection once, retaining the shared lease. Later in-match/resume/publication,
 native route-view UI, save/load and normal desktop entry remain separate.
 
 `close()` detaches presentation and retires asynchronously without needing a
-surviving window/event loop. It waits for outstanding work, sends discard when
+surviving window/event loop. Its cleanup thread keeps Python alive until owned
+process retirement completes, including after the last window exits. It waits for outstanding work, sends discard when
 possible, and releases the lease only after its **delivered** discard acknowledgement
 or death. At the existing cancellation deadline it kills only its owned process;
 no implicit reopen or replay occurs. The EngineProcess object remains usable by
