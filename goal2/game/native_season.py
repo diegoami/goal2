@@ -95,6 +95,9 @@ class NativeSeasonOwner:
         except Exception:
             self.shared.release(self);self.shared.leave(owner,self);raise
         engine=self.shared.engine;generation=engine.generation;process=engine.process
+        # [confirmed: EngineProcess._decode season/open] Native open clears the
+        # pipe client's legacy game; its shared bridge must require a reopen too.
+        self.shared.game=None
         try:engine.season_open(native)
         except Exception as exc:
             self._never_started=process is None and engine.generation==generation

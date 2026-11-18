@@ -246,7 +246,9 @@ surviving window/event loop. It waits for outstanding work, sends discard when
 possible, and releases the lease only after its **delivered** discard acknowledgement
 or death. At the existing cancellation deadline it kills only its owned process;
 no implicit reopen or replay occurs. The EngineProcess object remains usable by
-other bridges. Its readonly `generation` counts successful process creations so a
+other bridges. Native entry invalidates the shared legacy-game cache to match
+the pipe client's policy; a later ordinary match reopens its legacy state on
+that same process. Its readonly `generation` counts successful process creations so a
 failed launch is distinguishable from the parser/exit-delivery interval. Shared
 bridge join/last-leave synchronization prevents a new client inheriting a retiring
 engine. After handoff the continuing driver must eventually close this same owner;
