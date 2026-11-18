@@ -17,7 +17,7 @@ from goal2.game.watched_jobs import MatchEngine
 from goal2.tests.test_prematch_view_t170x import synthetic
 from goal2.tests.test_prematch_preview_t170s import reference_raw
 from goal2.tests.test_prematch_marking_t170w import initial_state
-from goal2.tests import pypy_engine
+from goal2.tests import pypy_engine,requires
 
 
 def seed():
@@ -288,6 +288,41 @@ class Actual(unittest.TestCase):
             self.assertEqual(next_owner.status,'boundary',next_owner.message);self.assertNotEqual(next_owner.pid,oldpid)
             self.assertEqual(shared.engine.generation,2)
         finally:next_owner.close();self.until(lambda:next_owner.disposed,15)
+
+    @requires.need(**requires.HALFTIME)
+    def test_existing_legacy_cache_survives_native_entry_and_plays_again_in_same_child(self):
+        from goal2.tests.test_assistant_pipe_t183c import model
+        from goal2.engine.original_match import Fixture
+        owner=model();before=copy.deepcopy(owner.state);keeper=object();shared=MatchEngine.join(owner,keeper)
+        self.addCleanup(shared.leave,owner,keeper)
+        class Reply:
+            def __init__(self):self.queue=queue.Queue()
+            def put(self,*value):self.queue.put(value)
+        def receive(reply,wanted):
+            end=time.monotonic()+120
+            while time.monotonic()<end:
+                kind,value=reply.queue.get(timeout=max(.01,end-time.monotonic()))
+                if kind==wanted:return value
+                self.assertNotIn(kind,('death','error','season','season_error'))
+            self.fail('legacy reply did not arrive')
+        reply=Reply();shared.claim(reply)
+        shared.engine.open(owner.state,owner.template_bytes);receive(reply,'opened')
+        pid=shared.engine.pid;self.assertEqual(shared.engine.opens,1);shared.release(reply)
+        state,_,_=initial_state(reference_raw());native=NativeSeasonOwner(owner,state)
+        try:
+            self.until(lambda:native.status in ('boundary','lost'),step=native.poll)
+            self.assertEqual(native.status,'boundary',native.message);self.assertEqual(native.pid,pid)
+        finally:native.close();self.until(lambda:native.disposed,15)
+        reply=Reply();shared.claim(reply)
+        try:
+            f=owner.state.campaign.next_fixture
+            fixture=Fixture(first=f.side_a,second=f.side_b,index=int(f.fixture_id.split(':')[1]),kind=f.kind)
+            shared.engine.match('watched',fixture,frames=True,bench=True)
+            frame=receive(reply,'frame');self.assertGreaterEqual(frame['sequence'],0)
+            self.assertTrue(shared.engine.cancel());receive(reply,'cancelled')
+            self.assertEqual(shared.engine.pid,pid);self.assertEqual(shared.engine.generation,1)
+            self.assertEqual(shared.engine.opens,1);self.assertEqual(owner.state,before)
+        finally:shared.release(reply)
 
 
 if __name__=='__main__':unittest.main()
