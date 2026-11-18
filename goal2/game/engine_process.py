@@ -105,10 +105,12 @@ class EngineProcess:
         return (self._match is not None or self._completion is not None
                 or self._season_request is not None or self._assistant_request is not None)
 
-    def assistant(self, state):
+    def assistant(self, state, *, extra_places=0):
         """[designed: T183c] Ask on a private state/2; replies are request/hash bound."""
         import json
         from goal2.game.season import canonical_hash
+        if type(extra_places) is not int or extra_places not in (0,2,4):
+            raise ValueError('additional assistant places must be0,2or4')
         if not isinstance(state, dict) or state.get('schema') != 'original_match.state/2':
             raise ValueError('assistant input must be state/2')
         payload = json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
@@ -120,10 +122,11 @@ class EngineProcess:
             if self._life is None:
                 self._start()
             number = self._assistant_requests + 1
-            self._assistant_request = (number, digest)
+            self._assistant_request = (number, digest, extra_places)
             self._assistant_cancelled = False
             try:
-                self._send({'op': 'assistant', 'request': number, 'input_hash': digest}, payload)
+                fields={'extra_places':extra_places} if extra_places else {}
+                self._send({'op': 'assistant', 'request': number, 'input_hash': digest, **fields}, payload)
             except Exception:
                 self._assistant_request = None
                 raise
@@ -450,7 +453,8 @@ class EngineProcess:
                     if (not isinstance(state, dict) or state.get('schema') != 'original_match.state/2'
                             or value['output_hash'] != canonical_hash(state)
                             or not isinstance(result, dict)
-                            or set(result) != {'allowed', 'refusal', 'country', 'manager', 'squad', 'pool', 'changed', 'recruited', 'calls'}
+                            or set(result) != ({'allowed', 'refusal', 'country', 'manager', 'squad', 'pool', 'changed', 'recruited', 'calls'}
+                                               | ({'extra_squad'} if len(pending)>2 and pending[2] else set()))
                             or type(result['allowed']) is not bool or type(result['changed']) is not bool
                             or result['refusal'] not in (None, 'finals', 'tour')
                             or result['allowed'] != (result['refusal'] is None)
@@ -467,6 +471,14 @@ class EngineProcess:
                             or any(not isinstance(k, str) or type(n) is not int or n < 1
                                    for k,n in result['calls'].items())):
                         raise ProtocolError('invalid assistant result')
+                    extra_places=pending[2] if len(pending)>2 else 0
+                    if extra_places:
+                        extra=result['extra_squad']
+                        if (not isinstance(extra,list) or len(extra)!=extra_places
+                                or any(w is not None and (type(w) is not int or w not in result['pool']) for w in extra)
+                                or len(set(w for w in extra if w is not None))!=sum(w is not None for w in extra)
+                                or (not result['allowed'] and any(w is not None for w in extra))):
+                            raise ProtocolError('invalid additional assistant selection')
                     result['state'] = state
                 elif (payload or set(value) != ({'request', 'error'} if kind == 'assistant_error' else {'request'})
                       or (kind == 'assistant_error' and not isinstance(value['error'], str))):

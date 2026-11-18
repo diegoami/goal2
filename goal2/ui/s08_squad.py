@@ -455,6 +455,9 @@ class SquadScreen(Screen):
             count = result['recruited']
             message = (f"Recruited {count} player{'s' if count != 1 else ''}.\nReview your twenty before playing."
                        if count else "No stronger players found.\nYour twenty is ready to review.")
+            if 'extra_filled' in result:
+                message=(f"Filled {result['extra_filled']} of {result['capacity']-20} extra places.\n"
+                         f"Review your {result['capacity']} squad places before playing.")
         elif status == 'refused':
             message = { 'finals': 'Cannot alter squad during finals.',
                         'tour': 'Cannot alter squad whilst on tour.' }.get(result['reason'], 'The assistant could not select a squad.')
