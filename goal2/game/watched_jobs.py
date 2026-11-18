@@ -205,15 +205,18 @@ class MatchEngine:
         if shared is None:
             shared = cls()
             owner._match_engine = shared
-        shared.bridges.append(bridge)
+        with shared._lock:
+            shared.bridges.append(bridge)
         return shared
 
     def leave(self, owner, bridge):
-        self.bridges = [b for b in self.bridges if b is not bridge]
-        if self.bridges:
-            return
-        if getattr(owner, '_match_engine', None) is self:
-            del owner._match_engine
+        # [designed: T170aa] Native disposal can finish off the UI thread.
+        with self._lock:
+            self.bridges = [b for b in self.bridges if b is not bridge]
+            if self.bridges:
+                return
+            if getattr(owner, '_match_engine', None) is self:
+                del owner._match_engine
         self.engine.close()
 
     def _reply(self, kind, value):
