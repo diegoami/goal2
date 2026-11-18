@@ -1,0 +1,191 @@
+{
+  "boundaries": [
+    "Explicit native-state entry only; no fresh-native-career generator or normal desktop/default/ZIP switch.",
+    "Current native route-view UI, first-packet in-match driver/pacing/resume adoption, native save/load/publication remain separate consumers.",
+    "Held T183 exception remains; independent T231/#777/sourceT138 expanded Match work is neither modified nor activated.",
+    "Native owner/controller are owner-thread APIs; reply delivery passes exclusively to the held screen/next driver. Continuing driver must close the same owner."
+  ],
+  "ci": {
+    "Linux": {
+      "attempt": 1,
+      "head": "8da2334beedaf9ec9abd70885de49ba8358b4f0a",
+      "jobs": [
+        {
+          "completed_at": "2026-11-18T00:47:55Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732182/job/134488093013",
+          "id": 134488093013,
+          "name": "changes",
+          "started_at": "2026-11-18T00:47:47Z"
+        },
+        {
+          "completed_at": "2026-11-18T00:48:43Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732182/job/134488170447",
+          "id": 134488170447,
+          "name": "native-scaling (1)",
+          "started_at": "2026-11-18T00:47:57Z"
+        },
+        {
+          "completed_at": "2026-11-18T00:48:39Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732182/job/134488170760",
+          "id": 134488170760,
+          "name": "native-scaling (2)",
+          "started_at": "2026-11-18T00:47:57Z"
+        },
+        {
+          "completed_at": "2026-11-18T01:08:46Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732182/job/134488170984",
+          "id": 134488170984,
+          "name": "linux",
+          "started_at": "2026-11-18T00:48:15Z"
+        }
+      ],
+      "modules": 268,
+      "new_methods": 16,
+      "new_skipped": 0,
+      "passed": 268,
+      "run_id": 44210732182,
+      "skipped": 239,
+      "url": "https://github.com/diegoami/goal2/actions/runs/44210732182"
+    },
+    "Windows": {
+      "attempt": 1,
+      "head": "8da2334beedaf9ec9abd70885de49ba8358b4f0a",
+      "jobs": [
+        {
+          "completed_at": "2026-11-18T00:47:59Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732024/job/134488093077",
+          "id": 134488093077,
+          "name": "changes",
+          "started_at": "2026-11-18T00:47:47Z"
+        },
+        {
+          "completed_at": "2026-11-18T00:49:07Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732024/job/134488199142",
+          "id": 134488199142,
+          "name": "native-scaling (2)",
+          "started_at": "2026-11-18T00:48:02Z"
+        },
+        {
+          "completed_at": "2026-11-18T00:49:16Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732024/job/134488199145",
+          "id": 134488199145,
+          "name": "native-scaling (1)",
+          "started_at": "2026-11-18T00:48:02Z"
+        },
+        {
+          "completed_at": "2026-11-18T01:24:39Z",
+          "conclusion": "success",
+          "html_url": "https://github.com/diegoami/goal2/actions/runs/44210732024/job/134488199695",
+          "id": 134488199695,
+          "name": "windows",
+          "started_at": "2026-11-18T00:48:14Z"
+        }
+      ],
+      "modules": 268,
+      "native_scenarios": "All worker/management/launch/campaign-friendlies/redesign shell-overview-squad-pool/watched scenarios passed.",
+      "new_methods": 16,
+      "new_skipped": 0,
+      "passed": 268,
+      "run_id": 44210732024,
+      "skipped": 255,
+      "url": "https://github.com/diegoami/goal2/actions/runs/44210732024"
+    }
+  },
+  "claims": [
+    "Explicit detached native state/2 + accepted tables + one managed country, not legacy conversion or authenticated native provenance.",
+    "Actual route fixture index/sides/kind/stage/raw year and first preview equal direct sealed PyPy source entry; configure once with native defaults.",
+    "Existing MatchEngine/one PyPy process is leased across native open, entry, actual existing screens, current-XI/captain Play and first-packet transfer.",
+    "Ordered native observations/news/fixture deltas and entry events delivered once; source boundary and identity owner remain unchanged by pre-match edits.",
+    "Actual assistant/legacy busy exclusion; native close then assistant reuse, legacy/native/legacy same-child frames with two required legacy opens and one generation.",
+    "No release until delivered discard/death, no late packet into next lease, failed-start generation distinction and serialized last-leave/new-join.",
+    "Asynchronous cleanup needs no UI/event loop and keeps Python alive through interpreter exit; cleanup deadline retires only its owned child.",
+    "No implicit native replay, fresh Match, automatic XI, private engine mutation or career publication."
+  ],
+  "code_head": "8da2334beedaf9ec9abd70885de49ba8358b4f0a",
+  "earlier_gate": {
+    "head": "e1d47ca5dd709e3690dbac4ce624c2bd8cc1b3f5",
+    "modules": 268,
+    "passed": 268,
+    "scope": "Superseded by proven interpreter-exit runtime fix; not the final gate.",
+    "skipped": 241
+  },
+  "fail_before": [
+    {
+      "case": "new owner absent; import failure",
+      "head": "a00e4bf6"
+    },
+    {
+      "cases": [
+        "discard parser flags release lease before actual reply delivery",
+        "new join races last-bridge retirement"
+      ],
+      "head": "ac6f7801"
+    },
+    {
+      "case": "native open leaves shared legacy cache stale; actual bridge cannot reopen correctly",
+      "head": "8412d47b"
+    },
+    {
+      "case": "daemon cleanup reports disposed=false at interpreter exit; blocked child requires cleanup",
+      "head": "e1d47ca5"
+    }
+  ],
+  "final_gate": {
+    "head": "8da2334beedaf9ec9abd70885de49ba8358b4f0a",
+    "modules": 268,
+    "new_modules": {
+      "test_native_season_t170aa": {
+        "methods": 14,
+        "seconds": 26,
+        "skipped": 0
+      },
+      "test_native_season_window_t170aa": {
+        "methods": 2,
+        "seconds": 22,
+        "skipped": 0
+      }
+    },
+    "passed": 268,
+    "scope": "Exact clean-head default fast/cheap layout gate. Full slow remains milestone.",
+    "skipped": 241
+  },
+  "focused": {
+    "affected": {
+      "head": "073b62587d2659f97326a3e7c1b53fd1350b903d",
+      "methods": 97,
+      "seconds": 249.308,
+      "skipped": 16
+    },
+    "final_owner_window": {
+      "methods": 16,
+      "seconds": 22.752,
+      "skipped": 0
+    },
+    "legacy_reopen": {
+      "methods": 1,
+      "seconds": 3.707,
+      "skipped": 0
+    }
+  },
+  "implementation_agent": "Codex (GPT-6 family; primary session, no subagents/per-PR reviewer)",
+  "issue": 783,
+  "pr": 784,
+  "private_evidence": "/home/diego/projects/goal2-keep/T170aa",
+  "receipt_reuse": "Final metadata-only commit can reuse head8da2334b only if application/tests/deps/fixtures stay unchanged, with clean-head asset/link/JSON checks. Earlier gate/focused receipts are separate; final local and platform gates exercise the complete final sixteen methods.",
+  "schema": "goal2/t170aa-native-owner-receipt/1",
+  "sha256": {
+    "goal2/game/engine_process.py": "d9d425ce43ea092af52115503b17fcba3a5ee427be13ea4081e3a33decc58fbc",
+    "goal2/game/native_season.py": "9469a6171ad137f6331d71ac68eb1ed7d3ce51ffc108f0c3aed2bdd97a16babc",
+    "goal2/game/watched_jobs.py": "543349f67d8e862ac075388172f0926e8b96b3f886b768a7d229d56111f52763",
+    "goal2/tests/test_native_season_t170aa.py": "0c09bd3f7ea4df2fdebb94bd89d4176cfbb4237ac7053fbadf48409c2657a8a0",
+    "goal2/tests/test_native_season_window_t170aa.py": "831452d1fd64120919a53faac7a45b093293fbf591133896a5bf38d0db486fd9"
+  },
+  "task": "T170aa"
+}
