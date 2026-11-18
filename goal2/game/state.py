@@ -98,6 +98,10 @@ class GameState:
     # to surname, and the manager's name; empty means GOAL.DAT's names and "Manager 1".
     player_renames: dict = field(default_factory=dict)
     manager_name: str = ''
+    # [designed: owner2026-11-18, #777/T231] Additional national-squad
+    # places are rebuild metadata; native country/pool storage stays20/80.
+    squad_capacity: int = 20
+    extra_squad: list[int | None] = field(default_factory=list)
 
 
 def from_savestate(state_bytes: bytes) -> GameState:
