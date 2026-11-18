@@ -96,3 +96,64 @@ def balanced_extras(candidates,places):
         eligible.remove(best);row=best[1]
         chosen.append(row['id']);counts[row['line']]+=1
     return chosen+[None]*(places-len(chosen))
+
+
+def _require_recruitment(state,incoming):
+    from goal2.game import campaign_pool,eligibility
+    pool=campaign_pool.validate(state)
+    if type(incoming) is not int or incoming not in pool or incoming in validate(state):
+        raise ValueError('Choose an unselected player of the current pool')
+    window=campaign_pool.window(state)
+    if not window['allowed']:
+        raise ValueError(window['reason'])
+    eligibility.require_available(state.players,[incoming])
+
+
+def filled(state,slot,incoming):
+    """[designed: T233] Fill a vacant extra place under current recruitment rules."""
+    slots=validate(state)
+    if type(slot) is not int or not 0<=slot<len(slots) or slots[slot] is not None:
+        raise ValueError('Choose an empty additional squad place')
+    _require_recruitment(state,incoming)
+    candidate=deepcopy(state);candidate.extra_squad[slot]=incoming
+    validate(candidate)
+    return candidate
+
+
+def exchanged(state,outgoing,incoming):
+    """Outside recruitment; selected extras remain ordinary selected members."""
+    slots=validate(state);_require_recruitment(state,incoming)
+    if type(outgoing) is not int:
+        raise ValueError('Choose a selected squad player')
+    candidate=deepcopy(state)
+    if outgoing in slots:
+        candidate.extra_squad[slots.index(outgoing)]=incoming
+    else:
+        from goal2.game import campaign_pool
+        campaign_pool.exchange(candidate,outgoing,incoming)
+    validate(candidate)
+    return candidate
+
+
+def promoted(state,incoming,outgoing):
+    """[designed: T233] Swap selected members across the physical20/80 boundary.
+
+    This changes canonical GameState records, never a live engine. Outside
+    recruitment rules do not apply to two already-selected squad members.
+    """
+    from goal2.game import campaign_pool
+    slots=validate(state);pool=campaign_pool.validate(state)
+    if (type(incoming) is not int or type(outgoing) is not int
+            or incoming not in slots or outgoing not in state.managed_squad):
+        raise ValueError('Choose a native squad member and selected extra')
+    candidate=deepcopy(state)
+    candidate.managed_squad=[incoming if w==outgoing else w for w in state.managed_squad]
+    candidate.campaign.reserve_ids=[outgoing if w==incoming else w for w in pool]
+    candidate.extra_squad[slots.index(incoming)]=outgoing
+    candidate.starting_eleven=[incoming if w==outgoing else w for w in state.starting_eleven]
+    if candidate.captain==outgoing:candidate.captain=incoming
+    country=bytearray(candidate.countries[state.managed_country])
+    country[:40]=b''.join(w.to_bytes(2,'little') for w in candidate.managed_squad)
+    candidate.countries[state.managed_country]=bytes(country)
+    campaign_pool.validate(candidate);validate(candidate)
+    return candidate

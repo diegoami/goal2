@@ -160,13 +160,39 @@ class DesktopModel:
         """[derived: T45; designed: T71] Display-only source pool view."""
         from goal2.game import campaign_pool
         if self.state.campaign is None:return None
-        return campaign_pool.view(self.state,self.goaldat,query=query,position=position)
+        result=campaign_pool.view(self.state,self.goaldat,query=query,position=position)
+        if self.state.squad_capacity!=20:
+            from goal2.game.extended_squad import validate
+            extra={w for w in validate(self.state) if w is not None}
+            complete=campaign_pool.view(self.state,self.goaldat)
+            rows={r['id']:r for r in complete['squad']+complete['reserves']}
+            result['reserves']=[r for r in result['reserves'] if r['id'] not in extra]
+            result['squad']=sorted((rows[w] for w in list(self.state.managed_squad)+list(extra)),
+                                   key=lambda r:(r['position'],r['id']))
+        return result
+
+    def resize_squad(self,capacity):
+        """[designed: owner#777/T233] Explicit capacity change; no assistant runs."""
+        from goal2.game import extended_squad,campaign_pool
+        if getattr(self,'match_pending',False):raise ValueError('Finish the current match first')
+        candidate=extended_squad.resized(self.state,capacity)
+        if capacity!=20:campaign_pool.validate(candidate)
+        self.view(candidate);self.state=candidate
+
+    def fill_extra(self,slot,incoming):
+        from goal2.game.extended_squad import filled
+        candidate=filled(self.state,slot,incoming)
+        self.view(candidate);self.state=candidate
 
     def exchange(self,outgoing,incoming):
         """[derived: T45; designed: T71] Validate copied candidate before publication."""
         from goal2.game import campaign_pool
-        candidate=copy.deepcopy(self.state)
-        campaign_pool.exchange(candidate,outgoing,incoming)
+        if self.state.squad_capacity!=20:
+            from goal2.game.extended_squad import exchanged
+            candidate=exchanged(self.state,outgoing,incoming)
+        else:
+            candidate=copy.deepcopy(self.state)
+            campaign_pool.exchange(candidate,outgoing,incoming)
         self.view(candidate)
         campaign_pool.view(candidate,self.goaldat)
         self.state=candidate
@@ -281,7 +307,9 @@ class DesktopModel:
         # [designed: owner, 2026-10-21; #283/#286] One-letter role codes; no overall ability, ever.
         from goal2.game import roles
         table=roles.tables(state);names=roles.names(state)
-        for word in state.managed_squad:
+        from goal2.game.extended_squad import validate
+        slots=validate(state)
+        for word in list(state.managed_squad)+[w for w in slots if w is not None]:
             record=state.players[word]
             if len(record)!=20:
                 raise ValueError('Invalid player record')
@@ -303,7 +331,9 @@ class DesktopModel:
             play_label='Play original competitive'
         else:
             play_label='Play unavailable'
-        return {'countries':[(n,self.goaldat.country_names[n]) for n in range(1,129)],
+        extra_view=({'squad_capacity':state.squad_capacity,'squad_slots':list(state.managed_squad)+list(slots)}
+                    if state.squad_capacity!=20 else {})
+        return {**extra_view,'countries':[(n,self.goaldat.country_names[n]) for n in range(1,129)],
                 'country':state.managed_country,'country_name':self.goaldat.country_names[state.managed_country],
                 'players':rows,'morale':team_morale(state.players,state.starting_eleven),
                 'play_label':play_label,
@@ -589,7 +619,8 @@ class DesktopModel:
         kickoff still refuses an unavailable eleven (eligibility.validate_teams) [designed: T44, "retain human
         repair"]. Two bench players keep the squad's order: this route holds the bench as the squad's order and no
         bench order of its own, so they are refused with that reason. Returns the new eleven."""
-        state=self.state;squad=list(state.managed_squad);eleven=list(state.starting_eleven)
+        from goal2.game import extended_squad
+        state=self.state;squad=[w for w in extended_squad.squad_slots(state) if w is not None];eleven=list(state.starting_eleven)
         if (type(first) is not int or type(second) is not int or first==second
                 or first not in squad or second not in squad):
             raise ValueError('Choose two different players of this squad')
@@ -605,7 +636,9 @@ class DesktopModel:
             out,incoming=(first,second) if first in eleven else (second,first)
             eleven[eleven.index(out)]=incoming
             if captain==out:captain=incoming
-        candidate=copy.copy(state)
+        extra=first if first in state.extra_squad else second if second in state.extra_squad else None
+        native=second if extra==first else first
+        candidate=(extended_squad.promoted(state,extra,native) if extra is not None else copy.copy(state))
         candidate.starting_eleven=eleven;candidate.captain=captain
         self.view(candidate)
         self.state=candidate

@@ -34,3 +34,13 @@ The original DOS binary layout is not widened or used to store these extras.
 ```sh
 python -m unittest goal2.tests.test_extended_squad_t231 goal2.tests.test_session_save -v
 ```
+
+[designed: T233] The desktop model can explicitly resize20/22/24, fill a vacant
+extra place, project every filled selected member and hide those members from
+pool search/filter results. These are copied canonical GameState operations;
+no live engine memory is written. A selected extra exchanged with an XI member
+preserves full selection and captain repair, even when outside recruitment is
+closed. Recruiting an outside player into an extra place retains the existing
+availability/window policy. Physical country/pool arrays remain20/80, and
+save/reload retains nullable places. Visible size controls and match activation
+require the later accepted native/UI consumer delivery.
