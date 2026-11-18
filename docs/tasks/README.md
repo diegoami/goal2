@@ -445,3 +445,4 @@ operational status.
 - [T170z](T170z.md): actual pre-match screen bindings over an explicitly owned held session, preserving native edits/current views/captain handoff (#776).
 
 - [T170aa](T170aa.md): native shared-session ownership, pre-match entry/handoff and disposal (#783).
+- [T233](T233.md): optional22/24 squad management and nullable roster projection; hidden until native/UI delivery (#787).
