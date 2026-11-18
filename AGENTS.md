@@ -58,15 +58,28 @@ parallel gate's test scheduling race is retained and corrected without runtime,
 fixture, case or bound changes. Receipts are in `measurements/T170z`.
 Owner callbacks still supply current-route views, handoff and disposal; this is
 not a normal desktop entry, native career bootstrap, round publication or ZIP flip.
+T170aa/#784 supplies `NativeSeasonOwner`: explicit native state/2 input, the
+existing owner's shared PyPy lease, actual route fixture metadata and verified
+entry into T170z's controller/screens. Its once-only first-packet connection keeps
+that lease for the next driver. Close waits asynchronously for delivered
+discard/death, invalidates the legacy bridge cache consistently, and completes
+even at interpreter exit. Generation/registry/disposal races have positive
+before/after controls;16 new methods run unskipped on local/Linux/Windows.
+The97-method affected run and268-module gates plus all native scenarios/scales
+pass; receipts are in `measurements/T170aa`. This accepts caller-supplied native
+input, not an authenticated provenance claim or a fresh native career generator.
 Original marking-menu
 eligibility includes available outfield bench players, not only the XI. Route-boundary state is
 stale after held edits; do not use it as a current card/lineup preview.
 
-Next, in order: **worker activation**: establish the concrete native
-session-owner/entry and valid initial-state contract, then connect T170z's intact
-first-packet handoff to in-match/resume and save/load. Use the accepted T170x view,
-T170y coordinator and T170z screen binding; read T170i's mapping/T170r's inventory
-and existing screen/process owners before the next bounded consumer contract.
+Next, in order: **worker activation**: connect T170aa's retained first-packet
+handoff to the actual in-match driver/pacing and resume, then current native
+route-view UI and save/load/publication. Audit the driver's required configuration
+before entry; do not reconfigure a started Match or patch private options. The
+continuing driver must eventually close the same native owner. Fresh native
+career bootstrap still needs its own source-bound input contract before a normal
+desktop/default switch. Use T170x/T170y/T170z/T170aa; read T170i's mapping,
+T170r's inventory and existing screen/process owners before the next contract.
 The legacy assistant-only current-career projection
 (`best_twenty_state.prepare`) is not a native season bootstrap. Read the owned upstream
 clone's instructions and original menu evidence before writing each bounded source contract; the
