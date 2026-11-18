@@ -43,7 +43,7 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | `cancel` | | Ends the running match. |
 | `quit` | | Ends the process. |
 | `season` | `request` (positive integer), `action`, fields below | Operates on one retained sealed season; separate from the legacy fresh-match requests. |
-| `assistant` | positive integer `request`, `input_hash`; binary JSON state/2 payload | Computes a copied private best-twenty candidate; never edits the retained season or cached legacy game. |
+| `assistant` | positive integer `request`, `input_hash`, optional `extra_places`2/4 (0omitted); binary JSON state/2 payload | Computes a copied original20candidate and, when requested, balanced additional outfield choices; never edits the retained season or cached legacy game. |
 | `assistant_cancel` | positive integer `request` | Cancels only that query; late controls cannot cancel another operation. |
 
 ## Replies (engine to window), by `kind`, with `value`
@@ -70,6 +70,21 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 The window adds one of its own: `death` {`code`, `stderr`, `error`} (below).
 
 ## Explicit assistant (T183c)
+
+[designed: owner#777/T232; confirmed: original1771:377E/3216, DS:0D5C]
+`EngineProcess.assistant(state, extra_places=2|4)` keeps the same request,
+hash/lifetime/cancellation and process ownership. The original recommended
+twenty is snapshotted first. Additional original strength calls run in private
+scratch execution; their memory/register effects never replace that snapshot.
+Requested replies add `extra_squad`, exactly2/4nullable made-pool words chosen
+by the designed balanced-extra policy. Keepers/unavailable players are excluded.
+Unrequested, malformed, duplicate or foreign additional IDs fail closed. The
+candidate adapter also validates capacity/current membership and outfield
+availability before atomic owner publication. Default0omits both the request
+field and reply addition, preserving the previous20wire/result shape. Filling
+extra places is reported explicitly. This adds no size selector or unsupported
+larger-bench activation; all22/24match-day eligibility remains its required
+native-engine/UI integration.
 
 [designed: owner fast-track, T183c] `EngineProcess.assistant(state)` returns a request
 number immediately; its terminal reply is bound to that request and canonical input/output

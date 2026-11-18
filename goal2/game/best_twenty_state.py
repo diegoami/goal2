@@ -38,6 +38,8 @@ def _put_words(memory, address, words):
 def prepare(state):
     """Snapshot a current opening career; never regenerate players or use a tour guess."""
     source = deepcopy(state)
+    from goal2.game.extended_squad import validate as validate_extras
+    validate_extras(source)
     campaign = source.campaign
     if campaign is None or campaign.world is None:
         raise ValueError('The assistant needs a career with its complete current calendar')
@@ -176,6 +178,22 @@ def candidate(prepared, answer):
     if state.captain not in state.starting_eleven:
         state.captain=0
     state.campaign.reserve_ids=list(pool)
+    places=state.squad_capacity-20
+    if places:
+        extras=answer.get('extra_squad')
+        if not isinstance(extras,list) or len(extras)!=places:
+            raise ValueError('Assistant additional places differ from the requested capacity')
+        state.extra_squad=deepcopy(extras)
+        from goal2.game.extended_squad import validate as validate_extras
+        validate_extras(state)
+        for word in extras:
+            if word is None:continue
+            record=players[word];position=record[6]
+            if (not 0<=position<14 or after.memory[after.DS*16+0xD5C+position] not in (1,2,3)
+                    or not 0<record[0xE]<0x80 or record[0x10]&0xA4):
+                raise ValueError('Assistant additional place is not an available outfield player')
+    elif 'extra_squad' in answer:
+        raise ValueError('Assistant returned unrequested additional places')
     campaign_pool.validate(state)
     validate_state(state)
     return state

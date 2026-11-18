@@ -14,13 +14,15 @@ def _words(image, address, count):
     return [int.from_bytes(image.memory[address + 2*i:address + 2*i + 2], 'little') for i in range(count)]
 
 
-def recommend(state, *, check_cancel=None):
+def recommend(state, *, check_cancel=None, extra_places=0):
     """Return a completed private candidate; caller owns publication/refusal policy.
 
     No live input is mutated. The state includes original-owned refusal effects;
     callers must not publish it on refusal. All registered calls are real ports,
     never draw stubs or a Unicorn fallback.
     """
+    if type(extra_places) is not int or extra_places not in (0,2,4):
+        raise ValueError('additional assistant places must be0,2or4')
     if check_cancel is not None:
         check_cancel()
     tables = engine_tables.load()
@@ -104,4 +106,33 @@ def recommend(state, *, check_cancel=None):
                   changed=(squad != initial_squad or pool != initial_pool),
                   recruited=[w for w in squad if w not in initial_squad],
                   calls={k: v for k, v in inst.calls.items() if v})
+    if extra_places:
+        # [designed: owner#777/T232] Keep the original20candidate intact.
+        # The original strength calls use only private scratch execution after
+        # its state snapshot; never copy that scratch memory into the reply.
+        from goal2.game.extended_squad import balanced_extras
+        rows=[];players=image.far(0xA91B)
+        if result['allowed']:
+            for word in pool:
+                if check_cancel is not None:check_cancel()
+                record=image.memory[players+20*word:players+20*(word+1)]
+                position=record[6]
+                if not 0<=position<14:
+                    raise ValueError('additional player has an unknown original position')
+                line=image.memory[ds+0xD5C+position]
+                available=0<record[0xE]<0x80 and not record[0x10]&0xA4
+                strength=0
+                if line and available:
+                    m.far_call('1771:377E',(word,),'0791:E788',ss,sp)
+                    m.set_reg('bp',0x3456)
+                    m.run(m.lin('0791:E788'),fresh=True)
+                    if m.frames or m.reg('sp')!=sp+6:
+                        raise RuntimeError('additional strength call did not return with original ABI')
+                    strength=m.reg('ax')
+                rows.append(dict(id=word,line=line,strength=strength,available=bool(available)))
+            result['extra_squad']=balanced_extras(rows,extra_places)
+        else:
+            result['extra_squad']=[None]*extra_places
+        result['calls']={k:v for k,v in inst.calls.items() if v}
+        if check_cancel is not None:check_cancel()
     return result

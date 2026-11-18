@@ -87,7 +87,9 @@ class AssistantJobs:
                 return
             if cancelled.is_set():
                 results.put((token,{'status':'cancelled'}));return
-            number=self.shared.engine.assistant(prepared.native)
+            places=before.squad_capacity-20
+            number=(self.shared.engine.assistant(prepared.native,extra_places=places) if places
+                    else self.shared.engine.assistant(prepared.native))
             sent=True
             self._request=number
             if cancelled.is_set():
@@ -115,7 +117,12 @@ class AssistantJobs:
             if cancelled.is_set():
                 results.put((token,{'status':'cancelled'}));return
             recruits=[w for w in proposed.managed_squad if w not in before.managed_squad]
-            results.put((token,{'status':'complete','candidate':proposed,'recruited':len(recruits)}))
+            additional={}
+            if places:
+                filled={w for w in proposed.extra_squad if w is not None}
+                previous={w for w in before.extra_squad if w is not None}
+                additional=dict(extra_filled=len(filled),extra_added=len(filled-previous),capacity=before.squad_capacity)
+            results.put((token,{'status':'complete','candidate':proposed,'recruited':len(recruits),**additional}))
         except Exception as exc:
             results.put((token,{'status':'error','reason':'failed','message':f'{type(exc).__name__}: {exc}'}))
         finally:

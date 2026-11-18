@@ -311,8 +311,11 @@ class Server:
                     raise ValueError('unexpected assistant control payload')
 
         try:
+            extra_places=header.get('extra_places',0)
             if (type(number) is not int or number < 1
-                    or set(header) != {'op', 'request', 'input_hash', 'size'}):
+                    or type(extra_places) is not int or extra_places not in (0,2,4)
+                    or set(header) != ({'op', 'request', 'input_hash', 'size'}
+                                       | ({'extra_places'} if 'extra_places' in header else set()))):
                 raise ValueError('invalid assistant request')
             value = json.loads(payload.decode('utf8'))
             if not isinstance(value, dict) or value.get('schema') != 'original_match.state/2':
@@ -320,7 +323,8 @@ class Server:
             digest = canonical_hash(value)
             if header['input_hash'] != digest:
                 raise ValueError('assistant input hash mismatch')
-            result = recommend(value, check_cancel=poll)
+            result = (recommend(value,check_cancel=poll,extra_places=extra_places) if extra_places
+                      else recommend(value,check_cancel=poll))
             state = result.pop('state')
             data = json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
             poll()
