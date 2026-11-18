@@ -4,6 +4,7 @@ One file per task, `T<nn>.md`, from [`TEMPLATE.md`](TEMPLATE.md). The issue's `s
 status; this index carries none.
 
 - [T231](T231.md): optional22/24-player squad metadata, saves and balanced-extra policy; owner feature#777 (#781).
+- [T232](T232.md): original-strength balanced extras through the existing cancellable assistant pipe (#785, owner feature#777).
 
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
