@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from goal2.game.session_save import (
-    VERSION, SessionSaveError, decode, encode, load, save,
+    VERSION, SQUAD_VERSION, SessionSaveError, decode, encode, load, save,
 )
 from goal2.game.state import GameState
 from goal2 import loop
@@ -56,7 +56,7 @@ class SessionSaveRoundTrip(unittest.TestCase):
         with self.assertRaisesRegex(SessionSaveError, "invalid session save JSON"):
             decode(b"{not json")
         doc = json.loads(encode(_state(), b"template"))
-        doc["version"] = VERSION + 1
+        doc["version"] = SQUAD_VERSION + 1
         with self.assertRaisesRegex(SessionSaveError, "unsupported session save version"):
             decode(json.dumps(doc).encode())
         doc = json.loads(encode(_state(), b"template"))
