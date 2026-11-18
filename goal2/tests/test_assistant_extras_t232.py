@@ -147,3 +147,60 @@ class ReplyGuards(unittest.TestCase):
 if __name__=='__main__':
     import sys
     if len(sys.argv)==3 and sys.argv[1]=='--fake':fake_extras(sys.argv[2])
+
+
+# Exercise the real owner bridge in expanded mode, retaining the established
+# Qt lifecycle controls rather than treating a pipe result as UI publication.
+import sys
+if sys.implementation.name != "pypy":
+    from goal2.tests import test_ui_assistant_t183c as ui_previous
+
+
+    @requires.need(**requires.HALFTIME)
+    class ExpandedOwnerUI(unittest.TestCase):
+        setUpClass=classmethod(ui_previous.AssistantUI.setUpClass.__func__)
+        tearDownClass=classmethod(ui_previous.AssistantUI.tearDownClass.__func__)
+        cleanup=ui_previous.AssistantUI.cleanup
+        key=ui_previous.AssistantUI.key
+        until=ui_previous.AssistantUI.until
+        finished=ui_previous.AssistantUI.finished
+        gated=ui_previous.AssistantUI.gated
+        click_assistant=ui_previous.AssistantUI.click_assistant
+
+        def setUp(self):
+            from goal2.game.extended_squad import resized
+            ui_previous.AssistantUI.setUp(self)
+            self.model.state=resized(self.model.state,24)
+
+        def test_actual_a_publishes_balanced_extras_with_capacity_feedback(self):
+            from PySide6.QtCore import Qt
+            from goal2.game.best_twenty_state import prepare,candidate
+            from goal2.tests.ui_assertions import assert_fits
+            p=prepare(self.model.state)
+            expected=candidate(p,call(__name__+':native_extras',p.native,4))
+            self.key(Qt.Key.Key_A);self.finished()
+            self.assertEqual(self.model.state,expected)
+            self.assertEqual(len(self.model.state.extra_squad),4)
+            self.assertIn('Filled 4 of 4',self.screen.note.text())
+            self.assertIn('24',self.screen.note.text())
+            assert_fits(self,self.win)
+
+        def test_capacity_change_while_preparing_cannot_publish(self):
+            from goal2.game.extended_squad import resized
+            entered,release,control=self.gated()
+            try:
+                with control:
+                    self.click_assistant();self.assertTrue(entered.wait(5))
+                    self.model.state=resized(self.model.state,22)
+                    expected=copy.deepcopy(self.model.state)
+                    release.set();self.finished()
+                self.assertEqual(self.model.state,expected)
+                self.assertEqual(self.model.state.extra_squad,[None,None])
+                self.assertIn('career changed',self.screen.note.text())
+            finally:release.set()
+
+        def test_cancel_before_send_preserves_all_empty_extra_places(self):
+            ui_previous.AssistantUI.test_heartbeat_and_cancel_before_send_never_publish(self)
+
+        def test_career_replacement_cannot_publish_expanded_candidate(self):
+            ui_previous.AssistantUI.test_close_and_career_replacement_cannot_publish_old_reply(self)
