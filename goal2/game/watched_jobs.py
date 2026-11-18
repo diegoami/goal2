@@ -191,6 +191,9 @@ class MatchEngine:
     cancelled or replaced match never reach the next one. The process is closed when the owner's last bridge closes.
     """
 
+    # [designed: T170aa] Serialize last-bridge retirement against a new join.
+    _registry_lock = threading.Lock()
+
     def __init__(self):
         from goal2.game.engine_process import EngineProcess
         self.engine = EngineProcess(self._reply)
@@ -201,23 +204,25 @@ class MatchEngine:
 
     @classmethod
     def join(cls, owner, bridge):
-        shared = getattr(owner, '_match_engine', None)
-        if shared is None:
-            shared = cls()
-            owner._match_engine = shared
-        with shared._lock:
-            shared.bridges.append(bridge)
+        with cls._registry_lock:
+            shared = getattr(owner, '_match_engine', None)
+            if shared is None:
+                shared = cls()
+                owner._match_engine = shared
+            with shared._lock:
+                shared.bridges.append(bridge)
         return shared
 
     def leave(self, owner, bridge):
         # [designed: T170aa] Native disposal can finish off the UI thread.
-        with self._lock:
-            self.bridges = [b for b in self.bridges if b is not bridge]
-            if self.bridges:
-                return
-            if getattr(owner, '_match_engine', None) is self:
-                del owner._match_engine
-        self.engine.close()
+        with self._registry_lock:
+            with self._lock:
+                self.bridges = [b for b in self.bridges if b is not bridge]
+                if self.bridges:
+                    return
+                if getattr(owner, '_match_engine', None) is self:
+                    del owner._match_engine
+            self.engine.close()
 
     def _reply(self, kind, value):
         with self._lock:

@@ -8,8 +8,10 @@ from dataclasses import dataclass
 import queue
 import threading
 import time
+from zlib import error as ZlibError
 
 from goal2.engine.original_match.image import Image, GAME_PTR, FIXTURES_PTR, FIXTURE_SIZE
+from goal2.engine.original_match import route
 from goal2.game import engine_tables
 from goal2.game.prematch_controller import PrematchController
 from goal2.game.season import canonical_hash
@@ -19,8 +21,12 @@ from goal2.game.watched_jobs import MatchEngine
 def _native(value):
     if not isinstance(value,dict) or value.get('schema')!='original_match.state/2':
         raise ValueError('explicit native state/2 input is required')
-    state=deepcopy(value);image=Image.from_state(state,engine_tables.load())
-    countries=image.managed_countries()
+    state=deepcopy(value)
+    try:
+        image=Image.from_state(state,engine_tables.load())
+        countries=image.managed_countries()
+    except (KeyError,TypeError,IndexError,ValueError,ZlibError) as exc:
+        raise ValueError('invalid native state/2 input') from exc
     if len(countries)!=1:raise ValueError('native entry requires one managed country')
     return state,image,countries[0]
 
@@ -72,12 +78,15 @@ class NativeSeasonOwner:
     def __init__(self,owner,state):
         native,_,country=_native(state)
         self.owner=owner;self.managed_country=country;self._thread=threading.get_ident()
-        self._initial=native;self.input_hash=canonical_hash(native)
+        self._initial=native;self._input_hash=canonical_hash(native)
         self._boundary=None;self._observations=[];self._entry_events=[]
         self.replies=queue.Queue();self.controller=None;self.fixture=None
         self._phase='opening';self._expected='open';self._last_request=0
+        self._call_number=0
         self._decision_data=None;self._decision=None;self.message=''
         self._closing=False;self._uncertain=False;self._disposed=threading.Event()
+        self._terminal_received=threading.Event();self._discard_requested=threading.Event()
+        self._never_started=False
         self.shared=MatchEngine.join(owner,self)
         try:
             self.shared.claim(self)
@@ -85,8 +94,11 @@ class NativeSeasonOwner:
                 raise ValueError('the shared engine already owns an operation or season')
         except Exception:
             self.shared.release(self);self.shared.leave(owner,self);raise
-        try:self.shared.engine.season_open(native)
-        except Exception as exc:self._lose(f'{type(exc).__name__}: {exc}',uncertain=True)
+        engine=self.shared.engine;generation=engine.generation;process=engine.process
+        try:engine.season_open(native)
+        except Exception as exc:
+            self._never_started=process is None and engine.generation==generation
+            self._lose(f'{type(exc).__name__}: {exc}',uncertain=True)
 
     @property
     def status(self):
@@ -96,6 +108,9 @@ class NativeSeasonOwner:
 
     @property
     def disposed(self):return self._disposed.is_set()
+
+    @property
+    def input_hash(self):return self._input_hash
 
     @property
     def initial_state(self):return deepcopy(self._initial)
@@ -109,7 +124,13 @@ class NativeSeasonOwner:
     def _owner(self):
         if threading.get_ident()!=self._thread:raise RuntimeError('native season belongs to the owner thread')
 
-    def put(self,kind,value):self.replies.put((kind,value))
+    def put(self,kind,value):
+        self.replies.put((kind,value))
+        # Keep the lease until delivery, not merely the parser's earlier state
+        # update. Otherwise its final reply could reach the next shared client.
+        if (kind=='death' or (self._discard_requested.is_set() and kind=='season'
+                and isinstance(value,dict) and value.get('action')=='discard')):
+            self._terminal_received.set()
 
     def _lose(self,message,uncertain=False):
         self.message=message;self._phase='lost';self._expected=None
@@ -133,7 +154,7 @@ class NativeSeasonOwner:
         self._owner();result=deepcopy(self._entry_events);self._entry_events=[];return result
 
     def _accept_boundary(self,value):
-        state,_,country=_native(value['state']);obs=value['observation']
+        state,image,country=_native(value['state']);obs=value['observation']
         fields={'call_number','status','input_hash','output_hash','played_fixtures','news_pages','rng_words'}
         if (country!=self.managed_country or not isinstance(obs,dict) or set(obs)!=fields
                 or type(obs['call_number']) is not int or obs['call_number']<0
@@ -142,12 +163,19 @@ class NativeSeasonOwner:
                 or not isinstance(obs['input_hash'],str) or len(obs['input_hash'])!=64
                 or any(c not in '0123456789abcdef' for c in obs['input_hash'])
                 or any(not isinstance(obs[k],(list,tuple)) for k in ('played_fixtures','news_pages','rng_words'))
-                or len(obs['rng_words'])!=2 or any(type(n) is not int or not 0<=n<=65535 for n in obs['rng_words'])):
+                or len(obs['rng_words'])!=2 or any(type(n) is not int or not 0<=n<=65535 for n in obs['rng_words'])
+                or tuple(obs['rng_words'])!=tuple(image.rd(off) for off in route.SEEDS.values())):
             raise ValueError('invalid native boundary observation')
         if value['action']=='open' and (obs['status']!='ready' or obs['call_number']!=0
                 or obs['input_hash']!=self.input_hash or obs['output_hash']!=self.input_hash
                 or obs['played_fixtures'] or obs['news_pages']):
             raise ValueError('native open differs from the explicit input')
+        if value['action']=='advance' and (obs['call_number']!=self._call_number+1
+                or obs['input_hash']!=canonical_hash(self._boundary)):
+            raise ValueError('native round identity differs from its previous boundary')
+        fixture=NativeFixture.from_boundary(state,self.managed_country) if obs['status']=='match' else None
+        self._call_number=obs['call_number']
+        if fixture is not None:self.fixture=fixture
         self._boundary=state;self._observations.append(deepcopy(value))
         return obs['status']
 
@@ -181,7 +209,6 @@ class NativeSeasonOwner:
                 if action in ('open','advance'):
                     status=self._accept_boundary(value)
                     if status=='match':
-                        self.fixture=NativeFixture.from_boundary(self._boundary,self.managed_country)
                         self._phase='configuring';self._request('configure')
                     else:self._phase='terminal' if status=='deferred-rollover' else 'boundary'
                 elif action=='configure':
@@ -243,17 +270,16 @@ class NativeSeasonOwner:
         """No UI poll/window is needed to finish disposal; never release live work."""
         engine=self.shared.engine;deadline=time.monotonic()+engine.cancel_deadline
         sent=False;killed=None
-        while True:
+        while not self._never_started and not self._terminal_received.is_set():
             process=engine.process
-            if process is None:break
             if self._uncertain or time.monotonic()>=deadline:
-                if process is not killed:
+                if process is not None and process is not killed:
                     try:process.kill()
                     except ProcessLookupError:pass
                     killed=process
             elif not engine.busy:
-                if not engine.season_active:break
-                if not sent:
+                if engine.season_active and not sent:
+                    self._discard_requested.set()
                     try:engine.season_request('discard');sent=True
                     except Exception:self._uncertain=True
             try:self.replies.get(timeout=.05)

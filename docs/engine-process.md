@@ -220,6 +220,38 @@ a native career. The normal desktop entry and default route remain separate.
 Held A/Ins explains the existing T183 exception; outside-held assistant behavior
 is unchanged.
 
+[designed: T170aa/#783] `goal2.game.native_season.NativeSeasonOwner(owner,state)`
+is the concrete shared-process owner for an **explicit native state/2**. It checks
+the accepted tables and single managed country, retains a detached input/hash,
+joins the owner's existing `MatchEngine`, and claims its lease for the entire
+session. It does not generate a fresh native career, convert a legacy GameState,
+authenticate caller provenance, or repurpose the assistant-only projection.
+`poll()` handles open replies on the owner thread; `advance()` is explicit.
+`take_observations()` delivers copied native boundary/state packets once, retaining
+fixture/news order and duplicates. These packets do not publish a legacy career.
+Completed and deferred-terminal boundaries remain explicit.
+
+At a real held Match, `NativeFixture` reads cursor/record/sides/kind and native
+stage/year from its route state (Image F023/F024/F030, route87d92501). The owner
+configures once with native captain/substitution defaults, consumes no decision
+implicitly, and verifies the first pre-match preview before exposing `controller`,
+`fixture` and `replies` to `HeldPrematchFlow`. The screen then owns queue delivery;
+the season owner's poll stops consuming it. `take_entry_events()` exposes the
+entry prefix once. `handoff()` transfers the first Play packet and queue/send
+connection once, retaining the shared lease. Later in-match/resume/publication,
+native route-view UI, save/load and normal desktop entry remain separate.
+
+`close()` detaches presentation and retires asynchronously without needing a
+surviving window/event loop. It waits for outstanding work, sends discard when
+possible, and releases the lease only after its **delivered** discard acknowledgement
+or death. At the existing cancellation deadline it kills only its owned process;
+no implicit reopen or replay occurs. The EngineProcess object remains usable by
+other bridges. Its readonly `generation` counts successful process creations so a
+failed launch is distinguishable from the parser/exit-delivery interval. Shared
+bridge join/last-leave synchronization prevents a new client inheriting a retiring
+engine. After handoff the continuing driver must eventually close this same owner;
+closing just the old pre-match presentation does not dispose the running session.
+
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping
 current squad/pool words to integer0..13 or explicit `"club"`. Numeric goals use

@@ -68,6 +68,7 @@ class EngineProcess:
         self.opens = 0               # `open` requests sent, over every process
         self.ready = None            # the current process's `ready` value
         self.closed = False
+        self._generation = 0
         self._season_active = False
         self._season_request = None
         self._season_requests = 0
@@ -76,6 +77,12 @@ class EngineProcess:
         self._assistant_cancelled = False
 
     # --- state ---------------------------------------------------------------------------------------------------
+
+    @property
+    def generation(self):
+        """[designed: T170aa] Successful process creations, retained across exits."""
+        with self._lock:
+            return self._generation
 
     @property
     def process(self):
@@ -336,6 +343,7 @@ class EngineProcess:
         # [designed: T159, the task's Windows hazard] binary pipes on every stream; stderr drained on its own thread
         process = subprocess.Popen(command, cwd=ROOT, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, bufsize=0)
+        self._generation += 1
         life = _Life(process)
         life.drain = threading.Thread(target=self._drain, args=(life,), name="goal2-engine-stderr", daemon=True)
         life.drain.start()
