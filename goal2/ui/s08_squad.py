@@ -333,7 +333,10 @@ class SquadScreen(Screen):
         self.refresh()
 
     def click_row(self, index):
-        """A click on a row moves the cursor there; on the highlighted row it is Enter."""
+        """A click on a row moves the cursor there; on the highlighted row it is Enter. While the name line is open
+        the cursor stays on the player being renamed, as ↑↓ do (the click would hand the name to another player)."""
+        if self.editing:
+            return None
         position = index + (self.page() * GridStrip.PAGE if self.side == "pool" else 0)
         if position == self.cursor[self.side]:
             return self.press_enter()
