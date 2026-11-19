@@ -52,6 +52,32 @@ class CoreSave(unittest.TestCase):
         self.assertEqual(opened[0].memory_sha256(), self.memory)
         self.assertEqual(opened[0].save_path, self.save)
 
+    def test_a_damaged_core_save_is_named_not_usable(self):
+        """[designed] A truncated or corrupted core save shows SAVE NOT USABLE with Resume off, as read_saved promises,
+        instead of raising zlib.error out of LaunchWindow: the portable start reads saves/desktop.g2core in the
+        constructor, so one damaged file stopped every start with no window (#420's default-start path)."""
+        from goal2.desktop.launch import LaunchWindow
+        good = self.save.read_bytes()
+        n = 8 + int.from_bytes(good[4:8], 'little')
+        flipped = bytearray(good);flipped[n + (len(good) - n) // 2] ^= 0xFF
+        damaged = {'truncated': good[:n + (len(good) - n) // 2], 'flipped': bytes(flipped)}
+        for name, raw in damaged.items():
+            with self.subTest(name), tempfile.TemporaryDirectory() as folder:
+                path = Path(folder) / 'desktop.g2core';path.write_bytes(raw)
+                w = LaunchWindow(requires.CACHE / 'GOAL.DAT', None, path, lambda model: None,
+                                 core_boot=requires.CACHE / 'e039-r0005-date-call.sav')
+                self.addCleanup(w.close)
+                self.assertEqual(w.saved_country.text(), 'SAVE NOT USABLE')
+                self.assertFalse(w.resume.isEnabled())
+                self.assertIn('damaged', w.error.text())
+
+    def test_open_refuses_a_file_that_is_not_a_savestate(self):
+        from goal2.desktop.core_model import CoreModel
+        with tempfile.TemporaryDirectory() as folder:
+            bad = Path(folder) / 'not-a-zip.sav';bad.write_bytes(b'not a savestate')
+            with self.assertRaises(ValueError):
+                CoreModel.open(bad, requires.CACHE / 'GOAL.DAT', Path(folder) / 'x.g2core')
+
 
 if __name__ == '__main__':
     unittest.main()
