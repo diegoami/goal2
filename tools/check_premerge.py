@@ -28,7 +28,8 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 # The original game's file types, and rebuild saves that embed its bytes (rule 14).
-FORBIDDEN = {".exe", ".dat", ".hlp", ".hil", ".pif", ".bat", ".sav", ".gl", ".g2save"}
+# A .g2core or .ucstate holds the running GOAL.EXE's memory; a .g2game wraps a .g2save.
+FORBIDDEN = {".exe", ".dat", ".hlp", ".hil", ".pif", ".bat", ".sav", ".gl", ".g2save", ".g2core", ".ucstate", ".g2game"}
 
 
 class ValidationError(ValueError):

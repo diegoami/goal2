@@ -70,7 +70,7 @@ class WindowsSlow(unittest.TestCase):
         self.assertLess(self.text.index("id: pypy"), self.text.index("tools/check_premerge.py"))
 
     def test_nothing_of_the_original_game_is_uploaded(self):
-        self.assertIn(r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'", self.text)
+        self.assertIn(r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'", self.text)
 
 
 class LinuxSlow(unittest.TestCase):
@@ -84,7 +84,7 @@ class LinuxSlow(unittest.TestCase):
                        "if: github.event_name == 'workflow_dispatch'",
                        "python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" --slow",
                        "QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy",
-                       r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'"):
+                       r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'"):
             with self.subTest(needle=needle):
                 self.assertIn(needle, windows)
                 self.assertIn(needle, self.text)
