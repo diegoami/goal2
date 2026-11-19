@@ -5,8 +5,9 @@ description: Run goal2 tasks or fixes end to end on the work branch in the check
 
 # /run-task [T<nn> | #<issue> ...]
 
-Follow `docs/process.md` §3 for each id in order (none given: the first `status:ready` task in
-`docs/tasks/README.md`). For `#<issue>` of a bug labelled `fix`, the issue body is the task file
+Follow `docs/process.md` §3 for each id in order (none given: of the open issues labelled `task` and
+`status:ready` (`gh issue list --label task --label status:ready`), the one whose task comes first in
+`docs/tasks/README.md`; the index itself carries no status). For `#<issue>` of a bug labelled `fix`, the issue body is the task file
 and the branch is `fix/<issue>-<slug>`.
 
 1. **Check**: Merge-after tasks are merged; each Done-when line fails on `main`. A line that cannot
