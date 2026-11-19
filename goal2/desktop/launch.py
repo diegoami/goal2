@@ -368,7 +368,6 @@ class LaunchWindow(QMainWindow):
         self.manager_name = QLineEdit();self.manager_name.setObjectName('launchManagerName')
         self.manager_name.setMaxLength(14);self.manager_name.setAccessibleName('Manager name, initial and surname')
         self.manager_name.setPlaceholderText('J Smith');self.manager_name.setVisible(self.core_new is not None)
-        self.manager_name.returnPressed.connect(self.do_start)
         body.addWidget(self.manager_name)
         # [designed: owner#73, T122] Show the new career's declared substitution rule before Start.
         from goal2.core.patches import OWNER_RULE
@@ -476,6 +475,10 @@ class LaunchWindow(QMainWindow):
             self.review();return
         if key in (Qt.Key.Key_Return, Qt.Key.Key_Enter) and focus is self.other_path:
             self.do_load_other();return
+        if key in (Qt.Key.Key_Return, Qt.Key.Key_Enter) and focus is self.manager_name:
+            # Here, not on returnPressed: QLineEdit leaves Return unaccepted, so it would reach this handler after
+            # do_start had focused the bulletin's Next and click it, skipping the first bulletin. [designed: T106]
+            self.do_start();return
         if key in (Qt.Key.Key_Up, Qt.Key.Key_Down) and isinstance(focus, QAbstractButton):
             order = self.focusables()
             if focus in order:
