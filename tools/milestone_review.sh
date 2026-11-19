@@ -16,16 +16,12 @@ candidate=$(grep -oE '\*\*Candidate\*\*: *`[0-9a-f]{40}`' <<<"$body" | grep -oE 
 [ -n "$candidate" ] || { echo "Issue #$issue has no '**Candidate**: \`<full sha>\`' line." >&2; exit 2; }
 
 git fetch -q origin main --tags
-git cat-file -e "$candidate^{commit}" || { echo "Candidate $candidate is not on origin." >&2; exit 2; }
+# A pre-main candidate (a validation branch, #749) is on no fetched ref: fetch the commit itself.
+git cat-file -e "$candidate^{commit}" 2>/dev/null || git fetch -q origin "$candidate" 2>/dev/null || true
+git cat-file -e "$candidate^{commit}" 2>/dev/null \
+  || { echo "Candidate $candidate cannot be fetched from origin." >&2; exit 2; }
 # The reviewer's instructions come from origin/main, never from a branch under review.
 agent=$(git show origin/main:.opencode/agents/milestone-reviewer.md)
-if [ "$(git rev-parse HEAD)" != "$candidate" ]; then
-  if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
-    echo "This checkout has uncommitted tracked changes; commit them first." >&2; exit 2
-  fi
-  git checkout -q --detach "$candidate"
-fi
-echo "reviewing milestone issue #$issue at $candidate with $cli ($model)"
 
 instructions=${agent#---*---}
 prompt="Review the goal2 milestone on issue #$issue. Start with: gh issue view $issue.
@@ -38,5 +34,16 @@ case "$cli" in
   codex)    cmd=(codex exec -m "$model" -s workspace-write -c sandbox_workspace_write.network_access=true "$prompt") ;;
   *) echo "Unknown CLI $cli: use opencode, claude or codex." >&2; exit 2 ;;
 esac
-if [ "$print" = "--print" ]; then printf '%q ' "${cmd[@]}"; echo; exit 0; fi
+# --print only shows the command: it leaves this checkout where it is.
+if [ "$print" = "--print" ]; then
+  echo "Run it in a checkout at the candidate (git checkout --detach $candidate):" >&2
+  printf '%q ' "${cmd[@]}"; echo; exit 0
+fi
+if [ "$(git rev-parse HEAD)" != "$candidate" ]; then
+  if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+    echo "This checkout has uncommitted tracked changes; commit them first." >&2; exit 2
+  fi
+  git checkout -q --detach "$candidate"
+fi
+echo "reviewing milestone issue #$issue at $candidate with $cli ($model)"
 "${cmd[@]}" </dev/null
