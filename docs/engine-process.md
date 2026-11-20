@@ -333,6 +333,33 @@ This is the native driver/resume API, not the full S17/match-day/menu/replay/sav
 consumer or fresh-native/default entry. `match_day.py` and the other session's
 PR796 taker/help fix are unchanged; any following UI binding must retain the fix.
 
+[designed: T170ad/#814] `NativePitchScreen` reuses S17 and PitchWidget over
+`NativePitchController` and the retained driver. Construct it inside the held
+flow's `on_handoff`, before closing/detaching that flow: its verified current
+pre-match view supplies initial roles, sides and kits. No current roster/card
+data is taken from the stale route boundary. The screen does not start a Match.
+An already consumed `SeasonHandoff` can be supplied explicitly as `connection`.
+
+All four callbacks are required before handoff consumption: `on_decision(screen,
+waiting)` receives the native decision number/event; `on_goal(screen,event)`
+receives a painted goal with presentation held; `on_complete(screen)` receives
+actual drained completion; `on_failure(screen,message)` receives loss or a
+callback failure after closing the same owner. Decisions/goals/completion are
+delivered once, deferred under help/covered screens. Use explicit
+`answer_native(number,answer)`, `release_goal()` and `resume_native()`; quick
+presentation never selects an answer. After successful resume the timer and
+reply consumption stop. The continuing owner must transfer or close its native
+session. Closing before resume uses native asynchronous disposal.
+
+S17 keeps marks, six speeds, reading pause, quick presentation, F9's existing
+sound explanation, public bench pause, commentary and paint acknowledgement.
+Native canonical watermarks include the earlier pre-match event prefix and
+are retained without renumbering; the driver validates their causal bounds.
+The Display instance supplies rendering identity and commentary, with no
+second playback queue. Full stopped S15/S16/S19 cards/menus need a separate
+current in-match read boundary; replay/save prompts belong to the supplied
+goal consumer. This explicit consumer is not a normal desktop/default entry.
+
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping
 current squad/pool words to integer0..13 or explicit `"club"`. Numeric goals use
