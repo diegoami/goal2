@@ -77,7 +77,8 @@ Unicorn performance optimisation is authorised by a resume.
    the fast regression gate; full Linux/Windows suites run on the integrated milestone, process.md §3): locally
    `gh pr merge <pr> --squash --match-head-commit <sha>`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <sha>` (never squash), then
-   `git pull --ff-only origin main` on the session branch.
+   `git pull --ff-only origin main` on the session branch. Behind a REST-only cloud proxy,
+   use the equivalent head-pinned REST forms in `docs/cloud.md` instead of the GraphQL CLI commands.
 4. [designed: owner, 2026-10-29, as in malpaco] Only milestones mandate a review. A PR merges
    when its Done-when lines and checks pass, with no per-PR review. At each milestone the main
    session opens the milestone issue and gives the owner the review prompt

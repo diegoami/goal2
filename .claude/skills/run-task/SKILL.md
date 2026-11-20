@@ -27,7 +27,9 @@ and the branch is `fix/<issue>-<slug>`.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>` and
    `git switch main && git pull`; in a cloud session `gh pr merge <pr> --merge
    --match-head-commit <reviewed-sha>` (never squash, never delete the session branch) and
-   `git pull --ff-only origin main`. Label `status:merged`, unblock dependants, report.
+   `git pull --ff-only origin main`. Behind the REST-only cloud proxy use `docs/cloud.md`'s head-pinned REST
+   forms instead of GraphQL CLI commands (including task discovery and non-draft PR creation).
+   Label `status:merged`, unblock dependants, report.
 
 Escalate (process §7) with options and a recommendation, and stop. Never weaken a Done-when,
 relay part of a review, force-push or rewrite `main`.

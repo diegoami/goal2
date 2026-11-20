@@ -37,8 +37,20 @@ GitHub tools, or `gh api` (REST), for example:
 - merge with the merge commit process.md §3 asks for, pinned to the checked head:
   `gh api -X PUT repos/diegoami/goal2/pulls/<n>/merge -f merge_method=merge -f sha=<head sha>`
   (goal2 squashes only locally; a cloud session always merges like this);
-- open a PR: `gh api repos/diegoami/goal2/pulls -f title=... -f head=<branch> -f base=main -F draft=true -f body=@<file>`;
+- open a PR: `gh api repos/diegoami/goal2/pulls -f title=... -f head=<branch> -f base=main -F draft=false -f body=@<file>`;
+- read PR heads with `gh api repos/diegoami/goal2/pulls/<n>`, and read both
+  `commits/<sha>/check-runs` and `commits/<sha>/status` before merging; the same
+  exact-head Linux/Windows/native checks from process.md still apply;
+- list ready tasks with `gh api 'repos/diegoami/goal2/issues?state=open&labels=task,status:ready'`;
 - the login check: `gh api user --jq .login`.
+
+[derived: GitHub's REST pull-request API; #803] A REST-only session opens a
+non-draft PR after its first implementation push: the REST update endpoint has
+no ready-for-review conversion. Do not use `gh pr ready` behind that proxy.
+Local sessions retain the draft-first workflow. This changes neither validation
+nor merge requirements. `tools/checkpoint.py` first tries its usual CLI calls,
+then falls back to REST for PRs, their head checks, checkpoint discovery and
+comment posting. Failed REST reads remain visible in the snapshot.
 
 Release assets come over plain HTTPS from the public release (the setup falls back to it); their
 downloads redirect to `release-assets.githubusercontent.com`, which the network settings must allow.
