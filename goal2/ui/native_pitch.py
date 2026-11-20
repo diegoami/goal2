@@ -24,6 +24,8 @@ class NativePitchController:
         self.pending = native.fixture
         state = view.display_state(model.state)
         identity = pitch_identity(SimpleNamespace(state=state, goaldat=model.goaldat), self.pending)
+        from goal2.desktop.model import kind_word
+        identity['kind'] = kind_word(self.pending.kind, self.pending.stage)
         from goal2.engine.original_match.image import Image
         image = Image.from_memory_component(state.mem)
         self.kits = compute(lambda off: image.rd(off, 1), *view.sides)
@@ -33,7 +35,7 @@ class NativePitchController:
         self.driver = NativeMatchDriver(native, connection)
         self.note = ''; self.error = None; self.finished = False
         self.goal = self.notice = None
-        self._seen = 0; self._goal_seen = 0; self._notice_seen = 0
+        self._events = []; self._goal_seen = 0; self._notice_seen = 0
         self._reading = False; self.covered = False
         self._dropped = 0; self._bench_requested = False
 
@@ -52,7 +54,8 @@ class NativePitchController:
         self._hold()
 
     def _hold(self):
-        self.driver.set_held(self._reading or self.covered or self.goal is not None or self.notice is not None)
+        held = self._reading or self.covered or self.goal is not None or self.notice is not None
+        if self.driver.held != held: self.driver.set_held(held)
 
     def tick(self, now):
         self._hold()
@@ -61,11 +64,12 @@ class NativePitchController:
         # intact; Display is a renderer, not a second causal stream validator.
         if frame is not None:
             self.display.frame = frame
-        for event in self.driver.events[self._seen:]:
+        events = self.driver.events_since(len(self._events))
+        self._events.extend(events)
+        for event in events:
             rendered = deepcopy(event)
             rendered['score'] = list(rendered['score'])
             self.display.accept(['native-pitch', self.display.sequence, 'event', rendered])
-        self._seen = len(self.driver.events)
         shown = self.shown()
         while self._notice_seen < len(shown) and self.notice is None:
             event = shown[self._notice_seen]; self._notice_seen += 1
@@ -90,7 +94,7 @@ class NativePitchController:
         frame = self.display.frame
         if self.quick or frame is None: return
         bound = frame['watermark'] - self.driver.event_base
-        events = self.driver.events
+        events = self._events
         while self._goal_seen < min(bound, len(events)) and self.goal is None:
             event = events[self._goal_seen]; self._goal_seen += 1
             if event['kind'] == 'goal' and event['data'].get('player'):
@@ -117,7 +121,7 @@ class NativePitchController:
         if sent: self._bench_requested = True; self.note = REQUESTED
         return sent
 
-    def shown(self): return self.driver.shown()
+    def shown(self): return self._events[:self.driver.shown_count]
 
     def frame_or_event(self):
         frame = self.display.frame

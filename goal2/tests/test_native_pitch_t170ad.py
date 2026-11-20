@@ -32,7 +32,7 @@ class WindowControls(unittest.TestCase):
         self.owner = Owner(); self.owner.status = 'handed_off'
         state = SimpleNamespace(mem=b'current',player_renames={},manager_name='')
         self.owner.controller = SimpleNamespace(view=SimpleNamespace(display_state=lambda s:state,sides=(1,2)))
-        self.owner.fixture = SimpleNamespace(side_a=1,side_b=2,kind=1)
+        self.owner.fixture = SimpleNamespace(side_a=1,side_b=2,kind=1,stage=0)
         self.model = SimpleNamespace(state=state,goaldat=None)
         self.decisions=[]; self.goals=[]; self.completions=[]; self.failures=[]
         identity={'countries':['ONE','TWO'],'roles':{},'managed':0,'kind':'Friendly'}
@@ -143,3 +143,21 @@ class WindowControls(unittest.TestCase):
         self.owner.batch(events=[e],total=4);self.tick()
         self.assertEqual(self.screen.controller.frame_or_event(),(12,[1,0]))
         self.assertEqual(self.screen.display().frame['sequence'],0)
+
+    def test_polling_does_not_reset_native_pacing_deadline(self):
+        c=self.screen.controller
+        c.tick(0);self.owner.batch(frames=[frame(0,3)]);self.assertTrue(c.tick(0))
+        c.painted(0);c.tick(0);self.owner.batch(frames=[frame(1,3)])
+        self.assertFalse(c.tick(.001));self.assertEqual(c.display.frame['sequence'],0)
+        self.assertTrue(c.tick(.02));self.assertEqual(c.display.frame['sequence'],1)
+
+    def test_history_cursor_is_detached_bounded_and_renderer_uses_only_suffixes(self):
+        c=self.screen.controller;driver=c.driver
+        values=driver.events_since(0);values[0]['data']['foreign']=True
+        self.assertNotIn('foreign',driver.events_since(0)[0]['data'])
+        for cursor in (True,-1,2,1.0):
+            with self.assertRaises(ValueError):driver.events_since(cursor)
+        self.assertEqual(driver.events_since(1),[])
+        with patch.object(type(driver),'events',property(lambda s:(_ for _ in ()).throw(AssertionError('whole history read')))):
+            c.tick(0);c.tick(.1);self.assertEqual(len(c.display.events),1)
+            self.assertEqual(c.shown(),[])  # no sample has released that event yet

@@ -111,6 +111,7 @@ class NativeWindow(unittest.TestCase):
         with patch('goal2.ui.native_pitch.time',SimpleNamespace(monotonic=lambda:now)):
             while time.monotonic()<end and driver.status not in ('resumed','lost','closed'):
                 now+=1.;screen.tick();self.app.processEvents();time.sleep(.0005)
+                if screen.stop_box.open:screen.answer_stop_box(Qt.Key.Key_Return)
         self.assertEqual(failures,[]);self.assertEqual(driver.status,'resumed',driver.error)
         self.assertEqual(completed,[True]);self.assertEqual(len(decisions),len(set(decisions)))
         self.assertGreater(len(beats),2);self.assertEqual(driver.painted_sequence,len(driver.frames)-1)

@@ -359,6 +359,10 @@ The Display instance supplies rendering identity and commentary, with no
 second playback queue. Full stopped S15/S16/S19 cards/menus need a separate
 current in-match read boundary; replay/save prompts belong to the supplied
 goal consumer. This explicit consumer is not a normal desktop/default entry.
+The adapter advances a detached `events_since(cursor)` suffix and reads the
+driver's `shown_count`; idle Qt polls never recopy the full native history.
+Hold synchronization changes the driver only on a hold transition, preserving
+its six-rate deadline between ordinary polls. The stopped-menu follow-up is #817.
 
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping
