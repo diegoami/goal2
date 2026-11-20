@@ -75,8 +75,10 @@ class NativeSeasonOwner:
     only that flow consumes replies until handoff/close. Observation packets are
     detached native boundaries, never a legacy career publication.
     """
-    def __init__(self,owner,state):
+    def __init__(self,owner,state,*,frames=False):
+        if type(frames) is not bool:raise ValueError('frames must be boolean')
         native,_,country=_native(state)
+        self._frames=frames
         self.owner=owner;self.managed_country=country;self._thread=threading.get_ident()
         self._initial=native;self._input_hash=canonical_hash(native)
         self._boundary=None;self._observations=[];self._entry_events=[]
@@ -212,12 +214,13 @@ class NativeSeasonOwner:
                 if action in ('open','advance'):
                     status=self._accept_boundary(value)
                     if status=='match':
-                        self._phase='configuring';self._request('configure')
+                        self._phase='configuring';self._request('configure',**({'frames':True} if self._frames else {}))
                     else:self._phase='terminal' if status=='deferred-rollover' else 'boundary'
                 elif action=='configure':
                     self._phase='preparing';self._request('next',count=32)
                 elif action=='next':
                     events=value.get('events');number=value.get('decision')
+                    if value.get('frames'):raise ValueError('native entry sampled before pre-match handoff')
                     if not isinstance(events,list) or any(not isinstance(e,dict) or not isinstance(e.get('kind'),str) for e in events):
                         raise ValueError('invalid native entry events')
                     if any(e['kind'] in ('minute','tick','frame','sample','shot','goal') for e in events):

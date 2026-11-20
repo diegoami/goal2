@@ -72,6 +72,7 @@ class EngineProcess:
         self._season_active = False
         self._season_request = None
         self._season_requests = 0
+        self._reset_season_pitch()
         self._assistant_request = None
         self._assistant_requests = 0
         self._assistant_cancelled = False
@@ -158,6 +159,12 @@ class EngineProcess:
         """[designed: T170o] A transient session exists only in this live child."""
         return self._season_active
 
+    def _reset_season_pitch(self):
+        # [designed: T170ab] Match-local presentation counters, never a replay cache.
+        self._season_pitch=False;self._season_pitch_pending=False
+        self._season_pitch_sequence=0;self._season_pitch_watermark=0;self._season_pitch_events=0
+        self._season_pitch_limit=32
+
     def season_open(self, state, *, keys=None):
         """Explicitly open state/2, never retained for replay after process death."""
         import json
@@ -190,6 +197,8 @@ class EngineProcess:
         number = self._season_requests + 1
         header = dict(op='season', request=number, action=action, **values)
         validate_request(header)
+        if action=='configure':self._season_pitch_pending=values.get('frames',False)
+        if action=='next':self._season_pitch_limit=values.get('count',32)
         self._send(header, payload)
         self._season_requests = number
         self._season_request = (number, action, values.get('decision'))
@@ -409,6 +418,7 @@ class EngineProcess:
             self._life = None
             self._season_active = False
             self._season_request = None
+            self._reset_season_pitch()
             self._assistant_request = None
             self._assistant_cancelled = False
             self._match = None
@@ -534,6 +544,20 @@ class EngineProcess:
                                 raise ProtocolError('invalid season news snapshot') from exc
                     elif payload:
                         raise ProtocolError('unexpected season reply payload')
+                    if pending[1]=='next':
+                        if self._season_pitch:
+                            from goal2.game.season_pitch import validate_batch
+                            try:
+                                sequence,watermark,total=validate_batch(value,self._season_pitch_sequence,
+                                    self._season_pitch_watermark,self._season_pitch_events,self._season_pitch_limit)
+                            except ValueError as exc:raise ProtocolError('invalid native pitch batch') from exc
+                            self._season_pitch_sequence,self._season_pitch_watermark,self._season_pitch_events=sequence,watermark,total
+                        elif 'frames' in value or 'event_count' in value:
+                            raise ProtocolError('unsolicited native pitch batch')
+                    elif pending[1]=='configure':
+                        self._season_pitch=self._season_pitch_pending
+                        self._season_pitch_sequence=self._season_pitch_watermark=self._season_pitch_events=0
+                    elif pending[1] in ('open','discard','resume'):self._reset_season_pitch()
                     if pending[1] == 'open':
                         self._season_active = True
                         self._game = None

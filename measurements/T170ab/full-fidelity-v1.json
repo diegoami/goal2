@@ -1,0 +1,88 @@
+{
+  "boundaries": [
+    "Feed only; full interactive driver/pacing/pause/replay and normal default entry remain separate.",
+    "No engine copy edit, host XI/fixture repair, mask, private runtime option write or expanded-roster activation.",
+    "Other session owns Opus fixes/workflows/checkpoint/cloud/UI branches; task file reservation and runtime non-overlap checked."
+  ],
+  "controls": {
+    "pipe_owner_methods": 2,
+    "pipe_owner_seconds": 122.513,
+    "sdk_methods": 1,
+    "sdk_seconds": 180.054
+  },
+  "final_validation": "Final clean-head/local/Linux/Windows/native result IDs and metadata-only reuse are recorded on PR809/issue808 and checkpoint471 after completion.",
+  "implementation_agent": "Codex primary session; no subagents/per-PR review",
+  "issue": 808,
+  "measured_code": "7cb00fad81703ca1f5c8710dced00d5a07e1eeea; sampler/worker/parent code unchanged since these runs",
+  "measurement_scope": "Actual complete match and round. PyPy-only source/worker/parent. Sampling-off canonical/backend equality retained; original bytes/frames private.",
+  "pr": 809,
+  "private_evidence": "/home/diego/projects/goal2-keep/T170ab",
+  "proofs": {
+    "pipe": {
+      "all16": [
+        80,
+        31421,
+        4,
+        65519,
+        31588,
+        6,
+        16094,
+        16072,
+        7,
+        28445,
+        2097,
+        11684,
+        23911,
+        14453,
+        0,
+        0
+      ],
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "events": 1271,
+      "events_hash": "bced27e1a2f8fea7f97f9083feacf5016b26ba03e043acfdf155589c8e8af93d",
+      "frames": 4258,
+      "frames_hash": "d6f0ad26dded85cf1c90e7b98f2ad518624f7f9728c31a8506499fda3c556d0c",
+      "memory_hash": "1750932afbe9f974905fb4ace422a2a4b929dfc5c33b1133c8df065cdcd19de6",
+      "observation_hash": "5880d888ac683ce5f471d48bb7208f41fb833509e07c7efaff7f2161f5d97a41",
+      "state_hash": "9722e637f74a470663fcede6bebe09c558b3c6df088a293ed959eaba25f6fe7b"
+    },
+    "sdk": {
+      "all16": [
+        80,
+        31421,
+        4,
+        65519,
+        31588,
+        6,
+        16094,
+        16072,
+        7,
+        28445,
+        2097,
+        11684,
+        23911,
+        14453,
+        0,
+        0
+      ],
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "events": 1271,
+      "events_hash": "bced27e1a2f8fea7f97f9083feacf5016b26ba03e043acfdf155589c8e8af93d",
+      "frames": 4258,
+      "frames_hash": "d6f0ad26dded85cf1c90e7b98f2ad518624f7f9728c31a8506499fda3c556d0c",
+      "guards": 9,
+      "memory_hash": "1750932afbe9f974905fb4ace422a2a4b929dfc5c33b1133c8df065cdcd19de6",
+      "observation_hash": "5880d888ac683ce5f471d48bb7208f41fb833509e07c7efaff7f2161f5d97a41",
+      "state_hash": "9722e637f74a470663fcede6bebe09c558b3c6df088a293ed959eaba25f6fe7b"
+    }
+  },
+  "schema": "goal2/t170ab-full-fidelity/1",
+  "sha256": {
+    "goal2/game/engine_process.py": "deee6594fa26a25ef32af6138b4b59524150cbda84147fa4bb2b80fa92bb9d71",
+    "goal2/game/native_season.py": "6f2be4f08f979268b95b4a0d047df3525120b99ab803a68156207ca84ae3e863",
+    "goal2/game/prematch_seam.py": "3ff7c204b50e37d3cf449d740079036614b6569967394d008ffced9feeffe764",
+    "goal2/game/season_pitch.py": "56d98288ddccb0503c570fdabc1ecf145ba4cc32dbf88abb26d15a8af4d36224",
+    "goal2/game/season_worker.py": "5a4f98258e0a3316183c60a3a6a0bf0298852a98e75e179a342f72a4435b7f73"
+  },
+  "source_pin": "87d925013da43b266f72bd198fda7a7a2c67dac8"
+}
