@@ -88,11 +88,12 @@ class CoreModel:
 
     @classmethod
     def open(cls, savestate_path, data_path, save_path):
+        from zipfile import BadZipFile
         from goal2.core import Core, CoreError
         try:
             raw = Path(savestate_path).read_bytes()
             return cls(Core.start(raw).core, data_path, save_path)
-        except (OSError, ValueError, CoreError) as exc:
+        except (OSError, ValueError, CoreError, BadZipFile) as exc:   # a savestate is a ZIP (#420)
             raise ValueError(f'Cannot open the core: {exc}') from exc
 
     @classmethod

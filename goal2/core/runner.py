@@ -460,10 +460,17 @@ class Core:
         if bytes(data[:4]) != MAGIC:
             raise ValueError("not a saved core")
         n = int.from_bytes(data[4:8], "little")
-        state = json.loads(data[8:8 + n])
+        # [designed: #420] A truncated or corrupted file is refused as a ValueError, which the loaders turn into
+        # their clean refusal (Launch's SAVE NOT USABLE, --resume's exit 2), never a zlib or type error.
+        state = json.loads(data[8:8 + n])   # a damaged header raises JSONDecodeError, a ValueError
+        if not isinstance(state, dict) or "version" not in state:
+            raise ValueError("a damaged saved core: no header")
         if state["version"] not in (1, 2, 3, 4, VERSION):
             raise ValueError(f"a saved core of version {state['version']}, this is {VERSION}")
-        memory = zlib.decompress(data[8 + n:])
+        try:
+            memory = zlib.decompress(data[8 + n:])
+        except zlib.error as exc:
+            raise ValueError(f"a damaged saved core: {exc}") from exc
         m = Machine(memory, state["load"])
         m.restore({"memory": memory[:MEM_SIZE], "regs": state["regs"]})
         core = cls(m, bytes.fromhex(state["header"]), memory[MEM_SIZE:], state["budget"], list(state["keys"]),
