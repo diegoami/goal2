@@ -39,7 +39,9 @@ COUNTERS = (("corners", "corners"), ("free_kicks", "free kicks"), ("penalties", 
             ("on_target", "on target"), ("saves", "saves"), ("fouls", "fouls"), ("bookings", "bookings"),
             ("red_cards", "red cards"))
 EVENT_COUNTERS = {"bookings": "booking", "red_cards": "sending_off"}   # counted from the events at half time
-TIMES = {"half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME"}
+TIMES = {"half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME",
+         # [designed: S15 offers *match stats* at a substitution stop and a pause too; S15's own words]
+         "stop": "MATCH STOPPED", "pause": "PAUSED"}
 NOT_YET = "at full time"   # what a counter the route has only at the final whistle says before it [designed: T167]
 
 
@@ -76,7 +78,7 @@ class BoardScreen(Screen):
     escape_text = "bench"
 
     def __init__(self, window, model, names, kind, phase, data, onward, kits, bench=None, save_summary=False):
-        """`names`: the countries as [team 0, team 1]; `kind`: FRIENDLY, QUALIFYING…; `phase`: half, extra, full;
+        """`names`: the countries as [team 0, team 1]; `kind`: FRIENDLY, QUALIFYING…; `phase`: half, extra, full, stop, pause;
         `kits`: the match's kits (goal2/ui/kits.py), each name in its side's shirt, as the original's board
         [confirmed: t156-192-fulltime-board.png, Norway light red and Holland white; #583]; `bench`: what Esc opens
         (S19), None where there is no bench (Esc then continues)."""

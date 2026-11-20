@@ -24,6 +24,8 @@ and the branch is `fix/<issue>-<slug>`.
    (`triage:needed`).
 4. **Checks**: re-run every Done-when line on the PR head and
    `python3 tools/check_premerge.py --expected-head <sha>` in a clean checkout at that head.
+   Required hosted Linux/Windows/native-scaling checks must pass at the checked head; docs-only skips or reused
+   unchanged-code receipts must satisfy process.md §3.4. A local pass alone does not authorize the merge.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>` and
    `git switch main && git pull`; in a cloud session `gh pr merge <pr> --merge
    --match-head-commit <reviewed-sha>` (never squash, never delete the session branch) and

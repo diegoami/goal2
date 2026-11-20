@@ -28,12 +28,16 @@ _UNSET_CAPTAIN = object()
 class PrematchSeam:
     """The window's pre-kick-off sequence on one held pending route Match."""
 
-    def __init__(self, match, captain=None, substitutions=None):
+    def __init__(self, match, captain=None, substitutions=None, *, frames=False):
         # [T170i scope 1] Configure exactly once, before any event runs; the flags are the
         # seam's fixed inputs, the captain/budget the window's S16/fixture choices.
+        if type(frames) is not bool:raise ValueError('frames must be boolean')
+        # [confirmed: T127, match87d92501] Declare tick stops before execution;
+        # default kwargs stay identical, never patch a running Match's options.
+        ticks={'ticks':True} if frames else {}
         match.configure_route_entry(captain=captain, substitutions=substitutions,
                                     pre_match_edits=True, live_players=True, set_piece=True,
-                                    substitution_control=True, record_draws=True)
+                                    substitution_control=True, record_draws=True,**ticks)
         self.match = match
 
     def set_team_tactic(self, element, value):

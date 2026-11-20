@@ -226,7 +226,11 @@ def friendly_pitch():
     class FriendlyPitch(PitchScreen):
         def __init__(self, window, model, controller, bridge):
             self.bridge = bridge
-            super().__init__(window, model, controller, day=SimpleNamespace(stop=self._play_on))
+            super().__init__(window, model, controller, day=SimpleNamespace(stop=self._play_on, goal=self._goal))
+
+        def _goal(self, pitch, event):
+            # [designed: T177] The friendly saves nothing, so a goal asks no replay or save question: play goes on.
+            self.controller.dismiss_goal()
 
         def _play_on(self, pitch, decision):
             # [designed: T167's merge] the computer's answer: no key on a taker (F030), play on at half time

@@ -270,6 +270,69 @@ bridge join/last-leave synchronization prevents a new client inheriting a retiri
 engine. After handoff the continuing driver must eventually close this same owner;
 closing just the old pre-match presentation does not dispose the running session.
 
+[designed: T170ab/#808; confirmed: T127/T81, match87d92501]
+`season.configure(frames=True)` opts the same held Match into completed-tick
+samples before execution. `NativeSeasonOwner(...,frames=True)` forwards that
+declaration; omitted/False keeps the old configuration arguments and wire shape.
+The accepted sampler reads signed poses/ball, officials and holder at each tick
+stop, before the generator resumes. No Match is rebuilt or changed privately.
+
+In this opt-in mode each `next` reply contains `frames` (the existing version2
+pitch schema) and cumulative canonical `event_count`. Its `events` retain every
+non-tick event; tick stops become samples, as in `consume_match`. A frame's
+watermark is the number of preceding canonical events over this Match, including
+entry/pre-match decisions. `count` still bounds1..32 **raw** stops, including both
+ticks and canonical events, and any decision ends its batch. Thus a reply may
+contain frames without events, or events without frames. Nothing is coalesced or
+dropped; the pull protocol and one pending request provide bounded backpressure.
+
+Parent validation checks frame schema/identity/sequence, signed coordinates,
+watermarks within the packet's event interval, exact cumulative count, raw-stop
+budget and decision/boolean shape before delivery. Existing frame limits remain.
+Counters reset on acknowledged configuration and match/session lifecycle changes;
+malformed replies end the session instead of resynchronizing or replaying it.
+State/preview/news framing and once-only boundary deltas stay separate. Native
+entry refuses early pitch samples; the first Play packet transfers intact through
+the existing handoff. This enables the following match-driver/pacing consumer;
+pause/replay, native save/publication and normal desktop/default entry are not
+implemented by this feed.
+
+[designed: T170ac/#810] `NativeMatchDriver(native_owner)` consumes the owner's
+first-packet handoff once (an already obtained connection may be supplied).
+Sampling must have been enabled before entry. It retains the absolute native
+event count and frame watermarks; `event_base` identifies the already delivered
+entry/pre-match prefix. `events` is this driver's suffix and `frames` retains its
+received samples, unchanged. `tick(now)` is an owner-thread, nonblocking bounded
+poll: it returns a due sample at one of the existing six rates. Only
+`painted(sequence)` acknowledges that delivered sample; watched execution stays
+within one unhandled sample. `set_held(True)` stops local pulling/presentation.
+`quick_result()` handles samples without painting/pacing, preserves their trace,
+and still exposes every decision instead of silently selecting answers.
+
+`waiting` appears only after earlier samples are handled. `answer(dict)` sends
+its exact numbered SDK answer once, including stopped edit-only tactics/player
+changes and explicit taker/order/opportunity answers. `request_pause()` queues
+one public Match.pause request until pending work and paint are settled; duplicate
+requests are suppressed. The worker's new `pause` action consumes no event:
+`paused=true` means Enter was queued, while `paused=false,reason` reports the
+SDK's pure guard (over/waiting/shoot-out are not invented menu contexts). The
+actual returned decision remains authoritative. Invalid packets/loss dispose the
+same owner without replay or publication.
+
+Only actual `over` + `exhausted` and drained samples permit explicit `resume()`.
+The driver passes the correlated reply to `NativeSeasonOwner.adopt_resume`:
+call/input identity stays unchanged, output hash/RNG/native fixture data are
+verified before adoption, and `take_observations()` is the sole delta delivery
+path. Complete/terminal boundaries remain explicit; another held Match is
+configured/prepared by the same owner. Handoff capabilities are generation-bound,
+so an old driver cannot send into a later Match. Once resumed the driver stops
+consuming the queue; its presentation can close without discarding the continuing
+season. Before resume, `close()` uses the existing asynchronous native disposal.
+
+This is the native driver/resume API, not the full S17/match-day/menu/replay/save
+consumer or fresh-native/default entry. `match_day.py` and the other session's
+PR796 taker/help fix are unchanged; any following UI binding must retain the fix.
+
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping
 current squad/pool words to integer0..13 or explicit `"club"`. Numeric goals use

@@ -210,6 +210,9 @@ class FixedPage(QWidget):
 
     def __init__(self, page, sheet, window, logical=(WIDTH, HEIGHT), stretch=1.0, text=None, aspect=None):
         super().__init__()
+        # [designed: #813] Workers must not collect Qt wrappers during layout.
+        from goal2.desktop.gui_gc import install
+        install(QApplication.instance())
         self.setObjectName('fixedPage');self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.page = page;self.sheet = sheet;self.window_ = window;self.scale = None
         self.logical = tuple(logical);self.stretch = stretch;self.text = text;self.aspect = aspect

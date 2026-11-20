@@ -70,7 +70,7 @@ class WindowsSlow(unittest.TestCase):
         self.assertLess(self.text.index("id: pypy"), self.text.index("tools/check_premerge.py"))
 
     def test_nothing_of_the_original_game_is_uploaded(self):
-        self.assertIn(r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'", self.text)
+        self.assertIn(r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'", self.text)
 
 
 class LinuxSlow(unittest.TestCase):
@@ -84,7 +84,7 @@ class LinuxSlow(unittest.TestCase):
                        "if: github.event_name == 'workflow_dispatch'",
                        "python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" --slow",
                        "QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy",
-                       r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'"):
+                       r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'"):
             with self.subTest(needle=needle):
                 self.assertIn(needle, windows)
                 self.assertIn(needle, self.text)
@@ -177,7 +177,7 @@ class HostedGates(unittest.TestCase):
                 text = (ROOT / ".github" / "workflows" / name).read_text()
                 on = re.search(r"^on:\n(.*?)^\S", text, re.M | re.S).group(1)
                 self.assertIn("  pull_request:\n    types: [opened, synchronize, reopened, ready_for_review]\n", on)
-                self.assertIn("  push:\n    branches: [main]\n    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']\n", on)
+                self.assertIn("  push:\n    branches: [main]\n    paths: ['**', '!**/*.md', 'docs/core.md', 'docs/design/ui-2026-11/README.md', 'docs/screens.md']\n", on)
                 self.assertIn("!github.event.pull_request.draft", text)
                 self.assertIn("python3 tools/ci_changes.py --kind code ${since:+--since \"$since\"}", text)
                 self.assertIn(f"\n  {job}:\n    needs: changes\n    if: needs.changes.outputs.run == 'true'\n", text)

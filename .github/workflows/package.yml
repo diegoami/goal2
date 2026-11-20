@@ -23,7 +23,7 @@ on:
       - 'goal2/tests/test_package_t147.py'
   push:
     branches: [main]
-    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']
+    paths: ['**', '!**/*.md', 'docs/core.md', 'docs/design/ui-2026-11/README.md', 'docs/screens.md']
   workflow_dispatch:
     inputs:
       development:
@@ -150,7 +150,7 @@ jobs:
           EOF
           [ -f "$RUNNER_TEMP/zip-files.txt" ] && cp "$RUNNER_TEMP/zip-files.txt" "upload/run-${{ github.run_id }}-zip-files.txt"
           # [designed: #278] Refuse to upload anything with an original-game extension.
-          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'; then
             echo "an original-game file reached the upload; refusing" && exit 1
           fi
       - uses: actions/upload-artifact@v4
@@ -163,7 +163,7 @@ jobs:
         run: |
           mkdir -p zip-upload
           cp "$RUNNER_TEMP"/portable/goal2-*-win64.zip zip-upload/
-          if find zip-upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+          if find zip-upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'; then
             echo "an original-game file reached the upload; refusing" && exit 1
           fi
       - uses: actions/upload-artifact@v4

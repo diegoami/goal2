@@ -5,7 +5,7 @@ never dispatches a suite. The slow query remains available for explicit investig
     python3 tools/ci_changes.py [--kind slow|code] [--since SHA]
 
 --since is the PR's previous head (the push's github.event.before): when it is an ancestor of HEAD, only
-what changed since it counts, so docs-only follow-up pushes do not restart hosted regression checks. Otherwise
+what changed since it counts, so prose-only follow-up pushes do not restart hosted regression checks. Otherwise
 (the PR's first push, its ready-for-review, a rewritten branch) everything the branch changes since its
 merge base with origin/main counts. Prints the decision; with GITHUB_OUTPUT set, appends run=true|false.
 """
@@ -22,9 +22,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from check_premerge import SLOW_PATHS  # noqa: E402
 
-DOCS = re.compile(r"^(docs/|measurements/)|\.md$")
-KINDS = {"slow": SLOW_PATHS.match, "code": lambda f: not DOCS.search(f)}
-WHAT = {"slow": "the slow tests guard", "code": "the tests check (beyond docs, measurements, Markdown)"}
+# [designed: #802] Non-Markdown data/scripts are inputs regardless of their
+# directory. These Markdown files themselves supply test expectations.
+MARKDOWN_INPUTS = frozenset({'docs/core.md', 'docs/screens.md', 'docs/design/ui-2026-11/README.md'})
+DOCS = re.compile(r"\.md$")
+KINDS = {"slow": SLOW_PATHS.match, "code": lambda f: f in MARKDOWN_INPUTS or not DOCS.search(f)}
+WHAT = {"slow": "the slow tests guard", "code": "the tests check (beyond Markdown prose; test inputs always count)"}
 
 
 def _git(cwd: Path, *args: str) -> subprocess.CompletedProcess:

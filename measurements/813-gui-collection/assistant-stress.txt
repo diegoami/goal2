@@ -1,0 +1,105 @@
+test_a_in_name_or_search_stays_text (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_in_name_or_search_stays_text) ... This plugin does not support propagateSizeHints()
+ok
+test_a_shortcut_selects_native_twenty_and_is_visible (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_shortcut_selects_native_twenty_and_is_visible) ... This plugin does not support propagateSizeHints()
+ok
+test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process) ... This plugin does not support propagateSizeHints()
+ok
+test_close_and_career_replacement_cannot_publish_old_reply (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_close_and_career_replacement_cannot_publish_old_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_external_edit_and_candidate_validation_failure_preserve_live_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_external_edit_and_candidate_validation_failure_preserve_live_data) ... This plugin does not support propagateSizeHints()
+ok
+test_heartbeat_and_cancel_before_send_never_publish (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_heartbeat_and_cancel_before_send_never_publish) ... This plugin does not support propagateSizeHints()
+ok
+test_name_editor_pool_pane_and_busy_edit_guards_keep_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_name_editor_pool_pane_and_busy_edit_guards_keep_data) ... This plugin does not support propagateSizeHints()
+ok
+test_original_refusal_ui_policy_and_failed_preparation_publish_nothing (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_original_refusal_ui_policy_and_failed_preparation_publish_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_save_cancel_on_window_close_retains_the_squad_screen (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_save_cancel_on_window_close_retains_the_squad_screen) ... This plugin does not support propagateSizeHints()
+ok
+test_stale_same_value_new_identity_is_not_published (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_stale_same_value_new_identity_is_not_published) ... This plugin does not support propagateSizeHints()
+ok
+test_a_in_name_or_search_stays_text (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_in_name_or_search_stays_text) ... This plugin does not support propagateSizeHints()
+ok
+test_a_shortcut_selects_native_twenty_and_is_visible (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_shortcut_selects_native_twenty_and_is_visible) ... This plugin does not support propagateSizeHints()
+ok
+test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process) ... This plugin does not support propagateSizeHints()
+ok
+test_close_and_career_replacement_cannot_publish_old_reply (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_close_and_career_replacement_cannot_publish_old_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_external_edit_and_candidate_validation_failure_preserve_live_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_external_edit_and_candidate_validation_failure_preserve_live_data) ... This plugin does not support propagateSizeHints()
+ok
+test_heartbeat_and_cancel_before_send_never_publish (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_heartbeat_and_cancel_before_send_never_publish) ... This plugin does not support propagateSizeHints()
+ok
+test_name_editor_pool_pane_and_busy_edit_guards_keep_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_name_editor_pool_pane_and_busy_edit_guards_keep_data) ... This plugin does not support propagateSizeHints()
+ok
+test_original_refusal_ui_policy_and_failed_preparation_publish_nothing (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_original_refusal_ui_policy_and_failed_preparation_publish_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_save_cancel_on_window_close_retains_the_squad_screen (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_save_cancel_on_window_close_retains_the_squad_screen) ... This plugin does not support propagateSizeHints()
+ok
+test_stale_same_value_new_identity_is_not_published (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_stale_same_value_new_identity_is_not_published) ... This plugin does not support propagateSizeHints()
+ok
+test_a_in_name_or_search_stays_text (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_in_name_or_search_stays_text) ... This plugin does not support propagateSizeHints()
+ok
+test_a_shortcut_selects_native_twenty_and_is_visible (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_shortcut_selects_native_twenty_and_is_visible) ... This plugin does not support propagateSizeHints()
+ok
+test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process) ... This plugin does not support propagateSizeHints()
+ok
+test_close_and_career_replacement_cannot_publish_old_reply (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_close_and_career_replacement_cannot_publish_old_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_external_edit_and_candidate_validation_failure_preserve_live_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_external_edit_and_candidate_validation_failure_preserve_live_data) ... This plugin does not support propagateSizeHints()
+ok
+test_heartbeat_and_cancel_before_send_never_publish (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_heartbeat_and_cancel_before_send_never_publish) ... This plugin does not support propagateSizeHints()
+ok
+test_name_editor_pool_pane_and_busy_edit_guards_keep_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_name_editor_pool_pane_and_busy_edit_guards_keep_data) ... This plugin does not support propagateSizeHints()
+ok
+test_original_refusal_ui_policy_and_failed_preparation_publish_nothing (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_original_refusal_ui_policy_and_failed_preparation_publish_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_save_cancel_on_window_close_retains_the_squad_screen (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_save_cancel_on_window_close_retains_the_squad_screen) ... This plugin does not support propagateSizeHints()
+ok
+test_stale_same_value_new_identity_is_not_published (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_stale_same_value_new_identity_is_not_published) ... This plugin does not support propagateSizeHints()
+ok
+test_a_in_name_or_search_stays_text (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_in_name_or_search_stays_text) ... This plugin does not support propagateSizeHints()
+ok
+test_a_shortcut_selects_native_twenty_and_is_visible (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_shortcut_selects_native_twenty_and_is_visible) ... This plugin does not support propagateSizeHints()
+ok
+test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process) ... This plugin does not support propagateSizeHints()
+ok
+test_close_and_career_replacement_cannot_publish_old_reply (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_close_and_career_replacement_cannot_publish_old_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_external_edit_and_candidate_validation_failure_preserve_live_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_external_edit_and_candidate_validation_failure_preserve_live_data) ... This plugin does not support propagateSizeHints()
+ok
+test_heartbeat_and_cancel_before_send_never_publish (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_heartbeat_and_cancel_before_send_never_publish) ... This plugin does not support propagateSizeHints()
+ok
+test_name_editor_pool_pane_and_busy_edit_guards_keep_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_name_editor_pool_pane_and_busy_edit_guards_keep_data) ... This plugin does not support propagateSizeHints()
+ok
+test_original_refusal_ui_policy_and_failed_preparation_publish_nothing (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_original_refusal_ui_policy_and_failed_preparation_publish_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_save_cancel_on_window_close_retains_the_squad_screen (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_save_cancel_on_window_close_retains_the_squad_screen) ... This plugin does not support propagateSizeHints()
+ok
+test_stale_same_value_new_identity_is_not_published (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_stale_same_value_new_identity_is_not_published) ... This plugin does not support propagateSizeHints()
+ok
+test_a_in_name_or_search_stays_text (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_in_name_or_search_stays_text) ... This plugin does not support propagateSizeHints()
+ok
+test_a_shortcut_selects_native_twenty_and_is_visible (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_a_shortcut_selects_native_twenty_and_is_visible) ... This plugin does not support propagateSizeHints()
+ok
+test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_actual_insert_and_mouse_equal_direct_candidate_and_keep_one_process) ... This plugin does not support propagateSizeHints()
+ok
+test_close_and_career_replacement_cannot_publish_old_reply (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_close_and_career_replacement_cannot_publish_old_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_external_edit_and_candidate_validation_failure_preserve_live_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_external_edit_and_candidate_validation_failure_preserve_live_data) ... This plugin does not support propagateSizeHints()
+ok
+test_heartbeat_and_cancel_before_send_never_publish (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_heartbeat_and_cancel_before_send_never_publish) ... This plugin does not support propagateSizeHints()
+ok
+test_name_editor_pool_pane_and_busy_edit_guards_keep_data (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_name_editor_pool_pane_and_busy_edit_guards_keep_data) ... This plugin does not support propagateSizeHints()
+ok
+test_original_refusal_ui_policy_and_failed_preparation_publish_nothing (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_original_refusal_ui_policy_and_failed_preparation_publish_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_save_cancel_on_window_close_retains_the_squad_screen (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_save_cancel_on_window_close_retains_the_squad_screen) ... This plugin does not support propagateSizeHints()
+ok
+test_stale_same_value_new_identity_is_not_published (goal2.tests.test_ui_assistant_t183c.AssistantUI.test_stale_same_value_new_identity_is_not_published) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 50 tests in 72.001s
+
+OK

@@ -781,3 +781,22 @@ main window; with no choice by then the original answers N itself and live play 
 save-goal question can continue the replay without creating a highlight file. Highlight-file
 saving and a saved-replay library remain separate. Use **SHOW MATCH (F8)** if the OS keeps
 the main window in front. Replay uses the original simulation and does not add a host goal.
+
+### GUI-thread cyclic collection
+
+[designed: #813] `FixedPage` installs one application-owned collector for all
+windows. Automatic cyclic collection is disabled while the Qt application
+exists; a one-second timer explicitly collects on its GUI thread. Reference
+counting still releases acyclic data normally. Collection continues to reclaim
+closed widget cycles, and destroying the application restores the previous
+automatic-GC state. Importing desktop helpers without an application does not
+change GC policy; engine processes retain their normal collector.
+
+This keeps allocation-heavy assistant/preparation workers from traversing Qt
+wrappers while the GUI is in native layout code. It does not move preparation
+onto the GUI thread, alter cancellation/publication, or change game state.
+[confirmed: platform documentation] Qt requires object lifetime operations to
+respect [QObject thread affinity](https://doc.qt.io/qt-6/qobject.html#thread-affinity);
+Python exposes separate [automatic and explicit collection](https://docs.python.org/3.14/library/gc.html).
+The allocation-control/lifetime probes are in `test_gui_gc_813`; the original
+assistant close/career-replacement tests remain unchanged.

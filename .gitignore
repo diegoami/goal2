@@ -9,6 +9,9 @@ node_modules/
 # The original game's bytes stay out (CLAUDE.md rule 14, docs/artifacts.md)
 *.sav
 *.g2save
+*.g2core
+*.ucstate
+*.g2game
 
 # Scratch notes
 RUN-NOTES.md

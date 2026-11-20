@@ -363,6 +363,7 @@ class CoreWindow(QMainWindow):
     def closeEvent(self, event):
         """[designed: T109] Stop scheduling polls, finish the bounded owned step, then reap the pitch viewer."""
         self.core_round.viewer_timer.stop()
+        self.core_timer.stop()                 # no poll collects a job, or starts the next, on a closed window
         self.model.cancel_hold()               # [T223] a paced wait ends now; the original's step is complete
         try:
             self.core_jobs.wait(60)
@@ -371,6 +372,7 @@ class CoreWindow(QMainWindow):
             self.core_jobs.pool.shutdown(wait=True)
         except Exception as exc:
             self.model.resume_hold()
+            self.core_timer.start()            # the window stays: its job is still collected
             self.status.setText(f'Cannot close yet: {exc}');event.ignore();return
         event.accept()
 
