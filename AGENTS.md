@@ -104,4 +104,4 @@ The redesigned-UI look items
 
 Durable task decisions/status live on the relevant GitHub issues/PRs; supporting evidence is in `/home/diego/projects/goal2-keep`. The owner's final naming scope (2026-10-26) is only the existing33 authored profiles: canonical top32 plus Greece,80 surnames each, unchanged. Drop the128-country expansion; unlisted countries retain original names. Do not restart extra-country surname research.
 
-Never read or alter these protected owner untracked files: `.claude/settings.local.json.clother-20261020-181204.bak`, `1`, `error1.txt`. Preserve active/unresolved work and reviews on resume.
+Never read or alter these protected owner untracked files: `.claude/settings.local.json.clother-20261020-181204.bak`, `1`, `error1.txt`. Read the repository-required `worktree-cleanup` skill and latest sweep receipt on resume; the skill is supplied by the environment, at `/home/diego/.codex/skills/worktree-cleanup/SKILL.md` on the owner's machine. Preserve active/unresolved work and reviews.
