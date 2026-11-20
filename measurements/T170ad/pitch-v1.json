@@ -1,0 +1,56 @@
+{
+  "schema": "goal2/t170ad-pitch-proof/1",
+  "tested_head": "502ca02ec235313fc44c129e163e322132f8f918",
+  "full_actual": {
+    "seconds": 147.377,
+    "result": {
+      "edited": true,
+      "events": 1343,
+      "events_hash": "875516a58ed2432a89b7c5be0ba03a5c3534086406c00b7fcc54fc85e1a72f1a",
+      "frames": 3997,
+      "frames_hash": "7f2e09fa73a7da49df518e15f9d7e812c2c3e62217827880ac4082006f691aff",
+      "observation_hash": "3000df9e65b5388f636db8711c5a08728b952f9b3b6b0e5c0868d08811336c3c",
+      "pauses": 1,
+      "state_hash": "502231bfd81c8c856a2fc948c02a76271ddb1d938794972a6bab5e97e02d9634",
+      "status": "complete"
+    },
+    "scope": "Actual parent/PyPy retained Match through real S17 painting; same public pause/edit/play policy as independent direct SDK; exact canonical frames/events and resumed native state/news; legacy state unchanged. Full RAM/all16 proof remains T170ac, not re-claimed here."
+  },
+  "window_and_controls": {
+    "methods": 14,
+    "seconds": 14.273,
+    "status": "pass"
+  },
+  "before": "Contract main3b9a3a53 lacks goal2.ui.native_pitch; .cache/t170ad-before.log retained privately. Cursor/pacing controls fail before corresponding API/fix.",
+  "unsuccessful_attempts": [
+    "fixture setup missing QApplication initialization",
+    "consumer constructed after pre-match view detach",
+    "tuple/list display score mismatch",
+    "first complete run interrupted(-2) in whole-history copying",
+    "159.757s completed run proof ERROR: observation packet mistaken for dataclass"
+  ],
+  "production_unchanged_after_full": true,
+  "files_sha256": {
+    "goal2/ui/native_pitch.py": "ac6034a286b705899d26cc9366b1768613925dc21f5027a5dc1aa9522e07d63e",
+    "goal2/game/native_driver.py": "7008c1ce21ce6537d79b43e15a8ed6b59faf0796c10ee6f7d9f16370a928c2c6",
+    "goal2/tests/test_native_pitch_t170ad.py": "7874fe87f0b997a898976cd1954868c4730e63ad047bfdc87cb8113fe73e29e7",
+    "goal2/tests/test_native_pitch_actual_t170ad.py": "f93272fb902d11f1d814c0a2e6982bdeee27027256cd01e20be9c5981ddf0368"
+  },
+  "boundaries": [
+    "No engine/match_day/other-session audit/UI-cue/CI/checkpoint edits",
+    "No 22/24/default/fresh native bootstrap/publication",
+    "Stopped current menus/cards follow #817; owner callbacks retain explicit decisions, goals and completion"
+  ],
+  "affected": {
+    "head": "502ca02ec235",
+    "methods": 91,
+    "seconds": 72.315,
+    "skipped": 16,
+    "status": "pass",
+    "includes": [
+      "native pitch/driver/owner/feed",
+      "legacy S17/commentary",
+      "#796 taker timeout under help"
+    ]
+  }
+}
