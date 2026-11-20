@@ -10,7 +10,7 @@ from goal2.game.season import SeasonSession, canonical_hash
 from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
-          'configure': {'captain', 'substitutions'}, 'next': {'count'},
+          'configure': {'captain', 'substitutions','frames'}, 'next': {'count'},
           'answer': {'decision', 'answer'}, 'preview': {'decision'},
           'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
@@ -30,6 +30,8 @@ def validate_request(header):
         raise SeasonRequestError('invalid season request')
     if action == 'preview' and (type(header.get('decision')) is not int or header['decision'] < 1):
         raise SeasonRequestError('preview needs a positive decision number')
+    if action=='configure' and type(header.get('frames',False)) is not bool:
+        raise SeasonRequestError('frames must be boolean')
     return action
 
 
@@ -43,6 +45,7 @@ class SeasonWorker:
         self.seam = self.stream = None
         self.decision = None
         self.exhausted = False
+        self.frames=False;self.frame_sequence=0;self.frame_watermark=0;self.event_count=0
 
     def dispatch(self, header):
         action = validate_request(header)
@@ -73,7 +76,8 @@ class SeasonWorker:
                 if self.seam is not None:
                     raise SeasonRequestError('the held match is already configured')
                 self.seam = PrematchSeam(match, captain=header.get('captain'),
-                                         substitutions=header.get('substitutions'))
+                                         substitutions=header.get('substitutions'),frames=header.get('frames',False))
+                self.frames=header.get('frames',False)
                 self.stream = iter(match.events())
             elif action == 'next':
                 count = header.get('count', 32)
@@ -82,19 +86,27 @@ class SeasonWorker:
                 if self.stream is None or self.decision is not None:
                     raise SeasonRequestError('configure the match and answer its waiting decision first')
                 events = []
+                frames=[]
                 for _ in range(count):
                     try:
                         event = next(self.stream)
                     except StopIteration:
                         self.exhausted = True
                         break
-                    events.append(asdict(event))
+                    if self.frames and event.kind=='tick':
+                        from goal2.game.watched_pitch import snapshot,validate
+                        frame=snapshot(match,event,self.frame_sequence,self.event_count)
+                        validate(frame,self.frame_sequence,self.frame_watermark)
+                        frames.append(frame);self.frame_sequence+=1;self.frame_watermark=frame['watermark']
+                        continue
+                    events.append(asdict(event));self.event_count+=1
                     if event.kind == 'decision':
                         self._decision_number += 1
                         self.decision = self._decision_number
                         break
                 result.update(events=events, decision=self.decision, over=match.over,
                               exhausted=self.exhausted)
+                if self.frames:result.update(frames=frames,event_count=self.event_count)
             elif action == 'preview':
                 # [designed: T170s/#746; confirmed: T170r audit, fb6d3093]
                 # Read current records without consuming the stopped generator.

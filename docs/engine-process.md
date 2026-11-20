@@ -270,6 +270,33 @@ bridge join/last-leave synchronization prevents a new client inheriting a retiri
 engine. After handoff the continuing driver must eventually close this same owner;
 closing just the old pre-match presentation does not dispose the running session.
 
+[designed: T170ab/#808; confirmed: T127/T81, match87d92501]
+`season.configure(frames=True)` opts the same held Match into completed-tick
+samples before execution. `NativeSeasonOwner(...,frames=True)` forwards that
+declaration; omitted/False keeps the old configuration arguments and wire shape.
+The accepted sampler reads signed poses/ball, officials and holder at each tick
+stop, before the generator resumes. No Match is rebuilt or changed privately.
+
+In this opt-in mode each `next` reply contains `frames` (the existing version2
+pitch schema) and cumulative canonical `event_count`. Its `events` retain every
+non-tick event; tick stops become samples, as in `consume_match`. A frame's
+watermark is the number of preceding canonical events over this Match, including
+entry/pre-match decisions. `count` still bounds1..32 **raw** stops, including both
+ticks and canonical events, and any decision ends its batch. Thus a reply may
+contain frames without events, or events without frames. Nothing is coalesced or
+dropped; the pull protocol and one pending request provide bounded backpressure.
+
+Parent validation checks frame schema/identity/sequence, signed coordinates,
+watermarks within the packet's event interval, exact cumulative count, raw-stop
+budget and decision/boolean shape before delivery. Existing frame limits remain.
+Counters reset on acknowledged configuration and match/session lifecycle changes;
+malformed replies end the session instead of resynchronizing or replaying it.
+State/preview/news framing and once-only boundary deltas stay separate. Native
+entry refuses early pitch samples; the first Play packet transfers intact through
+the existing handoff. This enables the following match-driver/pacing consumer;
+pause/replay, native save/publication and normal desktop/default entry are not
+implemented by this feed.
+
 [confirmed: archaeology T135 at `fc6b5294`, F010/F031; designed: T170u/#753]
 At configured pre-match decisions, `answer` accepts edit-only `positions` mapping
 current squad/pool words to integer0..13 or explicit `"club"`. Numeric goals use
