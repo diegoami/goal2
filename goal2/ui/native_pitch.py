@@ -62,7 +62,9 @@ class NativePitchController:
         if frame is not None:
             self.display.frame = frame
         for event in self.driver.events[self._seen:]:
-            self.display.accept(['native-pitch', self.display.sequence, 'event', event])
+            rendered = deepcopy(event)
+            rendered['score'] = list(rendered['score'])
+            self.display.accept(['native-pitch', self.display.sequence, 'event', rendered])
         self._seen = len(self.driver.events)
         shown = self.shown()
         while self._notice_seen < len(shown) and self.notice is None:
@@ -119,7 +121,7 @@ class NativePitchController:
 
     def frame_or_event(self):
         frame = self.display.frame
-        if frame is not None: return frame['minute'], frame['score']
+        if frame is not None and not self.quick: return frame['minute'], frame['score']
         shown = self.shown()
         return (shown[-1]['minute'], shown[-1]['score']) if shown else (0, [0, 0])
 

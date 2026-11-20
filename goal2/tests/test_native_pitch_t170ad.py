@@ -30,7 +30,6 @@ class WindowControls(unittest.TestCase):
         self.win = Window(data_setup.paths(Path(self.tmp.name))); self.win.resize(1440,1080)
         self.win.push(Screen(self.win)); self.win.show()
         self.owner = Owner(); self.owner.status = 'handed_off'
-        self.owner.packet['events'][0]['score'] = [0,0]
         state = SimpleNamespace(mem=b'current',player_renames={},manager_name='')
         self.owner.controller = SimpleNamespace(view=SimpleNamespace(display_state=lambda s:state,sides=(1,2)))
         self.owner.fixture = SimpleNamespace(side_a=1,side_b=2,kind=1)
@@ -68,6 +67,8 @@ class WindowControls(unittest.TestCase):
         self.assertEqual(self.screen.display().frame['watermark'],3)
         self.assertEqual(len(self.owner.sent),1);self.tick();self.assertEqual(len(self.owner.sent),2)
         self.assertTrue(self.screen.pitch.painted)
+        self.assertIsInstance(self.screen.controller.driver.events[0]['score'],tuple)
+        self.assertIsInstance(self.screen.display().events[0]['score'],list)
 
     def test_existing_marks_speed_reading_keys_and_no_poll_while_reading(self):
         self.key(Qt.Key.Key_Right);self.assertEqual(self.screen.controller.driver.speed,4)
@@ -134,3 +135,11 @@ class WindowControls(unittest.TestCase):
             NativePitchScreen(self.win,self.model,self.owner,on_decision=None,on_goal=None,
                               on_complete=None,on_failure=None)
         self.assertEqual(self.owner.handoffs,1)
+
+    def test_quick_score_follows_events_without_overwriting_last_painted_frame(self):
+        self.tick();self.owner.batch(frames=[frame(0,3)]);self.tick();self.app.processEvents()
+        self.screen.quick_result();self.tick()
+        e=event('goal',{'player':4});e['minute']=12;e['score']=[1,0]
+        self.owner.batch(events=[e],total=4);self.tick()
+        self.assertEqual(self.screen.controller.frame_or_event(),(12,[1,0]))
+        self.assertEqual(self.screen.display().frame['sequence'],0)

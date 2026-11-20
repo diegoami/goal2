@@ -61,7 +61,9 @@ class NativeWindow(unittest.TestCase):
         case.flow.on_handoff=handoff
         case.test_actual_owner_enters_widgets_edits_current_xi_and_transfers_captain_once()
         screen=screens[0];self.addCleanup(screen.closing)
-        case.until(lambda:screen.controller.driver.painted_sequence>=9,self.app.processEvents)
+        def responsive():
+            self.app.processEvents();self.assertEqual(failures,[])
+        case.until(lambda:screen.controller.driver.painted_sequence>=9,responsive)
         assert_fits(self,case.win);self.assertTrue(screen.pitch.painted)
         QTest.keyClick(case.win,Qt.Key.Key_Space);self.app.processEvents()
         count=len(screen.controller.driver.frames)
@@ -69,7 +71,7 @@ class NativeWindow(unittest.TestCase):
         self.assertEqual(len(screen.controller.driver.frames),count)
         QTest.keyClick(case.win,Qt.Key.Key_Return);self.app.processEvents()
         self.assertTrue(screen.controller.request_bench())
-        case.until(lambda:'pause' in seen,self.app.processEvents)
+        case.until(lambda:'pause' in seen,responsive)
         self.assertEqual(failures,[]);self.assertEqual(case.native.pid,case.pid)
         self.assertEqual(case.native.shared.engine.generation,1);self.assertEqual(case.owner.state,case.before)
         case.win.push(Screen(case.win));case.win.leaving=True;case.win.close()
