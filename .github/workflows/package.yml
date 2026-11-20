@@ -23,7 +23,7 @@ on:
       - 'goal2/tests/test_package_t147.py'
   push:
     branches: [main]
-    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']
+    paths: ['**', '!**/*.md', 'docs/core.md', 'docs/design/ui-2026-11/README.md', 'docs/screens.md']
   workflow_dispatch:
     inputs:
       development:

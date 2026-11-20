@@ -6,7 +6,7 @@ name: Linux
 # Nothing of the original game leaves the runner: no .cache/ content and no original-game file is
 # uploaded or cached, and the Drive token is only read from the secret.
 # [designed: owner, 2026-11-01, #493] Not for a draft PR (it runs once the PR is ready), and a PR push only
-# when it changes more than docs, measurements and Markdown since the PR's previous push
+# when it changes code, data/scripts or a Markdown test input since the PR's previous push
 # (tools/ci_changes.py --kind code; GitHub's paths filters judge a PR's whole diff, not the push). A skipped
 # push leaves the earlier push's run going. main: the same paths, per push. A dispatch runs regardless.
 on:
@@ -14,7 +14,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
-    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']
+    paths: ['**', '!**/*.md', 'docs/core.md', 'docs/design/ui-2026-11/README.md', 'docs/screens.md']
   workflow_dispatch:
     inputs:
       slow:
