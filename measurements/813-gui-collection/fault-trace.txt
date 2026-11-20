@@ -1,0 +1,79 @@
+FAIL goal2.tests.test_ui_assistant_t183c (9 s)
+This plugin does not support propagateSizeHints()
+.This plugin does not support propagateSizeHints()
+.This plugin does not support propagateSizeHints()
+.This plugin does not support propagateSizeHints()
+Fatal Python error: Segmentation fault
+
+Current thread 0x000078c2cf8186c0 [goal2-assistant] (most recent call first):
+  Garbage-collecting
+  File "/usr/lib/python3.14/copy.py", line 233 in <genexpr>
+  File "/usr/lib/python3.14/copy.py", line 234 in _reconstruct
+  File "/usr/lib/python3.14/copy.py", line 157 in deepcopy
+  File "/usr/lib/python3.14/copy.py", line 182 in _deepcopy_tuple
+  File "/usr/lib/python3.14/copy.py", line 131 in deepcopy
+  File "/usr/lib/python3.14/copy.py", line 202 in _deepcopy_dict
+  File "/usr/lib/python3.14/copy.py", line 131 in deepcopy
+  File "/usr/lib/python3.14/copy.py", line 240 in _reconstruct
+  File "/usr/lib/python3.14/copy.py", line 157 in deepcopy
+  File "/usr/lib/python3.14/copy.py", line 202 in _deepcopy_dict
+  File "/usr/lib/python3.14/copy.py", line 131 in deepcopy
+  File "/usr/lib/python3.14/copy.py", line 240 in _reconstruct
+  File "/usr/lib/python3.14/copy.py", line 157 in deepcopy
+  File "/usr/lib/python3.14/copy.py", line 202 in _deepcopy_dict
+  File "/usr/lib/python3.14/copy.py", line 131 in deepcopy
+  File "/usr/lib/python3.14/copy.py", line 240 in _reconstruct
+  File "/usr/lib/python3.14/copy.py", line 157 in deepcopy
+  File "/home/diego/projects/goal2/.cache/opus-followups/goal2/game/best_twenty_state.py", line 40 in prepare
+  File "/home/diego/projects/goal2/.cache/opus-followups/goal2/tests/test_ui_assistant_t183c.py", line 82 in held
+  File "/home/diego/projects/goal2/.cache/opus-followups/goal2/game/best_twenty_jobs.py", line 84 in _work
+  File "/usr/lib/python3.14/threading.py", line 1024 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x000078c2d8e8e1c0 [python] (most recent call first):
+  File "/home/diego/projects/goal2/.cache/opus-followups/goal2/ui/cells.py", line 193 in setGeometry
+  File "/home/diego/projects/goal2/.cache/opus-followups/goal2/tests/test_ui_assistant_t183c.py", line 227 in test_close_and_career_replacement_cannot_publish_old_reply
+  File "/usr/lib/python3.14/unittest/case.py", line 615 in _callTestMethod
+  File "/usr/lib/python3.14/unittest/case.py", line 669 in run
+  File "/usr/lib/python3.14/unittest/case.py", line 725 in __call__
+  File "/usr/lib/python3.14/unittest/suite.py", line 122 in run
+  File "/usr/lib/python3.14/unittest/suite.py", line 84 in __call__
+  File "/usr/lib/python3.14/unittest/suite.py", line 122 in run
+  File "/usr/lib/python3.14/unittest/suite.py", line 84 in __call__
+  File "/usr/lib/python3.14/unittest/suite.py", line 122 in run
+  File "/usr/lib/python3.14/unittest/suite.py", line 84 in __call__
+  File "/usr/lib/python3.14/unittest/runner.py", line 257 in run
+  File "/usr/lib/python3.14/unittest/main.py", line 270 in runTests
+  File "/usr/lib/python3.14/unittest/main.py", line 104 in __init__
+  File "/usr/lib/python3.14/unittest/__main__.py", line 18 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main
+
+Current thread's C stack trace (most recent call first):
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python", at _Py_DumpStack+0x4a [0x47728a]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x5044d7]
+  Binary file "/usr/lib/x86_64-linux-gnu/libc.so.6", at +0x45cb0 [0x78c2d8c45cb0]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x6bf00b]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x5629be]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python", at _Py_HandlePending+0x40 [0x690260]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python", at _PyEval_EvalFrameDefault+0xfdd2 [0x55cba2]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x5cc4d4]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python", at PySequence_Tuple+0x85 [0x512845]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python", at _PyEval_EvalFrameDefault+0xda1a [0x55a7ea]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x58cce4]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x5edd80]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python", at _PyEval_EvalFrameDefault+0x47ec [0x5515bc]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x58cce4]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x5ede9a]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x70f083]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python", at _PyEval_EvalFrameDefault+0x3b53 [0x550923]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x58cce4]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x5ede9a]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x70d445]
+  Binary file "/home/diego/projects/goal2/.cache/venv/bin/python" [0x67808c]
+  Binary file "/usr/lib/x86_64-linux-gnu/libc.so.6", at +0xa3dba [0x78c2d8ca3dba]
+  Binary file "/usr/lib/x86_64-linux-gnu/libc.so.6", at +0x13758c [0x78c2d8d3758c]
+
+Extension modules: shiboken6.Shiboken, PySide6.QtCore, PySide6.QtGui, PySide6.QtWidgets, PySide6.QtTest (total: 5)
+

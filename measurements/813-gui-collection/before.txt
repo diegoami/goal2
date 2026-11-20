@@ -1,0 +1,51 @@
+test_application_policy_is_idempotent_restored_and_rejects_worker_collection (goal2.tests.test_gui_gc_813.GuiCollection.test_application_policy_is_idempotent_restored_and_rejects_worker_collection) ... FAIL
+test_fixed_page_keeps_collection_and_widget_cleanup_on_gui_thread (goal2.tests.test_gui_gc_813.GuiCollection.test_fixed_page_keeps_collection_and_widget_cleanup_on_gui_thread) ... FAIL
+test_no_policy_control_observes_real_automatic_worker_collection (goal2.tests.test_gui_gc_813.GuiCollection.test_no_policy_control_observes_real_automatic_worker_collection) ... ok
+
+======================================================================
+FAIL: test_application_policy_is_idempotent_restored_and_rejects_worker_collection (goal2.tests.test_gui_gc_813.GuiCollection.test_application_policy_is_idempotent_restored_and_rejects_worker_collection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 78, in test_application_policy_is_idempotent_restored_and_rejects_worker_collection
+    self.assertTrue(all(self.child('lifetime').values()))
+                        ~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 68, in child
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 82, in <module>
+    if len(sys.argv)==3 and sys.argv[1]=='--gc-child':print(json.dumps(probe(sys.argv[2])))
+                                                                       ~~~~~^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 21, in probe
+    from goal2.desktop.gui_gc import install
+ModuleNotFoundError: No module named 'goal2.desktop.gui_gc'
+
+
+======================================================================
+FAIL: test_fixed_page_keeps_collection_and_widget_cleanup_on_gui_thread (goal2.tests.test_gui_gc_813.GuiCollection.test_fixed_page_keeps_collection_and_widget_cleanup_on_gui_thread)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 75, in test_fixed_page_keeps_collection_and_widget_cleanup_on_gui_thread
+    self.assertTrue(all(self.child('page').values()))
+                        ~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 68, in child
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 82, in <module>
+    if len(sys.argv)==3 and sys.argv[1]=='--gc-child':print(json.dumps(probe(sys.argv[2])))
+                                                                       ~~~~~^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_gui_gc_813.py", line 58, in probe
+    assert events and all(t==owner for t in events),{'owner':owner,'collection_threads':sorted(set(events))}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'owner': 124859233280448, 'collection_threads': [124859090814656]}
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.644s
+
+FAILED (failures=2)

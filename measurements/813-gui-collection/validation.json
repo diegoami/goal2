@@ -1,0 +1,16 @@
+{
+  "issue": 813,
+  "runtime": {
+    "local_python": "3.14.4",
+    "pyside": "6.12.0"
+  },
+  "before": "3methods: unsafe no-policy control passes;2new behavior methods fail, with worker GC observed during allocation",
+  "after": "5control/lifetime methods pass Linux and nativeWindows0skip;50unchanged assistant methods0skip;48GUI methods pass3existing slow skips",
+  "policy": "One application-owned timer collects cyclic garbage on GUI owner every1000ms; reference counting unchanged; original automatic state restored on application destruction; headless import unaffected",
+  "file_sha256": {
+    "goal2/desktop/gui_gc.py": "30d9eaeab7b5771d442785964d78e706c5c63a3e2925f3824b5aaf5c2d1b96f9",
+    "goal2/desktop/fixed_page.py": "ba862067d600e2074b712067e26a09678473143f9559db5668b55058add4ef0d",
+    "goal2/tests/test_gui_gc_813.py": "24d5941cdbf699f2017dc1a6d92c090ab8b3d07063078843a4181cb5cc8440f3"
+  },
+  "remaining": "Clean full fast and required hosted Linux/Windows/native-scale gates before merge"
+}
