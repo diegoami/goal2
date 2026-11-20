@@ -1,0 +1,10 @@
+test_application_policy_is_idempotent_restored_and_rejects_worker_collection (goal2.tests.test_gui_gc_813.GuiCollection.test_application_policy_is_idempotent_restored_and_rejects_worker_collection) ... ok
+test_application_restores_an_initially_disabled_collector (goal2.tests.test_gui_gc_813.GuiCollection.test_application_restores_an_initially_disabled_collector) ... ok
+test_fixed_page_keeps_collection_and_widget_cleanup_on_gui_thread (goal2.tests.test_gui_gc_813.GuiCollection.test_fixed_page_keeps_collection_and_widget_cleanup_on_gui_thread) ... ok
+test_import_without_a_gui_does_not_change_collection_policy (goal2.tests.test_gui_gc_813.GuiCollection.test_import_without_a_gui_does_not_change_collection_policy) ... ok
+test_no_policy_control_observes_real_automatic_worker_collection (goal2.tests.test_gui_gc_813.GuiCollection.test_no_policy_control_observes_real_automatic_worker_collection) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 12.732s
+
+OK
