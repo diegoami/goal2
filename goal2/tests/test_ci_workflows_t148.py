@@ -43,7 +43,7 @@ class Workflows(unittest.TestCase):
                 self.assertIn('path: upload', job)
                 self.assertIn("-name '*.png'", job)
                 self.assertIn("-name '*.json'", job)
-                self.assertIn(r'\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$', job)
+                self.assertIn(r'\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$', job)
                 self.assertIn('if: always()', job)
                 self.assertNotRegex(job, r'cp .*\.cache')
 

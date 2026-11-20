@@ -78,7 +78,7 @@ class LinuxGate(unittest.TestCase):
 
     def test_logs_only_through_the_refusal_filter_and_no_cache(self):
         keep = self.step("Keep only logs")
-        self.assertIn(r"\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$", keep)
+        self.assertIn(r"\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$", keep)
         self.assertNotRegex(self.text, r"actions/cache")
         # [designed: T148] This contract is for T146's gate; the independent native job
         # has its own screenshot/receipt filter, checked by test_ci_workflows_t148.

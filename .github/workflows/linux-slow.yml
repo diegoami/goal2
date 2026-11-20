@@ -81,7 +81,7 @@ jobs:
           mkdir -p upload
           cp linux-slow-premerge.log upload/ 2>/dev/null || true
           # [designed: #278] Refuse to upload anything with an original-game extension.
-          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'; then
             echo "an original-game file reached the upload; refusing" && exit 1
           fi
       - uses: actions/upload-artifact@v4

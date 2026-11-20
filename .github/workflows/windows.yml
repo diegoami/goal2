@@ -5,7 +5,7 @@ name: Windows
 # cost nothing. Nothing of the original game leaves the runner: no .cache/ content and no
 # original-game file is ever uploaded, and the Drive token is only read from the secret.
 # [designed: owner, 2026-11-01, #493] Not for a draft PR (it runs once the PR is ready), and a PR push only
-# when it changes more than docs, measurements and Markdown since the PR's previous push
+# when it changes code, data/scripts or a Markdown test input since the PR's previous push
 # (tools/ci_changes.py --kind code; GitHub's paths filters judge a PR's whole diff, not the push). A skipped
 # push leaves the earlier push's run going. main: the same paths, per push. A dispatch runs regardless.
 on:
@@ -13,7 +13,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
-    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']
+    paths: ['**', '!**/*.md', 'docs/core.md', 'docs/design/ui-2026-11/README.md', 'docs/screens.md']
   workflow_dispatch:
     inputs:
       slow:
@@ -82,13 +82,18 @@ jobs:
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Install goal2
         run: python -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'
-      - name: Original-game files (owner's Drive, when the secret is available)
+      - name: Original-game files (owner's Drive)
         env:
           GOAL2_RCLONE_TOKEN: ${{ secrets.GOAL2_RCLONE_TOKEN }}
+          FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
         run: |
           if [ -z "$GOAL2_RCLONE_TOKEN" ]; then
-            echo "No GOAL2_RCLONE_TOKEN (a fork PR, or the secret is unset): tests needing the original files skip."
-            exit 0
+            if [ "$FORK" = true ]; then
+              echo "A fork PR has no GOAL2_RCLONE_TOKEN: tests needing the original files skip."
+              exit 0
+            fi
+            echo "GOAL2_RCLONE_TOKEN is unset on a same-repository run: refusing to turn the original-file tests into skips."
+            exit 1
           fi
           version=v1.75.2;zip=rclone-$version-windows-amd64.zip
           curl -sSfL "https://downloads.rclone.org/$version/$zip" -o "$RUNNER_TEMP/$zip"
@@ -148,7 +153,7 @@ jobs:
             (cd windows-evidence && find . -type f \( -name '*.png' -o -name '*.log' -o -name '*.json' \) -print0 | xargs -0 -I{} cp --parents {} ../upload/)
           fi
           # [designed: #278] Refuse to upload anything with an original-game extension.
-          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'; then
             echo "an original-game file reached the upload; refusing" && exit 1
           fi
       - uses: actions/upload-artifact@v4
@@ -221,7 +226,7 @@ jobs:
           if [ -d native-evidence ]; then
             (cd native-evidence && find . -type f \( -name '*.png' -o -name '*.log' -o -name '*.json' \) -print0 | xargs -0 -I{} cp --parents {} ../upload/)
           fi
-          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save|g2core|ucstate|g2game)$'; then
             echo "an original-game file reached the native upload; refusing" && exit 1
           fi
       - uses: actions/upload-artifact@v4

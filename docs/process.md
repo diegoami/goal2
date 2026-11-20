@@ -74,7 +74,7 @@ one, `git pull` and take the next free number.
      A new commit SHA or resolving an integration conflict does not itself require a full rerun.
    - **Reuse receipts:** record the original tested SHA, new SHA, platform/runtime, test scope and
      evidence that the exercised application/test code, dependencies and fixtures are unchanged.
-     Documentation, measurements and commit ancestry alone do not invalidate a result. For CI/test-tool
+     Pure prose, passive receipts and commit ancestry alone do not invalidate a result. Code or data read by tests—including JSON, scripts and parsed Markdown under `docs/` or `measurements/`—are test inputs and require the affected checks. For CI/test-tool
      changes, validate that tooling with its focused regressions and retain unaffected game receipts.
      Run clean-checkout, asset-exclusion and link/JSON checks at the new head. A failure still needs a
      fix or the owner's explicit scoped exception; never turn a failed suite into a pass by relabelling it.

@@ -557,6 +557,12 @@ class EngineProcess:
                     elif pending[1]=='configure':
                         self._season_pitch=self._season_pitch_pending
                         self._season_pitch_sequence=self._season_pitch_watermark=self._season_pitch_events=0
+                    elif pending[1]=='pause':
+                        expected={'request','action','paused'}
+                        if value.get('paused') is False:expected.add('reason')
+                        if (set(value)!=expected or type(value.get('paused')) is not bool
+                                or (not value['paused'] and not isinstance(value.get('reason'),str))):
+                            raise ProtocolError('invalid native pause acknowledgement')
                     elif pending[1] in ('open','discard','resume'):self._reset_season_pitch()
                     if pending[1] == 'open':
                         self._season_active = True
