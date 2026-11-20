@@ -19,6 +19,13 @@
     "Main9675d80e has no native_driver module and rejects pause operation.",
     "Current controls reject early/duplicate resume, wrong-thread/corrupt/stale input and old handoff use after another Match."
   ],
+  "final_affected": {
+    "head_before_receipt": "5498cce8e7b222a47d7b8a70f921e8b28ec6aaf8",
+    "includes": "PR796 taker/help regression integrated unchanged",
+    "methods": 55,
+    "seconds": 55.924,
+    "skipped": 3
+  },
   "final_validation": "Exact final code head and clean-head/local/Linux/Windows/native verdicts are recorded on PR812/issue810/checkpoint471; proof data committed before final CI.",
   "full_methods": 1,
   "full_seconds": 130.159,
