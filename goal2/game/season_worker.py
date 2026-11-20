@@ -12,7 +12,7 @@ from goal2.game.prematch_seam import PrematchSeam
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions','frames'}, 'next': {'count'},
           'answer': {'decision', 'answer'}, 'preview': {'decision'},
-          'resume': set(), 'discard': set()}
+          'pause': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
                  'request_substitution', 'opportunity', 'captain'}
@@ -68,7 +68,7 @@ class SeasonWorker:
                 raise SeasonRequestError('complete and resume the held match before advancing')
             observation = session.advance()
             self._reset_match()
-        elif action in ('configure', 'next', 'answer', 'preview', 'resume'):
+        elif action in ('configure', 'next', 'answer', 'preview', 'pause', 'resume'):
             match = session.pending_match
             if match is None:
                 raise SeasonRequestError('no season match is pending')
@@ -107,6 +107,13 @@ class SeasonWorker:
                 result.update(events=events, decision=self.decision, over=match.over,
                               exhausted=self.exhausted)
                 if self.frames:result.update(frames=frames,event_count=self.event_count)
+            elif action=='pause':
+                if self.seam is None or not self.frames or self.exhausted or self.decision is not None:
+                    raise SeasonRequestError('pause needs an active sampled match without a waiting decision')
+                from goal2.engine.original_match.match import MatchError
+                try:match.pause()
+                except MatchError as exc:result.update(paused=False,reason=str(exc))
+                else:result.update(paused=True)
             elif action == 'preview':
                 # [designed: T170s/#746; confirmed: T170r audit, fb6d3093]
                 # Read current records without consuming the stopped generator.

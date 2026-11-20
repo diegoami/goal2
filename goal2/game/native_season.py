@@ -85,6 +85,8 @@ class NativeSeasonOwner:
         self.replies=queue.Queue();self.controller=None;self.fixture=None
         self._phase='opening';self._expected='open';self._last_request=0
         self._call_number=0
+        self._call_input_hash=self.input_hash
+        self._handoff_number=0;self._connection=None
         self._decision_data=None;self._decision=None;self.message=''
         self._closing=False;self._uncertain=False;self._disposed=threading.Event()
         self._terminal_received=threading.Event();self._discard_requested=threading.Event()
@@ -116,6 +118,9 @@ class NativeSeasonOwner:
 
     @property
     def input_hash(self):return self._input_hash
+
+    @property
+    def frames_enabled(self):return self._frames
 
     @property
     def initial_state(self):return deepcopy(self._initial)
@@ -178,9 +183,12 @@ class NativeSeasonOwner:
         if value['action']=='advance' and (obs['call_number']!=self._call_number+1
                 or obs['input_hash']!=canonical_hash(self._boundary)):
             raise ValueError('native round identity differs from its previous boundary')
+        if value['action']=='resume' and (obs['call_number']!=self._call_number
+                or obs['input_hash']!=self._call_input_hash):
+            raise ValueError('native resume differs from its original call')
         fixture=NativeFixture.from_boundary(state,self.managed_country) if obs['status']=='match' else None
         self._call_number=obs['call_number']
-        if fixture is not None:self.fixture=fixture
+        self._call_input_hash=obs['input_hash'];self.fixture=fixture
         self._boundary=state;self._observations.append(deepcopy(value))
         return obs['status']
 
@@ -257,13 +265,33 @@ class NativeSeasonOwner:
         if self._closing or self._phase!='prematch' or self.controller.status!='handoff':
             raise ValueError('no native first-packet handoff is available')
         self._phase='handed_off'
-        return SeasonHandoff(self._send_handoff,self.replies,self.controller.handoff)
+        self._handoff_number+=1;number=self._handoff_number
+        self._connection=SeasonHandoff(lambda action,**values:self._send_handoff(number,action,**values),
+                                      self.replies,self.controller.handoff)
+        return self._connection
 
-    def _send_handoff(self,action,**values):
+    def _send_handoff(self,number,action,**values):
         self._owner()
-        if self._closing or self._phase!='handed_off' or action not in ('next','answer','resume','observe'):
+        if (self._closing or self._phase!='handed_off' or number!=self._handoff_number
+                or action not in ('next','answer','pause','resume','observe')):
             raise ValueError('operation is outside the native match handoff')
         self.shared.engine.season_request(action,**values)
+
+    def adopt_resume(self,value,connection):
+        """[designed: T170ac/#810] One verified result; native deltas have one path."""
+        self._owner()
+        if (self._closing or self._phase!='handed_off' or connection is not self._connection
+                or not isinstance(value,dict) or value.get('action')!='resume'
+                or type(value.get('request')) is not int or value['request']<=self._last_request):
+            raise ValueError('foreign or consumed native resume')
+        status=self._accept_boundary(value)  # validate completely before changing ownership
+        self._last_request=value['request'];self._handoff_number+=1;self._connection=None
+        self.controller.detach();self.controller=None;self._decision=self._decision_data=None
+        self._entry_events=[]
+        if status=='match':
+            self._phase='configuring';self._request('configure',**({'frames':True} if self._frames else {}))
+        else:self._phase='terminal' if status=='deferred-rollover' else 'boundary'
+        return self.status
 
     def close(self):
         self._owner()
