@@ -8,7 +8,7 @@ repository cannot cross.
 | --- | --- |
 | The rebuild's own outputs: measurements, proofs, screenshots of the rebuild, reports, generated fixtures that hold no original byte | **Committed** in the repository (`measurements/`, `docs/`, test fixtures) |
 | The same, when a file is over ~50 MB | A **GitHub release** of `diegoami/goal2` (`gh release upload <tag> <file>`), linked from the doc that uses it |
-| The original game's bytes: `GOAL.DAT` and other GOAL2 assets, executables, DOSBox-X savestates (`*.sav`), rebuild saves that embed them (`*.g2save`) | The owner's **private Google Drive folder**, pulled into `.cache/` |
+| The original game's bytes: `GOAL.DAT` and other GOAL2 assets, executables, DOSBox-X savestates (`*.sav`), rebuild saves that embed them (`*.g2save`, `*.g2game`), core savestates of the running original (`*.g2core`, `*.ucstate`) | The owner's **private Google Drive folder**, pulled into `.cache/` |
 
 The original game's bytes stay out of git and out of public releases because this repository and
 its releases are public and the game is copyrighted (U17/U21); `tools/check_premerge.py` refuses
