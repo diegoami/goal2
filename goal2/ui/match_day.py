@@ -474,7 +474,12 @@ class MatchDay:
                                             report=report))
 
     def _chosen(self, pitch, value):
-        self.window.pop()                       # S16, back to S17
+        # S16, back to S17: and F1's help, when S16's wait ran out under it (the wait keeps running there).
+        if pitch in self.window.stack:
+            while self.window.current() is not pitch:
+                self.window.pop()
+        else:
+            self.window.pop()
         pitch.resume(value)
 
     def show_board(self, pitch, phase):
