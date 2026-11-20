@@ -119,8 +119,9 @@ class SquadScreen(Screen):
     searching = False   # the pool's search line is open (/) [designed: T177]
     _assistant_token = None   # Screen builds its Enter hint before subclass initialisation.
 
-    def __init__(self, window, model):
-        if getattr(model, 'held_prematch', False):self.escape_text = 'match menu'
+    def __init__(self, window, model, *, back=None):
+        # [designed: #799] The caller names the actual parent; held matches keep their default.
+        self.escape_text = back if back is not None else 'match menu' if getattr(model, 'held_prematch', False) else 'desk'
         super().__init__(window)
         self.model = model
         self._assistant_jobs = None
@@ -549,6 +550,6 @@ class SquadScreen(Screen):
         self.refresh()
 
 
-def open_squad(window, model):
+def open_squad(window, model, *, back=None):
     """Push S08 over the current screen; T164 calls it from the desk."""
-    return window.push(SquadScreen(window, model))
+    return window.push(SquadScreen(window, model, **({'back': back} if back is not None else {})))

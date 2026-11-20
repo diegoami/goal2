@@ -1,0 +1,25 @@
+{
+  "issues": [
+    799,
+    800,
+    801
+  ],
+  "baseline": "7791016fc7aef78c7e29d7a88827fb1f51ec5c4f",
+  "before": "8methods/10failing subcases; committed application imported without changing files",
+  "linux": "8focused +12launch/save methods pass0skip; earlier desk/squad regressions retained in local evidence",
+  "native_windows": "8methods pass0skip43.448s including original live-match save/reload",
+  "default_behavior": "Caller back captions remain optional; existing desk/title/held defaults preserved",
+  "source_files": {
+    "goal2/desktop/core_window.py": "4521f634a1f040a760153382e32ab1a2bb17147102922cad63940d39e3e3a65e",
+    "goal2/desktop/launch.py": "27d85230ed079a3e0a3fc68e646fd715170da1ef67fe9e8d1728d09ed7c5cf77",
+    "goal2/ui/replays.py": "4149f7dbfb9cd99c334d18c18207647d7fa4ffecee671fb9722535ceee663407",
+    "goal2/ui/s03_new_game.py": "2df1f37933a07fac2428a56782112c3877681b31896aef606132d2e76ad8b401",
+    "goal2/ui/s06_desk.py": "88ab7819ce67b9f10c335d5467f641db94c2093a7912d31efd4198ff857d35e6",
+    "goal2/ui/s07_team_info.py": "858aa99bd06c448a9366b6190c848f80de846ed0da1a33ab45790ab40cf29c19",
+    "goal2/ui/s08_squad.py": "8b873202b0723b8a689a7a287b02e50d9a253d2c654cf1dde60dd7fe411f60d5",
+    "goal2/ui/s10_team_tactics.py": "00067591b2dd063a06c0652d0dfe4ffd627749498c35eef2aae6e785315cbf60",
+    "goal2/ui/s15_match_menu.py": "73fc98a024e4648aa568610508e12c7c1cfb8f13ae6ee473934010dcbb110bfb",
+    "goal2/tests/test_ui_cues_799.py": "e23dac4cb6c758d48164f5264326979f27728f237c8ca5c605ccb9087cc2e264"
+  },
+  "remaining": "Clean full fast and hosted Linux/Windows/native scales required before merge"
+}

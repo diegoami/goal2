@@ -186,7 +186,7 @@ class TeamInfoScreen(Screen):
         number, _ = self.chosen()
         if number == self.model.state.managed_country:
             from goal2.ui.s10_team_tactics import open_team_tactics
-            return open_team_tactics(self.window_, self.model)
+            return open_team_tactics(self.window_, self.model, back="team info")
         return self.window_.push(CountryTacticsScreen(self.window_, self.model, number))
 
     def fixtures(self):

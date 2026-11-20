@@ -324,7 +324,7 @@ class DeskScreen(Screen):
         """*new career*: S03 over the desk, after S21's save question when anything is unsaved (T87, T168)."""
         def to_s03():
             from goal2.ui.s03_new_game import NewGameScreen
-            return self.window_.push(NewGameScreen(self.window_))
+            return self.window_.push(NewGameScreen(self.window_, back="desk"))
         if self.model.unsaved:
             from goal2.ui.s21_save import ask_to_save
             return ask_to_save(self.window_, self.model, to_s03, title="new career")

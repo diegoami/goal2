@@ -188,7 +188,7 @@ class CoreWindow(QMainWindow):
         self.cancel_save = QPushButton('Cancel');self.cancel_save.setObjectName('cancelOriginalSave')
         self.cancel_save.clicked.connect(self.cancel_save_name);bar.addWidget(self.cancel_save)
         page.content.addLayout(bar)
-        note = QLabel('Resume it with: python3 -m goal2.desktop --resume <core save> --data <GOAL.DAT>')
+        note = QLabel('Start goal2 again to resume this saved career.')
         note.setObjectName('deskCampaign');note.setWordWrap(True);page.content.addWidget(note)
 
     def save_core(self):

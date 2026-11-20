@@ -82,7 +82,12 @@ def core_summary(model):
     rows = {'country': desk['team']['name'], 'manager': desk['manager'],
             'campaign': f"{desk['year']} {desk['stage_word']}".strip(), 'then': '—',
             'checkpoint': 'At the manager menu', 'team': f"{len(desk['squad'])} players"}
-    if desk['sacked']:
+    # [designed: #801] A mid-round save resumes that match; it is not a future fixture.
+    if getattr(model, 'in_save_name', False):
+        rows.update(checkpoint='At the save prompt', next='Resume the save prompt')
+    elif getattr(model, 'in_round', False):
+        rows.update(checkpoint='In a match', next='Continue this match')
+    elif desk['sacked']:
         rows['next'] = 'Sacked'
     elif desk['opponent'] is not None:
         rows['next'] = f"{desk['opponent']['name']} ({desk['fixture_kind'].strip()})"

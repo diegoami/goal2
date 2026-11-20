@@ -51,7 +51,8 @@ class NewGameScreen(Screen):
     pre_game = True
     escape_text = "back to title"
 
-    def __init__(self, window):
+    def __init__(self, window, *, back="back to title"):
+        self.escape_text = back  # [designed: #799] Name the screen actually underneath S03.
         super().__init__(window)
         self.chosen = 1
         self.bind((Qt.Key.Key_Left,), "", lambda: self.choose(self.chosen - 1), captions=("←",), shown=False)
