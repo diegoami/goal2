@@ -95,6 +95,9 @@ class Packets(unittest.TestCase):
         from goal2.game.engine_server import ProtocolError
         engine=self.parent(enabled=False)
         with self.assertRaises(ProtocolError):engine._decode(engine._life,dict(kind='season',value=batch()),b'')
+        engine=self.parent();engine._life=SimpleNamespace(process=SimpleNamespace(stdin=io.BytesIO()))
+        self.assertTrue(engine._ended(engine._life));self.assertFalse(engine._season_pitch)
+        self.assertEqual(engine._season_pitch_sequence,0)
 
 
 class Worker(unittest.TestCase):
@@ -138,12 +141,33 @@ class Worker(unittest.TestCase):
         packet=ask('next',count=3)
         self.assertEqual(set(packet),{'request','action','events','decision','over','exhausted'})
         self.assertEqual([e['kind'] for e in packet['events']],['minute','tick','tick'])
+        other,other_match,other_ask=self.make();other_ask('configure',frames=False)
+        false_packet=other_ask('next',count=3)
+        # Invalid guard attempts above changed request IDs only, not the old ABI.
+        self.assertEqual({k:v for k,v in packet.items() if k!='request'},
+                         {k:v for k,v in false_packet.items() if k!='request'})
+        self.assertEqual(match.options,other_match.options)
         with self.assertRaises(SeasonRequestError):ask('configure',frames=True)
         from goal2.game.native_season import NativeSeasonOwner
         for bad in (None,0,1,'yes'):
             owner=SimpleNamespace()
             with self.assertRaisesRegex(ValueError,'frames'):NativeSeasonOwner(owner,{},frames=bad)
             self.assertFalse(hasattr(owner,'_match_engine'))
+
+    def test_optin_owner_declares_ticks_before_entry_and_refuses_early_samples(self):
+        from goal2.tests.test_native_season_t170aa import seed,FakeEngine,boundary,Pure
+        from goal2.game.watched_jobs import MatchEngine
+        from goal2.game.native_season import NativeSeasonOwner
+        p,data=seed();owner=SimpleNamespace();keeper=object()
+        with patch('goal2.game.engine_process.EngineProcess',FakeEngine):shared=MatchEngine.join(owner,keeper)
+        native=NativeSeasonOwner(owner,p['state'],frames=True);self.addCleanup(Pure.dispose,self,native)
+        engine=shared.engine;engine.emit('open',**boundary(p['state']));native.poll();native.advance()
+        engine.emit('advance',**boundary(p['state'],1,'match'));native.poll()
+        self.assertEqual(engine.calls[-1],('configure',{'frames':True}))
+        engine.emit('configure');native.poll()
+        engine.emit('next',**{k:v for k,v in batch(frames=[frame()]).items() if k not in ('action','request')})
+        self.assertEqual(native.poll(),'lost');self.assertIn('before pre-match',native.message)
+        self.assertIsNone(native.controller)
 
 
 def policy(data):
