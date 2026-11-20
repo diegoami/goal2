@@ -1,6 +1,5 @@
 """[designed: T170ad/#814] Actual retained PyPy Match through real S17."""
 import copy
-from dataclasses import asdict
 import json
 from pathlib import Path
 import tempfile
@@ -116,9 +115,11 @@ class NativeWindow(unittest.TestCase):
         self.assertEqual(completed,[True]);self.assertEqual(len(decisions),len(set(decisions)))
         self.assertGreater(len(beats),2);self.assertEqual(driver.painted_sequence,len(driver.frames)-1)
         observations=native.take_observations()
+        self.assertEqual(len(observations),1)
+        self.assertEqual((driver.boundary_status,native.status),('boundary','boundary'))
         actual=dict(events_hash=digest(prefix+driver.events),frames_hash=digest(driver.frames),
             events=len(prefix+driver.events),frames=len(driver.frames),state_hash=canonical_hash(native.boundary_state),
-            observation_hash=digest(asdict(observations[-1])),status=driver.boundary_status,
+            observation_hash=digest(observations[0]['observation']),status=observations[0]['observation']['status'],
             pauses=driver.pause_requests,edited=answers.edited)
         for key,value in actual.items():self.assertEqual(value,expected[key],key)
         self.assertEqual(model.state,before);self.assertEqual(native.shared.engine.generation,1)
