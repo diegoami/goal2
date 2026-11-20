@@ -157,6 +157,7 @@ class Pitch(Actual):
         from goal2.engine.original_match.image import Image
         from goal2.game import engine_tables
         from goal2.ui.pitch import PitchWidget
+        from goal2.ui.kits import compute
         from goal2.ui import theme
         root=Path(__file__).resolve().parents[2];raw=reference_raw()
         tmp=tempfile.TemporaryDirectory(prefix='goal2-driver-paint-');self.addCleanup(tmp.cleanup)
@@ -168,7 +169,9 @@ class Pitch(Actual):
         model.state=native.controller.view.display_state()
         app=QApplication.instance() or QApplication([]);theme.install(app)
         display=Display('native-paint');display.accept(['native-paint',0,'start',pitch_identity(model,native.fixture)])
-        display.accept(['native-paint',1,'pitch',60]);widget=PitchWidget(lambda:display,driver.painted,theme.load_font())
+        display.accept(['native-paint',1,'pitch',{'rate':60}]);widget=PitchWidget(lambda:display,driver.painted,theme.load_font())
+        image=Image.from_memory_component(model.state.mem)
+        widget.kits=compute(lambda off:image.rd(off,1),native.fixture.side_a,native.fixture.side_b)
         widget.resize(1000,560);widget.show();self.addCleanup(lambda:(widget.close(),widget.deleteLater(),app.processEvents()))
         beats=[];timer=QTimer();timer.setInterval(2);timer.timeout.connect(lambda:beats.append(True));timer.start();self.addCleanup(timer.stop)
         end=time.monotonic()+120;now=0.

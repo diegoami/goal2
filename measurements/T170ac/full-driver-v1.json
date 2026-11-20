@@ -1,0 +1,69 @@
+{
+  "boundaries": [
+    "No match_day.py change; preserve PR796 taker/help fix and other session Opus/workflow/checkpoint branches.",
+    "Driver/resume API plus real pitch proof, not complete match-day/menu/replay/save/default UI integration or fresh-native bootstrap.",
+    "No22/24 activation, engine source edit, guessed XI, fixture repair, mask, reduced fidelity budget or legacy publication."
+  ],
+  "controls": {
+    "actual_pitch_methods": 1,
+    "final_methods": 10,
+    "final_seconds": 2.44,
+    "pacing_transport_resume_methods": 9
+  },
+  "earlier_affected": {
+    "methods": 54,
+    "result": "One UI harness error: wrong existing Display rate-packet shape; corrected. Standalone first UI retry missed kit metadata; corrected without widget/driver changes.",
+    "skipped": 3
+  },
+  "fail_before": [
+    "Main9675d80e has no native_driver module and rejects pause operation.",
+    "Current controls reject early/duplicate resume, wrong-thread/corrupt/stale input and old handoff use after another Match."
+  ],
+  "final_validation": "Exact final code head and clean-head/local/Linux/Windows/native verdicts are recorded on PR812/issue810/checkpoint471; proof data committed before final CI.",
+  "full_methods": 1,
+  "full_seconds": 130.159,
+  "implementation_agent": "Codex primary session; no subagents/per-PR review",
+  "issue": 810,
+  "pr": 812,
+  "private_evidence": "/home/diego/projects/goal2-keep/T170ac",
+  "result": {
+    "all16": [
+      80,
+      31421,
+      4,
+      65519,
+      31588,
+      6,
+      16094,
+      16072,
+      3,
+      28445,
+      2097,
+      11684,
+      23911,
+      14453,
+      0,
+      0
+    ],
+    "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+    "edited": true,
+    "events": 1343,
+    "events_hash": "875516a58ed2432a89b7c5be0ba03a5c3534086406c00b7fcc54fc85e1a72f1a",
+    "frames": 3997,
+    "frames_hash": "7f2e09fa73a7da49df518e15f9d7e812c2c3e62217827880ac4082006f691aff",
+    "memory_hash": "74c9105eb4eed236af449e45b65020c78c96c309d272383c78c99ef16af0c873",
+    "observation_hash": "3000df9e65b5388f636db8711c5a08728b952f9b3b6b0e5c0868d08811336c3c",
+    "pauses": 1,
+    "state_hash": "502231bfd81c8c856a2fc948c02a76271ddb1d938794972a6bab5e97e02d9634",
+    "status": "complete"
+  },
+  "schema": "goal2/t170ac-full-driver-fidelity/1",
+  "scope": "Complete real parent/PyPy driver versus direct SDK with identical explicit first-frame pause, stopped tactic edit/play and all remaining decisions; exact frames/events/fullRAM/all16/RNG and same-call resume state/news.",
+  "sha256": {
+    "goal2/game/engine_process.py": "6662e31cea66cf0f144d8dcef3e35c78d98e628076adc12db099e1d998659d20",
+    "goal2/game/native_driver.py": "0491516b3a4b7131530c9c0ed532f5e7ffb9e4fd116bf5d2741bee0f859b7b97",
+    "goal2/game/native_season.py": "8fabdada7d5c686e177ecdaf480dc9324a2333b71d6695bf34a79f3939e8e8d8",
+    "goal2/game/season_worker.py": "5c22ad916e9785e87d039cef2b96930f9b0653dc3b766b4cc13711102497fbd8"
+  },
+  "source_pin": "87d925013da43b266f72bd198fda7a7a2c67dac8"
+}
