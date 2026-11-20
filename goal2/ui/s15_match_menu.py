@@ -301,7 +301,7 @@ class MenuScreen(Screen):
             if getattr(model, 'held_prematch', False):
                 return self.day.open_team_tactics()
             from goal2.ui.s10_team_tactics import open_team_tactics
-            return open_team_tactics(window, model)
+            return open_team_tactics(window, model, back="match menu")
         if country == model.state.managed_country and self.day.bench is not None:
             return self.day.open_team_tactics()
         from goal2.ui.s07_team_info import CountryTacticsScreen
@@ -313,7 +313,7 @@ class MenuScreen(Screen):
         window, model = self.window_, self.model
         if country == model.state.managed_country and not self.during():
             from goal2.ui.s08_squad import open_squad
-            return open_squad(window, model)
+            return open_squad(window, model, back="match menu")
         if country == model.state.managed_country and self.day.bench is not None:
             return self.day.open_bench()   # S19 at a break [designed: T180]
         from goal2.ui.s07_team_info import TeamPlayersScreen

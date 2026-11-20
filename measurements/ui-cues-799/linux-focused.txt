@@ -1,0 +1,39 @@
+test_live_match_save_reloads_with_a_current_match_summary (goal2.tests.test_ui_cues_799.ActualCoreSaveCue.test_live_match_save_reloads_with_a_current_match_summary) ... ok
+test_new_career_escape_returns_to_the_desk (goal2.tests.test_ui_cues_799.BackCaptions.test_new_career_escape_returns_to_the_desk) ... This plugin does not support propagateSizeHints()
+ok
+test_pre_match_players_and_tactics_escape_return_to_match_menu (goal2.tests.test_ui_cues_799.BackCaptions.test_pre_match_players_and_tactics_escape_return_to_match_menu) ... This plugin does not support propagateSizeHints()
+ok
+test_team_info_tactics_escape_returns_to_team_info (goal2.tests.test_ui_cues_799.BackCaptions.test_team_info_tactics_escape_returns_to_team_info) ... This plugin does not support propagateSizeHints()
+ok
+test_save_page_has_player_resume_instructions (goal2.tests.test_ui_cues_799.CoreSaveCues.test_save_page_has_player_resume_instructions) ... ok
+test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture (goal2.tests.test_ui_cues_799.CoreSaveCues.test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture) ... ok
+test_empty_lists_offer_no_open_and_have_one_arrow_caption (goal2.tests.test_ui_cues_799.RecordingsCues.test_empty_lists_offer_no_open_and_have_one_arrow_caption) ... ok
+test_nonempty_list_keeps_open_hint (goal2.tests.test_ui_cues_799.RecordingsCues.test_nonempty_list_keeps_open_hint) ... ok
+test_space_opens_the_twenty_from_the_cores_own_memory (goal2.tests.test_desktop_launch.CoreRoutePlayers.test_space_opens_the_twenty_from_the_cores_own_memory) ... ok
+test_failures_offer_retry_and_load_another_and_change_nothing (goal2.tests.test_desktop_launch.Launch.test_failures_offer_retry_and_load_another_and_change_nothing) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_keyboard_matches_the_hint_line (goal2.tests.test_desktop_launch.Launch.test_keyboard_matches_the_hint_line) ... This plugin does not support propagateSizeHints()
+ok
+test_new_career_browses_and_reviews_without_writing_then_starts (goal2.tests.test_desktop_launch.Launch.test_new_career_browses_and_reviews_without_writing_then_starts) ... This plugin does not support propagateSizeHints()
+ok
+test_new_career_needs_the_template (goal2.tests.test_desktop_launch.Launch.test_new_career_needs_the_template) ... This plugin does not support propagateSizeHints()
+ok
+test_resume_opens_the_validated_saved_game (goal2.tests.test_desktop_launch.Launch.test_resume_opens_the_validated_saved_game) ... This plugin does not support propagateSizeHints()
+ok
+test_space_shows_every_player_with_a_complete_card_and_writes_nothing (goal2.tests.test_desktop_launch.Launch.test_space_shows_every_player_with_a_complete_card_and_writes_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_summary_names_the_saved_career (goal2.tests.test_desktop_launch.Launch.test_summary_names_the_saved_career) ... This plugin does not support propagateSizeHints()
+ok
+test_a_damaged_core_save_is_named_not_usable (goal2.tests.test_launch_core_save_518.CoreSave.test_a_damaged_core_save_is_named_not_usable)
+[designed] A truncated or corrupted core save shows SAVE NOT USABLE with Resume off, as read_saved promises, ... ok
+test_open_refuses_a_file_that_is_not_a_savestate (goal2.tests.test_launch_core_save_518.CoreSave.test_open_refuses_a_file_that_is_not_a_savestate) ... ok
+test_resume_opens_the_core_save_at_its_saved_state (goal2.tests.test_launch_core_save_518.CoreSave.test_resume_opens_the_core_save_at_its_saved_state) ... ok
+test_the_panel_summarises_a_core_save (goal2.tests.test_launch_core_save_518.CoreSave.test_the_panel_summarises_a_core_save) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 14.975s
+
+OK
