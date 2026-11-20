@@ -27,9 +27,10 @@
     "consumer constructed after pre-match view detach",
     "tuple/list display score mismatch",
     "first complete run interrupted(-2) in whole-history copying",
-    "159.757s completed run proof ERROR: observation packet mistaken for dataclass"
+    "159.757s completed run proof ERROR: observation packet mistaken for dataclass",
+    "Exact-head1af71abb local gate FAIL285/286: concrete NativePitchScreen inherited GRID=True instead of declaring it explicitly; original inventory assertion retained unchanged"
   ],
-  "production_unchanged_after_full": true,
+  "production_unchanged_after_full": false,
   "files_sha256": {
     "goal2/ui/native_pitch.py": "ac6034a286b705899d26cc9366b1768613925dc21f5027a5dc1aa9522e07d63e",
     "goal2/game/native_driver.py": "7008c1ce21ce6537d79b43e15a8ed6b59faf0796c10ee6f7d9f16370a928c2c6",
@@ -52,5 +53,17 @@
       "legacy S17/commentary",
       "#796 taker timeout under help"
     ]
+  },
+  "receipt_reuse": {
+    "full_tested_head": "502ca02ec235",
+    "change": "Only explicit NativePitchScreen.GRID=True declaration; inherited PitchScreen.GRID was already True. Renderer, pacing, transport, tests, dependencies and fixtures unchanged. Full SDK result retained for this runtime-equivalent declaration.",
+    "new_native_pitch_sha256": "0a345855f54d63eff4905a28fe34f5d2ac1d431e5c543d1d280392c4e63060c9",
+    "affected_validation": {
+      "methods": 15,
+      "seconds": 10.766,
+      "skips": 0,
+      "status": "pass",
+      "scope": "13 native pitch controls, actual held-widget/window/pause/close and unchanged failing T215 inventory check"
+    }
   }
 }

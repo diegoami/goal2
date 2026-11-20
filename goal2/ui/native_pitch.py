@@ -141,6 +141,8 @@ class NativePitchScreen(PitchScreen):
     explicitly, then transfer/close the continuing NativeSeasonOwner itself.
     """
 
+    GRID = True  # [designed: T215/T170ad] Explicitly retain S17's cell layout.
+
     def __init__(self, window, model, native, *, on_decision, on_goal,
                  on_complete, on_failure, connection=None):
         callbacks = (on_decision, on_goal, on_complete, on_failure)
