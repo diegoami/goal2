@@ -1,5 +1,5 @@
 """[designed: #802/#804] Test inputs cannot hide under documentation paths."""
-import ast,os,re,subprocess,sys,unittest
+import ast,os,re,shutil,subprocess,sys,unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools'))
@@ -42,6 +42,16 @@ class MainPushAndWindows(unittest.TestCase):
                 self.assertNotIn('paths-ignore:',push)
 
     def test_windows_missing_fixture_token_fails_owned_runs_and_allows_forks(self):
+        # Windows' PATH may resolve bash to WSL, which is not the workflow's
+        # Git Bash. Use the shell beside Git (also used by the slow runner).
+        if os.name=='nt':
+            git=Path(shutil.which('git') or '')
+            options=(git.parent.parent/'bin/bash.exe',Path(r'C:\Program Files\Git\bin\bash.exe'))
+            bash=next((str(p) for p in options if p.is_file()),None)
+            self.assertIsNotNone(bash,'Windows workflow validation requires Git Bash')
+        else:
+            bash=shutil.which('bash')
+            self.assertIsNotNone(bash,'workflow validation requires Bash')
         text=(ROOT/'.github/workflows/windows.yml').read_text()
         blocks=text.split('      - name: Original-game files ')[1:]
         self.assertEqual(len(blocks),1)
@@ -54,6 +64,6 @@ class MainPushAndWindows(unittest.TestCase):
             for fork,expected in (('false',1),('true',0)):
                 with self.subTest(block=block.splitlines()[0],fork=fork):
                     env=dict(os.environ,GOAL2_RCLONE_TOKEN='',FORK=fork)
-                    result=subprocess.run(['bash','-c',script],env=env,text=True,capture_output=True)
+                    result=subprocess.run([bash,'-c',script],env=env,text=True,capture_output=True)
                     self.assertEqual(result.returncode,expected,result.stdout+result.stderr)
                     self.assertIn('FORK:',block.split('        run:',1)[0])
