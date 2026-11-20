@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 from goal2.tests import requires
-from goal2.tests.test_core_in_match_tactics_t224 import NEEDS, _core, watched_live
+from goal2.tests.test_core_in_match_tactics_t224 import NEEDS, _core, outfield, watched_live
 
 
 @requires.need(**NEEDS)
@@ -31,6 +31,19 @@ class Model(unittest.TestCase):
         wait, model.core.wait = model.core.wait, None        # a step runs: _run cleared the wait
         try:
             self.assertTrue(model.in_round);self.assertFalse(model.in_save_name)
+        finally:
+            model.core.wait = wait
+
+    def test_the_state_answers_from_the_wait_the_step_started_from(self):
+        """[designed: T227] The tactics rows stay enabled while a pose's step runs, and their click reads the current
+        tactics (`team_tactics`, `card`) before it queues the change: `state` raised there as `in_round` did."""
+        model = self.model()
+        player = outfield(model.core.wait)
+        byte, card = model.team_tactics()['byte'], model.card(player)
+        wait, model.core.wait = model.core.wait, None        # a step runs: _run cleared the wait
+        try:
+            self.assertEqual(model.team_tactics()['byte'], byte)
+            self.assertEqual(model.card(player), card)
         finally:
             model.core.wait = wait
 
@@ -65,6 +78,37 @@ class Window(unittest.TestCase):
             w.model.core.wait = wait
         w.refresh_round_controls()
         self.assertEqual((w.core_team_buttons['reposition'].isEnabled(), w.pool_move.isEnabled()), locked)
+
+    def test_a_tactics_click_while_a_step_runs_is_queued(self):
+        """A team-tactic or own-tactic click during a pose's step, when the core's wait is None, is kept for the next
+        pose (T224's pending_action) instead of raising AttributeError and losing the change."""
+        import tempfile
+        from pathlib import Path
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        watched_live()
+        folder = tempfile.TemporaryDirectory();self.addCleanup(folder.cleanup)
+        with patch.object(CoreWindow, 'resume_round'):
+            w = CoreWindow(CoreModel(_core('live'), requires.CACHE / 'GOAL.DAT', Path(folder.name) / 'g.g2core'))
+        self.addCleanup(w.close)
+        w.core_round.state = w.model.round_state()
+        w.refresh_round_controls()
+        byte = w.model.team_tactics()['byte']
+        player = outfield(w.model.core.wait)
+        w.team_roster.set_current([r[0] for r in w.team_roster.rows].index(player))
+        wait, w.model.core.wait = w.model.core.wait, None
+        try:
+            with patch.object(type(w.core_jobs), 'busy', new=property(lambda self: True)):
+                w.refresh_round_controls()
+                dict(w.tactics)[6].click()
+                self.assertEqual(w.core_round.pending_action, ('match_tactic', (6, not byte >> 5 & 1)))
+                w.core_round.pending_action = None
+                w.own_tactics[0].click()
+                self.assertIsNotNone(w.core_round.pending_action)
+                self.assertEqual(w.core_round.pending_action[0], 'match_own_tactic')
+        finally:
+            w.model.core.wait = wait
+            w.core_round.pending_action = None
 
 
 if __name__ == '__main__':

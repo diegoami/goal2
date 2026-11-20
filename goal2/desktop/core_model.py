@@ -88,11 +88,12 @@ class CoreModel:
 
     @classmethod
     def open(cls, savestate_path, data_path, save_path):
+        from zipfile import BadZipFile
         from goal2.core import Core, CoreError
         try:
             raw = Path(savestate_path).read_bytes()
             return cls(Core.start(raw).core, data_path, save_path)
-        except (OSError, ValueError, CoreError) as exc:
+        except (OSError, ValueError, CoreError, BadZipFile) as exc:   # a savestate is a ZIP (#420)
             raise ValueError(f'Cannot open the core: {exc}') from exc
 
     @classmethod
@@ -110,7 +111,9 @@ class CoreModel:
     # -- the views, read from memory at the manager menu -------------------------------------------------
     @property
     def state(self):
-        return self.core.wait.state
+        # [designed: T227] While a step runs (core.wait None) the views read the wait the step started from, as
+        # `in_round` does: the tactics rows stay enabled during a pose's step and read the tactics before they queue.
+        return self._settled_wait().state
 
     @presented
     def desk(self):
@@ -189,14 +192,19 @@ class CoreModel:
     # -- the round (T108) -------------------------------------------------------------------------------------------
     # [designed: T227] The core's wait is None while a step runs on the job thread (Core._run clears it first). The
     # window refreshes its controls then too (poll_core, as the next step starts), so these answer from the last wait
-    # read, the one the running step started from, instead of raising. One read of `core.wait`, never two.
-    _settled_kind = None
+    # read, the one the running step started from, instead of raising. One read of `core.wait`, never two. The wait
+    # kept is immutable: its state is the bytes copied at the wait (goal2/core/runner.py, StateView).
+    _settled = None
 
-    def _wait_kind(self):
+    def _settled_wait(self):
         wait = self.core.wait
         if wait is not None:
-            self._settled_kind = wait.kind
-        return self._settled_kind
+            self._settled = wait
+        return self._settled
+
+    def _wait_kind(self):
+        wait = self._settled_wait()
+        return None if wait is None else wait.kind
 
     @property
     def in_round(self):
