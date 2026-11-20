@@ -58,6 +58,16 @@ class NativeMatchDriver:
     @property
     def events(self):return deepcopy(self._events)
 
+    def events_since(self, start):
+        """[designed: T170ad/#814] Detached append-only suffix for UI cursors."""
+        self._owner()
+        if type(start) is not int or not 0 <= start <= len(self._events):
+            raise ValueError('invalid native event cursor')
+        return deepcopy(self._events[start:])
+
+    @property
+    def shown_count(self):return self._visible
+
     @property
     def frames(self):return deepcopy(self._frames)
 
