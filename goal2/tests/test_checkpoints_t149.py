@@ -174,6 +174,8 @@ class Snapshot(unittest.TestCase):
                 return 0, json.dumps(issues if issues is not None else [{"number": 7}]), ""
             if args[:3] == ["gh", "issue", "comment"]:
                 return 0, "https://github.com/diegoami/goal2/issues/7#issuecomment-1\n", ""
+            if args[:2] == ["gh", "api"] and pr_error:
+                return 1, "", pr_error + "\n"
             raise AssertionError(args)
         return run, calls
 
@@ -194,7 +196,9 @@ class Snapshot(unittest.TestCase):
 
     def test_a_failed_github_call_is_reported(self):
         run, _ = self.fake(pr_error="HTTP 403: rate limited")
-        self.assertIn("FAILED to read PRs (HTTP 403: rate limited)", self.cp.snapshot([Path("/work/goal2")], run))
+        text = self.cp.snapshot([Path("/work/goal2")], run)
+        self.assertIn("FAILED to read PRs (HTTP 403: rate limited", text)
+        self.assertIn("REST fallback failed", text)
 
     def test_post_goes_only_to_the_one_checkpoint_issue(self):
         run, calls = self.fake()

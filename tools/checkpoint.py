@@ -23,6 +23,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -79,11 +80,43 @@ def checks(rollup: list[dict]) -> str:
                      for s in order)
 
 
+def rest(endpoint: str, run=sh) -> object:
+    """[designed: #803] The existing cloud proxy permits GitHub's REST API."""
+    code, out, err = run(["gh", "api", endpoint])
+    if code:
+        raise CheckpointError((err.strip().splitlines() or [f"gh api exit {code}"])[0])
+    try:
+        return json.loads(out)
+    except (ValueError, TypeError) as exc:
+        raise CheckpointError("invalid GitHub REST JSON") from exc
+
+
+def rest_pulls(repo: str, run=sh) -> list[dict]:
+    rows = rest(f"repos/{repo}/pulls?state=open&per_page=50", run)
+    result = []
+    for row in rows:
+        sha = row["head"]["sha"]
+        try:
+            rollup = rest(f"repos/{repo}/commits/{sha}/check-runs?per_page=100", run)["check_runs"]
+            rollup += rest(f"repos/{repo}/commits/{sha}/status", run)["statuses"]
+        except CheckpointError as exc:
+            # Never make unavailable checks look like a successful empty set.
+            rollup = [{"context": f"REST checks: {exc}", "state": "ERROR"}]
+        result.append(dict(number=row["number"], title=row["title"], headRefName=row["head"]["ref"],
+                           headRefOid=sha, isDraft=row.get("draft", False), labels=row.get("labels", []),
+                           statusCheckRollup=rollup))
+    return result
+
+
 def pulls(repo: str, run=sh) -> dict:
     code, out, err = run(["gh", "pr", "list", "--repo", repo, "--state", "open", "--limit", "50", "--json",
                           "number,title,headRefName,headRefOid,isDraft,labels,statusCheckRollup"])
     if code:
-        return dict(repo=repo, error=(err.strip().splitlines() or [f"gh exit {code}"])[0])
+        original = (err.strip().splitlines() or [f"gh exit {code}"])[0]
+        try:
+            return dict(repo=repo, prs=rest_pulls(repo, run))
+        except (CheckpointError, KeyError, TypeError, ValueError) as exc:
+            return dict(repo=repo, error=f"{original}; REST fallback failed: {exc}")
     return dict(repo=repo, prs=json.loads(out or "[]"))
 
 
@@ -119,14 +152,31 @@ def post(repo: str, body: str, run=sh) -> str:
     code, out, err = run(["gh", "issue", "list", "--repo", repo, "--label", LABEL, "--state", "open",
                           "--json", "number"])
     if code:
-        raise CheckpointError(f"could not list {LABEL} issues: {(err.strip().splitlines() or [''])[0]}")
-    issues = json.loads(out or "[]")
+        try:
+            rows = rest(f"repos/{repo}/issues?labels={LABEL}&state=open&per_page=100", run)
+            issues = [row for row in rows if "pull_request" not in row]
+        except (CheckpointError, TypeError) as exc:
+            raise CheckpointError(f"could not list {LABEL} issues: {err.strip()}; REST fallback failed: {exc}") from exc
+    else:
+        issues = json.loads(out or "[]")
     if len(issues) != 1:
         raise CheckpointError(f"{len(issues)} open issues labelled {LABEL} in {repo}; need exactly one")
     number = issues[0]["number"]
     code, out, err = run(["gh", "issue", "comment", str(number), "--repo", repo, "--body", body])
     if code:
-        raise CheckpointError(f"could not comment on #{number}: {(err.strip().splitlines() or [''])[0]}")
+        # An input file preserves newlines/literal text without shell escaping,
+        # and is closed before gh reads it (including on Windows).
+        with tempfile.TemporaryDirectory(prefix="goal2-checkpoint-") as folder:
+            path = Path(folder) / "comment.json"
+            path.write_text(json.dumps({"body": body}), encoding="utf-8")
+            code, out, fallback = run(["gh", "api", f"repos/{repo}/issues/{number}/comments",
+                                       "--method", "POST", "--input", str(path)])
+        if code:
+            raise CheckpointError(f"could not comment on #{number}: {err.strip()}; REST fallback failed: {fallback.strip()}")
+        try:
+            return json.loads(out)["html_url"]
+        except (ValueError, KeyError, TypeError) as exc:
+            raise CheckpointError("invalid REST comment response") from exc
     return out.strip()
 
 

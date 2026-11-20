@@ -16,3 +16,8 @@ You implement one task (or one fix). The brief is the task file pasted in full p
 - When done: mark the PR ready (`gh pr ready`) and make your final message the report: what you
   built, each Done-when line with the command you ran and its result, anything you could not
   verify. The main session checks and merges.
+
+For a REST-only cloud proxy, use the equivalent forms in `docs/cloud.md` for
+PR creation, reads and labels. Open non-draft there after the first implementation
+push; do not attempt `gh pr ready` through that proxy. All focused/platform/check
+and owner-review requirements still apply. Local sessions keep draft-first.
