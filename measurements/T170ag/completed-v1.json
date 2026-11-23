@@ -1,0 +1,126 @@
+{
+  "actual_window": {
+    "seconds": 6.241,
+    "status": "pass"
+  },
+  "attempts": [
+    {
+      "job": "t170ag-quick-window",
+      "reason": "Test treated an unloaded DesktopModel.state None as a dataclass; preserved unchanged-owner assertion now compares the actual owner state.",
+      "seconds": 0.284,
+      "status": "failed"
+    },
+    {
+      "reason": "Stand-in initial handoff supplied two events despite its count1 bound; corrected to real full_time/end/exhausted packet sequence. Production drain guards correctly refused the invalid stand-in.",
+      "scope": "initial synthetic completion controls",
+      "seconds": 1.443,
+      "status": "failed"
+    }
+  ],
+  "boundary": "Actual completed post-F1F6 records and recorded whistle board only. Original earlier interactive post_match menu needs upstream stop829. No fabricated decision/backdated flags, historical save profile, resume/publication/bootstrap/default/extra activation.",
+  "controls": 8,
+  "full": {
+    "proof": {
+      "all16": [
+        80,
+        31421,
+        4,
+        65519,
+        31588,
+        6,
+        16094,
+        16072,
+        3,
+        28445,
+        2097,
+        11684,
+        23911,
+        14453,
+        0,
+        0
+      ],
+      "board_hash": "34d8a53c0cc9bc25a45cb804943d3784de93c9319ddf14177f8e69679656ca8f",
+      "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+      "events": 1343,
+      "events_hash": "875516a58ed2432a89b7c5be0ba03a5c3534086406c00b7fcc54fc85e1a72f1a",
+      "frames": 3997,
+      "frames_hash": "7f2e09fa73a7da49df518e15f9d7e812c2c3e62217827880ac4082006f691aff",
+      "memory_hash": "74c9105eb4eed236af449e45b65020c78c96c309d272383c78c99ef16af0c873",
+      "observation_hash": "3000df9e65b5388f636db8711c5a08728b952f9b3b6b0e5c0868d08811336c3c",
+      "result_hash": "b9c8b98bc4d2aae51caae95644e1e5cdb8ad71e18e626dd23bb2f276ed24e1f0",
+      "state_hash": "502231bfd81c8c856a2fc948c02a76271ddb1d938794972a6bab5e97e02d9634",
+      "status": "complete"
+    },
+    "runtime": "PyPy3.11 SDK/worker; CPython3.12 parent",
+    "seconds": 128.675,
+    "status": "pass"
+  },
+  "quick_driver": {
+    "seconds": 13.146,
+    "status": "pass"
+  },
+  "quick_worker": {
+    "proof": {
+      "context": {
+        "in_match_menu_used": 0,
+        "match_set_up": 0,
+        "sides": [
+          27,
+          7
+        ]
+      },
+      "proof": {
+        "all16": [
+          80,
+          31421,
+          4,
+          65519,
+          31588,
+          6,
+          16094,
+          16072,
+          7,
+          28445,
+          2097,
+          11684,
+          23911,
+          14453,
+          0,
+          0
+        ],
+        "board_hash": "0113dc3de8d03333d071226f35e76957b786a44b89b4e33ad2877b8f6eb60c14",
+        "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+        "events": 113,
+        "events_hash": "050ac6dc2ce7f3888179b5dfe0ca169fab029444d754f6e472511fd2fa4ad5de",
+        "frames": 140,
+        "frames_hash": "3c3331b9ca393c6f804aca9634b0eb246e98ca982c186a382c2ba832543f182d",
+        "memory_hash": "3fdedb67bbf8ac32d3088c76eb3768181e7ad5a5dc999b346942ec079e9c819d",
+        "observation_hash": "ddc3807d5403894ecadbf66ef625849320681b265da8770f5db73712900bf0a5",
+        "result_hash": "870409000452a3228b1a118bf7ac3f8536e94f6c717ee8ac059998c3aed433df",
+        "state_hash": "424e80e4e1828e99a35ccffd5c95f6481ed6ef1bc3613ea926c15ac727f359e1",
+        "status": "complete"
+      },
+      "refusals": [
+        "before-events",
+        "decision",
+        "unconfigured",
+        "unread-end",
+        "whistle"
+      ]
+    },
+    "seconds": 10.919,
+    "status": "pass"
+  },
+  "schema": "goal2/T170ag-proof/1",
+  "source_head": "eb585aba1f0c82de287bde4be148ac1828c7c2ca",
+  "source_sha256": {
+    "goal2/game/completed_view.py": "1a5e84a91c2a46803341ee075f1838f75019b6929d23c9ba50421a93a0368ed8",
+    "goal2/game/engine_process.py": "1fea7e0eb2f45c6491c11aa6277e4e6d60e6b1ba9394b3c548376da6fff6a7c5",
+    "goal2/game/native_driver.py": "7511689a01e13eb640193b210189083212199a184d80ac1c790c1aa4f97ced41",
+    "goal2/game/native_season.py": "0edb6d18ca9d6e9b6b5fb871d9cf29a9164db4f4fa5200a5eafe4a50649c124e",
+    "goal2/game/season_worker.py": "83c2b63f63931d0184b2c33473b29fc980e540b84cecf5073916b030fd491c80",
+    "goal2/game/stopped_view.py": "d410a21b533d0ae04a04f753f203434d96b9dc54e80948dfd6b74f60ef9a475c",
+    "goal2/tests/test_completed_actual_t170ag.py": "13c13fc70619d6bebbc3faee487bc4cd3682b77f495eadbdead1c334499a6412",
+    "goal2/tests/test_completed_view_t170ag.py": "77eaf155e30ab688157bd6335ff9d583610e0a1d9750b7dd114971ad76f007e6"
+  }
+}
