@@ -508,3 +508,19 @@ never confirms; a valid confirmation cancels that watchdog. Public busy remains 
 A malformed packet after confirmation still ends the worker and cannot complete a second time; an already
 committed valid prior game is not rewritten. Synthetic replay workers emit confirmation only after their
 deliberate fault injections. Original recorded event/result/memory fixture bytes stay unchanged.
+
+## Optional full selected bench SDK
+
+[designed: owner #777; confirmed: archaeology T138b/a492059d, root T234]
+The accepted SDK admits `extra_players` containing up to four distinct current
+managed-pool words. Omitted/empty options retain the twenty-player path. Explicit
+extras extend the logical selected group while physical country/pool arrays stay
+twenty/eighty words; the SDK records a promotion before the original menu acts.
+Waiting decisions expose all selected bench members and current records; SDK
+save/replay retains membership and final `national_squad_after`. This is a declared
+extension, not an original twenty-four-player rule.
+
+Root workers do not yet pass this option. Canonical managed-pool preparation,
+strict extended result/publication validation and the visible size/bench controls
+require their own contracts before activation. Existing native season readers
+continue to require twenty members in their unextended path.

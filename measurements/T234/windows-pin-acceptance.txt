@@ -1,0 +1,6 @@
+test_exact_source_and_scenario_selector (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_exact_source_and_scenario_selector) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 6.414s
+
+OK

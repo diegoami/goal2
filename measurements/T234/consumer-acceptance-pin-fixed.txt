@@ -1,0 +1,8 @@
+test_all_builder_kinds_accept_and_impossible_kinds_refuse (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_all_builder_kinds_accept_and_impossible_kinds_refuse) ... ok
+test_exact_source_and_scenario_selector (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_exact_source_and_scenario_selector) ... ok
+test_result_shape_matches_independent_guest_execution (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_result_shape_matches_independent_guest_execution) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 27.235s
+
+OK
