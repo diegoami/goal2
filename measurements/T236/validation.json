@@ -1,0 +1,12 @@
+{
+  "scope": "Explicit pure selected-bench validation only; no worker/publication/save/UI activation",
+  "before": "all6methods fail because the new module is absent from committed main",
+  "linux": "6methods0skip148.987s; five actual PyPy Match runs count0..4 produce exact40..44consequence rows",
+  "default_guard": "legacy watched_schema.py is unchanged; its result/card guards still reject extended payloads",
+  "native_effects": "exact submitted pairs in physical XI reporting order, all extras in final XI, exact original255-count budget, authenticNonebefore/after endpoints",
+  "fixture_correction": "initial reverse-order multi-pair fixture assumed caller-list logging order; SDK Match._flush pairs original before/final physical XI lists. Fixture now submits physical-XI order; exact pair/count/union/native-effect assertions remain. Initial failing/interrupted attempt and direct reproduction retained privately; not counted as pass",
+  "source_hashes": {
+    "goal2/game/extended_schema.py": "e27f5b9d9a5c5481af980bfde4088febd002849fbbcba66e17e8b907f90023c1",
+    "goal2/tests/test_extended_schema_t236.py": "3743890063b6807a3cbcf71640e3ce1fb11e972e1ace3b2e92c460d9ca51487f"
+  }
+}

@@ -524,3 +524,20 @@ Root workers do not yet pass this option. Canonical managed-pool preparation,
 strict extended result/publication validation and the visible size/bench controls
 require their own contracts before activation. Existing native season readers
 continue to require twenty members in their unextended path.
+
+## Explicit selected-bench validation
+
+[designed: owner #777/T236; confirmed: accepted T138b/a492059d]
+`extended_schema` binds an immutable selected group to prepared input records,
+fixture and image hash. It validates every extended current card in exact
+XI/bench order and exposes the separate native twenty, current positions,
+budget/tactics and raw TEAM context. Extended results retain the exact union
+of initial/final physical player groups, including absent before/after values
+for promoted/displaced players. Those absences are checked against membership
+and prepared records rather than replaced with numbers.
+
+The `selected-bench:1` value is validation metadata. Existing engine identities,
+result/save profiles and twenty-player guards are unchanged. Empty larger
+capacities still produce the normal result shape. No worker, publication or
+save/UI caller uses this validator yet; those boundaries require their own
+strict extended profiles before activation.
