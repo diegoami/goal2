@@ -203,7 +203,7 @@ decoder-only data from the full current native image, including the opponent,
 marking/status and raw TEAM context. Only player renames and manager name are
 copied from identities; no legacy campaign, roster, extra places or records are
 copied. Existing player/TEAM decoders consume this data. Actual stopped widgets
-and full-time/completed reads still require their own #817 contracts.
+and the earlier interactive full-time menu remain under #817/#829.
 
 [designed: T170ag/#828; confirmed: archaeology a492059d, Match._finish,
 original0791:F1F6/0106] At drained completion, explicit
