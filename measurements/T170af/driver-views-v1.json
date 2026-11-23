@@ -1,0 +1,67 @@
+{
+  "attempts": [
+    {
+      "job": "t170af-actual",
+      "reason": "Instrumented PyPy server imported a test oracle without GOAL2_ENGINE_CHILD marker. Corrected test setup after asserting PyPy3.11/UcNone, preserving the CPython engine guard and every production check.",
+      "seconds": 10.909,
+      "status": "failed"
+    }
+  ],
+  "boundary": "Driver current numbered-decision reads and decoder data only. Full-time/completed reads, actual stopped widgets/actions and replay/save/publication/bootstrap/default/22/24 remain separate817 work.",
+  "focused": {
+    "actual_pipe_seconds": 5.002,
+    "actual_window_seconds": 9.612,
+    "controls": 7,
+    "seconds": 0.422
+  },
+  "full": {
+    "proof": {
+      "result": {
+        "all16": [
+          80,
+          31421,
+          4,
+          65519,
+          31588,
+          6,
+          16094,
+          16072,
+          3,
+          28445,
+          2097,
+          11684,
+          23911,
+          14453,
+          0,
+          0
+        ],
+        "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+        "edited": true,
+        "events": 1343,
+        "events_hash": "875516a58ed2432a89b7c5be0ba03a5c3534086406c00b7fcc54fc85e1a72f1a",
+        "frames": 3997,
+        "frames_hash": "7f2e09fa73a7da49df518e15f9d7e812c2c3e62217827880ac4082006f691aff",
+        "memory_hash": "74c9105eb4eed236af449e45b65020c78c96c309d272383c78c99ef16af0c873",
+        "observation_hash": "3000df9e65b5388f636db8711c5a08728b952f9b3b6b0e5c0868d08811336c3c",
+        "pauses": 1,
+        "state_hash": "502231bfd81c8c856a2fc948c02a76271ddb1d938794972a6bab5e97e02d9634",
+        "status": "complete"
+      },
+      "views": 3
+    },
+    "runtime": "PyPy3.11 engine and independent SDK; CPython3.12 parent",
+    "seconds": 138.54,
+    "status": "pass",
+    "tests": 1
+  },
+  "oracle": "Independent direct native machine reads for all3061 player/129country records, all managed/opponent player cards and both TEAM cards/context; no stale owner records.",
+  "schema": "goal2/T170af-proof/1",
+  "source_head": "1bfd900abb2fbec551f4ab9c50083fc0341d92fe",
+  "source_sha256": {
+    "goal2/game/native_driver.py": "86317840e50716a08a022548d3393aa1e76eb0095cd2c0df4837977d6cff53f8",
+    "goal2/game/native_season.py": "39b6612211307943a6e3a1aacb44c85c1351a8605d88e58bdf183a3261756c44",
+    "goal2/game/stopped_view.py": "544e438eab2d5e6f7a023a01e9c262e849b50031ca83c2cd022a3e84cc11a7de",
+    "goal2/tests/test_stopped_view_actual_t170af.py": "e10c9e2c574425b082dd93dafc0e15ee8c17a38b9ee8749297e6bf9a3a8bb10b",
+    "goal2/tests/test_stopped_view_t170af.py": "6c0cf49faef3dc87f9206f82b10bc4d05002412fee967e231f91616b7601bb62"
+  }
+}
