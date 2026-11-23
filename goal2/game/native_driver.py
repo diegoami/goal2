@@ -130,6 +130,8 @@ class NativeMatchDriver:
                 or self._expected is None or type(value.get('request')) is not int
                 or value['request']<=self._request):raise ValueError('unexpected native driver reply')
         action=self._expected
+        if action=='stopped_preview' and value['request']!=self._request+1:
+            raise ValueError('native stopped read request mismatch')
         if kind=='season_error':
             if (type(value.get('lost')) is not bool or not isinstance(value.get('error'),str)
                     or value['lost']):raise ValueError(str(value.get('error','native request failed')))

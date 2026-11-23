@@ -90,6 +90,11 @@ class Controls(unittest.TestCase):
         self.assertEqual(d.frames,[]);self.assertIsNone(d.frame)
         d.set_held(False);self.assertEqual(d.tick(10)['sequence'],0)
 
+    def test_wrong_read_refusal_request_fails_closed(self):
+        owner,d,p,data=stopped();d.request_view();d.set_held(True)
+        owner.queue.put(('season_error',dict(request=owner.number+2,error='wrong reply',lost=False)))
+        d.tick(0);self.assertEqual(d.status,'lost');self.assertIsNone(d.stopped_view)
+
 
 class Decoder(unittest.TestCase):
     def test_native_records_identity_only_and_detached_display_data(self):
