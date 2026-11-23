@@ -1,0 +1,9 @@
+test_actual_halftime_extra_substitution_and_final_replay (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_actual_halftime_extra_substitution_and_final_replay) ... ok
+test_default_and_invalid_extra_configuration_are_pure (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_default_and_invalid_extra_configuration_are_pure) ... ok
+test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) ... ok
+test_source_inventory_is_the_accepted_bounded_adoption (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_source_inventory_is_the_accepted_bounded_adoption) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 243.492s
+
+OK

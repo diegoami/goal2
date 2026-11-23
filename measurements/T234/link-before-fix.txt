@@ -1,0 +1,3 @@
+PASS original-asset exclusion
+goal2/engine/original_match/README.md:286: broken link ../../experiments/E036-match-port/out/fix695/README.md
+FAIL pre-merge validation: Command '['/home/diego/projects/goal2/.cache/venv/bin/python', 'tools/check_links.py']' returned non-zero exit status 1.
