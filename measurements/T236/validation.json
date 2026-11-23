@@ -7,6 +7,11 @@
   "fixture_correction": "initial reverse-order multi-pair fixture assumed caller-list logging order; SDK Match._flush pairs original before/final physical XI lists. Fixture now submits physical-XI order; exact pair/count/union/native-effect assertions remain. Initial failing/interrupted attempt and direct reproduction retained privately; not counted as pass",
   "source_hashes": {
     "goal2/game/extended_schema.py": "e27f5b9d9a5c5481af980bfde4088febd002849fbbcba66e17e8b907f90023c1",
-    "goal2/tests/test_extended_schema_t236.py": "3743890063b6807a3cbcf71640e3ce1fb11e972e1ace3b2e92c460d9ca51487f"
-  }
+    "goal2/tests/test_extended_schema_t236.py": "3743890063b6807a3cbcf71640e3ce1fb11e972e1ace3b2e92c460d9ca51487f",
+    "goal2/tests/test_extended_schema_competitive_t236.py": "c08815915929503e41a419ed040f1b5632c9b0e1a88156500751c0829d9879a2"
+  },
+  "native_windows": "6 profile methods plus1actual competitive full24 method;0skips",
+  "affected": "12card/save methods:10pass/2existing slow scope skips;9legacy live-wire/server/publication guards pass0skip",
+  "competitive_linux": "actual competitive full24/four original substitutions/budget5/resolution PASS0skip27.957s",
+  "legacy_schema_sha256": "4f88b46738dd79af3878e91748a937cab4fd6eeeaef1d1e282467cc8e3bba05a"
 }
