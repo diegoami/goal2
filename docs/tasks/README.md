@@ -457,3 +457,5 @@ operational status.
 - [T234](T234.md): deliberate accepted full selected-bench kit adoption before larger-squad worker/UI integration (#819).
 
 - [T235](T235.md): pure current-pool preparation for larger watched squads, without consumer activation (#824).
+
+- [T236](T236.md): strict selected-bench decision/result validation before extended worker/publication activation (#826).
