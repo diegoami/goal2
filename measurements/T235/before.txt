@@ -1,0 +1,267 @@
+test_actual_selected_promotion_and_outside_recruitment_use_current_pool (goal2.tests.test_extended_match_preparation_t235.Preparation.test_actual_selected_promotion_and_outside_recruitment_use_current_pool) ... ERROR
+test_default_twenty_is_exact_existing_preparation (goal2.tests.test_extended_match_preparation_t235.Preparation.test_default_twenty_is_exact_existing_preparation) ... ERROR
+test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) ... 
+  test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=22, count=0) ... ERROR
+  test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=22, count=1) ... ERROR
+  test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=22, count=2) ... ERROR
+  test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=0) ... ERROR
+  test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=1) ... ERROR
+  test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=3) ... ERROR
+  test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=4) ... ERROR
+test_independent_byte_mask_preserves_finals_calendar_records_and_rng (goal2.tests.test_extended_match_preparation_t235.Preparation.test_independent_byte_mask_preserves_finals_calendar_records_and_rng) ... ERROR
+test_malformed_selection_and_multiple_managers_refuse_purely (goal2.tests.test_extended_match_preparation_t235.Preparation.test_malformed_selection_and_multiple_managers_refuse_purely) ... ERROR
+test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) ... 
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=0, segment=0) ... ERROR
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43295, offset=0, segment=0) ... ERROR
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43299, offset=0, segment=0) ... ERROR
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=65520, segment=4096) ... ERROR
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43295, offset=65520, segment=4096) ... ERROR
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=65520, segment=65535) ... ERROR
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43295, offset=65520, segment=65535) ... ERROR
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43299, offset=65520, segment=65535) ... ERROR
+test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) ... ERROR
+
+======================================================================
+ERROR: test_actual_selected_promotion_and_outside_recruitment_use_current_pool (goal2.tests.test_extended_match_preparation_t235.Preparation.test_actual_selected_promotion_and_outside_recruitment_use_current_pool)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 67, in test_actual_selected_promotion_and_outside_recruitment_use_current_pool
+    before = copy.deepcopy(m.state); got, extras = self.projected()
+                                                   ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_default_twenty_is_exact_existing_preparation (goal2.tests.test_extended_match_preparation_t235.Preparation.test_default_twenty_is_exact_existing_preparation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 43, in test_default_twenty_is_exact_existing_preparation
+    got, extras = self.projected()
+                  ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=22, count=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 52, in test_empty_partial_full_capacity_returns_exact_current_native_lists
+    before = copy.deepcopy(self.model.state); got, extras = self.projected()
+                                                            ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=22, count=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 52, in test_empty_partial_full_capacity_returns_exact_current_native_lists
+    before = copy.deepcopy(self.model.state); got, extras = self.projected()
+                                                            ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=22, count=2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 52, in test_empty_partial_full_capacity_returns_exact_current_native_lists
+    before = copy.deepcopy(self.model.state); got, extras = self.projected()
+                                                            ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 52, in test_empty_partial_full_capacity_returns_exact_current_native_lists
+    before = copy.deepcopy(self.model.state); got, extras = self.projected()
+                                                            ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 52, in test_empty_partial_full_capacity_returns_exact_current_native_lists
+    before = copy.deepcopy(self.model.state); got, extras = self.projected()
+                                                            ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=3)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 52, in test_empty_partial_full_capacity_returns_exact_current_native_lists
+    before = copy.deepcopy(self.model.state); got, extras = self.projected()
+                                                            ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) (capacity=24, count=4)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 52, in test_empty_partial_full_capacity_returns_exact_current_native_lists
+    before = copy.deepcopy(self.model.state); got, extras = self.projected()
+                                                            ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_independent_byte_mask_preserves_finals_calendar_records_and_rng (goal2.tests.test_extended_match_preparation_t235.Preparation.test_independent_byte_mask_preserves_finals_calendar_records_and_rng)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 84, in test_independent_byte_mask_preserves_finals_calendar_records_and_rng
+    before = copy.deepcopy(s); got, _ = self.projected()
+                                        ~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 26, in projected
+    return prepare(self.model.state, self.model.template_bytes, self.fixture)
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_malformed_selection_and_multiple_managers_refuse_purely (goal2.tests.test_extended_match_preparation_t235.Preparation.test_malformed_selection_and_multiple_managers_refuse_purely)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 104, in test_malformed_selection_and_multiple_managers_refuse_purely
+    with self.assertRaises(ValueError):prepare(s,self.model.template_bytes,self.fixture)
+                                       ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=0, segment=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43295, offset=0, segment=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43299, offset=0, segment=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=65520, segment=4096)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43295, offset=65520, segment=4096)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=65520, segment=65535)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43295, offset=65520, segment=65535)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43299, offset=65520, segment=65535)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 118, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    prepare(s,self.model.template_bytes,self.fixture)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+======================================================================
+ERROR: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 122, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    with self.assertRaises(ValueError):prepare(s,self.model.template_bytes,self.fixture)
+                                       ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 14, in prepare
+    from goal2.game.extended_match import prepare_extended_watched
+ModuleNotFoundError: No module named 'goal2.game.extended_match'
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.340s
+
+FAILED (errors=20)

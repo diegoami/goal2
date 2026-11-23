@@ -800,3 +800,14 @@ respect [QObject thread affinity](https://doc.qt.io/qt-6/qobject.html#thread-aff
 Python exposes separate [automatic and explicit collection](https://docs.python.org/3.14/library/gc.html).
 The allocation-control/lifetime probes are in `test_gui_gc_813`; the original
 assistant close/career-replacement tests remain unchanged.
+
+### Private preparation for optional larger squads
+
+[designed: owner #777/T235] `extended_match.prepare_extended_watched` prepares a
+detached image and returns ordered filled extra words. The twenty-player path
+keeps existing preparation bytes. The larger-mode helper projects the current
+canonical eighty-word pool and sole manager1 metadata with checked allocations,
+preserving finals/session flags and calendar bytes; it does not use the assistant's
+opening-career projection. No worker or UI caller uses this helper yet. Strict
+extended waiting/result/save validation and atomic publication must be accepted
+before passing extras to Match or enabling visible size controls.

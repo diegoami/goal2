@@ -1,0 +1,21 @@
+test_actual_selected_promotion_and_outside_recruitment_use_current_pool (goal2.tests.test_extended_match_preparation_t235.Preparation.test_actual_selected_promotion_and_outside_recruitment_use_current_pool) ... ok
+test_default_twenty_is_exact_existing_preparation (goal2.tests.test_extended_match_preparation_t235.Preparation.test_default_twenty_is_exact_existing_preparation) ... ok
+test_empty_partial_full_capacity_returns_exact_current_native_lists (goal2.tests.test_extended_match_preparation_t235.Preparation.test_empty_partial_full_capacity_returns_exact_current_native_lists) ... ok
+test_independent_byte_mask_preserves_finals_calendar_records_and_rng (goal2.tests.test_extended_match_preparation_t235.Preparation.test_independent_byte_mask_preserves_finals_calendar_records_and_rng) ... ok
+test_malformed_selection_and_multiple_managers_refuse_purely (goal2.tests.test_extended_match_preparation_t235.Preparation.test_malformed_selection_and_multiple_managers_refuse_purely) ... ok
+test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) ... 
+  test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=0, segment=0) ... FAIL
+
+======================================================================
+FAIL: test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend (goal2.tests.test_extended_match_preparation_t235.Preparation.test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend) (ptr=43303, offset=0, segment=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/tests/test_extended_match_preparation_t235.py", line 117, in test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend
+    with self.subTest(ptr=ptr,offset=offset,segment=segment), self.assertRaises(ValueError):
+                                                              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.733s
+
+FAILED (failures=1)
