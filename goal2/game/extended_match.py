@@ -1,8 +1,4 @@
-"""[designed: owner #777/T235] Pure optional current-pool preparation.
-
-No caller activates extended Match options yet. The assistant's opening-calendar
-projection is a different contract and must never prepare a watched match.
-"""
+"""[designed: owner #777/T235] Prepare the current pool for a selected-bench match."""
 from goal2.engine.original_match.machine import MEM_SIZE
 from goal2.game import campaign_pool, extended_squad
 from goal2.game.watched_match import _prepare_match

@@ -424,6 +424,16 @@ class Server:
                 image = prepare_watched(state, original, fixture)
                 # [designed: owner BM-7, #73; T180] a watched friendly plays with the rebuild's unlimited budget
                 extra = {"substitutions": FRIENDLY_SUBSTITUTIONS} if fixture.kind == 1 else {}
+            if getattr(state, 'squad_capacity', 20) != 20:
+                from goal2.game.extended_save import from_data
+                from goal2.game.extended_schema import ExtendedSelection
+                from goal2.game.watched_match import sealed
+                selection, slots = from_data(header.get('selected_bench'))
+                if (slots != tuple(state.extra_squad)
+                        or selection != ExtendedSelection.from_prepared(state, fixture, sealed(image))):
+                    raise ValueError('selected-bench request differs from the opened game and fixture')
+            elif 'selected_bench' in header:
+                raise ValueError('unexpected selected-bench profile for a twenty-player squad')
             commands.poll()
             outcome = _drive_match(state, image, fixture, _observe=observe, _observe_pitch=pitch if frames else None,
                                    policy=policy, prompts=prompts, **extra, **options,

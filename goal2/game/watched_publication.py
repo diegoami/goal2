@@ -21,13 +21,17 @@ class WatchedJob:
 def completed_candidate(state,fixture,outcome,template,*,competitive=False):
     """[designed] Build every returned field and ledger privately, never quick Python effects."""
     if not isinstance(outcome,WatchedOutcome):raise ValueError('completed watched outcome required')
-    result=outcome.result;engine=validate_result(result,competitive=competitive)
+    result=outcome.result
+    if not isinstance(result,dict):raise ValueError('completed watched result must be an object')
+    enlarged = getattr(state, 'squad_capacity', 20) != 20
+    if not enlarged:
+        engine=validate_result(result,competitive=competitive)
     schema=COMPETITIVE_SCHEMA if competitive else RESULT_SCHEMA
-    if competitive and (result['kind']!=fixture.kind or result['substitution_budget']!=[5,5]):
+    if competitive and (result.get('kind')!=fixture.kind or result.get('substitution_budget')!=[5,5]):
         raise ValueError('completed kind or budget differs from competitive job')
     kinds=[getattr(event,'kind',None) for event in outcome.events]
     if (not kinds or kinds[-1]!='end' or kinds.count('end')!=1 or kinds.count('full_time')!=1
-            or (result['first'],result['second'],result['index'],result['managed'])!=
+            or tuple(result.get(k) for k in ('first','second','index','managed'))!=
                 (fixture.first,fixture.second,fixture.index,state.managed_country)):
         raise ValueError('watched completion differs from the pending fixture or is incomplete')
     if competitive:
@@ -35,14 +39,21 @@ def completed_candidate(state,fixture,outcome,template,*,competitive=False):
         expected_image=prepare_competitive(state,template,fixture)
     else:expected_image=prepare_watched(state,template,fixture)
     # [designed: T151] The engine's input is the sealed form of the prepared image.
-    if result['image_sha256'] != sealed(expected_image).sha256():
+    source = sealed(expected_image)
+    if result.get('image_sha256') != source.sha256():
         raise ValueError('watched completion differs from the declared input image')
     expected_year=expected_image.year()
     if type(outcome.engine_year) is not int or outcome.engine_year!=expected_year:
         raise ValueError("watched completion changed engine year")
     image=Image.from_memory_component(outcome.memory)
-    if outcome.seeds!=(image.rd(0x7B62),image.rd(0x8336)) or result['seed_after']!=outcome.seeds[0]:
+    if outcome.seeds!=(image.rd(0x7B62),image.rd(0x8336)) or result.get('seed_after')!=outcome.seeds[0]:
         raise ValueError('watched returned RNG differs from result')
+    if enlarged:
+        from goal2.game.extended_save import KEY, to_data, validate_returned
+        from goal2.game.extended_schema import ExtendedSelection
+        selection = ExtendedSelection.from_prepared(state, fixture, source)
+        checked, pool = validate_returned(selection, result, image, competitive=competitive)
+        engine = checked.engine
     candidate=copy.deepcopy(state)
     candidate.mem=bytes(outcome.memory)
     candidate.players=image.players();candidate.countries=image.countries()
@@ -57,6 +68,14 @@ def completed_candidate(state,fixture,outcome,template,*,competitive=False):
         if swap.get('team')==side and swap['off'] in candidate.starting_eleven:
             candidate.starting_eleven[candidate.starting_eleven.index(swap['off'])]=swap['on']
             if candidate.captain==swap['off']:candidate.captain=swap['on']
+    if enlarged:
+        from goal2.game import campaign_pool, extended_squad
+        candidate.starting_eleven = list(checked.native[:11])
+        candidate.campaign.reserve_ids = list(pool)
+        outside = iter(checked.national[20:])
+        candidate.extra_squad = [None if slot is None else next(outside) for slot in state.extra_squad]
+        campaign_pool.validate(candidate)
+        extended_squad.validate(candidate)
     candidate.country_tactics=candidate.countries[state.managed_country][0x2D]
     candidate.rng_seed_7b62,candidate.rng_seed_8336=outcome.seeds
     candidate.match_count+=1
@@ -64,6 +83,8 @@ def completed_candidate(state,fixture,outcome,template,*,competitive=False):
         'teams':[fixture.first,fixture.second],'score':list(result['score']),'goals':copy.deepcopy(result['goals']),
         'managed_side':int(state.managed_country==fixture.second),'match_count':candidate.match_count,
         'seeds':list(outcome.seeds),'engine_year':outcome.engine_year}
+    if enlarged:
+        candidate.last_match[KEY] = to_data(selection, state.extra_squad)
     candidate.match_state['score']=tuple(result['score']);candidate.match_state['minute']=90;candidate.match_state['half']=2
     campaign=candidate.campaign
     if campaign is not None:
