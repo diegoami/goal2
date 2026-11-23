@@ -1,0 +1,18 @@
+{
+  "scope": "Pure prepared-image helper; no caller/SDK option/worker/UI activation",
+  "before": "six methods fail across20subcases because helper is absent from committed main; then existing zero-pool-pointer test caught a real initial validator omission",
+  "linux": "6methods0skip3.836s",
+  "native_windows": "6methods0skip31.147s",
+  "affected": "29methods0skip5.819s",
+  "source_hashes": {
+    "goal2/game/extended_match.py": "5f651f6e387a519c1ee4b0b7e376218474ca8a3576f46996a2c2e69609ccc1ff",
+    "goal2/tests/test_extended_match_preparation_t235.py": "9d4d8cf4ecc5c39f3739655af6aaef50d35bd3472155d563f4c6c9d472d0301d"
+  },
+  "log_hashes": {
+    "before.txt": "7263794a324ced32374460684be16d4866bd88a89b3b4c1cb8fd942bc6826e02",
+    "linux-focused.txt": "881490fef63b682d9a39a7d746c1c0876677b7ce4cc6ac3585a2df2617b868a7",
+    "zero-pointer-before-fix.txt": "d812e381e1fe7ef092b6fd5ab72ad5bac50c22e474746f460d747f0d9da76449",
+    "windows-focused.txt": "09d6c2a75ab7490392909a70f29e2ef5fe121b7e84b5afc91223961c8cfa76c4",
+    "affected.txt": "30c03b439801a12f6000c0755a21255b2589a70eb07d7814ac3328a706f2604e"
+  }
+}
