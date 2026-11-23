@@ -159,14 +159,15 @@ def wait(root: Path, name: str, timeout: float | None = None, poll: float = 5.0)
     return job
 
 
-def describe(job: dict) -> str:
+def describe(job: dict, *, include_command: bool = True) -> str:
     state = job["state"]
     if state == "finished":
         state += f" exit {job['exit_code']} at {job['ended_utc']}"
     elif state == "running":
         state += f" PID {job.get('command_pid') or job.get('wrapper_pid')}"
-    return (f"{job['name']}: {state}; started {job['started_utc']} at {(job.get('head') or '?')[:12]} "
-            f"in {job['cwd']}; log {job['log']}; command {' '.join(job['command'])}")
+    summary = (f"{job['name']}: {state}; started {job['started_utc']} at {(job.get('head') or '?')[:12]} "
+               f"in {job['cwd']}; log {job['log']}")
+    return summary + f"; command {' '.join(job['command'])}" if include_command else summary
 
 
 def main(argv: list[str] | None = None) -> int:

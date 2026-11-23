@@ -11,6 +11,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -212,6 +213,44 @@ class Snapshot(unittest.TestCase):
             with self.assertRaisesRegex(self.cp.CheckpointError, "need exactly one"):
                 self.cp.post("diegoami/goal2", "body", run)
             self.assertFalse(any(c[:3] == ["gh", "issue", "comment"] for c in calls))
+
+    def test_post_passes_large_utf8_markdown_through_closed_file(self):
+        body = "Literal `$(text)` and café\n" * 6000
+        self.assertGreater(len(body.encode("utf-8")), 128 * 1024)
+        fake, _ = self.fake()
+        files = []
+
+        def run(args):
+            if args[:3] == ["gh", "issue", "comment"]:
+                self.assertNotIn("--body", args)
+                path = Path(args[args.index("--body-file") + 1])
+                self.assertEqual(path.read_bytes(), body.encode("utf-8"))
+                files.append(path)
+            return fake(args)
+
+        self.assertIn("issuecomment-1", self.cp.post("diegoami/goal2", body, run))
+        self.assertEqual(len(files), 1)
+        self.assertFalse(files[0].exists())
+
+    def test_post_snapshot_keeps_active_jobs_and_most_recent_finished_jobs(self):
+        run, _ = self.fake()
+        jobs = [
+            dict(name=f"case-{day}", state="finished", started_utc=f"2026-11-{day:02}T10:00:00+00:00",
+                 ended_utc=f"2026-11-{day:02}T11:00:00+00:00", exit_code=1, cwd="/work/goal2",
+                 log=f"case-{day}.log", command=["python", "x" * 16000])
+            for day in range(1, 14)
+        ]
+        jobs.insert(0, dict(jobs[0], name="active", state="running", command_pid=42))
+        with patch.object(self.cp.job_registry, "jobs", return_value=jobs):
+            full = self.cp.snapshot([Path("/work/goal2")], run)
+            post = self.cp.snapshot([Path("/work/goal2")], run, for_post=True)
+        self.assertGreater(len(full), 128 * 1024)
+        self.assertLess(len(post), 4096)
+        self.assertIn("active: running PID 42", post)
+        self.assertIn("case-13: finished exit 1", post)
+        self.assertIn("case-13.log", post)
+        self.assertNotIn("case-1: finished", post)
+        self.assertIn("5 older finished jobs", post)
 
     def test_it_runs_in_this_checkout(self):
         r = subprocess.run([sys.executable, str(ROOT / "tools/checkpoint.py")], capture_output=True, text=True,

@@ -9,9 +9,10 @@ tracked files are changed or files untracked (names are not read). Then each rep
 PRs with head, draft state, labels and checks, and the jobs registered with tools/jobs.py in
 each checkout. A GitHub call that fails is reported as failed, never left out.
 
-`--post` adds the next action (and the notes file, if any) and posts the whole as a comment on
+`--post` adds the next action (and the notes file, if any) and posts a compact snapshot on
 the open issue labelled `checkpoint` in this checkout's repository; it refuses when there is not
-exactly one. Resuming starts from that issue's latest comment and a fresh snapshot.
+exactly one. It shows all unresolved jobs and the eight most recent finished jobs per checkout.
+Resuming starts from that issue's latest comment and a fresh snapshot.
 """
 from __future__ import annotations
 
@@ -120,7 +121,7 @@ def pulls(repo: str, run=sh) -> dict:
     return dict(repo=repo, prs=json.loads(out or "[]"))
 
 
-def snapshot(paths: list[Path], run=sh) -> str:
+def snapshot(paths: list[Path], run=sh, *, for_post: bool = False) -> str:
     lines = [f"Snapshot {datetime.now(timezone.utc).isoformat(timespec='seconds')}", "", "Checkouts:"]
     found = [checkout(p, run) for p in paths]
     repos = []
@@ -130,8 +131,16 @@ def snapshot(paths: list[Path], run=sh) -> str:
         drift = f", {c['ahead']} ahead/{c['behind']} behind upstream" if "ahead" in c else ""
         lines.append(f"- {c['path']} ({c['repo']}): {c['branch']} at {c['head'][:12]}, "
                      f"{c['changed']} changed, {c['untracked']} untracked{drift}")
-        for j in c["jobs"]:
-            lines.append(f"  - job {job_registry.describe(j)}")
+        jobs = c["jobs"]
+        if for_post:
+            finished = sorted((j for j in jobs if j["state"] == "finished"),
+                              key=lambda j: (j["ended_utc"], j["name"]))
+            omitted = max(0, len(finished) - 8)
+            jobs = [j for j in jobs if j["state"] != "finished"] + finished[-8:]
+        for j in jobs:
+            lines.append(f"  - job {job_registry.describe(j, include_command=not for_post)}")
+        if for_post and omitted:
+            lines.append(f"  - {omitted} older finished jobs available in the full local snapshot")
         if c["repo"] and c["repo"] not in repos:
             repos.append(c["repo"])
     for repo in repos:
@@ -162,21 +171,22 @@ def post(repo: str, body: str, run=sh) -> str:
     if len(issues) != 1:
         raise CheckpointError(f"{len(issues)} open issues labelled {LABEL} in {repo}; need exactly one")
     number = issues[0]["number"]
-    code, out, err = run(["gh", "issue", "comment", str(number), "--repo", repo, "--body", body])
-    if code:
-        # An input file preserves newlines/literal text without shell escaping,
-        # and is closed before gh reads it (including on Windows).
-        with tempfile.TemporaryDirectory(prefix="goal2-checkpoint-") as folder:
+    # Keep multiline text out of argv and close both files before gh opens them.
+    with tempfile.TemporaryDirectory(prefix="goal2-checkpoint-") as folder:
+        markdown = Path(folder) / "comment.md"
+        markdown.write_bytes(body.encode("utf-8"))
+        code, out, err = run(["gh", "issue", "comment", str(number), "--repo", repo, "--body-file", str(markdown)])
+        if code:
             path = Path(folder) / "comment.json"
             path.write_text(json.dumps({"body": body}), encoding="utf-8")
             code, out, fallback = run(["gh", "api", f"repos/{repo}/issues/{number}/comments",
                                        "--method", "POST", "--input", str(path)])
-        if code:
-            raise CheckpointError(f"could not comment on #{number}: {err.strip()}; REST fallback failed: {fallback.strip()}")
-        try:
-            return json.loads(out)["html_url"]
-        except (ValueError, KeyError, TypeError) as exc:
-            raise CheckpointError("invalid REST comment response") from exc
+            if code:
+                raise CheckpointError(f"could not comment on #{number}: {err.strip()}; REST fallback failed: {fallback.strip()}")
+            try:
+                return json.loads(out)["html_url"]
+            except (ValueError, KeyError, TypeError) as exc:
+                raise CheckpointError("invalid REST comment response") from exc
     return out.strip()
 
 
@@ -191,7 +201,7 @@ def main(argv: list[str] | None = None) -> int:
     for p in paths:
         if p.resolve() not in unique:
             unique.append(p.resolve())
-    text = snapshot(unique)
+    text = snapshot(unique, for_post=args.post is not None)
     if args.post is None:
         print(text);return 0
     notes = args.notes.read_text().strip() + "\n\n" if args.notes else ""

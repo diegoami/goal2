@@ -163,8 +163,9 @@ playtest. Between milestones it merges on checks; a per-PR review only when the 
 another session, model or computer.
 - **Where work stands** is the latest comment on the one open issue labelled `checkpoint`.
   `python3 tools/checkpoint.py --post "<next action>" [--notes FILE]` posts it: each checkout's
-  branch, head and dirty count, the open PRs with heads, labels and checks, and the registered long
-  jobs, with the next action and any notes. `python3 tools/checkpoint.py` alone prints the snapshot.
+  branch, head and dirty count, the open PRs with heads, labels and checks, and all unresolved
+  jobs plus the eight most recent finished jobs, with the next action and any notes.
+  `python3 tools/checkpoint.py` alone prints the full snapshot, including every registered job.
   List other checkouts with `--checkout DIR` or `GOAL2_CHECKOUTS`.
 - **Checkpoint** before stopping, after a merge, when a long job starts or ends, and when a blocker
   is found. A checkpoint records state, not decisions: those go into the documents (CLAUDE.md rule 8).
