@@ -138,6 +138,7 @@ be outstanding at a time; its numbered reply ends that request.
 | `advance` | | One original route call; refuses while a Match is held. |
 | `observe` | | Detached current boundary, with empty deltas. |
 | `preview` | positive integer `decision` | T170s: detached current pre-match state; only while that configured decision waits. No observation or deltas. |
+| `stopped_preview` | positive integer `decision` | T170ae: detached current state and exact waiting data at an in-match decision, on the same configured Match. No answer, observation or deltas. |
 | `configure` | optional `captain`, `substitutions` | Configures the actual pending Match exactly once through `PrematchSeam`. |
 | `next` | optional `count`, integer 1..32 (default 32) | At most that many `events` as plain Event records, stopping at every decision; returns `decision` (number or null), `over`, `exhausted`. |
 | `answer` | `decision`, `answer` (Match.answer keyword object) | Answers that still-waiting numbered decision once. JSON element-map keys become integers. T170p adds `captain` on pre-match Play after edits. |
@@ -170,6 +171,20 @@ season transport, with no save-schema change. Public receipts contain hashes
 and counts, never actual original cells.
 
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
+[designed: T170ae/#818] `stopped_preview` returns current `state`, exact waiting
+`data`, and `preview={schema:"goal2/stopped-preview/1", decision, managed_country,
+state_hash, data_hash}`. Both hashes use canonical JSON. It accepts only current
+numbered pause, half-time, extra-time, substitution/opportunity, set-piece or
+shoot-out-order decisions; missing, stale, consumed and pre-match requests are
+pure repairable refusals. The existing binary JSON payload carries state/2;
+the parent verifies the envelope and native consistency before delivering it.
+`StoppedMatchSnapshot.from_packet` additionally binds the caller's expected
+request, decision, managed country and exact waiting data. Its immutable bytes
+yield detached state/data copies, preserving native flags, budgets and prompt
+domains. It never publishes a campaign or grants edit permission. The caller
+owns lease identity. Driver coordination and current card/menu activation remain
+under #817; do not read the driver's reply queue from another consumer.
+
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,
 requested decision, state schema and canonical hash before adding `state` to the
