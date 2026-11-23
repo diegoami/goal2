@@ -811,3 +811,21 @@ preserving finals/session flags and calendar bytes; it does not use the assistan
 opening-career projection. No worker or UI caller uses this helper yet. Strict
 extended waiting/result/save validation and atomic publication must be accepted
 before passing extras to Match or enabling visible size controls.
+
+### Session saves with a selected-bench result
+
+[designed: owner #777/T237] An explicit `selected_bench` result envelope carries
+the bound prepared-input selection and initial nullable slot map. Its retained
+original result is checked against the actual returned native twenty, made
+pool of eighty, present consequence bytes, fixture/year and RNG. Absent
+consequence endpoints remain absent. Later live selection/record/name edits
+remain separate from this retained original snapshot.
+
+Only this envelope selects version6 of `goal2-session`. Current22/24 metadata
+and identities are retained; after shrinking live capacity to20, version6
+still preserves the older extended result without inventing current extras.
+Versions1–5 keep their prior shapes/writer choices. Version6 without the
+profile, or that profile under an older version, is refused. Existing engine
+identities and compact friendly/competitive history meanings are retained.
+This is the session JSON format; the separate Core save format is unchanged.
+No worker/publication caller creates the new envelope yet.

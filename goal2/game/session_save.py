@@ -26,6 +26,7 @@ _WATCHED_VERSION = 3
 # something is renamed, so a session without renames saves exactly as before.
 VERSION = 4
 SQUAD_VERSION = 5   # [designed: T231] Opt-in larger-squad metadata only.
+SELECTED_RESULT_VERSION = 6  # [designed: T237] Explicit retained selected-bench result.
 _CAMPAIGN_VERSION = 2
 _FRIENDLY_VERSION = 1
 _TUPLE_TAG = "__goal2_session_tuple__"
@@ -120,7 +121,9 @@ def encode(state: GameState, template: bytes) -> bytes:
         validate_saved_watched(state)
         from goal2.game.identities import to_data
         from goal2.game.extended_squad import to_data as squad_data
-        version = (SQUAD_VERSION if squad_data(state) is not None else
+        from goal2.game.extended_save import needs_version6
+        version = (SELECTED_RESULT_VERSION if needs_version6(state) else
+                   SQUAD_VERSION if squad_data(state) is not None else
                    VERSION if to_data(state) is not None else
                    _WATCHED_VERSION if needs_version3(state) else (_CAMPAIGN_VERSION if state.campaign is not None else _FRIENDLY_VERSION))
         document = {
@@ -171,7 +174,7 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
     if not isinstance(doc, dict) or doc.get("format") != FORMAT:
         raise SessionSaveError("not a goal2 session save")
     version = doc.get("version")
-    if isinstance(version, bool) or not isinstance(version, int) or version not in (_FRIENDLY_VERSION, _CAMPAIGN_VERSION, _WATCHED_VERSION, VERSION, SQUAD_VERSION):
+    if isinstance(version, bool) or not isinstance(version, int) or version not in (_FRIENDLY_VERSION, _CAMPAIGN_VERSION, _WATCHED_VERSION, VERSION, SQUAD_VERSION, SELECTED_RESULT_VERSION):
         raise SessionSaveError(f"unsupported session save version: {doc.get('version')!r}")
     if set(doc) != {"format", "version", "template", "state"}:
         raise SessionSaveError("session save has missing or unknown top-level fields")
@@ -182,11 +185,11 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
         "captain", "country_tactics", "rng_seed_7b62", "rng_seed_8336", "match_state",
         "vga", "mem", "match_count", "last_match",
     }
-    if version == _CAMPAIGN_VERSION or (version in (_WATCHED_VERSION, VERSION, SQUAD_VERSION) and isinstance(data,dict) and "campaign" in data):
+    if version == _CAMPAIGN_VERSION or (version in (_WATCHED_VERSION, VERSION, SQUAD_VERSION, SELECTED_RESULT_VERSION) and isinstance(data,dict) and "campaign" in data):
         required.add("campaign")
-    if version == VERSION or (version == SQUAD_VERSION and isinstance(data,dict) and 'identities' in data):
+    if version == VERSION or (version in (SQUAD_VERSION,SELECTED_RESULT_VERSION) and isinstance(data,dict) and 'identities' in data):
         required.add("identities")
-    if version == SQUAD_VERSION:
+    if version == SQUAD_VERSION or (version == SELECTED_RESULT_VERSION and isinstance(data,dict) and 'extended_squad' in data):
         required.add('extended_squad')
     if not isinstance(data, dict) or set(data) != required:
         raise SessionSaveError("session state has missing or unknown fields")
@@ -241,7 +244,7 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
             validate_state(state)
         except ValueError as exc:
             raise SessionSaveError(f'invalid campaign pool: {exc}') from exc
-    if version == SQUAD_VERSION:
+    if 'extended_squad' in required:
         from goal2.game.extended_squad import from_data as squad_from_data
         try:
             state=squad_from_data(state,data['extended_squad'])
@@ -250,7 +253,10 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
     try:
         from goal2.game.watched_schema import needs_version3, validate_saved_watched
         validate_saved_watched(state)
-        if needs_version3(state) and version not in (_WATCHED_VERSION, VERSION, SQUAD_VERSION):
+        from goal2.game.extended_save import needs_version6
+        if needs_version6(state) != (version == SELECTED_RESULT_VERSION):
+            raise ValueError('selected-bench results require explicit session version6')
+        if needs_version3(state) and version not in (_WATCHED_VERSION, VERSION, SQUAD_VERSION, SELECTED_RESULT_VERSION):
             raise ValueError("watched results require session version 3")
     except (ValueError, IndexError, KeyError, TypeError) as exc:
         raise SessionSaveError(f"invalid watched data: {exc}") from exc

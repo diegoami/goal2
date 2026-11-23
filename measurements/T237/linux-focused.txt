@@ -1,0 +1,15 @@
+test_actual_empty_partial_full_friendly_competitive_version6_roundtrip (goal2.tests.test_extended_result_save_t237.SelectedResultSaves.test_actual_empty_partial_full_friendly_competitive_version6_roundtrip) ... T237_NATIVE 0 False 40
+T237_NATIVE 1 False 41
+T237_NATIVE 4 False 44
+T237_NATIVE 4 True 44
+ok
+test_invalid_profile_fields_and_wrong_versions_refuse_purely (goal2.tests.test_extended_result_save_t237.SelectedResultSaves.test_invalid_profile_fields_and_wrong_versions_refuse_purely) ... ok
+test_profile_codec_is_exact_detached_and_preserves_nullable_slot_positions (goal2.tests.test_extended_result_save_t237.SelectedResultSaves.test_profile_codec_is_exact_detached_and_preserves_nullable_slot_positions) ... ok
+test_retained_profile_survives_live_shrink_growth_names_and_management_edits (goal2.tests.test_extended_result_save_t237.SelectedResultSaves.test_retained_profile_survives_live_shrink_growth_names_and_management_edits) ... ok
+test_returned_pool_native_records_seed_and_fixture_corruption_cannot_replace_save (goal2.tests.test_extended_result_save_t237.SelectedResultSaves.test_returned_pool_native_records_seed_and_fixture_corruption_cannot_replace_save) ... ok
+test_versions_one_to_five_default_writers_remain_byte_identical (goal2.tests.test_extended_result_save_t237.SelectedResultSaves.test_versions_one_to_five_default_writers_remain_byte_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 117.736s
+
+OK
