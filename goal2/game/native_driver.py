@@ -21,6 +21,7 @@ class NativeMatchDriver:
         self._thread=threading.get_ident();self._state='playing';self._expected=None
         self._request=0;self._limit=1;self._sequence=0;self._watermark=0;self._total=0
         self._events=[];self._frames=[];self._pending_frames=deque();self._decision=None
+        self._stopped_view=None
         self._over=self._exhausted=False;self._handled=-1;self._presented=-1;self._painted=-1
         self._visible=0;self._frame=None;self._due=0.;self.speed=3;self.quick=False;self.held=False
         self._pause_wanted=False;self._pause_latched=False;self.pause_requests=0;self.dropped_pauses=0
@@ -56,6 +57,18 @@ class NativeMatchDriver:
     def waiting(self):return deepcopy(self._decision) if self.status=='decision' else None
 
     @property
+    def stopped_view(self):
+        self._owner()
+        return self._stopped_view if self.status=='decision' else None
+
+    def request_view(self):
+        """[designed: T170af] One explicit read, on this connection's decision."""
+        self._owner()
+        if self.status!='decision':raise ValueError('current view needs a ready native decision')
+        self._stopped_view=None;self.message=''
+        self._send('stopped_preview',decision=self._decision['decision'])
+
+    @property
     def events(self):return deepcopy(self._events)
 
     def events_since(self, start):
@@ -80,7 +93,7 @@ class NativeMatchDriver:
     def shown(self):return deepcopy(self._events[:self._visible])
 
     def _fail(self,message):
-        self.error=message;self._state='lost';self._expected=None
+        self.error=message;self._state='lost';self._expected=None;self._stopped_view=None
         self.owner.close()
 
     def _send(self,action,**values):
@@ -105,6 +118,7 @@ class NativeMatchDriver:
         self._events.extend(deepcopy(value['events']));self._frames.extend(deepcopy(value['frames']))
         self._pending_frames.extend(deepcopy(value['frames']))
         if value['decision'] is not None:
+            self._stopped_view=None
             self._decision=dict(decision=value['decision'],event=deepcopy(value['events'][-1]))
             if self._pause_wanted:self.dropped_pauses+=1
             self._pause_wanted=False;self._pause_latched=False
@@ -116,16 +130,25 @@ class NativeMatchDriver:
                 or self._expected is None or type(value.get('request')) is not int
                 or value['request']<=self._request):raise ValueError('unexpected native driver reply')
         action=self._expected
+        if action=='stopped_preview' and value['request']!=self._request+1:
+            raise ValueError('native stopped read request mismatch')
         if kind=='season_error':
             if (type(value.get('lost')) is not bool or not isinstance(value.get('error'),str)
                     or value['lost']):raise ValueError(str(value.get('error','native request failed')))
             self._request=value['request'];self._expected=None;self.message=value['error']
             if action=='pause':self._pause_wanted=False;self._pause_latched=False;self.dropped_pauses+=1
             elif action=='resume':self._state='playing'
-            elif action!='answer':raise ValueError('native stream could not advance')
+            elif action not in ('answer','stopped_preview'):raise ValueError('native stream could not advance')
             return
         if value.get('action')!=action:raise ValueError('native driver reply action mismatch')
         if action=='next':self._batch(value,self._limit)
+        elif action=='stopped_preview':
+            from goal2.game.stopped_view import StoppedMatchView
+            if self._decision is None:raise ValueError('native stopped read lost its decision')
+            self._stopped_view=StoppedMatchView.from_packet(value,request=self._request+1,
+                decision=self._decision['decision'],managed_country=self.owner.managed_country,
+                data=self._decision['event']['data'])
+            self._request=value['request']
         elif action=='answer':
             self._request=value['request'];self._decision=None
         elif action=='pause':
@@ -150,13 +173,17 @@ class NativeMatchDriver:
     def tick(self,now):
         self._owner()
         if type(now) not in (int,float) or not math.isfinite(now):raise ValueError('invalid native playback clock')
-        if self._state in ('closed','lost','resumed') or (self.held and self._state=='playing'):return None
+        if self._state in ('closed','lost','resumed'):return None
+        # [designed: T170af] Covered menus may finish their pure stopped read.
+        # Other held playback behavior, queued samples and deadlines stay intact.
+        if self.held and self._state=='playing' and self._expected not in (None,'stopped_preview'):return None
         try:
             for _ in range(32):
                 try:kind,value=self.connection.replies.get_nowait()
                 except queue.Empty:break
                 self._receive(kind,value)
                 if self._state=='resumed':return None  # queue now belongs to the season owner again
+            if self.held and self._state=='playing':return None
             if self.quick:
                 if self._presented>self._handled:self._handled=self._presented
                 while self._pending_frames:self._handled=self._pending_frames.popleft()['sequence']
@@ -203,16 +230,17 @@ class NativeMatchDriver:
         if self.status!='decision':raise ValueError('native decision is not ready for an answer')
         if not isinstance(values,dict) or set(values)-ANSWER_FIELDS or 'captain' in values:
             raise ValueError('invalid in-match native answer')
+        self._stopped_view=None
         self.message='';self.choices.append((self._decision['event']['data'].get('context'),deepcopy(values)))
         self._send('answer',decision=self._decision['decision'],answer=values)
 
     def resume(self):
         self._owner()
         if self.status!='complete':raise ValueError('native resume needs actual completion and drained samples')
-        self._state='resuming';self._send('resume')
+        self._stopped_view=None;self._state='resuming';self._send('resume')
 
     def close(self):
         self._owner()
         if self._state=='closed':return
-        completed=self._state=='resumed';self._state='closed';self._expected=None
+        completed=self._state=='resumed';self._state='closed';self._expected=None;self._stopped_view=None
         if not completed:self.owner.close()

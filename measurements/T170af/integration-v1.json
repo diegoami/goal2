@@ -1,0 +1,49 @@
+{
+  "accepted_sdk": "a492059d4fc65d2ad5e8dca6074f627127331fe2",
+  "base": "13a82483",
+  "boundary": "Worker still omits extras; no larger-squad activation or task implementation changes.",
+  "default_twenty_exactly_equals_original_sdk_proof": true,
+  "full": {
+    "proof": {
+      "result": {
+        "all16": [
+          80,
+          31421,
+          4,
+          65519,
+          31588,
+          6,
+          16094,
+          16072,
+          3,
+          28445,
+          2097,
+          11684,
+          23911,
+          14453,
+          0,
+          0
+        ],
+        "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+        "edited": true,
+        "events": 1343,
+        "events_hash": "875516a58ed2432a89b7c5be0ba03a5c3534086406c00b7fcc54fc85e1a72f1a",
+        "frames": 3997,
+        "frames_hash": "7f2e09fa73a7da49df518e15f9d7e812c2c3e62217827880ac4082006f691aff",
+        "memory_hash": "74c9105eb4eed236af449e45b65020c78c96c309d272383c78c99ef16af0c873",
+        "observation_hash": "3000df9e65b5388f636db8711c5a08728b952f9b3b6b0e5c0868d08811336c3c",
+        "pauses": 1,
+        "state_hash": "502231bfd81c8c856a2fc948c02a76271ddb1d938794972a6bab5e97e02d9634",
+        "status": "complete"
+      },
+      "views": 3
+    },
+    "seconds": 152.484,
+    "status": "pass"
+  },
+  "implementation_unchanged": true,
+  "original_head": "f04a9fe602f3615d22b715da4a6b97531935113f",
+  "reason": "Accepted T234 SDK adoption reached main after original-head platform success; validate the consumed engine change.",
+  "schema": "goal2/T170af-integration/1",
+  "source_head": "1d86f1adb3662dd3830e2a2748d351abd4bb9e4c"
+}

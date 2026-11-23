@@ -181,8 +181,28 @@ the parent verifies the envelope and native consistency before delivering it.
 request, decision, managed country and exact waiting data. Its immutable bytes
 yield detached state/data copies, preserving native flags, budgets and prompt
 domains. It never publishes a campaign or grants edit permission. The caller
-owns lease identity. Driver coordination and current card/menu activation remain
-under #817; do not read the driver's reply queue from another consumer.
+owns lease identity. Current card/menu activation remains under #817; do not
+read the driver's reply queue from another consumer.
+
+[designed: T170af/#822] At a ready native decision, explicit
+`NativeMatchDriver.request_view()` sends one `stopped_preview` through the
+retained owner's connection. `stopped_view` is unavailable while pending and
+becomes a verified immutable `StoppedMatchView` on the matching reply. Pure
+read refusals retain the same decision for retry. Answer attempts that are
+sent invalidate the view immediately, including an answer later refused
+purely; request a new view before relying on current values. New decisions,
+loss, close and resume also invalidate it. Caller-held old views remain
+immutable historical values, never authoritative current decisions.
+
+The driver remains the sole reply consumer. A covered/reading hold may deliver
+its pending pure read or observe loss while idle, but cannot pull events,
+paint/drain samples or advance physics. Pending playback packets retain their
+existing held behavior. `view.display_state(identities)` creates detached
+decoder-only data from the full current native image, including the opponent,
+marking/status and raw TEAM context. Only player renames and manager name are
+copied from identities; no legacy campaign, roster, extra places or records are
+copied. Existing player/TEAM decoders consume this data. Actual stopped widgets
+and full-time/completed reads still require their own #817 contracts.
 
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
