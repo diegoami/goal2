@@ -91,7 +91,7 @@ class Pure(unittest.TestCase):
             with self.assertRaises(ValueError):build(p,d)
 
 
-def actual(raw,complete=False,watched=False):
+def actual(raw,complete=False):
     import hashlib
     import sys
     from goal2.engine.original_match.image import Image
@@ -114,12 +114,7 @@ def actual(raw,complete=False,watched=False):
     try:ask('stopped_preview',decision=1)
     except SeasonRequestError:pass
     else:raise AssertionError('read without season')
-    from goal2.engine.original_match import route
-    # [confirmed: route.READ/default policy, original0791:E80D/E869] Explicit
-    # native watch answer; no started-Match options are changed.
-    keys=dict(route.DEFAULT_KEYS)
-    if watched:keys[route.MENU_SITE+'<0791:E86E']=ord('Y')
-    ask('open',state=initial,keys=keys);ask('advance');m=w.session.pending_match;identity=id(m)
+    ask('open',state=initial);ask('advance');m=w.session.pending_match;identity=id(m)
     def freeze():
         return (m.m.read(0,MEM_SIZE),tuple(m.m.reg(r) for r in REGS),copy.deepcopy(m.st),
             copy.deepcopy(m.opts),copy.deepcopy(m.inputs),copy.deepcopy(getattr(m,'_replay_actions',None)),
@@ -131,7 +126,7 @@ def actual(raw,complete=False,watched=False):
     boundary=canonical_hash(w.session.state);events=[];frames=[];policy=Answers();samples=[];contexts=set();reads=0
     while True:
         p=ask('next',count=1);events.extend(p['events']);frames.extend(p['frames'])
-        if not watched and p['frames'] and len(frames)==1:assert ask('pause')['paused']
+        if p['frames'] and len(frames)==1:assert ask('pause')['paused']
         if p['decision'] is not None:
             d=p['events'][-1]['data'];number=p['decision']
             if d['context']=='pre_match':refused(decision=number)
@@ -148,13 +143,10 @@ def actual(raw,complete=False,watched=False):
                 again=ask('stopped_preview',decision=number)
                 assert again['data']==view.data and again['state']==view.state and freeze()==before
                 for bad in (None,True,'1',number+1):refused(decision=bad)
-                if watched and d['context']=='set_piece':
-                    return dict(initial=initial,samples=[copy.deepcopy(again)])
             answer=policy(d);ask('answer',decision=number,answer=answer);refused(decision=number)
-            if not watched and policy.edited and len(samples)==2 and not complete:
+            if policy.edited and len(samples)==2 and not complete:
                 return dict(initial=initial,samples=samples)
         if p['exhausted']:break
-    if watched:raise AssertionError('explicit watched fixture did not reach a taker prompt')
     final=dict(memory_hash=hashlib.sha256(m.m.read(0,MEM_SIZE)).hexdigest(),all16=[m.m.reg(r) for r in REGS])
     refused(decision=1);done=ask('resume');refused(decision=1)
     observed=ask('observe');assert not observed['observation']['played_fixtures'] and not observed['observation']['news_pages']
@@ -168,10 +160,41 @@ def actual(raw,complete=False,watched=False):
     return dict(result=final,reads=reads,contexts=sorted(contexts))
 
 
+def actual_taker(raw):
+    """Independent declared SDK fixture, not a native-season bootstrap.
+
+    [confirmed: E034/T196] 7v19, fixture21 and seed257 are existing adapter
+    controls. Read the original stopped records; no live option is patched.
+    """
+    import sys
+    from goal2.engine.original_match import Match,Image,Fixture
+    from goal2.engine.original_match.machine import MEM_SIZE,REGS,Uc
+    from goal2.game import engine_tables
+    assert sys.implementation.name=='pypy' and sys.version_info[:2]==(3,11) and Uc is None
+    tables=engine_tables.load();image=Image.from_state(Image.from_bytes(raw).state(tables),tables)
+    m=Match(image,Fixture(7,19,21),managed=7,seed=257,set_piece=True,live_players=True,engine='port')
+    def freeze():
+        return (m.m.read(0,MEM_SIZE),tuple(m.m.reg(r) for r in REGS),copy.deepcopy(m.st),
+                copy.deepcopy(m.opts),copy.deepcopy(m.inputs),copy.deepcopy(getattr(m,'_replay_actions',None)),
+                getattr(m,'_replay_events',None),copy.deepcopy(m._frame_state()))
+    for event in m.events():
+        if event.kind!='decision':continue
+        if event.data['context']=='set_piece':
+            before=freeze();native=m.records_after();data=copy.deepcopy(m.waiting)
+            p=dict(request=1,action='stopped_preview',state=native,data=data,preview=dict(
+                schema='goal2/stopped-preview/1',decision=1,managed_country=7,
+                state_hash=canonical_hash(native),data_hash=canonical_hash(data)))
+            view=StoppedMatchSnapshot.from_packet(p,request=1,decision=1,managed_country=7,data=event.data)
+            assert freeze()==before and view.state==m.records_after() and view.data==event.data
+            return dict(context=view.context,available=len(view.data['available']))
+        m.answer()
+    raise AssertionError('declared SDK fixture did not reach a taker prompt')
+
+
 class Actual(unittest.TestCase):
     def test_actual_watched_taker_read_preserves_exact_domain_and_machine(self):
-        result=pypy_engine.call(__name__+':actual',reference_raw(),watched=True)
-        self.assertEqual(result['samples'][0]['data']['context'],'set_piece')
+        result=pypy_engine.call(__name__+':actual_taker',reference_raw())
+        self.assertEqual(result['context'],'set_piece');self.assertGreater(result['available'],0)
 
     def test_actual_pause_edit_reads_preserve_full_machine_and_retry(self):
         samples=pypy_engine.call(__name__+':actual',reference_raw())['samples']
