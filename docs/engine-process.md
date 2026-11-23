@@ -170,7 +170,6 @@ stay empty. The generic save encoder still rejects raw bytes: this is transient
 season transport, with no save-schema change. Public receipts contain hashes
 and counts, never actual original cells.
 
-[designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 [designed: T170ae/#818] `stopped_preview` returns current `state`, exact waiting
 `data`, and `preview={schema:"goal2/stopped-preview/1", decision, managed_country,
 state_hash, data_hash}`. Both hashes use canonical JSON. It accepts only current
@@ -185,6 +184,7 @@ domains. It never publishes a campaign or grants edit permission. The caller
 owns lease identity. Driver coordination and current card/menu activation remain
 under #817; do not read the driver's reply queue from another consumer.
 
+[designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,
 requested decision, state schema and canonical hash before adding `state` to the

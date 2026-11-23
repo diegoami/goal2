@@ -26,6 +26,33 @@ def build(packet,expected,**kw):
 
 
 class Pure(unittest.TestCase):
+    def test_parent_rejects_corrupt_wire_and_serializes_requests(self):
+        from unittest.mock import patch
+        from goal2.game.engine_process import EngineProcess
+        from goal2.game.engine_server import ProtocolError
+        for corrupt in (None,'decision','country','state_hash','data_hash','data','observation','json'):
+            engine=EngineProcess(lambda *args:None);engine._life=object();engine._season_active=True
+            with patch.object(engine,'_send'):
+                for bad in (None,True,0,'3'):
+                    with self.assertRaises(ValueError):engine.season_request('stopped_preview',decision=bad)
+                    self.assertFalse(engine.busy)
+                engine.season_request('stopped_preview',decision=3)
+                with self.assertRaises(ValueError):engine.season_request('answer',decision=3,answer={})
+                with self.assertRaises(ValueError):engine.season_request('stopped_preview',decision=3)
+            packet,data=sample();packet['request']=1;state=packet.pop('state')
+            if corrupt in ('decision','country','state_hash','data_hash'):
+                key='managed_country' if corrupt=='country' else corrupt
+                packet['preview'][key]=False if corrupt in ('decision','country') else 'wrong'
+            elif corrupt=='data':packet['data']['positions'][0][1]=9
+            elif corrupt=='observation':packet['observation']={}
+            reply=dict(kind='season',value=packet)
+            payload=b'not-json' if corrupt=='json' else json.dumps(state).encode()
+            if corrupt is None:
+                kind,got=engine._decode(engine._life,reply,payload)
+                self.assertEqual(kind,'season');self.assertEqual(got['state'],state);self.assertFalse(engine.busy)
+            else:
+                with self.assertRaises(ProtocolError):engine._decode(engine._life,reply,payload)
+
     def test_exact_identity_hashes_context_and_native_records(self):
         packet,data=sample();self.assertEqual(build(packet,data).context,'pause')
         mutations=[lambda p:p.update(request=True),lambda p:p.update(action='preview'),
@@ -64,7 +91,7 @@ class Pure(unittest.TestCase):
             with self.assertRaises(ValueError):build(p,d)
 
 
-def actual(raw,complete=False):
+def actual(raw,complete=False,watched=False):
     import hashlib
     import sys
     from goal2.engine.original_match.image import Image
@@ -87,7 +114,12 @@ def actual(raw,complete=False):
     try:ask('stopped_preview',decision=1)
     except SeasonRequestError:pass
     else:raise AssertionError('read without season')
-    ask('open',state=initial);ask('advance');m=w.session.pending_match;identity=id(m)
+    from goal2.engine.original_match import route
+    # [confirmed: route.READ/default policy, original0791:E80D/E869] Explicit
+    # native watch answer; no started-Match options are changed.
+    keys=dict(route.DEFAULT_KEYS)
+    if watched:keys[route.MENU_SITE+'<0791:E86E']=ord('Y')
+    ask('open',state=initial,keys=keys);ask('advance');m=w.session.pending_match;identity=id(m)
     def freeze():
         return (m.m.read(0,MEM_SIZE),tuple(m.m.reg(r) for r in REGS),copy.deepcopy(m.st),
             copy.deepcopy(m.opts),copy.deepcopy(m.inputs),copy.deepcopy(getattr(m,'_replay_actions',None)),
@@ -99,7 +131,7 @@ def actual(raw,complete=False):
     boundary=canonical_hash(w.session.state);events=[];frames=[];policy=Answers();samples=[];contexts=set();reads=0
     while True:
         p=ask('next',count=1);events.extend(p['events']);frames.extend(p['frames'])
-        if p['frames'] and len(frames)==1:assert ask('pause')['paused']
+        if not watched and p['frames'] and len(frames)==1:assert ask('pause')['paused']
         if p['decision'] is not None:
             d=p['events'][-1]['data'];number=p['decision']
             if d['context']=='pre_match':refused(decision=number)
@@ -116,10 +148,13 @@ def actual(raw,complete=False):
                 again=ask('stopped_preview',decision=number)
                 assert again['data']==view.data and again['state']==view.state and freeze()==before
                 for bad in (None,True,'1',number+1):refused(decision=bad)
+                if watched and d['context']=='set_piece':
+                    return dict(initial=initial,samples=[copy.deepcopy(again)])
             answer=policy(d);ask('answer',decision=number,answer=answer);refused(decision=number)
-            if policy.edited and len(samples)==2 and not complete:
+            if not watched and policy.edited and len(samples)==2 and not complete:
                 return dict(initial=initial,samples=samples)
         if p['exhausted']:break
+    if watched:raise AssertionError('explicit watched fixture did not reach a taker prompt')
     final=dict(memory_hash=hashlib.sha256(m.m.read(0,MEM_SIZE)).hexdigest(),all16=[m.m.reg(r) for r in REGS])
     refused(decision=1);done=ask('resume');refused(decision=1)
     observed=ask('observe');assert not observed['observation']['played_fixtures'] and not observed['observation']['news_pages']
@@ -134,6 +169,10 @@ def actual(raw,complete=False):
 
 
 class Actual(unittest.TestCase):
+    def test_actual_watched_taker_read_preserves_exact_domain_and_machine(self):
+        result=pypy_engine.call(__name__+':actual',reference_raw(),watched=True)
+        self.assertEqual(result['samples'][0]['data']['context'],'set_piece')
+
     def test_actual_pause_edit_reads_preserve_full_machine_and_retry(self):
         samples=pypy_engine.call(__name__+':actual',reference_raw())['samples']
         self.assertEqual(len(samples),2)
@@ -147,7 +186,7 @@ class Actual(unittest.TestCase):
         raw=reference_raw();expected=pypy_engine.call(direct.__module__+':direct',raw)
         got=pypy_engine.call(__name__+':actual',raw,complete=True)
         self.assertEqual(got['result'],expected)
-        self.assertIn('half_time',got['contexts']);self.assertIn('set_piece',got['contexts'])
+        self.assertEqual(got['contexts'],['half_time','pause'])
         print('T170AE_FULL '+json.dumps(got,sort_keys=True),flush=True)
 
 
