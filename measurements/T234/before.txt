@@ -1,0 +1,202 @@
+test_actual_halftime_extra_substitution_and_final_replay (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_actual_halftime_extra_substitution_and_final_replay) ... 
+  test_actual_halftime_extra_substitution_and_final_replay (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_actual_halftime_extra_substitution_and_final_replay) (count=2) ... ERROR
+  test_actual_halftime_extra_substitution_and_final_replay (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_actual_halftime_extra_substitution_and_final_replay) (count=4) ... ERROR
+test_default_and_invalid_extra_configuration_are_pure (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_default_and_invalid_extra_configuration_are_pure) ... ERROR
+test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) ... 
+  test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=1) ... ERROR
+  test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=2) ... ERROR
+  test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=3) ... ERROR
+  test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=4) ... ERROR
+test_source_inventory_is_the_accepted_bounded_adoption (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_source_inventory_is_the_accepted_bounded_adoption) ... FAIL
+
+======================================================================
+ERROR: test_actual_halftime_extra_substitution_and_final_replay (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_actual_halftime_extra_substitution_and_final_replay) (count=2)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 97, in halftime
+    m.configure_route_entry(extra_players=extras, pre_match_edits=True,
+      ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 152, in test_actual_halftime_extra_substitution_and_final_replay
+    result = pypy_engine.call(__name__+':halftime', reference_raw(), count)
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+======================================================================
+ERROR: test_actual_halftime_extra_substitution_and_final_replay (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_actual_halftime_extra_substitution_and_final_replay) (count=4)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 97, in halftime
+    m.configure_route_entry(extra_players=extras, pre_match_edits=True,
+      ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 152, in test_actual_halftime_extra_substitution_and_final_replay
+    result = pypy_engine.call(__name__+':halftime', reference_raw(), count)
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+======================================================================
+ERROR: test_default_and_invalid_extra_configuration_are_pure (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_default_and_invalid_extra_configuration_are_pure)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 43, in admission
+    empty.configure_route_entry(extra_players=[])
+          ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 140, in test_default_and_invalid_extra_configuration_are_pure
+    result = pypy_engine.call(__name__+':admission', reference_raw())
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+======================================================================
+ERROR: test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=1)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 72, in full_bench
+    m.configure_route_entry(extra_players=extras, pre_match_edits=True, live_players=True)
+      ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 146, in test_partial_and_full_bench_native_promotion_and_waiting_save
+    result = pypy_engine.call(__name__+':full_bench', reference_raw(), count)
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+======================================================================
+ERROR: test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=2)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 72, in full_bench
+    m.configure_route_entry(extra_players=extras, pre_match_edits=True, live_players=True)
+      ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 146, in test_partial_and_full_bench_native_promotion_and_waiting_save
+    result = pypy_engine.call(__name__+':full_bench', reference_raw(), count)
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+======================================================================
+ERROR: test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=3)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 72, in full_bench
+    m.configure_route_entry(extra_players=extras, pre_match_edits=True, live_players=True)
+      ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 146, in test_partial_and_full_bench_native_promotion_and_waiting_save
+    result = pypy_engine.call(__name__+':full_bench', reference_raw(), count)
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+======================================================================
+ERROR: test_partial_and_full_bench_native_promotion_and_waiting_save (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_partial_and_full_bench_native_promotion_and_waiting_save) (count=4)
+----------------------------------------------------------------------
+goal2.tests.pypy_engine.ChildTraceback: Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 198, in main
+    answer = ("ok", resolve(target)(*args, **kwargs), None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 72, in full_bench
+    m.configure_route_entry(extra_players=extras, pre_match_edits=True, live_players=True)
+      ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 146, in test_partial_and_full_bench_native_promotion_and_waiting_save
+    result = pypy_engine.call(__name__+':full_bench', reference_raw(), count)
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 133, in call
+    return start(target, *args, **kwargs).result()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/pypy_engine.py", line 122, in result
+    raise value from ChildTraceback(text)
+TypeError: Match.configure_route_entry() got an unexpected keyword argument 'extra_players'
+
+======================================================================
+FAIL: test_source_inventory_is_the_accepted_bounded_adoption (goal2.tests.test_extended_bench_kit_t234.ExtendedBenchKit.test_source_inventory_is_the_accepted_bounded_adoption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_bench_kit_t234.py", line 135, in test_source_inventory_is_the_accepted_bounded_adoption
+    self.assertEqual(manifest['source'], SOURCE)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '87d925013da43b266f72bd198fda7a7a2c67dac8' != 'a492059d4fc65d2ad5e8dca6074f627127331fe2'
+- 87d925013da43b266f72bd198fda7a7a2c67dac8
++ a492059d4fc65d2ad5e8dca6074f627127331fe2
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.053s
+
+FAILED (failures=1, errors=7)

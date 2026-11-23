@@ -210,7 +210,7 @@ class Match:
     def __init__(self, image, fixture, *, managed=None, captain=None, seed=None, players=None, countries=None,
                  substitutions=None, ticks=False, record_draws=False, delay_byte=None, timeout_s=60, ports=None,
                  prove=None, set_piece=False, engine="original", tail=True, live_players=False,
-                 substitution_control=False):
+                 substitution_control=False, extra_players=None):
         """image: an Image of the original (goal2's savestate bytes through Image.from_savestate, e.g. of
         to_savestate(state, template); or GameState.mem through Image.from_memory_component). On the fixture
         tried, the match depended on the image only through its two teams' records (E033 notes, section 2).
@@ -310,10 +310,15 @@ class Match:
         self.side = (0 if managed == fixture.first else 1) if managed in (fixture.first, fixture.second) else None
         if captain is not None and (self.side is None or captain not in self._squad(managed)[:11]):
             raise ValueError(f"captain {captain} is not in the managed eleven")
+        extended=self._validate_extra_players(extra_players)
+        if extended:
+            self.opts["extra_players"]=list(extra_players)
         self._write_fixture(index, fixture, route=not tail)
         self._declare("delay calibration dword DS:A9FF", self.m.DS * 16 + DELAY_COUNT,
                       DELAY_COUNT_VALUE.to_bytes(4, "little"))
         self._initialize_session(fixture, ports, prove)
+        if extended:
+            self.st["national_roster"]=extended
         self._call(RUN_MATCH, RUN_MATCH_RETURN)
 
     def _initialize_session(self, fixture, ports, prove):
@@ -395,7 +400,7 @@ class Match:
 
     def configure_route_entry(self, *, captain=None, substitutions=None, ticks=False,
                               record_draws=False, set_piece=False, live_players=False,
-                              substitution_control=False, pre_match_edits=False):
+                              substitution_control=False, pre_match_edits=False, extra_players=None):
         """Configure this actual held route Match exactly once, before events run.
 
         Configuration changes no guest memory, CPU, fixture, setup or RNG. The
@@ -431,11 +436,16 @@ class Match:
                       list(substitutions) if type(substitutions) in (list, tuple) else [])
             if len(budget) != 2 or any(type(v) is not int or not 0 <= v <= 255 for v in budget):
                 raise ValueError('route entry substitutions: budget0..255 or two such budgets')
+        extended=self._validate_extra_players(extra_players)
         # All validation precedes any configuration/listener mutation.
         options = dict(self.opts, captain=captain, substitutions=budget,
                        ticks=ticks, record_draws=record_draws)
         options.update({k: v for k, v in flags.items() if v and k not in ('ticks', 'record_draws')})
+        if extended:
+            options["extra_players"]=list(extra_players)
         self.opts = options
+        if extended:
+            self.st["national_roster"]=extended
         if record_draws:
             self._install_draw_recorder()
         self._route_entry_configured = True
@@ -511,6 +521,68 @@ class Match:
         manager = m.read(game + 1, 1)[0]
         base = m.word_at(m.DS * 16 + 0x6D18 + 2 * manager)
         return [m.word_at(m.far(0xA927) + 2 * (base + i)) for i in range(80)]
+
+    def _validate_extra_players(self, extras):
+        """[designed: owner2026-11-18, T138b] Explicit selected made-pool members."""
+        if extras is None:
+            return None
+        if (type(extras) not in (list,tuple) or len(extras)>4
+                or any(type(w) is not int or not 1<=w<=3060 for w in extras)
+                or len(set(extras))!=len(extras)):
+            raise ValueError('extra_players needs up to4 distinct integer player words')
+        if not extras:
+            return None
+        core=self._squad(self.opts['managed']);pool=self._pool()
+        if (self.side is None or len(core)!=20 or len(set(core))!=20 or not all(core)
+                or len(pool)!=80 or len(set(pool))!=80 or not all(pool)
+                or set(core)&set(pool) or not set(extras)<=set(pool)):
+            raise ValueError('extra_players needs the current complete managed twenty/made pool')
+        return list(core)+list(extras)
+
+    def _selected_squad(self):
+        core=self._squad(self.opts['managed'])
+        members=self.st.get('national_roster')
+        if members is None:
+            return core
+        extras=self.opts.get('extra_players')
+        if (type(members) is not list or type(extras) is not list or not 1<=len(extras)<=4
+                or any(type(w) is not int or not 1<=w<=3060 for w in extras)
+                or len(set(extras))!=len(extras) or len(members)!=20+len(extras)
+                or any(type(w) is not int or not 1<=w<=3060 for w in members)
+                or len(set(members))!=len(members) or not set(core)<=set(members)
+                or not set(w for w in members if w not in core)<=set(self._pool())):
+            raise MatchError('extended selected roster differs from the current native twenty/pool')
+        return core+[w for w in members if w not in core]
+
+    def _ensure_selected(self, wanted, protected=()):
+        """Declared opt-in input; original menu/physics still execute the actual action.
+
+        Keep the original20/80 layout and this machine/continuation. No consumer
+        writes these records. A displaced ordinary bench member stays selected.
+        """
+        members=self.st.get('national_roster')
+        if members is None or wanted not in members:
+            return None
+        core=self._squad(self.opts['managed']);pool=self._pool()
+        self._selected_squad()  # Validate membership before any declared input.
+        if wanted not in core:
+            if wanted not in pool:
+                raise MatchError('selected extra is outside the current made pool')
+            choices=[i for i in range(19,10,-1) if core[i] not in protected]
+            if not choices:
+                raise MatchError('no native bench slot available for selected extra')
+            unavailable=[i for i in choices if not self._available(core[i])]
+            slot=(unavailable or choices)[0];old=core[slot];pool_index=pool.index(wanted)
+            country_at=self._country(self.opts['managed'])+2*slot
+            game=self.m.far(0xA923);manager=self.m.read(game+1,1)[0]
+            base=self.m.word_at(self.m.DS*16+0x6D18+2*manager)
+            pool_at=self.m.far(0xA927)+2*(base+pool_index)
+            self._declare('extended selected bench input: native word',country_at,wanted.to_bytes(2,'little'))
+            self._declare('extended selected bench input: displaced word',pool_at,old.to_bytes(2,'little'))
+            core=self._squad(self.opts['managed']);pool=self._pool()
+            if set(self._selected_squad())!=set(members):
+                raise MatchError('extended bench promotion lost selected membership')
+        return dict(squad=core,pool=pool)
 
     def _pool_state(self):
         """[confirmed: T128's prepare, 0791:DDCB] The SELECT screen's pool-pane state words of the
@@ -732,11 +804,13 @@ class Match:
             raise ValueError("tactic elements are 1..8")
         if speed is not None and not 0 <= speed <= 5:
             raise ValueError("speed is 0..5")
-        squad = self._squad(self.opts["managed"])
+        squad = self._selected_squad()
         # [T132, #709] At a configured pre-match edit the incoming player may also be a made-pool
         # word (F011): DEA6 exchanges squad and pool word-list entries outside a match.
         pre_match_pairs = edit_only and context == "pre_match" and self.opts.get("pre_match_edits")
         pool = self._pool() if pre_match_pairs else []
+        if self.st.get("national_roster") is not None:
+            pool=[w for w in pool if w not in squad]
         subs = [[int(a), int(b)] for a, b in substitutions]
         live_squad, live_pool = list(squad), list(pool)
         for off, on in subs:
@@ -861,6 +935,14 @@ class Match:
         observe = getattr(self._menu, "observe_swap", None)
         if not replay and self.st.get("menu_context") == "pre_match" and observe is not None:
             observe({"squad": self._squad(self.opts["managed"]), "pool": self._pool()})
+            members=self.st.get('national_roster')
+            job=getattr(self._menu,'pending_check',None)
+            if members is not None and job is not None and job[2] not in members:
+                changed=list(members)
+                if job[1] not in changed or job[2] not in self._squad(self.opts['managed']):
+                    raise MatchError('extended outside recruitment has no original pair witness')
+                changed[changed.index(job[1])]=job[2]
+                self.st['national_roster']=changed
 
     def _on_pre_match_position_entry(self, replay):
         # [confirmed: F010; 4952 prologue] Far entry has player at stack+4.
@@ -1084,6 +1166,12 @@ class Match:
         self.st["message"] = text
         if self._menu is not None:
             self._menu.last_message = text
+            if (self.st.get('national_roster') is not None
+                    and self.st.get('menu_context')=='pre_match'
+                    and 'cannot alter squad' in text.lower()
+                    and ('finals' in text.lower() or 'tour' in text.lower())):
+                reject=getattr(self._menu,'reject_pool_selection',None)
+                if reject is not None:reject(text)
 
     def _menus_ported(self):
         return self.ports is not None and any(n.split(".")[0] == "menus" for n in self.ports.names)
@@ -1191,6 +1279,8 @@ class Match:
                 state.update(pool=self._pool(), pool_scroll=pool_scroll, pool_cursor=pool_cursor,
                              club_position=lambda p: self._player(p, 7),  # F010 club byte
                              own_set=lambda p: self._player(p, OWN_TACTICS))
+            if self.st.get("national_roster") is not None:
+                state["ensure_selected"]=self._ensure_selected
             key = self._menu.select_key(state)
             if key == S.ESC and getattr(self._menu, "edit_only", False):
                 # Keep SELECT TEAM open between edits: leaving/reentering it runs original
@@ -1371,12 +1461,14 @@ class Match:
 
     def _decide(self, context, **data):
         self._flush()
-        squad = self._squad(self.opts["managed"])
+        squad = self._selected_squad()
         injured = [i["player"] for i in self.st["log"]["injuries"] if i["team"] == self.side and i["player"] in squad[:11]]
         base = self.m.far(PLAYERS_PTR)
         positions = [[w, self.m.read(base + PLAYER_SIZE * w + PLAYER_POSITION, 1)[0]] for w in squad if w]
         data.update(context=context, eleven=squad[:11], bench=squad[11:], injured=injured, positions=positions,
                     substitutions_left=self.m.rd(S.SUBS_LEFT + self.side, 1), tactics=self._tactics())
+        if self.st.get("national_roster") is not None:
+            data["national_squad"]=list(squad)
         if context == "pre_match":
             # [T132, #709; F011] The made pool of the current manager: the incoming words a
             # pre-match exchange can draw from, published beside the bench.
@@ -1851,6 +1943,8 @@ class Match:
             "squads_after": {str(self.opts["first"]): self._squad(self.opts["first"]),
                              str(self.opts["second"]): self._squad(self.opts["second"])},
         }
+        if self.st.get("national_roster") is not None:
+            self._result["national_squad_after"]=self._selected_squad()
         self._result.update(self._competitive(board))
         if self.ports:                 # the port mode: which ports ran in place of the original, and how often
             self._result["ports"] = {"names": list(self.ports.names), "calls": dict(self.ports.calls)}
@@ -2012,6 +2106,11 @@ class Match:
         if self._result is not None:
             self._restore_decision_pairs(self._result["decisions"])
         self._names = None
+        if self.opts.get('extra_players') or 'national_roster' in self.st:
+            if 'national_roster' not in self.st:
+                raise ValueError('extended checkpoint has no selected roster')
+            try:self._selected_squad()
+            except MatchError as exc:raise ValueError('invalid extended checkpoint roster: '+str(exc)) from exc
         self._hooks()
         self._install_ports(self.opts.get("ports"))
         self.prover = None

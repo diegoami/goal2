@@ -1,0 +1,18 @@
+{
+  "implementation": "fac64f2982264537b9689d4e2d3886da73bd8033",
+  "upstream_merge": "a492059d4fc65d2ad5e8dca6074f627127331fe2",
+  "source_pr": 729,
+  "source_full_ci": 44211482852,
+  "focused_methods": 4,
+  "native_windows_skips": 0,
+  "affected_methods": 50,
+  "affected_scope_skip": "one slow default-save test explicitly restored by separate one-method actual run",
+  "consumer_activation": false,
+  "logs": {
+    "linux-focused.txt": "09639e0ef7d88c03f8ebe5d0ddfc1cdd645bbb608de2f6be619559d05c4f3ccc",
+    "windows-focused.txt": "c3856a69a7f6209d3c33221973331a3172511bf0117b267e0ad4fbdae21e60e6",
+    "existing-affected.txt": "551511b40e77b9dbb3e4a734aaeefdeb9479174a0644ac6254e6e5e160c6b727",
+    "default-save-reference.txt": "f19e2911ae6daa82af7ed023394eae0e97466fade68703d40c89a8e88a9ea1b5"
+  },
+  "receipt_note": "Text logs normalized to LF for portable committed hashes; tested application code unchanged by README-only pin correction."
+}

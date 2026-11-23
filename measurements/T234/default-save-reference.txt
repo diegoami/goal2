@@ -1,0 +1,6 @@
+test_disallowed_goal_save_preserves_complete_match_and_closes_coverage (goal2.tests.test_watched_runtime.RuntimeTests.test_disallowed_goal_save_preserves_complete_match_and_closes_coverage) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 18.329s
+
+OK

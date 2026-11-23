@@ -155,6 +155,9 @@ class MenuPlan:
                 self.job += 1                     # requested (or nothing left): the swap waits for the notice
                 continue
             want = job[2] if (kind == "sub" and self.sub_marked) else player
+            if want not in s["squad"] and s.get('ensure_selected') is not None:
+                current=s['ensure_selected'](want,protected=(player,) if kind=='sub' else ())
+                if current is not None:s.update(current)
             if want not in s["squad"]:
                 self._next_job(f"player {want} is not in the squad")
                 continue

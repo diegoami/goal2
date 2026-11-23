@@ -1,0 +1,9 @@
+{
+  "previous_head": "d9e5ed5c1a0e0779aa75ec8614369534bf9eb613",
+  "failure": "strict competitive acceptance test expected the previous87d92501 vendor pin; source and inventory already updated to accepted T138b",
+  "change": "require exact accepted a492059d vendor pin; retain all50-byte inventory, scenario, invalid-kind and independent original-result assertions",
+  "linux_affected": "3methods PASS0skip27.235s",
+  "native_windows_affected": "strict source-pin/scenario method PASS0skip6.414s",
+  "application_runtime_changed": false,
+  "failed_gates": "local289/290 and Linux/Windows each failed solely on stale expected constant; raw failures kept in goal2-keep/T234/failed-old-pin"
+}
