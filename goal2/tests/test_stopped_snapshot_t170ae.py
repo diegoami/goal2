@@ -163,8 +163,9 @@ def actual(raw,complete=False):
 def actual_taker(raw):
     """Independent declared SDK fixture, not a native-season bootstrap.
 
-    [confirmed: E034/T196] 7v19, fixture21 and seed257 are existing adapter
-    controls. Read the original stopped records; no live option is patched.
+    [confirmed: archaeology87d92501, tests/test_original_match.py SetPieceTests]
+    7v19, fixture21 and the original default seed exercise the taker prompt.
+    Read the original stopped records; no live option is patched.
     """
     import sys
     from goal2.engine.original_match import Match,Image,Fixture
@@ -172,7 +173,7 @@ def actual_taker(raw):
     from goal2.game import engine_tables
     assert sys.implementation.name=='pypy' and sys.version_info[:2]==(3,11) and Uc is None
     tables=engine_tables.load();image=Image.from_state(Image.from_bytes(raw).state(tables),tables)
-    m=Match(image,Fixture(7,19,21),managed=7,seed=257,set_piece=True,live_players=True,engine='port')
+    m=Match(image,Fixture(7,19,21),managed=7,set_piece=True,live_players=True,engine='port')
     def freeze():
         return (m.m.read(0,MEM_SIZE),tuple(m.m.reg(r) for r in REGS),copy.deepcopy(m.st),
                 copy.deepcopy(m.opts),copy.deepcopy(m.inputs),copy.deepcopy(getattr(m,'_replay_actions',None)),
