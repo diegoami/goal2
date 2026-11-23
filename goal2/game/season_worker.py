@@ -12,7 +12,7 @@ from goal2.game.prematch_seam import PrematchSeam
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions','frames'}, 'next': {'count'},
           'answer': {'decision', 'answer'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
-          'pause': set(), 'resume': set(), 'discard': set()}
+          'pause': set(), 'completed_preview': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
                  'request_substitution', 'opportunity', 'captain'}
@@ -68,7 +68,7 @@ class SeasonWorker:
                 raise SeasonRequestError('complete and resume the held match before advancing')
             observation = session.advance()
             self._reset_match()
-        elif action in ('configure', 'next', 'answer', 'preview', 'stopped_preview', 'pause', 'resume'):
+        elif action in ('configure', 'next', 'answer', 'preview', 'stopped_preview', 'completed_preview', 'pause', 'resume'):
             match = session.pending_match
             if match is None:
                 raise SeasonRequestError('no season match is pending')
@@ -114,6 +114,17 @@ class SeasonWorker:
                 try:match.pause()
                 except MatchError as exc:result.update(paused=False,reason=str(exc))
                 else:result.update(paused=True)
+            elif action == 'completed_preview':
+                # [confirmed: T170ag/a492059d] Current completed records and
+                # the recorded whistle board are distinct public reads.
+                if (self.seam is None or self.stream is None or not match.over or not self.exhausted
+                        or self.decision is not None or match.waiting is not None):
+                    raise SeasonRequestError('completed preview needs the drained completed match')
+                from goal2.game.completed_view import completed_result_hash
+                current=match.records_after();completed=deepcopy(match.result())
+                result.update(state=current,result=completed,preview=dict(schema='goal2/completed-preview/1',
+                    managed_country=match.opts['managed'],event_count=self.event_count,frame_sequence=self.frame_sequence,
+                    state_hash=canonical_hash(current),result_hash=completed_result_hash(completed)))
             elif action == 'stopped_preview':
                 # [confirmed: T170ae, archaeology87d92501] Both public reads
                 # observe the stopped generator; neither runs it or publishes.

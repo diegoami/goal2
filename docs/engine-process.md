@@ -139,6 +139,7 @@ be outstanding at a time; its numbered reply ends that request.
 | `observe` | | Detached current boundary, with empty deltas. |
 | `preview` | positive integer `decision` | T170s: detached current pre-match state; only while that configured decision waits. No observation or deltas. |
 | `stopped_preview` | positive integer `decision` | T170ae: detached current state and exact waiting data at an in-match decision, on the same configured Match. No answer, observation or deltas. |
+| `completed_preview` | | T170ag: detached current post-F1F6 state and original result/whistle board, only after over/exhausted/no waiting decision. No resume, observation or deltas. |
 | `configure` | optional `captain`, `substitutions` | Configures the actual pending Match exactly once through `PrematchSeam`. |
 | `next` | optional `count`, integer 1..32 (default 32) | At most that many `events` as plain Event records, stopping at every decision; returns `decision` (number or null), `over`, `exhausted`. |
 | `answer` | `decision`, `answer` (Match.answer keyword object) | Answers that still-waiting numbered decision once. JSON element-map keys become integers. T170p adds `captain` on pre-match Play after edits. |
@@ -202,7 +203,34 @@ decoder-only data from the full current native image, including the opponent,
 marking/status and raw TEAM context. Only player renames and manager name are
 copied from identities; no legacy campaign, roster, extra places or records are
 copied. Existing player/TEAM decoders consume this data. Actual stopped widgets
-and full-time/completed reads still require their own #817 contracts.
+and the earlier interactive full-time menu remain under #817/#829.
+
+[designed: T170ag/#828; confirmed: archaeology a492059d, Match._finish,
+original0791:F1F6/0106] At drained completion, explicit
+`driver.request_completed_view()` uses the same connection/reply consumer.
+`completed_view` supplies current native records and the SDK's recorded final
+result/board through `CompletedMatchView`. The envelope has no decision number:
+`preview={schema:"goal2/completed-preview/1", managed_country, event_count,
+frame_sequence, state_hash, result_hash}` plus `state` and `result`. State/2
+remains the binary JSON payload. The result hash uses the existing typed JSON
+tuple encoding; raw SDK histories survive tuple/list framing unchanged. This
+transient native result is not relabelled as a historical watched/save profile;
+those strict guards remain unchanged. The verifier checks fixture/current
+rosters, result consequences against current records, RNG metadata and the
+recorded board. The driver additionally binds actual stream counters, fixture,
+canonical final-board event and terminal score. Pure refusals retain completion
+for retry. Held replies cannot advance events/physics; resume/loss/close
+invalidate the completed view. Only explicit same-Match resume returns round
+data and once-only deltas to the season owner.
+
+[confirmed: the original F1F6 source audit; designed: #829] The watched original
+post-match menu precedes player restoration and the completed boundary. Its
+interactive UI still needs an accepted upstream stop/read/input contract.
+Completed cards retain actual post-restoration flags, not the earlier menu's
+performance context. The final board remains the recorded whistle snapshot;
+do not recompute it from later records, backdate flags, invent a post-match
+decision or substitute an old half-time/route view. Actual stopped widgets,
+summary/replay saves and career publication remain separate #817 leaves.
 
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
