@@ -1,0 +1,88 @@
+{
+  "attempts": [
+    {
+      "job": "t170ae-full",
+      "reason": "SDK equality passed; extra coverage assumption required a taker absent from native fixture. Replaced with exact native context inventory plus separate actual source-bound taker control.",
+      "seconds": 133.048,
+      "status": "failed"
+    },
+    {
+      "job": "t170ae-watched",
+      "reason": "Explicit Y key policy did not produce a native taker in this fixture.",
+      "seconds": 69.829,
+      "status": "failed"
+    },
+    {
+      "job": "t170ae-taker-sdk",
+      "reason": "Declared seed257 SDK fixture produced no taker. Exact upstream default-seed case used instead.",
+      "seconds": 64.036,
+      "status": "failed"
+    }
+  ],
+  "boundary": "Pure stopped read protocol only. Driver/card/menu integration remains817. No vendor/match_day/workflow/checkpoint/22/24/default-entry/publication change.",
+  "full": {
+    "proof": {
+      "contexts": [
+        "half_time",
+        "pause"
+      ],
+      "reads": 3,
+      "result": {
+        "all16": [
+          80,
+          31421,
+          4,
+          65519,
+          31588,
+          6,
+          16094,
+          16072,
+          3,
+          28445,
+          2097,
+          11684,
+          23911,
+          14453,
+          0,
+          0
+        ],
+        "boundary_hash": "2bda232fe02b5fae5717d8ae529b275f4a04688390451def51a21469d5cbea6a",
+        "edited": true,
+        "events": 1343,
+        "events_hash": "875516a58ed2432a89b7c5be0ba03a5c3534086406c00b7fcc54fc85e1a72f1a",
+        "frames": 3997,
+        "frames_hash": "7f2e09fa73a7da49df518e15f9d7e812c2c3e62217827880ac4082006f691aff",
+        "memory_hash": "74c9105eb4eed236af449e45b65020c78c96c309d272383c78c99ef16af0c873",
+        "observation_hash": "3000df9e65b5388f636db8711c5a08728b952f9b3b6b0e5c0868d08811336c3c",
+        "pauses": 1,
+        "state_hash": "502231bfd81c8c856a2fc948c02a76271ddb1d938794972a6bab5e97e02d9634",
+        "status": "complete"
+      }
+    },
+    "runtime": "PyPy3.11 workers; CPython3.12 parent",
+    "seconds": 135.945,
+    "status": "pass",
+    "tests": 1
+  },
+  "initial_focused": {
+    "scope": "actual native pause/edit reads, parent pipe, immutable verifier; full case explicitly scheduled separately",
+    "seconds": 7.555,
+    "skipped": 1,
+    "tests": 5
+  },
+  "schema": "goal2/T170ae-proof/1",
+  "source_head": "12844ead13b1c73267963f95040870f230ccf1a5",
+  "source_sha256": {
+    "goal2/game/engine_process.py": "d7fd497e3bda091775d025b1d630ce764f472793016fc40e404471fd11417cb1",
+    "goal2/game/season_worker.py": "d28d6c3fdd1b88762c24b50929872778afa0cdadd1dfa30e91111d49df9cc6ee",
+    "goal2/game/stopped_snapshot.py": "8d3c52f765bc8831d34178bb7393621ef7316055161756165bfb0607a1d16b17",
+    "goal2/tests/test_stopped_snapshot_t170ae.py": "b08af12b6353b4b8ec40359c317d673911e51670c1df836f4538ccd356718a1d"
+  },
+  "taker": {
+    "scope": "standalone declared SDK read oracle, not native-season bootstrap",
+    "seconds": 36.208,
+    "source": "archaeology87d92501 tests/test_original_match.py SetPieceTests: original default seed,7v19,index21",
+    "status": "pass",
+    "tests": 1
+  }
+}
