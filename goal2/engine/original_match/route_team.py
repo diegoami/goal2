@@ -256,6 +256,13 @@ class PreMatchPlan(S.MenuPlan):
                 return self.act(S.LEFT)
             return self.act(S.ESC)
         job = self.jobs[self.job]
+        if s.get('ensure_selected') is not None:
+            wanted=job[1:3] if job[0]=='sub' else (job[1],)
+            for word in wanted:
+                if word not in s['squad']:
+                    protected=tuple(w for w in wanted if w!=word and w in s['squad'])
+                    current=s['ensure_selected'](word,protected=protected)
+                    if current is not None:s.update(current)
         if job[0] == "position":
             return self._position_key(s, job)
         if job[0] == "own":
@@ -275,6 +282,16 @@ class PreMatchPlan(S.MenuPlan):
             self.pending_check = job
             self.job += 1
         return self.act(S.ENTER)
+
+    def reject_pool_selection(self, message):
+        """A real DBFA refusal did not mark the requested pool word (T138b)."""
+        if (self.pool_pane and self.sub_marked and self.pending_check is None
+                and self.job<len(self.jobs) and self.jobs[self.job][0]=='sub'):
+            self._next_job(message)
+            self._expected_swap=None
+            self._swap_observed=False
+            return True
+        return False
 
     def _pool_key(self, s, job):
         """[T128, F011, #709] The incoming is a made-pool word: T128's pool-to-squad case. Either

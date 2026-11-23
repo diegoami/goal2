@@ -230,6 +230,62 @@ event of every kind a run yields, at every decision before and after its answer 
 scenarios (two fixtures, goal2 managing the other country, an injury run, a run with sendings off, a pause with
 every kind of answer and a refused eleven, a quick result with `tick` events).
 
+### Independent requests and timed opportunities (#695)
+
+`Match(..., substitution_control=True)` is one strict boolean opt-in. Default or
+explicit false keeps the legacy options/checkpoint/event shapes and queued-pair
+behavior below unchanged. It composes with `live_players=True`; the latter then
+adds all20 current records to these decisions too. No game/record is changed by
+reading this metadata. This profile applies to the normal Match constructor.
+
+At an ordinary `pause` with `substitutions_now=False`, call
+`answer(request_substitution=True, edit_only=True)` to request the next legal
+opportunity, or false to cancel. These are desired states: SELECT TEAM's real
+Enter is used only when its current request byte differs. Repeating a desired
+state does not toggle it accidentally. No off/on pair is fabricated or queued,
+no budget is spent, and the clock/RNG do not advance during the edit. The next
+still-paused decision has `edited=True` and the authoritative boolean
+`request_substitution`. A zero budget can leave it false; the original refuses
+to set the latch. `answer()` subsequently chooses Play. This new operation is
+not accepted at half-time, a legal substitution menu, extra time or a taker;
+request/cancel must be a stopped edit without player pairs/play-on inputs.
+
+With the profile enabled, the actual next notice first yields
+`context="substitution_opportunity"`, before choosing any substitute. It includes
+`keeper_unavailable`, `timeout_polls`, `poll_ms`, `substitutions_now` and the
+actual `request_substitution`. Its answer must explicitly be one of:
+
+- `answer(opportunity="accept")`: the original Enter key;
+- `answer(opportunity="dismiss")`: literal original Esc;
+- `answer(opportunity="timeout")`: no key; let the original wait expire.
+
+These are the only inputs at that context. The legacy shorthand that an omitted
+answer plays on does not apply to this opted-in intermediate opportunity.
+An ordinary Esc/timeout skips the menu; the request remains set until a later
+actual cancellation or original swap/housekeeping. A keeper's unavailable branch
+can force a menu even after Esc/timeout. Only when original8062 actually enters
+ED8A does a fresh `substitution` decision follow. Choose the pair there, including
+`edit_only=True` for its immediate confirmed swap before Play. No pair is chosen
+merely by accepting the notice. `substitutions_now` remains the actual permission,
+not an inference from seeing a keeper menu or a pending request.
+
+[confirmed: original7FCF/CC2E, DS087C table; #695 opcode/port proof] Ordinary
+notices use400polls and keeper notices1000. Every no-key poll calls214B1E09(10):
+4000/10000 **nominal calibrated milliseconds**, not a measured two-second timer.
+A frontend can hold the opportunity while presenting its timer, then send the
+explicit response. Its clock/frame remains stopped until the response.
+Literal original Esc is a dismissing key. The owner's requested new-window Esc
+shortcut maps to accepting Enter as a **designed2026-11-08 UI adaptation**, not
+literal-key equivalence. Upstream exposes both operations distinctly.
+
+Static and bounded rendered attributes: DS5B30 row25, columns1–26 has black-on-gray
+attribute0x70 and ` SUBSTITUTION OPPORTUNITY `; columns66–80 has `press any key  `
+with0x8D (blinking bright magenta on black). The ordinary headline's source
+attribute itself does not blink. The keeper template DS5B66 uses0x0B cyan and
+`HAS NO GOALKEEPER`, with the same hint. See
+[the source-bound proof notes](../../experiments/E036-match-port/out/fix695/README.md)
+for exact scope, prepared keeper control and default compatibility.
+
 **Decisions** (where the original itself stops for the manager) and what an answer does there:
 
 | context | when | substitutions | other answers |
@@ -553,3 +609,123 @@ Production installs no legal-eleven policy. Annual rollover and pool-list
 operations remain outside the supported route. See
 [the consumer handover](../../docs/requests/427-route.md) for the pinned fields,
 key queue, page history and caller responsibilities.
+
+### Late pre-match captain (T133 / #715)
+
+[designed: goal2's accepted S15 → S16 flow; confirmed: F030, CC7B/D010]
+After a held route Match is configured with `pre_match_edits=True`, finish its
+edit-only answers, then answer its still-waiting `pre_match` decision with
+`answer(captain=word)`. This is Play, without other changes: the word must be an
+available member of the current XI, including a player just exchanged from the
+pool. `answer(captain=None)` explicitly uses the original default; omitting the
+keyword preserves the initial captain configuration. Refusals consume no state
+or replay action. The input is recorded for deterministic replay and consumed
+through the existing original captain-prompt key policy. No guest bytes or
+configuration options are patched; later replacement-captain prompts keep their
+existing default behavior. Full original/Prover comparison of the pre-match
+seam remains the separately scoped T132/#709 obligation.
+
+### Full pre-match roster pairs (T134 / #717)
+
+[confirmed: F031/F012/F010, DEA6/230C/52CC] At a configured `pre_match`
+edit-only decision, `substitutions=[[outgoing, incoming], ...]` represents
+SELECT TEAM word swaps. Outgoing may be anywhere in the current twenty;
+incoming may be a different squad word or a nonzero made-pool word. The
+whole batch validates copied sequential membership before consuming the
+decision. Ordinary in-match substitutions keep their XI-to-bench rule.
+
+The plan witnesses DEA6's exact word swap at DF29 before the original sorts
+starters and bench independently. It then checks each block's membership and
+the pool. Same-block swaps can return to the same visible order after sorting;
+that is the original result, not permission to acknowledge an unexecuted swap
+or force an arbitrary model order. Fresh decisions return the actual order.
+No substitution budget or match tick is spent on these pre-match edits.
+
+### Native pre-match positions (T135 / #720)
+
+[confirmed: F010/F031; E44F and1771:4925/4952] At a configured pre-match
+edit-only decision, `answer(edit_only=True, positions={word: code})` selects a
+current squad or made-pool word and drives original R until code0..13 is reached.
+`positions={word: "club"}` instead presses original C exactly once, even when
+already at the club value. The4952 entry/E72A caller-return witness verifies player, resulting
+position and original key byte; all guest effects and ordering remain original.
+The entire packet is validated before replay or guest consumption. Plain
+pre-match Play with positions refuses; in-match numeric squad-only positions
+retain their existing contract. Marking remains a separate #719 leaf; own inputs are described below. Fresh decisions expose actual order; pool record previews remain the
+consumer's read-only current-state responsibility. No Prover-completion claim
+or new memory mask follows from this input API.
+
+[designed: T135] Position edits return SELECT to the squad pane by its own toggle
+before re-decision, retaining the continued-entry convention for later answers.
+
+### Native pre-match own tactics (T136 / #722)
+
+[confirmed: F010/F031,1771:4B61 and0791:E75D] Configured pre-match edit-only
+`own_tactics={word:{element:value}}` supports nonzero current squad and made-pool
+words, elements1..4, and exact False/True/None. False means an explicit off
+override, True explicit on, None inheritance. Original T/arrows/Enter/Esc drive
+the editor. Clearing an existing override copies the player's own country
+default, including pool players; an already-inherited goal stays a native no-op
+inside a real T visit. Original4B61 entry and callerE75D return verify selected
+word/pane and actual override bits. Pool editors have no squad marking slot;
+their player_tactics event reports marking0. Plain pre-match Play own fields,
+invalid mixed packets and unconfigured edits refuse before consumption.
+In-match behavior stays unchanged. Keeper, unavailable and pool players retain
+their native four-row editor; this adds no marking input or eligibility rule.
+
+
+### Native pre-match marking (T137 / #724)
+
+[confirmed: F010/F031; original4B61,49B8/4C2B,E75D] Configured pre-match
+edit-only `marking={word:goal}` distinguishes exact None (inherit/status bit7
+clear), integer0 (explicit protected zone/bit7 set, word0) and an available
+opponent word in original slots2..11. Keys must name an available current or
+projected outfield squad player during setup, including eligible bench players.
+Pool, keeper and unavailable players have four rows and reject marking inputs.
+Whole-packet validation precedes replay/guest consumption; pair/role projections
+are read-only and actual native sort order is observed again while driving.
+Original T/menu keys change status and side-table words; independent entry,
+row5 call/return and final T-return witnesses verify the result. An already-met
+goal still makes a real T visit. Inheritance may leave a native default target;
+it is not inferred from a zero word. No original-owned record or table is
+patched. Plain Play marking and malformed/unconfigured/stale/mixed invalid
+packets refuse without consumption. In-match domains and behavior stay unchanged.
+
+
+## Optional larger selected bench (T138b, owner goal2#777)
+
+[designed: owner2026-11-18] `extra_players=[word,...]` opts into up to4
+additional selected made-pool members on normal Match construction or the
+one-time `configure_route_entry` call. The default is omitted and retains the
+original20 behavior. The physical original country/pool storage stays20/80.
+Every selected member appears in bench/card decisions and is eligible through
+the existing public input controls. `national_squad` and final
+`national_squad_after` occur only in this optional mode.
+
+An additional member is promoted into an ordinary native bench slot as an
+explicit recorded public input when the original menu needs him. The displaced
+ordinary bench member stays selected and can itself be promoted later. This
+preserves the XI/selected membership and the same machine/continuation; the
+original still executes actual substitution/status/budget effects and physics.
+Personal input uses the same declaration before its original menu call. An
+outside recruitment updates membership only after its actual original pair
+succeeds, so locked-finals recruitment rules are not bypassed. No consumer may
+write guest memory, clear finals flags, widen binary arrays or reconstruct a
+Match to apply an edit. This is a designed larger-squad extension, not a natural
+original22/24 rule. Controlled original-instruction references receive the
+same declared inputs, and must be labelled that way.
+
+Selected membership and the recorded input history survive Match.save/load
+and replay. Empty/unfilled consumer seats are omitted from `extra_players`;
+capacity22/24 and nullable slots are the consumer's saved metadata. The engine
+validates filled words, uniqueness, complete managed pool/core and context
+before consuming configuration; malformed larger-mode checkpoints reject.
+
+[derived: T138b actual G4B finals test] Selected additional members remain
+eligible with the real finals flag set. Outside recruitment receives the
+original refusal and yields a repairable fresh decision, with unchanged
+selected membership and finals flag. Repeated promotions, late captain after
+an extra enters the XI, and post-substitution save/replay through final
+result/records/full RAM/all16 equality are covered by
+`tests/test_extended_match_t138b.py`. Its private finals fixture is supplied
+through the owner artifact process and explicitly skipped when unavailable.

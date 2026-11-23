@@ -1,0 +1,16 @@
+{
+  "upstream_pr": 729,
+  "accepted_merge": "a492059d4fc65d2ad5e8dca6074f627127331fe2",
+  "upstream_source_head": "5c1618a225ad4c0ebdea65d8e769433ea66a6833",
+  "upstream_full_ci": 44211482852,
+  "changed_runtime_files": [
+    "README.md",
+    "match.py",
+    "route_team.py",
+    "screens.py"
+  ],
+  "unchanged_runtime_files": 46,
+  "consumer_activation": false,
+  "root_worker_extra_players": false,
+  "scope": "SDK adoption only; actual upstream full12 groups are prior receipts, root checks remain required"
+}
