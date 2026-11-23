@@ -455,3 +455,5 @@ operational status.
 - [T233](T233.md): optional22/24 squad management and nullable roster projection; hidden until native/UI delivery (#787).
 
 - [T234](T234.md): deliberate accepted full selected-bench kit adoption before larger-squad worker/UI integration (#819).
+
+- [T235](T235.md): pure current-pool preparation for larger watched squads, without consumer activation (#824).
