@@ -462,3 +462,4 @@ operational status.
 - [T236](T236.md): strict selected-bench decision/result validation before extended worker/publication activation (#826).
 
 - [T237](T237.md): explicit extended-result saves, retaining old versions and validation profiles (#830).
+- [T238](T238.md): selected bench in watched and competitive matches, with career publication (#835).
