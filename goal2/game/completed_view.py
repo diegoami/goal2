@@ -172,7 +172,7 @@ class CompletedMatchSnapshot:
                 raise ValueError('completed fixture mismatch')
             if score is not None and canonical_hash(score)!=canonical_hash(result['score']):
                 raise ValueError('completed terminal score mismatch')
-            if board is not None and canonical_hash(board)!=canonical_hash(result['board']):
+            if board is not None and completed_result_hash(board)!=completed_result_hash(result['board']):
                 raise ValueError('completed canonical final-board mismatch')
             state_json,result_json=_json(native),_json(_json_value(result))
         except (KeyError,TypeError,IndexError,ValueError,OverflowError,ZlibError) as exc:
