@@ -273,7 +273,7 @@ class NativeSeasonOwner:
     def _send_handoff(self,number,action,**values):
         self._owner()
         if (self._closing or self._phase!='handed_off' or number!=self._handoff_number
-                or action not in ('next','answer','pause','resume','observe')):
+                or action not in ('next','answer','pause','resume','observe','stopped_preview')):
             raise ValueError('operation is outside the native match handoff')
         self.shared.engine.season_request(action,**values)
 
