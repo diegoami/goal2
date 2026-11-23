@@ -452,3 +452,5 @@ operational status.
 - [T170ad](T170ad.md): existing pitch screen over the retained native driver, with explicit owner stop/completion callbacks (#814).
 - [T170ae](T170ae.md): pure decision-bound current stopped-Match snapshot and immutable verifier (#818; prerequisite of #817).
 - [T233](T233.md): optional22/24 squad management and nullable roster projection; hidden until native/UI delivery (#787).
+
+- [T234](T234.md): deliberate accepted full selected-bench kit adoption before larger-squad worker/UI integration (#819).
