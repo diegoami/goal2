@@ -11,7 +11,7 @@ from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions','frames'}, 'next': {'count'},
-          'answer': {'decision', 'answer'}, 'preview': {'decision'},
+          'answer': {'decision', 'answer'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
           'pause': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
@@ -28,7 +28,7 @@ def validate_request(header):
             or header['request'] < 1 or not isinstance(action, str) or action not in FIELDS
             or set(header) - ({'op', 'request', 'action'} | FIELDS[action])):
         raise SeasonRequestError('invalid season request')
-    if action == 'preview' and (type(header.get('decision')) is not int or header['decision'] < 1):
+    if action in ('preview','stopped_preview') and (type(header.get('decision')) is not int or header['decision'] < 1):
         raise SeasonRequestError('preview needs a positive decision number')
     if action=='configure' and type(header.get('frames',False)) is not bool:
         raise SeasonRequestError('frames must be boolean')
@@ -68,7 +68,7 @@ class SeasonWorker:
                 raise SeasonRequestError('complete and resume the held match before advancing')
             observation = session.advance()
             self._reset_match()
-        elif action in ('configure', 'next', 'answer', 'preview', 'pause', 'resume'):
+        elif action in ('configure', 'next', 'answer', 'preview', 'stopped_preview', 'pause', 'resume'):
             match = session.pending_match
             if match is None:
                 raise SeasonRequestError('no season match is pending')
@@ -114,6 +114,18 @@ class SeasonWorker:
                 try:match.pause()
                 except MatchError as exc:result.update(paused=False,reason=str(exc))
                 else:result.update(paused=True)
+            elif action == 'stopped_preview':
+                # [confirmed: T170ae, archaeology87d92501] Both public reads
+                # observe the stopped generator; neither runs it or publishes.
+                from goal2.game.stopped_snapshot import CONTEXTS
+                if (self.seam is None or self.decision is None
+                        or header['decision'] != self.decision or match.waiting is None
+                        or match.waiting.get('context') not in CONTEXTS):
+                    raise SeasonRequestError('stopped preview needs the current in-match decision')
+                current=match.records_after();data=deepcopy(match.waiting)
+                result.update(preview=dict(schema='goal2/stopped-preview/1',decision=self.decision,
+                    managed_country=match.opts['managed'],state_hash=canonical_hash(current),
+                    data_hash=canonical_hash(data)),state=current,data=data)
             elif action == 'preview':
                 # [designed: T170s/#746; confirmed: T170r audit, fb6d3093]
                 # Read current records without consuming the stopped generator.
