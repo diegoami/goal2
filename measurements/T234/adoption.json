@@ -4,13 +4,14 @@
   "upstream_source_head": "5c1618a225ad4c0ebdea65d8e769433ea66a6833",
   "upstream_full_ci": 44211482852,
   "changed_runtime_files": [
-    "README.md",
     "match.py",
     "route_team.py",
     "screens.py"
   ],
-  "unchanged_runtime_files": 46,
+  "unchanged_runtime_files": 47,
   "consumer_activation": false,
   "root_worker_extra_players": false,
-  "scope": "SDK adoption only; actual upstream full12 groups are prior receipts, root checks remain required"
+  "scope": "SDK adoption only; actual upstream full12 groups are prior receipts, root checks remain required",
+  "readme_override": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+  "readme_reason": "upstream README has a relative experiments link outside the root vendor closure; retain existing accepted README and document extension in docs/engine-process.md"
 }

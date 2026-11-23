@@ -1,7 +1,7 @@
 {
   "reviewed_source": "a492059d4fc65d2ad5e8dca6074f627127331fe2",
   "files": {
-    "goal2/engine/original_match/README.md": "55b085de4c596cc5f5cba8871adffa8e57d40050a2d70ea5ad8dcfee6dbe1f40",
+    "goal2/engine/original_match/README.md": "17d652fd9a164ad60c09a6f22982a6d06acf9c650fe49e9f95ee4a1b40ff12d3",
     "goal2/engine/original_match/__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
     "goal2/engine/original_match/assets.py": "35d9ac4aaa2532706191ab2c3ee2d2dc1de9a559de08f7c212050cbb583bf594",
     "goal2/engine/original_match/build.py": "e3b7c45b7442115361a6bfbded6f954749eea4e31e4f45714684bc2b071a6b41",
@@ -58,6 +58,8 @@
     "goal2/engine/tables/manifest.json": "8beaca4724b04038b2b5bfc835a103c45d385f06250ac0c3f7e5ec861119a78e"
   },
   "public_assistant_wrapper_included": false,
-  "facade_sources": {},
+  "facade_sources": {
+    "runtime/original_match/README.md": "0f9f87f405282ce2a0461679ac71395d35e76e3a"
+  },
   "overlay": "Accepted698 four read-only TEAM context values over the unchanged reviewed T170a closure; original v1 remains immutable"
 }
