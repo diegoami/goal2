@@ -1,0 +1,14 @@
+test_actual_competitive_full24_keeps_exact_native_budget_and_resolution (t236_competitive_before.CompetitiveProfile.test_actual_competitive_full24_keeps_exact_native_budget_and_resolution) ... ERROR
+
+======================================================================
+ERROR: test_actual_competitive_full24_keeps_exact_native_budget_and_resolution (t236_competitive_before.CompetitiveProfile.test_actual_competitive_full24_keeps_exact_native_budget_and_resolution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_schema_competitive_t236.py", line 49, in test_actual_competitive_full24_keeps_exact_native_budget_and_resolution
+    from goal2.game.extended_schema import validate_extended_result,validate_extended_decision
+ModuleNotFoundError: No module named 'goal2.game.extended_schema'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

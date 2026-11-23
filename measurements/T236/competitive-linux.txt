@@ -1,0 +1,6 @@
+test_actual_competitive_full24_keeps_exact_native_budget_and_resolution (goal2.tests.test_extended_schema_competitive_t236.CompetitiveProfile.test_actual_competitive_full24_keeps_exact_native_budget_and_resolution) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 27.957s
+
+OK
