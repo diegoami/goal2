@@ -21,7 +21,7 @@ class NativeMatchDriver:
         self._thread=threading.get_ident();self._state='playing';self._expected=None
         self._request=0;self._limit=1;self._sequence=0;self._watermark=0;self._total=0
         self._events=[];self._frames=[];self._pending_frames=deque();self._decision=None
-        self._stopped_view=None
+        self._stopped_view=None;self._completed_view=None
         self._over=self._exhausted=False;self._handled=-1;self._presented=-1;self._painted=-1
         self._visible=0;self._frame=None;self._due=0.;self.speed=3;self.quick=False;self.held=False
         self._pause_wanted=False;self._pause_latched=False;self.pause_requests=0;self.dropped_pauses=0
@@ -69,6 +69,17 @@ class NativeMatchDriver:
         self._send('stopped_preview',decision=self._decision['decision'])
 
     @property
+    def completed_view(self):
+        self._owner()
+        return self._completed_view if self.status=='complete' else None
+
+    def request_completed_view(self):
+        """[designed: T170ag] Pure current read after drain; never resumes."""
+        self._owner()
+        if self.status!='complete':raise ValueError('completed view needs drained native completion')
+        self._completed_view=None;self.message='';self._send('completed_preview')
+
+    @property
     def events(self):return deepcopy(self._events)
 
     def events_since(self, start):
@@ -93,7 +104,7 @@ class NativeMatchDriver:
     def shown(self):return deepcopy(self._events[:self._visible])
 
     def _fail(self,message):
-        self.error=message;self._state='lost';self._expected=None;self._stopped_view=None
+        self.error=message;self._state='lost';self._expected=None;self._stopped_view=self._completed_view=None
         self.owner.close()
 
     def _send(self,action,**values):
@@ -102,6 +113,7 @@ class NativeMatchDriver:
         except Exception as exc:self._fail(f'{type(exc).__name__}: {exc}')
 
     def _batch(self,value,limit):
+        self._completed_view=None
         if type(value.get('request')) is not int or value['request']<=self._request:
             raise ValueError('stale native batch')
         sequence,watermark,total=validate_batch(value,self._sequence,self._watermark,self._total,limit)
@@ -130,7 +142,7 @@ class NativeMatchDriver:
                 or self._expected is None or type(value.get('request')) is not int
                 or value['request']<=self._request):raise ValueError('unexpected native driver reply')
         action=self._expected
-        if action=='stopped_preview' and value['request']!=self._request+1:
+        if action in ('stopped_preview','completed_preview') and value['request']!=self._request+1:
             raise ValueError('native stopped read request mismatch')
         if kind=='season_error':
             if (type(value.get('lost')) is not bool or not isinstance(value.get('error'),str)
@@ -138,10 +150,20 @@ class NativeMatchDriver:
             self._request=value['request'];self._expected=None;self.message=value['error']
             if action=='pause':self._pause_wanted=False;self._pause_latched=False;self.dropped_pauses+=1
             elif action=='resume':self._state='playing'
-            elif action not in ('answer','stopped_preview'):raise ValueError('native stream could not advance')
+            elif action not in ('answer','stopped_preview','completed_preview'):raise ValueError('native stream could not advance')
             return
         if value.get('action')!=action:raise ValueError('native driver reply action mismatch')
         if action=='next':self._batch(value,self._limit)
+        elif action=='completed_preview':
+            from goal2.game.completed_view import CompletedMatchView
+            fixture=self.owner.fixture
+            end=next((e for e in reversed(self._events) if e['kind']=='end'),None)
+            board=next((e['data'] for e in reversed(self._events) if e['kind']=='full_time'),None)
+            if end is None or board is None:raise ValueError('completed read lacks canonical end/board')
+            self._completed_view=CompletedMatchView.from_packet(value,request=self._request+1,
+                managed_country=self.owner.managed_country,event_count=self._total,frame_sequence=self._sequence,
+                fixture=(fixture.side_a,fixture.side_b,fixture.index,fixture.kind),score=end['score'],board=board)
+            self._request=value['request']
         elif action=='stopped_preview':
             from goal2.game.stopped_view import StoppedMatchView
             if self._decision is None:raise ValueError('native stopped read lost its decision')
@@ -176,7 +198,7 @@ class NativeMatchDriver:
         if self._state in ('closed','lost','resumed'):return None
         # [designed: T170af] Covered menus may finish their pure stopped read.
         # Other held playback behavior, queued samples and deadlines stay intact.
-        if self.held and self._state=='playing' and self._expected not in (None,'stopped_preview'):return None
+        if self.held and self._state=='playing' and self._expected not in (None,'stopped_preview','completed_preview'):return None
         try:
             for _ in range(32):
                 try:kind,value=self.connection.replies.get_nowait()
@@ -237,10 +259,10 @@ class NativeMatchDriver:
     def resume(self):
         self._owner()
         if self.status!='complete':raise ValueError('native resume needs actual completion and drained samples')
-        self._stopped_view=None;self._state='resuming';self._send('resume')
+        self._stopped_view=self._completed_view=None;self._state='resuming';self._send('resume')
 
     def close(self):
         self._owner()
         if self._state=='closed':return
-        completed=self._state=='resumed';self._state='closed';self._expected=None;self._stopped_view=None
+        completed=self._state=='resumed';self._state='closed';self._expected=None;self._stopped_view=self._completed_view=None
         if not completed:self.owner.close()

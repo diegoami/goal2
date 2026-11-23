@@ -16,8 +16,9 @@ from goal2.game.stopped_snapshot import StoppedMatchSnapshot
 
 
 @dataclass(frozen=True)
-class StoppedMatchView:
-    snapshot: StoppedMatchSnapshot
+class NativeMatchView:
+    """Shared decoder data; concrete factories verify their own phase identity."""
+    snapshot: object
     players: tuple=field(repr=False)
     countries: tuple=field(repr=False)
     squad: tuple
@@ -25,16 +26,18 @@ class StoppedMatchView:
     marks: tuple
     rng_words: tuple
     _memory: bytes=field(repr=False)
+    _setup: int
+    _menu: int
 
     @classmethod
-    def from_packet(cls,packet,*,request,decision,managed_country,data):
-        snapshot=StoppedMatchSnapshot.from_packet(packet,request=request,decision=decision,
-            managed_country=managed_country,data=data)
+    def _from_snapshot(cls,snapshot):
+        managed_country=snapshot.managed_country
         image=Image.from_state(snapshot.state,engine_tables.load())
         sides=(image.rd(0x9B34),image.rd(0x9B36));side=sides.index(managed_country)
         marks=tuple(image.rd(S.MARKING-2+40*side+2*slot) for slot in range(1,21))
         return cls(snapshot,tuple(image.players()),tuple(image.countries()),tuple(image.squad(managed_country)),
-            sides,marks,(image.rd(0x7B62),image.rd(0x8336)),image.memory_component())
+            sides,marks,(image.rd(0x7B62),image.rd(0x8336)),image.memory_component(),
+            image.rd(0xC1E,1),image.rd(0xC1F,1))
 
     @property
     def managed_country(self):return self.snapshot.managed_country
@@ -51,7 +54,8 @@ class StoppedMatchView:
         return tuple(int.from_bytes(raw[i:i+2],'little') for i in range(0,40,2))
 
     @property
-    def team_context(self):return self.snapshot.data['team_context']
+    def team_context(self):
+        return dict(match_set_up=self._setup,in_match_menu_used=self._menu,sides=list(self.sides))
 
     def record(self,word):
         if type(word) is not int or not 0<=word<len(self.players):raise ValueError('invalid current player word')
@@ -74,3 +78,12 @@ class StoppedMatchView:
         if identities is not None:
             state.player_renames=deepcopy(identities.player_renames);state.manager_name=identities.manager_name
         return state
+
+
+@dataclass(frozen=True)
+class StoppedMatchView(NativeMatchView):
+    @classmethod
+    def from_packet(cls,packet,*,request,decision,managed_country,data):
+        snapshot=StoppedMatchSnapshot.from_packet(packet,request=request,decision=decision,
+            managed_country=managed_country,data=data)
+        return cls._from_snapshot(snapshot)

@@ -512,13 +512,23 @@ class EngineProcess:
                 else:
                     if value.get('action') != pending[1]:
                         raise ProtocolError('season reply is for another operation')
-                    if pending[1] in ('open', 'advance', 'observe', 'resume', 'preview', 'stopped_preview'):
+                    if pending[1] in ('open', 'advance', 'observe', 'resume', 'preview', 'stopped_preview','completed_preview'):
                         try:
                             value['state'] = json.loads(payload.decode('utf8'))
                         except (ValueError, UnicodeDecodeError) as exc:
                             raise ProtocolError('invalid season state payload') from exc
                         from goal2.game.season import canonical_hash
-                        if pending[1] == 'stopped_preview':
+                        if pending[1] == 'completed_preview':
+                            from goal2.game.completed_view import CompletedMatchSnapshot
+                            try:
+                                meta=value.get('preview',{})
+                                CompletedMatchSnapshot.from_packet(value,request=pending[0],
+                                    managed_country=meta.get('managed_country'),
+                                    event_count=self._season_pitch_events if self._season_pitch else None,
+                                    frame_sequence=self._season_pitch_sequence if self._season_pitch else None)
+                            except (ValueError,TypeError,AttributeError) as exc:
+                                raise ProtocolError('invalid season completed preview') from exc
+                        elif pending[1] == 'stopped_preview':
                             from goal2.game.stopped_snapshot import StoppedMatchSnapshot
                             try:
                                 meta=value.get('preview',{})
