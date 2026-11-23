@@ -1,0 +1,13 @@
+{
+  "scope": "explicit persisted selected-bench profile; no worker/publication/UI caller creates it yet",
+  "linux": "6methods0skip117.736s; four actual PyPy runs cover empty22/partial22/full24 friendly andfull24competitive",
+  "existing_saves": "31methods0skip13.369s",
+  "compatibility": "all versions1..5 output byte-identical to exact previous writer fixture; version6 only with selected_bench result, including after shrinking current capacity20",
+  "fixture_corrections": "initial run failed two test assumptions: reversing None/selected slots is valid if filled order remains; fixture returned same profile object both standalone and in state. Corrected positive/negative fixture operations; no production guard/assertion removed. Initial failed log retained privately, not counted as pass",
+  "source_hashes": {
+    "goal2/game/extended_save.py": "ffebf5eee34c8b86c0d24fdd8747fe591501e57d3440822c52e27b587235a211",
+    "goal2/game/session_save.py": "e3f91c9c268e5fbf1aba543075495f8c1022f8165dee0337edd84b5ff040954f",
+    "goal2/game/watched_schema.py": "1b01cb13c3b9b9f687093d09da79e3de8865039c0512818ade9cb3c2f93ebf2a",
+    "goal2/tests/test_extended_result_save_t237.py": "597d14b721947c9f54e4333e67273117a0b3c236f97ed629be1e64c5d5582600"
+  }
+}

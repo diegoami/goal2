@@ -1,0 +1,7 @@
+{
+  "commit": "98ca06975ce8c26f5f47c9ec1d4396bdd79ab22b",
+  "file": "goal2/game/session_save.py",
+  "fixture": "measurements/T237/session_save_before.py",
+  "sha256": "2d6bf2d8cbed2393ebdd34202da94c695a23bf3434df680d302091acc0a5117e",
+  "purpose": "independent exact previous writer for byte compatibility of versions1..5; executable test input, not a passive receipt"
+}

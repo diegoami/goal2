@@ -251,12 +251,20 @@ def validate_saved_watched(state):
     """[designed] Validate watched envelopes and their returned-memory continuation."""
     last=state.last_match
     image=None
+    extended=isinstance(last,dict) and 'selected_bench' in last
+    if extended and not watched(last):raise ValueError('selected-bench result needs its watched identity')
     if watched(last):
         keys={'engine','schema','original','teams','score','goals','managed_side','match_count','seeds','engine_year'}
+        if extended:keys=keys|{'selected_bench'}
         if set(last)!=keys or last['schema'] not in (RESULT_SCHEMA,COMPETITIVE_SCHEMA) or type(last['schema']) is not int:
             raise ValueError('invalid watched result envelope')
         result=last['original'];competitive=last['schema']==COMPETITIVE_SCHEMA
-        engine=validate_result(result,competitive=competitive)
+        if extended:
+            from goal2.game.extended_save import from_data
+            from goal2.game.extended_schema import validate_extended_result
+            selection,slots=from_data(last['selected_bench'])
+            engine=validate_extended_result(result,selection,competitive=competitive).engine
+        else:engine=validate_result(result,competitive=competitive)
         if last['engine']!=engine:raise ValueError('watched engine differs from original result profile')
         teams=[result['first'],result['second']]
         if (result['managed']!=state.managed_country
@@ -268,7 +276,10 @@ def validate_saved_watched(state):
                 or last['seeds'][0]!=result['seed_after'] or not integer(last['engine_year'],0,65535)):
             raise ValueError('inconsistent watched result envelope')
         image=_returned_image(state.mem)
-        if competitive:
+        if extended:
+            from goal2.game.extended_save import validate_returned
+            validate_returned(selection,result,image,competitive=competitive)
+        elif competitive:
             # [confirmed: PR255 _players_now] Compare the post-tail bytes, not live management edits.
             players=image.players()
             if any(players[row['player']][offset]!=row[field][1]

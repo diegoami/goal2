@@ -1,0 +1,75 @@
+test_actual_empty_partial_full_friendly_competitive_version6_roundtrip (t237_before.SelectedResultSaves.test_actual_empty_partial_full_friendly_competitive_version6_roundtrip) ... ERROR
+test_invalid_profile_fields_and_wrong_versions_refuse_purely (t237_before.SelectedResultSaves.test_invalid_profile_fields_and_wrong_versions_refuse_purely) ... ERROR
+test_profile_codec_is_exact_detached_and_preserves_nullable_slot_positions (t237_before.SelectedResultSaves.test_profile_codec_is_exact_detached_and_preserves_nullable_slot_positions) ... ERROR
+test_retained_profile_survives_live_shrink_growth_names_and_management_edits (t237_before.SelectedResultSaves.test_retained_profile_survives_live_shrink_growth_names_and_management_edits) ... ERROR
+test_returned_pool_native_records_seed_and_fixture_corruption_cannot_replace_save (t237_before.SelectedResultSaves.test_returned_pool_native_records_seed_and_fixture_corruption_cannot_replace_save) ... ERROR
+test_versions_one_to_five_default_writers_remain_byte_identical (t237_before.SelectedResultSaves.test_versions_one_to_five_default_writers_remain_byte_identical) ... ERROR
+
+======================================================================
+ERROR: test_actual_empty_partial_full_friendly_competitive_version6_roundtrip (t237_before.SelectedResultSaves.test_actual_empty_partial_full_friendly_competitive_version6_roundtrip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 107, in test_actual_empty_partial_full_friendly_competitive_version6_roundtrip
+    codec()
+    ~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 23, in codec
+    from goal2.game import extended_save
+ImportError: cannot import name 'extended_save' from 'goal2.game' (/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/game/__init__.py)
+
+======================================================================
+ERROR: test_invalid_profile_fields_and_wrong_versions_refuse_purely (t237_before.SelectedResultSaves.test_invalid_profile_fields_and_wrong_versions_refuse_purely)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 133, in test_invalid_profile_fields_and_wrong_versions_refuse_purely
+    api=codec();state,raw,profile=self.sample(1);cases=[]
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 23, in codec
+    from goal2.game import extended_save
+ImportError: cannot import name 'extended_save' from 'goal2.game' (/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/game/__init__.py)
+
+======================================================================
+ERROR: test_profile_codec_is_exact_detached_and_preserves_nullable_slot_positions (t237_before.SelectedResultSaves.test_profile_codec_is_exact_detached_and_preserves_nullable_slot_positions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 99, in test_profile_codec_is_exact_detached_and_preserves_nullable_slot_positions
+    api=codec();state,raw,data=self.sample(1)
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 23, in codec
+    from goal2.game import extended_save
+ImportError: cannot import name 'extended_save' from 'goal2.game' (/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/game/__init__.py)
+
+======================================================================
+ERROR: test_retained_profile_survives_live_shrink_growth_names_and_management_edits (t237_before.SelectedResultSaves.test_retained_profile_survives_live_shrink_growth_names_and_management_edits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 120, in test_retained_profile_survives_live_shrink_growth_names_and_management_edits
+    codec();state,raw,_=self.sample();original=copy.deepcopy(state.last_match)
+    ~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 23, in codec
+    from goal2.game import extended_save
+ImportError: cannot import name 'extended_save' from 'goal2.game' (/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/game/__init__.py)
+
+======================================================================
+ERROR: test_returned_pool_native_records_seed_and_fixture_corruption_cannot_replace_save (t237_before.SelectedResultSaves.test_returned_pool_native_records_seed_and_fixture_corruption_cannot_replace_save)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 157, in test_returned_pool_native_records_seed_and_fixture_corruption_cannot_replace_save
+    codec();state,raw,_=self.sample();cases=[]
+    ~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 23, in codec
+    from goal2.game import extended_save
+ImportError: cannot import name 'extended_save' from 'goal2.game' (/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/game/__init__.py)
+
+======================================================================
+ERROR: test_versions_one_to_five_default_writers_remain_byte_identical (t237_before.SelectedResultSaves.test_versions_one_to_five_default_writers_remain_byte_identical)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 180, in test_versions_one_to_five_default_writers_remain_byte_identical
+    codec()
+    ~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_extended_result_save_t237.py", line 23, in codec
+    from goal2.game import extended_save
+ImportError: cannot import name 'extended_save' from 'goal2.game' (/home/diego/projects/goal2/.cache/expanded-match-preparation/goal2/game/__init__.py)
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+FAILED (errors=6)
