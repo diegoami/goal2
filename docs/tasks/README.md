@@ -460,3 +460,5 @@ operational status.
 - [T235](T235.md): pure current-pool preparation for larger watched squads, without consumer activation (#824).
 
 - [T236](T236.md): strict selected-bench decision/result validation before extended worker/publication activation (#826).
+
+- [T237](T237.md): explicit extended-result saves, retaining old versions and validation profiles (#830).
