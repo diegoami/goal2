@@ -45,8 +45,9 @@ class TeamTacticsScreen(Screen):
     title = "team tactics"
     escape_text = "desk"
 
-    def __init__(self, window, model, *, answer=None, apply=None):
-        self.escape_text = "match menu" if answer is not None else "desk"
+    def __init__(self, window, model, *, answer=None, apply=None, back=None):
+        # [designed: #799] The caller names the actual parent; held matches keep their default.
+        self.escape_text = back if back is not None else "match menu" if answer is not None else "desk"
         super().__init__(window)
         self.model = model
         self.answer, self.apply = answer, apply
@@ -265,6 +266,6 @@ class TeamTacticsScreen(Screen):
         self.refresh()
 
 
-def open_team_tactics(window, model):
+def open_team_tactics(window, model, *, back=None):
     """Push S10 over the current screen; T164 calls it from the desk."""
-    return window.push(TeamTacticsScreen(window, model))
+    return window.push(TeamTacticsScreen(window, model, **({'back': back} if back is not None else {})))

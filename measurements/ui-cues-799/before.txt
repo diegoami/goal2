@@ -1,0 +1,138 @@
+test_live_match_save_reloads_with_a_current_match_summary (goal2.tests.test_ui_cues_799.ActualCoreSaveCue.test_live_match_save_reloads_with_a_current_match_summary) ... FAIL
+test_new_career_escape_returns_to_the_desk (goal2.tests.test_ui_cues_799.BackCaptions.test_new_career_escape_returns_to_the_desk) ... This plugin does not support propagateSizeHints()
+FAIL
+test_pre_match_players_and_tactics_escape_return_to_match_menu (goal2.tests.test_ui_cues_799.BackCaptions.test_pre_match_players_and_tactics_escape_return_to_match_menu) ... This plugin does not support propagateSizeHints()
+FAIL
+test_team_info_tactics_escape_returns_to_team_info (goal2.tests.test_ui_cues_799.BackCaptions.test_team_info_tactics_escape_returns_to_team_info) ... This plugin does not support propagateSizeHints()
+FAIL
+test_save_page_has_player_resume_instructions (goal2.tests.test_ui_cues_799.CoreSaveCues.test_save_page_has_player_resume_instructions) ... FAIL
+test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture (goal2.tests.test_ui_cues_799.CoreSaveCues.test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture) ... 
+  test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture (goal2.tests.test_ui_cues_799.CoreSaveCues.test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture) (in_round=True, in_save=False) ... FAIL
+  test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture (goal2.tests.test_ui_cues_799.CoreSaveCues.test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture) (in_round=False, in_save=True) ... FAIL
+test_empty_lists_offer_no_open_and_have_one_arrow_caption (goal2.tests.test_ui_cues_799.RecordingsCues.test_empty_lists_offer_no_open_and_have_one_arrow_caption) ... 
+  test_empty_lists_offer_no_open_and_have_one_arrow_caption (goal2.tests.test_ui_cues_799.RecordingsCues.test_empty_lists_offer_no_open_and_have_one_arrow_caption) (kind='goal') ... FAIL
+  test_empty_lists_offer_no_open_and_have_one_arrow_caption (goal2.tests.test_ui_cues_799.RecordingsCues.test_empty_lists_offer_no_open_and_have_one_arrow_caption) (kind='summary') ... FAIL
+test_nonempty_list_keeps_open_hint (goal2.tests.test_ui_cues_799.RecordingsCues.test_nonempty_list_keeps_open_hint) ... FAIL
+
+======================================================================
+FAIL: test_live_match_save_reloads_with_a_current_match_summary (goal2.tests.test_ui_cues_799.ActualCoreSaveCue.test_live_match_save_reloads_with_a_current_match_summary)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 121, in test_live_match_save_reloads_with_a_current_match_summary
+    self.assertEqual(summary['checkpoint'],'In a match')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'At the manager menu' != 'In a match'
+- At the manager menu
++ In a match
+
+
+======================================================================
+FAIL: test_new_career_escape_returns_to_the_desk (goal2.tests.test_ui_cues_799.BackCaptions.test_new_career_escape_returns_to_the_desk)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 59, in test_new_career_escape_returns_to_the_desk
+    self.escape_to(self.win.current(),parent,'desk')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 27, in escape_to
+    self.assertEqual(binding.text,caption)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'back to title' != 'desk'
+- back to title
++ desk
+
+
+======================================================================
+FAIL: test_pre_match_players_and_tactics_escape_return_to_match_menu (goal2.tests.test_ui_cues_799.BackCaptions.test_pre_match_players_and_tactics_escape_return_to_match_menu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 55, in test_pre_match_players_and_tactics_escape_return_to_match_menu
+    self.escape_to(self.win.current(),parent,'match menu')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 27, in escape_to
+    self.assertEqual(binding.text,caption)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'desk' != 'match menu'
+- desk
++ match menu
+
+
+======================================================================
+FAIL: test_team_info_tactics_escape_returns_to_team_info (goal2.tests.test_ui_cues_799.BackCaptions.test_team_info_tactics_escape_returns_to_team_info)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 45, in test_team_info_tactics_escape_returns_to_team_info
+    parent.tactics();self.escape_to(self.win.current(),parent,'team info')
+                     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 27, in escape_to
+    self.assertEqual(binding.text,caption)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'desk' != 'team info'
+- desk
++ team info
+
+
+======================================================================
+FAIL: test_save_page_has_player_resume_instructions (goal2.tests.test_ui_cues_799.CoreSaveCues.test_save_page_has_player_resume_instructions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 101, in test_save_page_has_player_resume_instructions
+    self.assertNotIn('python3',words);self.assertIn('Start goal2 again',words)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 'python3' unexpectedly found in 'Core save Resume it with: python3 -m goal2.desktop --resume <core save> --data <GOAL.DAT>'
+
+======================================================================
+FAIL: test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture (goal2.tests.test_ui_cues_799.CoreSaveCues.test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture) (in_round=True, in_save=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 91, in test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture
+    self.assertEqual(answer['checkpoint'],caption);self.assertEqual(answer['next'],next_action)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'At the manager menu' != 'In a match'
+- At the manager menu
++ In a match
+
+
+======================================================================
+FAIL: test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture (goal2.tests.test_ui_cues_799.CoreSaveCues.test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture) (in_round=False, in_save=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 91, in test_saved_match_and_save_prompt_summaries_do_not_claim_a_future_fixture
+    self.assertEqual(answer['checkpoint'],caption);self.assertEqual(answer['next'],next_action)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'At the manager menu' != 'At the save prompt'
+- At the manager menu
++ At the save prompt
+
+
+======================================================================
+FAIL: test_empty_lists_offer_no_open_and_have_one_arrow_caption (goal2.tests.test_ui_cues_799.RecordingsCues.test_empty_lists_offer_no_open_and_have_one_arrow_caption) (kind='goal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 68, in test_empty_lists_offer_no_open_and_have_one_arrow_caption
+    self.assertEqual(len(arrows),1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_empty_lists_offer_no_open_and_have_one_arrow_caption (goal2.tests.test_ui_cues_799.RecordingsCues.test_empty_lists_offer_no_open_and_have_one_arrow_caption) (kind='summary')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 68, in test_empty_lists_offer_no_open_and_have_one_arrow_caption
+    self.assertEqual(len(arrows),1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_nonempty_list_keeps_open_hint (goal2.tests.test_ui_cues_799.RecordingsCues.test_nonempty_list_keeps_open_hint)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/opus-ui-cues/goal2/tests/test_ui_cues_799.py", line 77, in test_nonempty_list_keeps_open_hint
+    self.assertEqual(len([b for b in screen.bindings if b.captions==('↑','↓')]),1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 1
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.807s
+
+FAILED (failures=10)
+Verified baseline:8methods/10failing subcases, committed application loaded without filesystem mutation

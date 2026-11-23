@@ -305,7 +305,10 @@ def open_list(window, model, kind):
                 self.rows.append(row)
             body.put(frame,13,1,64,17)
             self.note=CellPara('','sub');body.put(self.note,13,20,64,5)
-            self.bindings = [b for b in self.bindings if b.keys not in ((Qt.Key.Key_Up,), (Qt.Key.Key_Down,))]
+            # [designed: #800] Replace the option list navigation caption as well as its arrow handlers.
+            self.bindings = [b for b in self.bindings if b is not self._choose
+                             and b.keys not in ((Qt.Key.Key_Up,), (Qt.Key.Key_Down,))]
+            self._choose = None
             self.bind((Qt.Key.Key_Up,), '', lambda: self.move(-1), shown=False)
             self.bind((Qt.Key.Key_Down,), '', lambda: self.move(1), shown=False)
             self.bind((), 'choose recording', None, captions=('↑', '↓'))
@@ -319,6 +322,7 @@ def open_list(window, model, kind):
             for i, row in enumerate(self.rows):
                 index = self.top + i
                 row.setVisible(index < len(self.entries))
+                row.enter = 'Open' if index < len(self.entries) else ''
                 if index < len(self.entries):
                     row.text_label.setText(self.entries[index]['name'])
             self.highlight(self.position - self.top if self.entries else -1)
