@@ -450,4 +450,5 @@ operational status.
 
 - [T170ac](T170ac.md): paced retained native match driver, explicit pause and same-call resume adoption (#810).
 - [T170ad](T170ad.md): existing pitch screen over the retained native driver, with explicit owner stop/completion callbacks (#814).
+- [T170ae](T170ae.md): pure decision-bound current stopped-Match snapshot and immutable verifier (#818; prerequisite of #817).
 - [T233](T233.md): optional22/24 squad management and nullable roster projection; hidden until native/UI delivery (#787).
