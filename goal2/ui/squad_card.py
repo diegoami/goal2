@@ -201,13 +201,15 @@ def full_name(model, word):
     return (initial + " " if initial else "") + goaldat.player_names[word]
 
 
-def squad_rows(model):
+def squad_rows(model, *, include_extra=False):
     """The twenty in the strip's order: the eleven, then the bench in squad order, as the original's strip shows
     them [confirmed: docs/original-game/images/m244-squad.png; designed: T99]; and how many are the eleven."""
     rows = {r["id"]: r for r in model.view()["players"]}
     state = model.state
     eleven = [w for w in state.starting_eleven if w in rows] if len(state.starting_eleven) == 11 else []
     bench = [w for w in state.managed_squad if w not in eleven]
+    if include_extra:
+        bench.extend(word for word in getattr(state, "extra_squad", ()) if word is not None)
     return [rows[w] for w in eleven + bench], len(eleven)
 
 

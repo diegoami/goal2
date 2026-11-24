@@ -40,7 +40,7 @@ the model's own (`DesktopModel`, route (b), #527 D2): the screen holds no rule o
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QApplication, QHBoxLayout
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QMenu
 
 from goal2.ui import theme
 from goal2.ui.cell_parts import GridCard, GridStrip
@@ -143,6 +143,8 @@ class SquadScreen(Screen):
         self.bind((), "squad / pool", None, captions=("←", "→"))
         # [designed: owner playtest, #766] A is accessible without an Insert key.
         self.bind((Qt.Key.Key_A, Qt.Key.Key_Insert), "assistant", self.assistant, captions=("A",))
+        if self.can_resize():
+            self.bind((Qt.Key.Key_F6,), "squad size", self.choose_size, shown=False)
         self.bind((Qt.Key.Key_R,), "next position", lambda: self.reposition(-1 if shift_held() else 1))
         self.bind((Qt.Key.Key_C,), "club position", self.club_position)
         self.bind((Qt.Key.Key_T,), "his tactics", self.his_tactics)
@@ -175,6 +177,19 @@ class SquadScreen(Screen):
         self.name_label.parentWidget().layout().addWidget(self.hint)
         # [designed: owner, §6 item 18; T177] the pool's search and position filter, tagged as a goal2 addition
         body.text(ADDITION, "tagNew", len("Squad (20)") + len("Pool") + 6, 0)
+        self.size_button = FilterButton("F6", "", self.choose_size)
+        body.put(self.size_button, 52, 0, 17)
+        self.size_button.setVisible(self.can_resize())
+        self.size_menu = QMenu(self)
+        self.size_menu.setStyleSheet(
+            f"QMenu {{ background: {theme.GROUND}; border: 1px solid {theme.FRAME}; }} "
+            f"QMenu::item:selected {{ background: {theme.HIGHLIGHT}; color: {theme.ON_HIGHLIGHT}; }}")
+        self.size_actions = {}
+        for capacity in (20, 22, 24):
+            action = self.size_menu.addAction(f"{capacity} players")
+            action.setCheckable(True)
+            action.triggered.connect(lambda checked=False, size=capacity: self.resize_selection(size))
+            self.size_actions[capacity] = action
         self.search_button = FilterButton("/", "", self.open_search)
         body.put(self.search_button, 0, 1, 27)
         self.position_button = FilterButton("P", "", lambda: self.step_position(1))
@@ -183,28 +198,72 @@ class SquadScreen(Screen):
         body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
         self.note = CellPara("", "sub")
         body.put(self.note, 0, CARD_AT + GridCard.ROWS, LEFT_COLS, 2)
-        self.strip = GridStrip(STRIP_COLS)
-        self.strip.chosen.connect(self.click_row)
-        body.put(self.strip, STRIP_AT, 0, STRIP_COLS, GridStrip.PAGE + 2)
+        self.standard_strip = GridStrip(STRIP_COLS)
+        self.selected_strip = GridStrip(STRIP_COLS, count=24, compact=True)
+        self.standard_strip.chosen.connect(self.click_row)
+        self.selected_strip.chosen.connect(self.click_row)
+        body.put(self.standard_strip, STRIP_AT, 0, STRIP_COLS, GridStrip.PAGE + 2)
+        body.put(self.selected_strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS)
+        self.selected_strip.hide()
+        self.strip = self.standard_strip
         self.main_layout.removeWidget(self.wait_box)
         body.put(self.wait_box, 0, WAIT_AT, BODY_COLS, WAIT_ROWS)
 
     # What is shown.
+    def capacity(self):
+        return getattr(self.model.state, 'squad_capacity', 20)
+
+    def can_resize(self):
+        return (not getattr(self.model, 'held_prematch', False)
+                and callable(getattr(self.model, 'resize_squad', None))
+                and self.model.state.campaign is not None)
+
+    def choose_size(self):
+        if not self.can_resize() or self._assistant_blocked() or self.editing or self.searching:
+            return
+        for value, action in self.size_actions.items():
+            action.setChecked(value == self.capacity())
+        self.size_menu.popup(self.size_button.mapToGlobal(self.size_button.rect().bottomLeft()))
+        self.size_menu.setActiveAction(self.size_actions[self.capacity()])
+
+    def resize_selection(self, capacity):
+        if not self.can_resize() or self._assistant_blocked() or self.editing or self.searching:
+            return
+        if capacity != self.capacity():
+            try:
+                self.model.resize_squad(capacity)
+            except ValueError as exc:
+                return self.say(str(exc))
+            self.picked = None
+            self.side = "squad"
+        return self.say(f"Squad size {capacity}.")
+
     def rows(self, side=None):
-        """The players of a side, in the strip's order: the squad's twenty, or the pool's eighty."""
+        """Return the ordered player rows and, on Squad, any vacant selected places."""
         side = side or self.side
         if side == "squad":
-            return squad_rows(self.model)[0]
+            rows = squad_rows(self.model)[0]
+            if self.capacity() != 20:
+                view = self.model.view()
+                players = {row["id"]: row for row in view["players"]}
+                for slot, word in enumerate(view["squad_slots"][20:]):
+                    rows.append(players[word] if word is not None else
+                                {"id": None, "role": "", "line": None, "extra_slot": slot})
+            return rows
         pool = self.model.pool_view(query=self.query, position=self.position)
         return pool["reserves"] if pool is not None else []
 
-    def current(self):
-        """The player whose card is shown: the cursor's, on the side shown."""
+    def current_row(self):
         rows = self.rows()
         if not rows:
             return None
         self.cursor[self.side] = max(0, min(self.cursor[self.side], len(rows) - 1))
-        return rows[self.cursor[self.side]]["id"]
+        return rows[self.cursor[self.side]]
+
+    def current(self):
+        """The player whose card is shown, if the cursor is over a player."""
+        row = self.current_row()
+        return row["id"] if row is not None else None
 
     def page(self):
         return self.cursor["pool"] // GridStrip.PAGE if self.side == "pool" else 0
@@ -213,29 +272,46 @@ class SquadScreen(Screen):
         from goal2.game.player_card import card
         rows = self.rows()
         word = self.current()
+        expanded = self.side == "squad" and self.capacity() != 20
+        self.strip = self.selected_strip if expanded else self.standard_strip
+        self.standard_strip.setVisible(not expanded)
+        self.selected_strip.setVisible(expanded)
+        wait_cols = LEFT_COLS if self.capacity() != 20 else BODY_COLS
+        self.area.move(self.wait_box, 0, WAIT_AT, wait_cols, WAIT_ROWS)
         if self.side == "squad":
-            shown, eleven = squad_rows(self.model)
+            shown, eleven = rows, len(self.model.state.starting_eleven)
             heading, gap, cursor = self.model.view()["country_name"], eleven == 11, self.cursor["squad"]
         else:
             start = self.page() * GridStrip.PAGE
             shown = rows[start:start + GridStrip.PAGE]
             heading, gap, cursor = "Pool of players", False, self.cursor["pool"] - start
-        self.strip.show_rows(heading, [(r["role"], r["line"], full_name(self.model, r["id"])) for r in shown],
+        self.strip.show_rows(heading, [(r["role"], r["line"], full_name(self.model, r["id"])
+                                       if r["id"] is not None else "Empty place") for r in shown],
                              cursor, gap)
+        self.squad_button.text.setText(f"Squad ({self.capacity()})")
+        self.size_button.set_text(f"Size {self.capacity()}")
         self.squad_button.set_on(self.side == "squad")
         self.pool_button.set_on(self.side == "pool")
+        self.card.setVisible(word is not None or not expanded)
+        if word is None and expanded:
+            self.card.card = None
         if word is not None:
             self.card.set_card(self.model.card(word) if getattr(self.model, 'held_prematch', False)
                                else card(self.model.state, word, self.model.goaldat))
         self._show_filters(rows)
         if self._assistant_token is not None:
-            self.message = ASSISTANT_WAIT
+            self.message = self.assistant_wait()
         if getattr(self.model, 'held_block_reason', ''):
             self.message = self.model.held_block_reason
-        self.note.setText(self.message or (ASSISTANT_IDLE if self.side == 'squad' else
+        idle = ASSISTANT_IDLE if self.capacity() == 20 else "A: choose twenty and fill the extra places."
+        if expanded and word is None:
+            idle = "Enter: choose a player from the pool. A: ask your assistant."
+        self.note.setText(self.message or (idle if self.side == 'squad' else
                                           'Left: show your squad for the assistant.'))
-        if self.picked is not None and self._assistant_token is None:
-            detail = ("Enter on another player of the twenty swaps them; → to the pool, then Enter on the player "
+        if self.picked is not None and self.picked[0] == "vacancy" and self._assistant_token is None:
+            self.wait_for("Fill empty place", "Enter on a pool player to select him.")
+        elif self.picked is not None and self._assistant_token is None:
+            detail = ("Enter on another squad player swaps them; → to the pool, then Enter on the player "
                       "who replaces him. Enter on him again keeps the squad as it is." if self.picked[0] == "squad"
                       else "← to the squad, then Enter on the player he replaces. Enter on him again keeps the squad "
                       "as it is.")
@@ -269,6 +345,9 @@ class SquadScreen(Screen):
             return "Keep search"
         if self.editing:
             return "Give this name"
+        if (self.picked is None and getattr(self, "side", None) == "squad"
+                and self.capacity() != 20 and self.current() is None):
+            return "Fill place"
         return "Put here" if self.picked is not None else "Move player"
 
     def say(self, text):
@@ -351,9 +430,20 @@ class SquadScreen(Screen):
             return self.say(self.model.held_block_reason)
         if self._assistant_blocked():
             return
-        word = self.current()
-        if word is None:
+        row = self.current_row()
+        if row is None:
             return None
+        word = row["id"]
+        if word is None:
+            slot = row["extra_slot"]
+            if self.picked is not None and self.picked[0] == "pool":
+                return self.fill_place(slot, self.picked[1])
+            self.picked = ("vacancy", slot)
+            return self.show_side("pool")
+        if self.picked is not None and self.picked[0] == "vacancy":
+            if self.side == "pool":
+                return self.fill_place(self.picked[1], word)
+            self.picked = None
         here = (self.side, word)
         self.message = ""
         if self.picked is None or self.picked == here or (self.picked[0] == self.side == "pool"):
@@ -374,6 +464,16 @@ class SquadScreen(Screen):
         except ValueError as exc:
             return self.say(str(exc))
         return self.refresh()
+
+    def fill_place(self, slot, word):
+        try:
+            self.model.fill_extra(slot, word)
+        except ValueError as exc:
+            return self.say(str(exc))
+        self.picked = None
+        self.side = "squad"
+        self.cursor["squad"] = 20 + slot
+        return self.say("Extra place filled.")
 
     # The pool's search and position filter. [designed: owner, §6 item 18; T177]
     def open_search(self):
@@ -432,14 +532,19 @@ class SquadScreen(Screen):
             if getattr(self.model, 'held_prematch', False):
                 return self.say(str(exc))
             return self.say("The assistant is not available right now.\nFinish the current action, then try again.")
-        self.say(ASSISTANT_WAIT)
+        self.say(self.assistant_wait())
         self._assistant_timer.start()
 
     def _assistant_blocked(self):
         if self._assistant_token is not None:
-            self.say(ASSISTANT_WAIT)
+            self.say(self.assistant_wait())
             return True
         return False
+
+    def assistant_wait(self):
+        if self.capacity() == 20:
+            return ASSISTANT_WAIT
+        return f"The assistant is choosing your {self.capacity()}-place squad.\nEsc: cancel and return to desk."
 
     def _poll_assistant(self):
         from goal2.game.best_twenty_jobs import AssistantStale

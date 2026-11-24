@@ -135,6 +135,7 @@ class MatchController:
         self.live_players = live_players
         if type(substitution_control) is not bool: raise ValueError("substitution_control must be boolean")
         self.substitution_control = substitution_control
+        self.selected_bench = None
         self.substitution_requested = False
         self.model = model
         self.pending = pending
@@ -217,7 +218,11 @@ class MatchController:
         if self.drawn > self.acked and not self.quick:
             bridge.ack_frames(token, self.drawn)
             self.acked = self.drawn
-        for event in bridge.poll(token):
+        events = bridge.poll(token)
+        selection = getattr(bridge, "selected_bench", None)
+        if selection is not None:
+            self.selected_bench = selection
+        for event in events:
             value = {"kind": event.kind, "minute": event.minute, "score": list(event.score),
                      "data": copy.deepcopy(event.data)}
             self._send("event", value)

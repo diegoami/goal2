@@ -385,6 +385,11 @@ class WatchedJobs:
         return self._active
 
     @property
+    def selected_bench(self):
+        """Immutable selection bound to the active watched match, if supplied."""
+        return getattr(self, '_selection', None)
+
+    @property
     def process(self):
         """The engine process serving the active job (a _Handle), or None."""
         return self._handle if self._active else None
