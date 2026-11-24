@@ -466,3 +466,5 @@ operational status.
 
 - [T170ah](T170ah.md): adopt the opt-in SDK review decision for the retained native season (#829).
 - [T239](T239.md): show squad size, vacancies, and the full match-day bench (#837).
+
+- [T170ai](T170ai.md): read-only native post-match review and explicit Exit (#840).
