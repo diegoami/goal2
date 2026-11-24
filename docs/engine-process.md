@@ -256,6 +256,15 @@ page verifies that decision's fresh view before accepting another action.
 Play is a separate explicit answer. Other native pitch callers retain their
 existing decision callbacks.
 
+[designed: T170ak/#844] Set `choice_controls=True` on the native pitch to
+use the existing Goal2 chooser for retained taker and penalty-order decisions.
+The verified live view supplies player cards and selection limits. The worker
+checks the typed choice and acknowledges it before playback advances. A taker
+timeout keeps the SDK's current pick, and acknowledgement closes Help opened
+from that chooser. A penalty order keeps picks local until a complete order
+or an explicit request to use the default remainder. Other callers keep their
+existing decision callbacks.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

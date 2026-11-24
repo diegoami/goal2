@@ -11,7 +11,7 @@ from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions','frames','post_match_review'}, 'next': {'count'},
-          'answer': {'decision', 'answer', 'half_time_edit'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
+          'answer': {'decision', 'answer', 'half_time_edit', 'choice_answer'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
           'pause': set(), 'completed_preview': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
@@ -36,6 +36,9 @@ def validate_request(header):
         raise SeasonRequestError('post_match_review must be boolean')
     if action == 'answer' and 'half_time_edit' in header and header['half_time_edit'] is not True:
         raise SeasonRequestError('half_time_edit must be true when supplied')
+    if action == 'answer' and 'choice_answer' in header:
+        if header['choice_answer'] is not True or 'half_time_edit' in header:
+            raise SeasonRequestError('choice_answer must be true and separate from edits')
     return action
 
 
@@ -168,6 +171,12 @@ class SeasonWorker:
                     if not at_review or set(answer) != {'post_match_exit'} or answer['post_match_exit'] is not True:
                         raise SeasonRequestError('post-match review requires an explicit Exit by itself')
                 waiting = getattr(match, 'waiting', None) or {}
+                if header.get('choice_answer') is True:
+                    from goal2.game.native_choice import validate_choice
+                    try:
+                        validate_choice(waiting, answer)
+                    except ValueError as exc:
+                        raise SeasonRequestError(str(exc)) from exc
                 if header.get('half_time_edit') is True:
                     from goal2.game.half_time_edit import validate_edit
                     try:
