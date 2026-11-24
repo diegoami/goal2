@@ -11,7 +11,8 @@ SOURCE = "a492059d4fc65d2ad5e8dca6074f627127331fe2"
 # [designed: T234/#819] Accepted T138b full selected-bench facade.
 # Only three runtime files change; retain the link-complete README override.
 # All port bodies/tables and default consumers remain unchanged.
-SOURCE_OVERRIDES = {'runtime/original_match/README.md': '0f9f87f405282ce2a0461679ac71395d35e76e3a'}
+SOURCE_OVERRIDES = {'runtime/original_match/README.md': '0f9f87f405282ce2a0461679ac71395d35e76e3a',
+                    'runtime/original_match/match.py': '47bd67c2600433fb38dac73e31ecc619b67f7787'}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",

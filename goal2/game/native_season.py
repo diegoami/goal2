@@ -75,10 +75,12 @@ class NativeSeasonOwner:
     only that flow consumes replies until handoff/close. Observation packets are
     detached native boundaries, never a legacy career publication.
     """
-    def __init__(self,owner,state,*,frames=False):
+    def __init__(self,owner,state,*,frames=False,post_match_review=False):
         if type(frames) is not bool:raise ValueError('frames must be boolean')
+        if type(post_match_review) is not bool:raise ValueError('post_match_review must be boolean')
         native,_,country=_native(state)
         self._frames=frames
+        self._post_match_review=post_match_review
         self.owner=owner;self.managed_country=country;self._thread=threading.get_ident()
         self._initial=native;self._input_hash=canonical_hash(native)
         self._boundary=None;self._observations=[];self._entry_events=[]
@@ -222,7 +224,7 @@ class NativeSeasonOwner:
                 if action in ('open','advance'):
                     status=self._accept_boundary(value)
                     if status=='match':
-                        self._phase='configuring';self._request('configure',**({'frames':True} if self._frames else {}))
+                        self._configure_match()
                     else:self._phase='terminal' if status=='deferred-rollover' else 'boundary'
                 elif action=='configure':
                     self._phase='preparing';self._request('next',count=32)
@@ -254,6 +256,15 @@ class NativeSeasonOwner:
                     break  # the screen is now the sole consumer of this reply queue
         except (KeyError,TypeError,IndexError,ValueError) as exc:self._lose(f'invalid native reply: {exc}')
         return self.status
+
+    def _configure_match(self):
+        options = {}
+        if self._frames:
+            options['frames'] = True
+        if self._post_match_review:
+            options['post_match_review'] = True
+        self._phase = 'configuring'
+        self._request('configure', **options)
 
     def _send_prematch(self,action,**values):
         self._owner()
@@ -289,7 +300,7 @@ class NativeSeasonOwner:
         self.controller.detach();self.controller=None;self._decision=self._decision_data=None
         self._entry_events=[]
         if status=='match':
-            self._phase='configuring';self._request('configure',**({'frames':True} if self._frames else {}))
+            self._configure_match()
         else:self._phase='terminal' if status=='deferred-rollover' else 'boundary'
         return self.status
 

@@ -129,7 +129,7 @@ class Worker(unittest.TestCase):
 
 @requires.need(files=('GOAL.DAT',))
 class Driver(unittest.TestCase):
-    def exercise(self,quick):
+    def exercise(self,quick,review=False):
         from goal2.data.goaldat import load
         from goal2.engine.original_match.image import Image
         from goal2.game import engine_tables
@@ -159,8 +159,10 @@ raise SystemExit(main())
 '''
         shared.engine.command=[engine_python(),'-u','-c',script,str(proof),str(ROOT/'.cache/GOAL.DAT')]
         helper=old.Actual('test_complete_pause_edit_paced_driver_and_resume_equal_direct_sdk');self.addCleanup(helper.doCleanups)
-        native,d,prefix,boundary=helper.prepare(owner,Image.from_bytes(raw).state(engine_tables.load()))
+        native,d,prefix,boundary=helper.prepare(owner,Image.from_bytes(raw).state(engine_tables.load()),
+            **({'post_match_review': True} if review else {}))
         policy=Policy(quick);pid=native.pid;now=0.;paused=False;last_stopped=None;end=time.monotonic()+900
+        reviews=[]
         while time.monotonic()<end:
             now+=1;frame=d.tick(now)
             if frame is not None:
@@ -169,7 +171,21 @@ raise SystemExit(main())
             if d.status=='decision':
                 waiting=d.waiting;d.request_view();helper.until(lambda:d.status in ('decision','lost'),lambda:d.tick(now))
                 self.assertEqual(d.status,'decision',d.error);last_stopped=d.stopped_view.snapshot.state_hash
-                d.answer(policy(waiting['event']['data']))
+                if waiting['event']['data']['context']=='post_match':
+                    self.assertTrue(review)
+                    self.assertIsNone(d.completed_view)
+                    with self.assertRaises(ValueError):d.resume()
+                    board=next(e['data'] for e in d.events if e['kind']=='full_time')
+                    self.assertEqual(d.stopped_view.snapshot.data['board'],board)
+                    self.assertNotEqual(d.stopped_view.team_context['match_set_up'],0)
+                    reviews.append(waiting['decision'])
+                    d.answer({'post_match_exit':1})
+                    helper.until(lambda:d.status in ('decision','lost'),lambda:d.tick(now))
+                    self.assertEqual(d.waiting,waiting,d.error)
+                    self.assertTrue(d.message)
+                    d.answer({'post_match_exit':True})
+                else:
+                    d.answer(policy(waiting['event']['data']))
                 if quick:d.quick_result()
             if d.status=='complete':break
             self.assertNotIn(d.status,('lost','closed'),d.error);time.sleep(.0005)
@@ -187,7 +203,10 @@ raise SystemExit(main())
             views.append((view.snapshot.state_hash,view.snapshot.result_hash))
         self.assertEqual(views[0],views[1]);self.assertEqual(native.pid,pid);self.assertEqual(shared.engine.generation,1)
         actual={k:oracle[k] for k in ('memory_hash','all16')}
-        actual.update(events_hash=digest(prefix+d.events),frames_hash=digest(d.frames),events=len(prefix+d.events),
+        canonical=[e for e in prefix+d.events if not (
+            e['kind']=='decision' and e['data']['context']=='post_match')]
+        self.assertEqual(len(reviews),int(review))
+        actual.update(events_hash=digest(canonical),frames_hash=digest(d.frames),events=len(canonical),
             frames=len(d.frames),boundary_hash=canonical_hash(boundary['state']),
             result_hash=completed_result_hash(view.result),board_hash=digest(view.board))
         d.resume();self.assertIsNone(d.completed_view)
@@ -200,6 +219,12 @@ raise SystemExit(main())
         d.close();print('T170AG_'+('QUICK_DRIVER ' if quick else 'FULL ')+json.dumps(actual,sort_keys=True),flush=True)
 
     def test_actual_quick_pipe_repeated_covered_reads_then_explicit_resume(self):self.exercise(True)
+
+    def test_review_accepts_only_explicit_exit_then_resumes_the_same_match(self):self.exercise(True,review=True)
+
+    @requires.need(slow=True)
+    def test_watched_review_keeps_full_match_and_resume_equal_to_sdk(self):
+        self.exercise(False, review=True)
 
     @requires.need(slow=True)
     def test_full_retained_driver_completion_reads_equal_sdk(self):self.exercise(False)
