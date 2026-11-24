@@ -265,6 +265,14 @@ from that chooser. A penalty order keeps picks local until a complete order
 or an explicit request to use the default remainder. Other callers keep their
 existing decision callbacks.
 
+[designed: T170al/#846] Set `pause_controls=True` on the native pitch to
+review the current rosters and request or cancel a substitution at an ordinary
+pause. The worker accepts a single desired boolean through the stopped edit
+path. The newer decision must have the same context, score and minute. The
+page displays the latch and budget from the verified fresh view. Play is a
+separate answer. The timed opportunity and any later player swap have their
+own decisions.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

@@ -145,7 +145,7 @@ class NativePitchScreen(PitchScreen):
 
     def __init__(self, window, model, native, *, on_decision, on_goal,
                  on_complete, on_failure, connection=None, half_time_controls=False,
-                 choice_controls=False):
+                 choice_controls=False, pause_controls=False):
         callbacks = (on_decision, on_goal, on_complete, on_failure)
         if not all(callable(c) for c in callbacks):
             raise ValueError('native pitch requires every owner callback')
@@ -155,6 +155,9 @@ class NativePitchScreen(PitchScreen):
         if type(choice_controls) is not bool:
             raise ValueError('choice_controls must be boolean')
         self._choice_controls = choice_controls
+        if type(pause_controls) is not bool:
+            raise ValueError('pause_controls must be boolean')
+        self._pause_controls = pause_controls
         self.on_decision, self.on_goal, self.on_complete, self.on_failure = callbacks
         self._delivered = None; self._goal_delivered = None
         self._completed = False; self._failed = False; self._closed = False
@@ -221,6 +224,10 @@ class NativePitchScreen(PitchScreen):
                     elif context in ('set_piece', 'shootout_order') and self._choice_controls:
                         from goal2.ui.native_choice import NativeChoiceFlow
                         self.choice = NativeChoiceFlow(self, waiting)
+                    elif context == 'pause' and self._pause_controls:
+                        from goal2.ui.native_pause import NativePauseScreen
+                        self.review = NativePauseScreen(self, waiting)
+                        self.window_.push(self.review)
                     else:
                         self.on_decision(self, waiting)
                 return

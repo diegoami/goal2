@@ -11,7 +11,8 @@ from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions','frames','post_match_review'}, 'next': {'count'},
-          'answer': {'decision', 'answer', 'half_time_edit', 'choice_answer'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
+          'answer': {'decision', 'answer', 'half_time_edit', 'choice_answer', 'pause_edit'},
+          'preview': {'decision'}, 'stopped_preview': {'decision'},
           'pause': set(), 'completed_preview': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
@@ -39,6 +40,9 @@ def validate_request(header):
     if action == 'answer' and 'choice_answer' in header:
         if header['choice_answer'] is not True or 'half_time_edit' in header:
             raise SeasonRequestError('choice_answer must be true and separate from edits')
+    if action == 'answer' and 'pause_edit' in header:
+        if header['pause_edit'] is not True or {'half_time_edit', 'choice_answer'} & header.keys():
+            raise SeasonRequestError('pause_edit must be true and supplied by itself')
     return action
 
 
@@ -181,6 +185,12 @@ class SeasonWorker:
                     from goal2.game.half_time_edit import validate_edit
                     try:
                         validate_edit(waiting, answer)
+                    except ValueError as exc:
+                        raise SeasonRequestError(str(exc)) from exc
+                if header.get('pause_edit') is True:
+                    from goal2.game.pause_edit import validate_request_edit
+                    try:
+                        validate_request_edit(waiting, answer)
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
                 answer = deepcopy(answer)
