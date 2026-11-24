@@ -330,7 +330,7 @@ class MatchDay:
         screen = ChooseScreen(self.window, self.model, "taker", eleven, data.get("current"),
                               lambda word: self._chosen(pitch, {"taker": word}),
                               available=data.get("available"), role=data.get("role"), match=self._match_name(),
-                              decision_data=data)
+                              decision_data=data, **self.live_selection(pitch))
         return self.window.push(screen)
 
     def _shootout_order(self, pitch, decision):
@@ -340,7 +340,7 @@ class MatchDay:
         screen = ChooseScreen(self.window, self.model, "order", eleven, eleven[0] if eleven else None,
                               lambda order: self._chosen(pitch, {"shootout_order": list(order)}),
                               available=data.get("available"), takers=data.get("takers") or 0,
-                              match=self._match_name(), decision_data=data)
+                              match=self._match_name(), decision_data=data, **self.live_selection(pitch))
         return self.window.push(screen)
 
     def _stop_menu(self):
@@ -379,10 +379,18 @@ class MatchDay:
             screen.message = f"Team tactic not submitted: {exc}"
             screen.refresh()
 
+    def live_selection(self, pitch):
+        controller = getattr(pitch, "controller", None)
+        selection = getattr(controller, "selected_bench", None)
+        if selection is None:
+            return {}
+        return {"selection": selection, "substitution_control": controller.substitution_control}
+
     def live_bench(self, pitch, decision):
         """[derived: original injury/player_tactics events] Display live accepted data without mutating a career."""
         from goal2.ui.s19_bench import BenchAnswer
-        answer = BenchAnswer(self.model, decision, pitch.controller.opponents(), friendly=self.fixture.kind == 1)
+        answer = BenchAnswer(self.model, decision, pitch.controller.opponents(),
+                             friendly=self.fixture.kind == 1, **self.live_selection(pitch))
         for event in self.controller.events:
             data = event["data"]
             if event["kind"] == "injury" and data.get("team") == self.controller.display.managed:
@@ -464,7 +472,8 @@ class MatchDay:
         decision = (SimpleNamespace(data=decision["data"], minute=decision["minute"], score=decision["score"])
                     if decision is not None else SimpleNamespace(data={"context": report["context"]}, minute=0,
                                                                   score=[0, 0]))
-        answer = BenchAnswer(self.model, decision, friendly=self.fixture.kind == 1)
+        selection = self.live_selection(pitch) if "eleven" in decision.data else {}
+        answer = BenchAnswer(self.model, decision, friendly=self.fixture.kind == 1, **selection)
         answer.chosen = [list(p) for p in report["asked"]]
 
         def back():

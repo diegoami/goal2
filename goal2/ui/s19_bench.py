@@ -66,9 +66,9 @@ class BenchAnswer:
     `value()` is what the match day sends, once: the pairs alone, or {'substitutions': pairs, 'positions',
     'marking', 'own_tactics'} when anything else changed (watched_match._drive_match takes either)."""
 
-    def __init__(self, model, decision, opponents=(), friendly=False):
+    def __init__(self, model, decision, opponents=(), friendly=False, *, selection=None, substitution_control=False):
         data = decision.data
-        self.live_records = player_snapshot(data)
+        self.live_records = player_snapshot(data, selection=selection, substitution_control=substitution_control)
         # Validated with the record snapshot; copy mutable transport containers.
         # Older waiting decisions omit this authoritative display observation.
         from types import MappingProxyType
@@ -357,7 +357,9 @@ class BenchScreen(Screen):
         colour(self.note, theme.VALUE)
         inner.put(self.note, 0, 1, GridCard.COLS, inner.rows - 1)
         body.put(feedback, 0, FEEDBACK_AT, GridCard.COLS, FEEDBACK_ROWS)
-        self.strip = BenchStrip(STRIP_COLS)
+        self.strip = BenchStrip(STRIP_COLS, count=max(20, len(self.answer.words())))
+        if self.strip.compact:
+            inner.text("I injured  * marked  ^ on  v off", "sub", 0, 0, GridCard.COLS - COUNTER_COLS)
         self.strip.chosen.connect(self.click_row)
         body.put(self.strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS)
 

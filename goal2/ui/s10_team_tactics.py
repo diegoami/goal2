@@ -113,8 +113,10 @@ class TeamTacticsScreen(Screen):
         self._characteristic_fallback.setVisible(self.answer is not None)
         self.note = CellPara("", "sub")
         body.put(self.note, 35, 21, 34, 4)
-        self.strip = GridStrip(cols=20)
-        body.put(self.strip, 70, 0, 20, 23)
+        count = (len(self.answer.words()) if self.answer is not None else
+                 20 + sum(word is not None for word in getattr(self.model.state, "extra_squad", ())))
+        self.strip = GridStrip(cols=20, count=max(20, count), compact=count > 20)
+        body.put(self.strip, 70, 0, 20, 25 if count > 20 else 23)
         self.injury_hint = body.text("* injured", "sub", 70, 23, 20)
 
     def refresh(self):
@@ -127,7 +129,8 @@ class TeamTacticsScreen(Screen):
         if records:
             from goal2.ui.live_cards import card_state
             trait_state = card_state(state, records, self.answer.team_tactics)
-            trait_state.managed_squad = list(self.answer.words())
+            trait_state.managed_squad = list(self.answer.words()[:20])
+            trait_state.starting_eleven = list(self.answer.eleven)
         decoded = trait_state is not None
         self._characteristic_panel.setVisible(decoded)
         self._characteristic_fallback.setVisible(not decoded)
@@ -150,7 +153,7 @@ class TeamTacticsScreen(Screen):
         self.performance.setVisible(performance is not None)
         self.performance_heading.setVisible(performance is not None)
         if self.answer is None:
-            rows, eleven = squad_rows(model)
+            rows, eleven = squad_rows(model, include_extra=True)
         else:
             from goal2.game import roles
             table = roles.tables(state)
@@ -175,6 +178,9 @@ class TeamTacticsScreen(Screen):
                 facts += [(" · SUBSTITUTION OPPORTUNITY", theme.VALUE)]
             elif getattr(self.answer, "substitution_requested", False):
                 facts += [(" · SUBSTITUTION REQUESTED", theme.VALUE)]
+        injured = getattr(self.answer, 'injured', ())
+        if injured and self.strip.compact:
+            facts += [(" · * injured", theme.VALUE)]
         self.facts.setText(rich(facts))
         for i, ((name, element), line) in enumerate(zip(LINES, self.rows)):
             clear, set_ = words(state, element, memory=memory)
@@ -193,8 +199,7 @@ class TeamTacticsScreen(Screen):
         elif self.message:
             parts = [(self.message, theme.VALUE)]
         self.note.setText(f'<p style="line-height:{LINE_HEIGHT}%">{rich(parts)}</p>')
-        injured = getattr(self.answer, 'injured', ())
-        self.injury_hint.setVisible(bool(injured))
+        self.injury_hint.setVisible(bool(injured) and not self.strip.compact)
         self.strip.show_rows(country_name,
                              [(r["role"], r["line"], full_name(model, r["id"]) +
                                (' *' if r['id'] in injured else '')) for r in rows], -1, eleven == 11,

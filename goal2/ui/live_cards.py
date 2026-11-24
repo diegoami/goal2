@@ -6,8 +6,12 @@ from types import MappingProxyType
 from goal2.game.watched_schema import validate_player_records
 
 
-def player_snapshot(data):
+def player_snapshot(data, *, selection=None, substitution_control=False):
     """Reuse the accepted wire validator; copy bytes into an immutable map."""
+    if selection is not None:
+        from goal2.game.extended_schema import validate_extended_decision
+        checked = validate_extended_decision(data, selection, substitution_control=substitution_control)
+        return MappingProxyType(dict(checked.records))
     validate_player_records(data)
     return MappingProxyType({word: bytes.fromhex(raw) for word, raw in data.get("player_records", ())})
 

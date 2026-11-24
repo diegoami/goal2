@@ -58,7 +58,7 @@ class ChooseScreen(Screen):
     escape_text = None
 
     def __init__(self, window, model, mode, eleven, current, answer, *, available=None, role=1, takers=0,
-                 computer=None, match="", decision_data=None):
+                 computer=None, match="", decision_data=None, selection=None, substitution_control=False):
         super().__init__(window)
         from goal2.game.player_card import card
         self.model, self.mode, self.answer_to = model, mode, answer
@@ -71,7 +71,8 @@ class ChooseScreen(Screen):
         state = model.state
         if decision_data is not None:
             from goal2.ui.live_cards import player_snapshot, card_state
-            state = card_state(state, player_snapshot(decision_data), decision_data.get("tactics"))
+            records = player_snapshot(decision_data, selection=selection, substitution_control=substitution_control)
+            state = card_state(state, records, decision_data.get("tactics"))
         self.cards = [card(state, w, model.goaldat) for w in self.eleven]
         self.index = self.eleven.index(current) if current in self.eleven else 0
         what = ROLES.get(role, "taker")

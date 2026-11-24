@@ -150,6 +150,19 @@ class CellKeyItem(Clickable):
         self.clicked.connect(handler)
 
 
+class SquadRule(QWidget):
+    """A divider on the first bench row's edge, outside the player's click area."""
+    def __init__(self):
+        super().__init__()
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setPen(QColor(theme.FRAME))
+        painter.drawLine(0, 0, self.width() - 1, 0)
+        painter.end()
+
+
 class GridStrip(Frame):
     """The list on the right as the original draws it: the twenty (the eleven, a gap, the bench) or a page of twenty of the
     pool, in a frame whose rule carries the country (`-holland---`). Rows are clicked through `chosen(index on the page)`."""
@@ -157,7 +170,7 @@ class GridStrip(Frame):
     PAGE = 20
     COLS = 24   # [designed: T211] one cell in, a code and its gap, a name of up to 14 characters, a cell out, and room for a name
 
-    def __init__(self, cols=COLS, count=PAGE, spare=0):
+    def __init__(self, cols=COLS, count=PAGE, spare=0, *, compact=False):
         """`count` rows: the twenty by default (the eleven, a gap, the bench); a strip of the eleven alone (S16) takes 11, so its
         frame is as tall as its rows and no taller. `spare` rows more than the players and the gap need (S19's, for a name that takes
         two). [designed: T212]"""
@@ -165,10 +178,11 @@ class GridStrip(Frame):
         self.setObjectName("strip")
         self.cols = cols
         self.count = count
-        self.area = Cells(cols, count + (1 if count > 11 else 0) + spare, "stripRows")
+        self.compact = compact
+        self.area = Cells(cols, count + (1 if count > 11 and not compact else 0) + spare, "stripRows")
         self.add(self.area, 1)
         self.rows = []
-        self.gap = QWidget()
+        self.gap = SquadRule() if compact else QWidget()
         if count > 11:
             self.area.put(self.gap, 0, 11, self.cols)
         else:
@@ -177,8 +191,9 @@ class GridStrip(Frame):
         for i in range(count):
             row = self.make_row(i)
             row.chosen.connect(self.chosen.emit)
-            self.area.put(row, 0, i + (1 if i > 10 else 0), self.cols)
+            self.area.put(row, 0, i + (1 if i > 10 and not compact else 0), self.cols)
             self.rows.append(row)
+        self.gap.raise_()
 
     def make_row(self, index):
         return CellRow(index)
@@ -188,7 +203,7 @@ class GridStrip(Frame):
         self.set_label(heading)
         self.gap.setVisible(gap and self.count > 11)
         for i, row in enumerate(self.rows):
-            self.area.move(row, 0, i + (1 if i > 10 and gap else 0), self.cols)
+            self.area.move(row, 0, i + (1 if i > 10 and gap and not self.compact else 0), self.cols)
             if i < len(rows):
                 code, line, name = rows[i]
                 row.setProperty("injured", i in injured)
@@ -250,21 +265,26 @@ class RosterDivider(QWidget):
 class BenchStrip(Frame):
     """[designed: owner playtest, #754] All twenty players keep a one-row baseline, including injured/marked players."""
     chosen=Signal(int)
-    def __init__(self,cols=20):
-        super().__init__("","red");self.setObjectName("strip");self.cols=cols;self.count=20
+    def __init__(self,cols=20, *, count=20):
+        super().__init__("","red");self.setObjectName("strip");self.cols=cols;self.count=count
+        self.compact = count > 20
         self.area=Cells(cols,24,"benchRosterRows");self.add(self.area,1)
-        self.gap=RosterDivider();self.area.put(self.gap,0,11,cols)
+        self.gap=SquadRule() if self.compact else RosterDivider()
+        self.area.put(self.gap,0,11,cols)
         self.rows=[]
-        for i in range(20):
+        for i in range(count):
             row=BenchRosterRow(i);row.chosen.connect(self.chosen.emit)
-            self.area.put(row,1,i+(i>10),cols-2);self.rows.append(row)
-        self.legend=self.area.text("I injured  * marked","sub",0,22,cols)
-        self.area.text("^ on  v off","sub",0,23,cols)
+            self.area.put(row,1,i+(i>10 and not self.compact),cols-2);self.rows.append(row)
+        if self.compact:
+            self.gap.raise_()
+        else:
+            self.legend=self.area.text("I injured  * marked","sub",0,22,cols)
+            self.area.text("^ on  v off","sub",0,23,cols)
 
     def show_rows(self,heading,rows,current=-1,gap=True,injured=(),marks=None):
         self.set_label(heading);self.gap.setVisible(gap);marks=marks or {}
         for i,row in enumerate(self.rows):
-            self.area.move(row,1,i+(1 if i>10 and gap else 0),self.cols-2)
+            self.area.move(row,1,i+(1 if i>10 and gap and not self.compact else 0),self.cols-2)
             if i<len(rows):
                 code,line,name=rows[i];tone=LINE_COLOUR.get(line,theme.TEXT_NORMAL)
                 status=("I" if i in injured else " ")+(marks.get(i,"") or " ")
