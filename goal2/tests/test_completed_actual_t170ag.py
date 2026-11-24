@@ -27,7 +27,15 @@ class Policy:
         return self.old(data)
 
 
-def direct(raw,quick):
+def half_time_pair(data):
+    positions = dict(data['positions'])
+    records = {word: bytes.fromhex(record) for word, record in data['player_records']}
+    return next([off, on] for off in data['eleven'][1:] for on in data['bench']
+                if off and on and positions[off] == positions[on]
+                and 0 < records[on][14] < 128 and not records[on][16] & 0xA4)
+
+
+def direct(raw,quick,half_time=False):
     import sys
     from goal2.engine.original_match.image import Image
     from goal2.engine.original_match.machine import MEM_SIZE,REGS,Uc
@@ -39,12 +47,20 @@ def direct(raw,quick):
     session=SeasonSession(Image.from_bytes(raw).state(engine_tables.load()));session.advance()
     m=session.pending_match;boundary=canonical_hash(session.state);PrematchSeam(m,frames=True)
     events=[];frames=[];policy=Policy(quick)
+    edits = 0
     for ev in m.events():
         if ev.kind=='tick':
             frames.append(snapshot(m,ev,len(frames),len(events)))
             if len(frames)==1:m.pause()
         else:events.append(asdict(ev))
-        if ev.kind=='decision':m.answer(**policy(ev.data))
+        if ev.kind=='decision':
+            if half_time and ev.data['context'] == 'half_time' and edits < 2:
+                change = ({'substitutions': [half_time_pair(ev.data)]} if edits == 0
+                          else {'tactics': {1: not bool(ev.data['tactics'] & 1)}})
+                m.answer(edit_only=True, **change)
+                edits += 1
+            else:
+                m.answer(**policy(ev.data))
     result=dict(events_hash=digest(events),frames_hash=digest(frames),events=len(events),frames=len(frames),
         memory_hash=hashlib.sha256(m.m.read(0,MEM_SIZE)).hexdigest(),all16=[m.m.reg(r) for r in REGS],
         boundary_hash=boundary,result_hash=completed_result_hash(m.result()),board_hash=digest(m.result()['board']))
@@ -241,7 +257,10 @@ class Window(unittest.TestCase):
     def test_worker_loss_under_review_help_disables_exit_and_releases_owner(self):
         self.exercise(review=True, lose_worker=True)
 
-    def exercise(self, *, review=False, lose_worker=False):
+    def test_real_half_time_substitution_and_tactic_refresh_before_explicit_play(self):
+        self.exercise(half_time=True)
+
+    def exercise(self, *, review=False, lose_worker=False, half_time=False):
         from PySide6.QtCore import QTimer,Qt
         from PySide6.QtTest import QTest
         from PySide6.QtWidgets import QApplication
@@ -269,6 +288,8 @@ class Window(unittest.TestCase):
         self.addCleanup(close);failures=[];completed=[];paused=[];held=[];policy=Policy(True)
         def decision(s,waiting):
             self.assertNotEqual(waiting['event']['data']['context'], 'post_match')
+            if half_time:
+                self.assertNotEqual(waiting['event']['data']['context'], 'half_time')
             s.answer_native(waiting['decision'],policy(waiting['event']['data']))
             if waiting['event']['data']['context']=='pause':d.quick_result()
         def complete(s):
@@ -276,7 +297,8 @@ class Window(unittest.TestCase):
             d.request_completed_view();win.push(Screen(win))
         with patch('goal2.ui.native_pitch.NativeMatchDriver',return_value=d):
             screen=NativePitchScreen(win,model,native,connection=d.connection,on_decision=decision,
-                on_goal=lambda s,e:s.release_goal(),on_complete=complete,on_failure=lambda s,e:failures.append(e))
+                on_goal=lambda s,e:s.release_goal(),on_complete=complete,on_failure=lambda s,e:failures.append(e),
+                **({'half_time_controls': True} if half_time else {}))
         win.push(screen);screen.timer.stop();self.addCleanup(screen.closing)
         def painted(seq):
             screen.painted(seq)
@@ -295,6 +317,48 @@ class Window(unittest.TestCase):
                     screen.answer_stop_box(Qt.Key.Key_Return)
                 if not worker_killed:
                     self.assertEqual(failures, [])
+            if half_time:
+                helper.until(lambda: screen.review is not None and screen.review.phase == 'ready', tick)
+                page = screen.review
+                assert_fits(self, win)
+                self.assertEqual(page.enter_hint_text(), 'Play second half')
+                self.assertEqual(page.statistics_phase, 'half')
+                start = page.snapshot
+                outgoing, incoming = half_time_pair(start.snapshot.data)
+                if start.sides[0] != start.managed_country:
+                    self.assertFalse(page.substitute.isEnabled())
+                    QTest.mouseClick(page.team_button, Qt.MouseButton.LeftButton)
+                self.assertEqual(page.players, start.squad)
+                frames = len(d.frames)
+                QTest.mouseClick(page.roster.rows[page.players.index(outgoing)], Qt.MouseButton.LeftButton)
+                QTest.keyClick(win, Qt.Key.Key_X)
+                self.assertEqual(page.outgoing, outgoing)
+                QTest.mouseClick(page.roster.rows[page.players.index(incoming)], Qt.MouseButton.LeftButton)
+                QTest.mouseClick(page.substitute, Qt.MouseButton.LeftButton)
+                QTest.keyClick(win, Qt.Key.Key_X)
+                QTest.keyClick(win, Qt.Key.Key_F1)
+                from goal2.ui.s22_help import HelpScreen
+                helper.until(lambda: page.phase == 'ready', tick)
+                self.assertIsInstance(win.current(), HelpScreen)
+                self.assertEqual(len(d.frames), frames)
+                self.assertIn(incoming, page.snapshot.eleven)
+                self.assertIn(outgoing, page.snapshot.bench)
+                latest = page.snapshot
+                self.assertGreater(latest.snapshot.decision, start.snapshot.decision)
+                self.assertEqual(latest.snapshot.data['substitutions_left'], start.snapshot.data['substitutions_left'] - 1)
+                QTest.keyClick(win, Qt.Key.Key_Escape)
+                QTest.keyClick(win, Qt.Key.Key_G)
+                helper.until(lambda: page.phase == 'ready', tick)
+                self.assertGreater(page.snapshot.snapshot.decision, latest.snapshot.decision)
+                self.assertEqual(page.snapshot.snapshot.data['tactics'], latest.snapshot.data['tactics'] ^ 1)
+                self.assertEqual(len(d.frames), frames)
+                self.assertEqual(completed, [])
+                QTest.mouseClick(page.enter_hint, Qt.MouseButton.LeftButton)
+                QTest.keyClick(win, Qt.Key.Key_Return)
+                helper.until(lambda: screen.review is None, tick)
+                answers = [value for context, value in d.choices if context == 'half_time']
+                self.assertEqual(len(answers), 3)
+                self.assertEqual(answers[-1], {})
             if review:
                 helper.until(lambda: getattr(screen, 'review', None) is not None, tick)
                 page = screen.review
@@ -384,8 +448,8 @@ class Window(unittest.TestCase):
         self.assertEqual(native.shared.engine.generation,1);self.assertEqual(model.state,before)
         packets = native.take_observations()
         self.assertEqual(len(packets),1);self.assertEqual(native.take_observations(),[])
-        if review:
-            expected = pypy_engine.call(__name__+':direct', raw, True)
+        if review or half_time:
+            expected = pypy_engine.call(__name__+':direct', raw, True, half_time)
             canonical = [event for event in prefix + d.events if not (
                 event['kind'] == 'decision' and event['data']['context'] == 'post_match')]
             self.assertEqual(digest(canonical), expected['events_hash'])

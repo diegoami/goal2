@@ -22,6 +22,7 @@ class NativeMatchDriver:
         self._request=0;self._limit=1;self._sequence=0;self._watermark=0;self._total=0
         self._events=[];self._frames=[];self._pending_frames=deque();self._decision=None
         self._stopped_view=None;self._completed_view=None
+        self._half_time_answer = None
         self._over=self._exhausted=False;self._handled=-1;self._presented=-1;self._painted=-1
         self._visible=0;self._frame=None;self._due=0.;self.speed=3;self.quick=False;self.held=False
         self._pause_wanted=False;self._pause_latched=False;self.pause_requests=0;self.dropped_pauses=0
@@ -159,9 +160,23 @@ class NativeMatchDriver:
             if action=='pause':self._pause_wanted=False;self._pause_latched=False;self.dropped_pauses+=1
             elif action=='resume':self._state='playing'
             elif action not in ('answer','stopped_preview','completed_preview'):raise ValueError('native stream could not advance')
+            if action == 'answer':
+                self._half_time_answer = None
             return
         if value.get('action')!=action:raise ValueError('native driver reply action mismatch')
-        if action=='next':self._batch(value,self._limit)
+        if action=='next':
+            if self._half_time_answer is not None:
+                origin = self._half_time_answer
+                events = value['events']
+                if (value['frames'] or value['over'] or value['exhausted'] or not events
+                        or type(value['decision']) is not int or value['decision'] <= origin['decision']
+                        or events[-1]['data'].get('context') != 'half_time'
+                        or events[-1]['data'].get('edited') is not True
+                        or any(event['minute'] != origin['event']['minute']
+                               or event['score'] != origin['event']['score'] for event in events)):
+                    raise ValueError('half-time edit did not return to the same stop')
+                self._half_time_answer = None
+            self._batch(value,self._limit)
         elif action=='completed_preview':
             from goal2.game.completed_view import CompletedMatchView
             fixture=self.owner.fixture
@@ -181,6 +196,14 @@ class NativeMatchDriver:
             self._request=value['request']
         elif action=='answer':
             self._request=value['request'];self._decision=None
+            if self._half_time_answer is not None:
+                if self._half_time_answer['edit']:
+                    # [confirmed: Match._team_menu_key] One edit-only plan returns
+                    # to the stopped decision. Read its reply without unholding.
+                    self._limit = 32
+                    self._send('next', count=self._limit)
+                    return
+                self._half_time_answer = None
         elif action=='pause':
             if (type(value.get('paused')) is not bool or (not value['paused'] and not isinstance(value.get('reason'),str))):
                 raise ValueError('invalid native pause reply')
@@ -209,6 +232,7 @@ class NativeMatchDriver:
         review_exit = (self._expected == 'answer' and self._decision is not None
                        and self._decision['event']['data'].get('context') == 'post_match')
         if (self.held and self._state == 'playing' and not review_exit
+                and self._half_time_answer is None
                 and self._expected not in (None, 'stopped_preview', 'completed_preview')):
             return None
         try:
@@ -259,19 +283,34 @@ class NativeMatchDriver:
                 or self._pause_wanted or self._pause_latched or self._expected=='pause'):return False
         self._pause_wanted=True;self.pause_requests+=1;return True
 
-    def answer(self,values):
+    def answer(self,values,*,half_time_edit=False):
         self._owner()
         if self.status!='decision':raise ValueError('native decision is not ready for an answer')
         if not isinstance(values,dict) or set(values)-ANSWER_FIELDS or 'captain' in values:
             raise ValueError('invalid in-match native answer')
         self._stopped_view=None
         self.message='';self.choices.append((self._decision['event']['data'].get('context'),deepcopy(values)))
-        self._send('answer',decision=self._decision['decision'],answer=values)
+        options = {'half_time_edit': True} if half_time_edit else {}
+        self._send('answer',decision=self._decision['decision'],answer=values,**options)
 
     def resume(self):
         self._owner()
         if self.status!='complete':raise ValueError('native resume needs actual completion and drained samples')
         self._stopped_view=self._completed_view=None;self._state='resuming';self._send('resume')
+
+    def answer_half_time(self, values):
+        """[designed: T170aj] An explicit Play or one bounded held edit."""
+        self._owner()
+        waiting = self.waiting
+        if (waiting is None or waiting['event']['data'].get('context') != 'half_time'
+                or self.stopped_view is None):
+            raise ValueError('half-time answer needs a verified current decision')
+        if values:
+            from goal2.game.half_time_edit import validate_edit
+            validate_edit(self.stopped_view.snapshot.data, values)
+        self.answer(values, half_time_edit=bool(values))
+        if self.pending:
+            self._half_time_answer = dict(waiting, edit=bool(values))
 
     def close(self):
         self._owner()
