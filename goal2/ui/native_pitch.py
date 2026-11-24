@@ -7,6 +7,8 @@ from copy import deepcopy
 import time
 from types import SimpleNamespace
 
+from PySide6.QtCore import Qt
+
 from goal2.desktop.match_view import Display, SPEEDS
 from goal2.desktop.watched import pitch_identity
 from goal2.game.native_driver import NativeMatchDriver
@@ -145,7 +147,7 @@ class NativePitchScreen(PitchScreen):
 
     def __init__(self, window, model, native, *, on_decision, on_goal,
                  on_complete, on_failure, connection=None, half_time_controls=False,
-                 choice_controls=False, pause_controls=False):
+                 choice_controls=False, pause_controls=False, opportunity_controls=False):
         callbacks = (on_decision, on_goal, on_complete, on_failure)
         if not all(callable(c) for c in callbacks):
             raise ValueError('native pitch requires every owner callback')
@@ -158,11 +160,15 @@ class NativePitchScreen(PitchScreen):
         if type(pause_controls) is not bool:
             raise ValueError('pause_controls must be boolean')
         self._pause_controls = pause_controls
+        if type(opportunity_controls) is not bool:
+            raise ValueError('opportunity_controls must be boolean')
+        self._opportunity_controls = opportunity_controls
         self.on_decision, self.on_goal, self.on_complete, self.on_failure = callbacks
         self._delivered = None; self._goal_delivered = None
         self._completed = False; self._failed = False; self._closed = False
         self.review = None
         self.choice = None
+        self.opportunity = None
         controller = NativePitchController(model, native, connection)
         try: super().__init__(window, model, controller)
         except Exception:
@@ -184,7 +190,7 @@ class NativePitchScreen(PitchScreen):
     def tick(self):
         if self._closed: return
         c = self.controller
-        c.covered = self.window_.current() is not self
+        c.covered = self.window_.current() is not self or self.opportunity is not None
         try:
             if self.replay is not None:
                 self.replay_tick(time.monotonic()); return
@@ -198,6 +204,10 @@ class NativePitchScreen(PitchScreen):
             if self.choice is not None:
                 if self.choice.update():
                     self.choice = None
+                return
+            if self.opportunity is not None:
+                if self.opportunity.update():
+                    self.opportunity = None
                 return
             if c.driver.status == 'resumed':
                 self.timer.stop(); self.ended = True; return
@@ -228,6 +238,9 @@ class NativePitchScreen(PitchScreen):
                         from goal2.ui.native_pause import NativePauseScreen
                         self.review = NativePauseScreen(self, waiting)
                         self.window_.push(self.review)
+                    elif context == 'substitution_opportunity' and self._opportunity_controls:
+                        from goal2.ui.native_opportunity import NativeOpportunityFlow
+                        self.opportunity = NativeOpportunityFlow(self, waiting['decision'])
                     else:
                         self.on_decision(self, waiting)
                 return
@@ -242,6 +255,13 @@ class NativePitchScreen(PitchScreen):
         if waiting is None or type(decision) is not int or waiting['decision'] != decision:
             raise ValueError('native screen answer needs its current decision')
         self.controller.driver.answer(answer)
+
+    def handle_key(self, key):
+        opportunity = self.opportunity
+        if (opportunity is not None and opportunity.phase != 'open' and key != Qt.Key.Key_F1
+                and not (opportunity.phase == 'retry' and key in (Qt.Key.Key_Return, Qt.Key.Key_Enter))):
+            return True
+        return super().handle_key(key)
 
     def release_goal(self):
         if self.controller.goal is None: raise ValueError('no painted native goal is held')
