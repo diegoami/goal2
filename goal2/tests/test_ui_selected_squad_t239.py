@@ -21,6 +21,7 @@ from goal2.tests.test_selected_bench_matches_t238 import selected_state
 from goal2.tests.test_ui_grid_t210 import canonical_page
 from goal2.tests.ui_assertions import assert_fits, assert_on_grid
 from goal2.ui import theme
+from goal2.ui.cell_parts import GridStrip
 from goal2.ui.match_day import for_window
 from goal2.ui.s08_squad import open_squad
 from goal2.ui.s19_bench import BenchScreen
@@ -91,6 +92,7 @@ class SelectedSquadUI(unittest.TestCase):
         self.assertEqual(len(screen.strip.shown_texts()), 22)
         self.choose(screen, 24)
         self.assertEqual(self.owner.state.extra_squad, [None] * 4)
+        self.assertEqual(screen.findChildren(GridStrip), [screen.strip])
         self.assertEqual(len(screen.strip.shown_texts()), 24)
         self.click(screen.strip.rows[-1])
         self.assertIsNone(screen.current())
@@ -101,6 +103,7 @@ class SelectedSquadUI(unittest.TestCase):
             assert_on_grid(self, self.win)
         self.key(Qt.Key.Key_Return)
         self.assertEqual(screen.side, "pool")
+        self.assertEqual(screen.findChildren(GridStrip), [screen.strip])
         row = next(r for r in screen.rows()[:20]
                    if not eligibility.reasons(self.owner.state.players[r["id"]]))
         index = screen.rows().index(row)
@@ -115,6 +118,7 @@ class SelectedSquadUI(unittest.TestCase):
         self.key(Qt.Key.Key_Escape, screen.size_menu)
         self.assertEqual(self.owner.state.extra_squad, [None, None, None, row["id"]])
         self.choose(screen, 20)
+        self.assertEqual(screen.findChildren(GridStrip), [screen.strip])
         self.assertIn(row["id"], [r["id"] for r in screen.rows("pool")])
         self.assertEqual(len(screen.strip.shown_texts()), 20)
 

@@ -198,16 +198,25 @@ class SquadScreen(Screen):
         body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
         self.note = CellPara("", "sub")
         body.put(self.note, 0, CARD_AT + GridCard.ROWS, LEFT_COLS, 2)
-        self.standard_strip = GridStrip(STRIP_COLS)
-        self.selected_strip = GridStrip(STRIP_COLS, count=24, compact=True)
-        self.standard_strip.chosen.connect(self.click_row)
-        self.selected_strip.chosen.connect(self.click_row)
-        body.put(self.standard_strip, STRIP_AT, 0, STRIP_COLS, GridStrip.PAGE + 2)
-        body.put(self.selected_strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS)
-        self.selected_strip.hide()
-        self.strip = self.standard_strip
+        self.strip = None
+        self.use_strip(expanded=False)
         self.main_layout.removeWidget(self.wait_box)
         body.put(self.wait_box, 0, WAIT_AT, BODY_COLS, WAIT_ROWS)
+
+    def use_strip(self, *, expanded):
+        if self.strip is not None:
+            if self.strip.compact == expanded:
+                return
+            self.strip.hide()
+            self.area.layout().removeWidget(self.strip)
+            self.strip.setParent(None)
+            self.strip.deleteLater()
+        if expanded:
+            self.strip = GridStrip(STRIP_COLS, count=24, compact=True)
+        else:
+            self.strip = GridStrip(STRIP_COLS)
+        self.strip.chosen.connect(self.click_row)
+        self.area.put(self.strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS if expanded else GridStrip.PAGE + 2)
 
     # What is shown.
     def capacity(self):
@@ -273,9 +282,7 @@ class SquadScreen(Screen):
         rows = self.rows()
         word = self.current()
         expanded = self.side == "squad" and self.capacity() != 20
-        self.strip = self.selected_strip if expanded else self.standard_strip
-        self.standard_strip.setVisible(not expanded)
-        self.selected_strip.setVisible(expanded)
+        self.use_strip(expanded=expanded)
         wait_cols = LEFT_COLS if self.capacity() != 20 else BODY_COLS
         self.area.move(self.wait_box, 0, WAIT_AT, wait_cols, WAIT_ROWS)
         if self.side == "squad":
