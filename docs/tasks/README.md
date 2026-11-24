@@ -473,3 +473,4 @@ operational status.
 
 - [T170ak](T170ak.md): retained native taker and penalty-order choice binding (#844).
 - [T170al](T170al.md): retained ordinary pause and substitution request (#846).
+- [T170am](T170am.md): retained timed substitution opportunity (#848).
