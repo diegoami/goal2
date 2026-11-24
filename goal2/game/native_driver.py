@@ -206,7 +206,11 @@ class NativeMatchDriver:
         if self._state in ('closed','lost','resumed'):return None
         # [designed: T170af] Covered menus may finish their pure stopped read.
         # Other held playback behavior, queued samples and deadlines stay intact.
-        if self.held and self._state=='playing' and self._expected not in (None,'stopped_preview','completed_preview'):return None
+        review_exit = (self._expected == 'answer' and self._decision is not None
+                       and self._decision['event']['data'].get('context') == 'post_match')
+        if (self.held and self._state == 'playing' and not review_exit
+                and self._expected not in (None, 'stopped_preview', 'completed_preview')):
+            return None
         try:
             for _ in range(32):
                 try:kind,value=self.connection.replies.get_nowait()

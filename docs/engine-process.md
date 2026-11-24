@@ -224,8 +224,7 @@ invalidate the completed view. Only explicit same-Match resume returns round
 data and once-only deltas to the season owner.
 
 [confirmed: the original F1F6 source audit; designed: #829] The watched original
-post-match menu precedes player restoration and the completed boundary. Its
-interactive UI still needs an accepted upstream stop/read/input contract.
+post-match menu precedes player restoration and the completed boundary.
 Completed cards retain actual post-restoration flags, not the earlier menu's
 performance context. The final board remains the recorded whistle snapshot;
 do not recompute it from later records, backdate flags, invent a post-match
@@ -241,6 +240,12 @@ normal stopped-view request for live records and send
 `{'post_match_exit': True}` as the sole answer for that decision. Invalid
 answers leave the same stop available. Exit continues through restoration.
 The completed view and explicit round resume then follow as usual.
+
+[designed: T170ai/#840] The opt-in pitch opens Goal2's read-only review page
+at that decision. It shows the verified live player lists and recorded score,
+with a statistics page and a labelled Exit control. The pitch remains held
+until Exit is acknowledged. A refused Exit offers a fresh read before retry.
+Only the caller's completion action resumes the round.
 
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
