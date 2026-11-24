@@ -23,6 +23,7 @@ class NativeMatchDriver:
         self._events=[];self._frames=[];self._pending_frames=deque();self._decision=None
         self._stopped_view=None;self._completed_view=None
         self._half_time_answer = None
+        self._choice_answer = False
         self._over=self._exhausted=False;self._handled=-1;self._presented=-1;self._painted=-1
         self._visible=0;self._frame=None;self._due=0.;self.speed=3;self.quick=False;self.held=False
         self._pause_wanted=False;self._pause_latched=False;self.pause_requests=0;self.dropped_pauses=0
@@ -162,6 +163,7 @@ class NativeMatchDriver:
             elif action not in ('answer','stopped_preview','completed_preview'):raise ValueError('native stream could not advance')
             if action == 'answer':
                 self._half_time_answer = None
+                self._choice_answer = False
             return
         if value.get('action')!=action:raise ValueError('native driver reply action mismatch')
         if action=='next':
@@ -196,6 +198,7 @@ class NativeMatchDriver:
             self._request=value['request']
         elif action=='answer':
             self._request=value['request'];self._decision=None
+            self._choice_answer = False
             if self._half_time_answer is not None:
                 if self._half_time_answer['edit']:
                     # [confirmed: Match._team_menu_key] One edit-only plan returns
@@ -232,6 +235,7 @@ class NativeMatchDriver:
         review_exit = (self._expected == 'answer' and self._decision is not None
                        and self._decision['event']['data'].get('context') == 'post_match')
         if (self.held and self._state == 'playing' and not review_exit
+                and not self._choice_answer
                 and self._half_time_answer is None
                 and self._expected not in (None, 'stopped_preview', 'completed_preview')):
             return None
@@ -283,7 +287,7 @@ class NativeMatchDriver:
                 or self._pause_wanted or self._pause_latched or self._expected=='pause'):return False
         self._pause_wanted=True;self.pause_requests+=1;return True
 
-    def answer(self,values,*,half_time_edit=False):
+    def answer(self,values,*,half_time_edit=False,choice_answer=False):
         self._owner()
         if self.status!='decision':raise ValueError('native decision is not ready for an answer')
         if not isinstance(values,dict) or set(values)-ANSWER_FIELDS or 'captain' in values:
@@ -291,6 +295,8 @@ class NativeMatchDriver:
         self._stopped_view=None
         self.message='';self.choices.append((self._decision['event']['data'].get('context'),deepcopy(values)))
         options = {'half_time_edit': True} if half_time_edit else {}
+        if choice_answer:
+            options['choice_answer'] = True
         self._send('answer',decision=self._decision['decision'],answer=values,**options)
 
     def resume(self):
@@ -311,6 +317,17 @@ class NativeMatchDriver:
         self.answer(values, half_time_edit=bool(values))
         if self.pending:
             self._half_time_answer = dict(waiting, edit=bool(values))
+
+    def answer_choice(self, decision, values):
+        """[designed: T170ak] Submit a verified chooser answer under cover."""
+        self._owner()
+        view = self.stopped_view
+        if view is None or type(decision) is not int or view.snapshot.decision != decision:
+            raise ValueError('choice needs a verified current decision')
+        from goal2.game.native_choice import validate_choice
+        validate_choice(view.snapshot.data, values)
+        self.answer(values, choice_answer=True)
+        self._choice_answer = self.pending
 
     def close(self):
         self._owner()

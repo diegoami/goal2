@@ -144,17 +144,22 @@ class NativePitchScreen(PitchScreen):
     GRID = True  # [designed: T215/T170ad] Explicitly retain S17's cell layout.
 
     def __init__(self, window, model, native, *, on_decision, on_goal,
-                 on_complete, on_failure, connection=None, half_time_controls=False):
+                 on_complete, on_failure, connection=None, half_time_controls=False,
+                 choice_controls=False):
         callbacks = (on_decision, on_goal, on_complete, on_failure)
         if not all(callable(c) for c in callbacks):
             raise ValueError('native pitch requires every owner callback')
         if type(half_time_controls) is not bool:
             raise ValueError('half_time_controls must be boolean')
         self._half_time_controls = half_time_controls
+        if type(choice_controls) is not bool:
+            raise ValueError('choice_controls must be boolean')
+        self._choice_controls = choice_controls
         self.on_decision, self.on_goal, self.on_complete, self.on_failure = callbacks
         self._delivered = None; self._goal_delivered = None
         self._completed = False; self._failed = False; self._closed = False
         self.review = None
+        self.choice = None
         controller = NativePitchController(model, native, connection)
         try: super().__init__(window, model, controller)
         except Exception:
@@ -165,6 +170,8 @@ class NativePitchScreen(PitchScreen):
         self.controller.error = message
         if self.review is not None:
             self.review.failed(message)
+        if self.choice is not None:
+            self.choice.dismiss()
         self.closing()
         if self._failed: return
         self._failed = True
@@ -184,6 +191,10 @@ class NativePitchScreen(PitchScreen):
             if self.review is not None:
                 if self.review.update_review():
                     self.review = None
+                return
+            if self.choice is not None:
+                if self.choice.update():
+                    self.choice = None
                 return
             if c.driver.status == 'resumed':
                 self.timer.stop(); self.ended = True; return
@@ -207,6 +218,9 @@ class NativePitchScreen(PitchScreen):
                         from goal2.ui.native_half_time import NativeHalfTimeScreen
                         self.review = NativeHalfTimeScreen(self, waiting)
                         self.window_.push(self.review)
+                    elif context in ('set_piece', 'shootout_order') and self._choice_controls:
+                        from goal2.ui.native_choice import NativeChoiceFlow
+                        self.choice = NativeChoiceFlow(self, waiting)
                     else:
                         self.on_decision(self, waiting)
                 return
@@ -232,4 +246,6 @@ class NativePitchScreen(PitchScreen):
     def closing(self):
         if self._closed: return
         self._closed = True
+        if self.choice is not None:
+            self.choice.close()
         super().closing()
