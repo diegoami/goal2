@@ -153,6 +153,23 @@ class Window(unittest.TestCase):
         self.assertEqual(case.failures, [])
 
 
+    def test_manual_taker_submits_the_current_highlight_once(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        case = self.case
+        chooser = self.show_choice('set_piece', role=2)
+        word = next(w for w in self.packet['data']['available'] if w != chooser.highlighted())
+        QTest.mouseClick(chooser.strip.rows[self.eleven.index(word)], Qt.MouseButton.LeftButton)
+        self.assertEqual(chooser.highlighted(), word)
+        case.key(Qt.Key.Key_Return)
+        case.key(Qt.Key.Key_Return)
+        self.assertEqual([values['answer'] for action, values in case.owner.sent if action == 'answer'],
+                         [{'taker': word}])
+        case.owner.reply('answer')
+        case.tick()
+        self.assertIs(case.win.current(), case.screen)
+
+
 def actual_prompt(raw, context):
     """Visit genuine SDK decisions and compare worker submission to direct continuation."""
     import sys
