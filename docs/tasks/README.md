@@ -472,3 +472,4 @@ operational status.
 - [T170aj](T170aj.md): retained half-time substitution, team tactics and explicit Play (#842).
 
 - [T170ak](T170ak.md): retained native taker and penalty-order choice binding (#844).
+- [T170al](T170al.md): retained ordinary pause and substitution request (#846).
