@@ -470,3 +470,5 @@ operational status.
 - [T170ai](T170ai.md): read-only native post-match review and explicit Exit (#840).
 
 - [T170aj](T170aj.md): retained half-time substitution, team tactics and explicit Play (#842).
+
+- [T170ak](T170ak.md): retained native taker and penalty-order choice binding (#844).
