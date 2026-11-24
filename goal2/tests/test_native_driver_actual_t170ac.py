@@ -70,8 +70,8 @@ class Actual(unittest.TestCase):
             time.sleep(.001)
         self.fail('native driver operation did not settle')
 
-    def prepare(self,owner,state):
-        native=NativeSeasonOwner(owner,state,frames=True)
+    def prepare(self,owner,state,**options):
+        native=NativeSeasonOwner(owner,state,frames=True,**options)
         def cleanup():native.close();self.until(lambda:native.disposed,limit=15)
         self.addCleanup(cleanup)
         self.until(lambda:native.status in ('boundary','lost'),native.poll)

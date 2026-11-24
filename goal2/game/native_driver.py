@@ -124,6 +124,14 @@ class NativeMatchDriver:
                 raise ValueError('invalid native canonical event')
         if value['decision'] is not None and value['events'][-1]['data'].get('context')=='pre_match':
             raise ValueError('native driver received a pre-match decision')
+        if value['decision'] is not None:
+            data = value['events'][-1]['data']
+            if data.get('context') == 'post_match':
+                prior = next((e for e in reversed(value['events'][:-1]) if e['kind'] == 'full_time'), None)
+                if prior is None:
+                    prior = next((e for e in reversed(self._events) if e['kind'] == 'full_time'), None)
+                if prior is None or value['over'] or data.get('board') != prior['data']:
+                    raise ValueError('native review must follow its recorded final board')
         if value['exhausted'] and (not value['over'] or value['decision'] is not None):
             raise ValueError('native stream exhausted before completion')
         self._request=value['request'];self._sequence,self._watermark,self._total=sequence,watermark,total

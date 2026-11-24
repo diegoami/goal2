@@ -10,12 +10,12 @@ from goal2.game.season import SeasonSession, canonical_hash
 from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
-          'configure': {'captain', 'substitutions','frames'}, 'next': {'count'},
+          'configure': {'captain', 'substitutions','frames','post_match_review'}, 'next': {'count'},
           'answer': {'decision', 'answer'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
           'pause': set(), 'completed_preview': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
-                 'request_substitution', 'opportunity', 'captain'}
+                 'request_substitution', 'opportunity', 'captain', 'post_match_exit'}
 
 
 class SeasonRequestError(ValueError):
@@ -32,6 +32,8 @@ def validate_request(header):
         raise SeasonRequestError('preview needs a positive decision number')
     if action=='configure' and type(header.get('frames',False)) is not bool:
         raise SeasonRequestError('frames must be boolean')
+    if action == 'configure' and type(header.get('post_match_review', False)) is not bool:
+        raise SeasonRequestError('post_match_review must be boolean')
     return action
 
 
@@ -76,7 +78,8 @@ class SeasonWorker:
                 if self.seam is not None:
                     raise SeasonRequestError('the held match is already configured')
                 self.seam = PrematchSeam(match, captain=header.get('captain'),
-                                         substitutions=header.get('substitutions'),frames=header.get('frames',False))
+                                         substitutions=header.get('substitutions'),frames=header.get('frames',False),
+                                         post_match_review=header.get('post_match_review',False))
                 self.frames=header.get('frames',False)
                 self.stream = iter(match.events())
             elif action == 'next':
@@ -157,6 +160,11 @@ class SeasonWorker:
                     raise SeasonRequestError('stale or consumed season decision')
                 if not isinstance(answer, dict) or set(answer) - ANSWER_FIELDS:
                     raise SeasonRequestError('invalid season answer')
+                # [confirmed: T139] Exit belongs only to the current review.
+                at_review = (getattr(match, 'waiting', None) or {}).get('context') == 'post_match'
+                if at_review or 'post_match_exit' in answer:
+                    if not at_review or set(answer) != {'post_match_exit'} or answer['post_match_exit'] is not True:
+                        raise SeasonRequestError('post-match review requires an explicit Exit by itself')
                 answer = deepcopy(answer)
                 # [designed: packet JSON] JSON object keys are text, Match expects integer elements.
                 for field in ('tactics', 'positions', 'marking', 'own_tactics'):

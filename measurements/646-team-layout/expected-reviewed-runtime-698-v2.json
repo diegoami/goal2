@@ -10,7 +10,7 @@
     "goal2/engine/original_match/fileopts.py": "fe8e7207795398b3e2aae9fcb5f1b0d0388bfe4df9a89d77bd77f7d4399f6291",
     "goal2/engine/original_match/image.py": "2314ac46e20e4bf11e6f8f739300ddb564565e718b58c543b6b1f9848fbb8c24",
     "goal2/engine/original_match/machine.py": "c01aa890626ac0235f6e1a40dec93475624a5f09d426bdb6f701b37ceb6c2db1",
-    "goal2/engine/original_match/match.py": "0dbd4a6a8eb59a037f9b9a210de35b7842de28b4f47ef0a8fbfb2030d0af5ec9",
+    "goal2/engine/original_match/match.py": "8b6f65ac9c6632eab3c8a746cd45710c079d3cbb0db37185d147069507ace20d",
     "goal2/engine/original_match/news.py": "dde07e302270d1360e6cbc46511ace0502044419a427949801f1d42cb31fc97c",
     "goal2/engine/original_match/port/__init__.py": "7352fa45b65f353b5626f0c86407bddff3564f4508d5ee4ec5dd498a54e2bdbc",
     "goal2/engine/original_match/port/_display_finals.py": "32ad22c55be46cd6ce22ac105070f5938f94d013f3ea41d26df967d8bcf02325",
@@ -59,7 +59,8 @@
   },
   "public_assistant_wrapper_included": false,
   "facade_sources": {
-    "runtime/original_match/README.md": "0f9f87f405282ce2a0461679ac71395d35e76e3a"
+    "runtime/original_match/README.md": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+    "runtime/original_match/match.py": "47bd67c2600433fb38dac73e31ecc619b67f7787"
   },
   "overlay": "Accepted698 four read-only TEAM context values over the unchanged reviewed T170a closure; original v1 remains immutable"
 }

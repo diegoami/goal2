@@ -232,6 +232,16 @@ do not recompute it from later records, backdate flags, invent a post-match
 decision or substitute an old half-time/route view. Actual stopped widgets,
 summary/replay saves and career publication remain separate #817 leaves.
 
+[designed: T170ah/#829; confirmed: upstream T139/47bd67c2] A caller can
+set `post_match_review=True` on `NativeSeasonOwner` before opening the route.
+The existing decision callback receives `post_match` when the SDK enters its
+managed review, including when a quick result reaches that callback. The
+driver verifies its board against the recorded `full_time` event. Use the
+normal stopped-view request for live records and send
+`{'post_match_exit': True}` as the sole answer for that decision. Invalid
+answers leave the same stop available. Exit continues through restoration.
+The completed view and explicit round resume then follow as usual.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

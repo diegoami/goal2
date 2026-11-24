@@ -17,7 +17,7 @@ from goal2.game.season import canonical_hash
 
 
 CONTEXTS=frozenset(('pause','half_time','extra_time','substitution',
-                    'substitution_opportunity','set_piece','shootout_order'))
+                    'substitution_opportunity','set_piece','shootout_order','post_match'))
 
 
 def _json(value):

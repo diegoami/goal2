@@ -14,6 +14,7 @@ Every constant cites the listing or a finding."""
 import hashlib
 import json
 import zlib
+from copy import deepcopy
 from dataclasses import dataclass, field, asdict
 
 from .image import (Image, COUNTRIES_PTR, COUNTRY_SIZE, PLAYERS_PTR, PLAYER_SIZE, N_PLAYERS, N_COUNTRIES,
@@ -400,7 +401,8 @@ class Match:
 
     def configure_route_entry(self, *, captain=None, substitutions=None, ticks=False,
                               record_draws=False, set_piece=False, live_players=False,
-                              substitution_control=False, pre_match_edits=False, extra_players=None):
+                              substitution_control=False, pre_match_edits=False, extra_players=None,
+                              post_match_review=False):
         """Configure this actual held route Match exactly once, before events run.
 
         Configuration changes no guest memory, CPU, fixture, setup or RNG. The
@@ -424,7 +426,7 @@ class Match:
             raise ValueError('route entry is foreign, configured, changed or already started')
         flags = dict(ticks=ticks, record_draws=record_draws, set_piece=set_piece,
                      live_players=live_players, substitution_control=substitution_control,
-                     pre_match_edits=pre_match_edits)
+                     pre_match_edits=pre_match_edits, post_match_review=post_match_review)
         if any(type(value) is not bool for value in flags.values()):
             raise ValueError('route entry flags must be booleans')
         if captain is not None and (type(captain) is not int or not 1 <= captain <= 3060
@@ -687,7 +689,7 @@ class Match:
 
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
                speed=None, shootout_order=None, taker=None, edit_only=False,
-               request_substitution=None, opportunity=None, captain=_NO_CAPTAIN):
+               request_substitution=None, opportunity=None, captain=_NO_CAPTAIN, post_match_exit=None):
         """goal2's answer to the waiting decision; nothing given plays on.
         edit_only: execute edits at a legal half-time/substitution menu, or team-tactics-only edits at an
           ordinary pause/extra-time menu, and yield a fresh decision before Play. An ordinary subsequent answer continues;
@@ -716,6 +718,19 @@ class Match:
         # E44F Enter changes the request, and 7FCF accepts/dismisses a timed notice.
         # Validate all new inputs before consuming the waiting decision/replay.
         context = self.st["waiting"]["context"]
+        if context == "post_match" or post_match_exit is not None:
+            # [designed: T139] Explicit review Exit is replayable and leaves
+            # the completed match's gameplay decision history intact.
+            if (context != "post_match" or post_match_exit is not True
+                    or substitutions or tactics is not None or positions or marking or own_tactics
+                    or quick or speed is not None or shootout_order is not None or taker is not None
+                    or edit_only or request_substitution is not None or opportunity is not None
+                    or captain is not _NO_CAPTAIN):
+                raise ValueError("post-match review requires an explicit Exit by itself")
+            self._replay_action("answer", {"post_match_exit": True})
+            self.st["answer"] = {"post_match_exit": True}
+            self.st["waiting"] = None
+            return
         # [designed: T133/#715; confirmed: F030, CC7B] S16 follows all
         # pre-match edits. This is a Play input, delivered only at the original
         # role-1 prompt through its key policy, never a guest memory patch.
@@ -1357,6 +1372,14 @@ class Match:
                 self._extras(answer)
                 st["editing_menu"] = False
                 self._menu = self._new_plan(answer, "pre_match")
+            elif context == "post_match" and self.opts.get("post_match_review"):
+                # [confirmed: F1F6/F331] This callback follows the board and
+                # precedes player restoration. Continue with the existing plan.
+                if st["answer"] is None:
+                    self._decide(context, board=deepcopy(st["board"]))
+                    return None
+                st["answer"] = None
+                self._menu = S.MenuPlan(self.side)
             elif context in DECIDED_AT_MENU or st.get("editing_menu") or (context == "substitution" and (st.get("refused") or self.opts.get("substitution_control"))):
                 if st["answer"] is None:
                     self._decide(context, substitutions_now=bool(self.m.rd(S.SUBS_ALLOWED, 1)),
@@ -1475,7 +1498,7 @@ class Match:
             data["pool"] = self._pool()
         if self.opts.get("substitution_control", False):
             data["request_substitution"] = bool(self.m.rd(S.SUBS_REQUEST, 1))
-        if self.opts.get("live_players", False):
+        if self.opts.get("live_players", False) or context == "post_match":
             # [confirmed: F008, original1771:42BC] The card reads these actual
             #20-byte records from DS:A91B. Copy every managed slot, including bench
             #and withdrawn players, without executing another guest instruction.
