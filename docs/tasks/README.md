@@ -463,3 +463,5 @@ operational status.
 
 - [T237](T237.md): explicit extended-result saves, retaining old versions and validation profiles (#830).
 - [T238](T238.md): selected bench in watched and competitive matches, with career publication (#835).
+
+- [T170ah](T170ah.md): adopt the opt-in SDK review decision for the retained native season (#829).
