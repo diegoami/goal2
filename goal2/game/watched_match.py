@@ -258,7 +258,7 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     if delay_byte is not None:
         _integer(delay_byte,0,255,'delay byte')
     selected_options = {}
-    if state.squad_capacity != 20:
+    if getattr(state, 'squad_capacity', 20) != 20:
         from goal2.game.extended_squad import validate
         extras = [word for word in validate(state) if word is not None]
         if extras:
