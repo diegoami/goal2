@@ -115,14 +115,17 @@ def _pairs(value):
     return [[off, on] for off, on in value]
 
 
-def _event(value, *, live_players=False, substitution_control=False):
+def _event(value, *, live_players=False, substitution_control=False, selection=None):
     event = Event(**value)
     if (not isinstance(event.kind, str) or type(event.minute) is not int
             or not isinstance(event.score, tuple) or len(event.score) != 2
             or any(type(score) is not int or score < 0 for score in event.score)
             or not isinstance(event.data, dict)):
         raise ValueError('invalid watched event shape')
-    if event.kind=='decision':
+    if event.kind=='decision' and selection is not None:
+        from goal2.game.extended_schema import validate_extended_decision
+        validate_extended_decision(event.data, selection, substitution_control=substitution_control)
+    elif event.kind=='decision':
         from goal2.game.watched_schema import validate_player_records
         validate_player_records(event.data,required=live_players)
         from goal2.game.watched_schema import validate_substitution_decision
@@ -251,13 +254,25 @@ class _Preparation:
     """[designed: #254; T160] Encode the game off the owner's thread and send it with `open`. It never reads the
     active owner and never sends a match; a cancelled preparation sends nothing more."""
 
-    def __init__(self, shared, state, template):
+    def __init__(self, shared, state, template, *, opening=True, fixture=None, competitive=False):
         self.cancelled = False
         self.error = None
         self.phase = 'encode'
+        self.selection = None
+        self.profile = None
 
         def run():
             try:
+                if fixture is not None:
+                    from goal2.game.extended_match import prepare_extended_watched
+                    from goal2.game.extended_save import to_data
+                    from goal2.game.extended_schema import ExtendedSelection
+                    from goal2.game.watched_match import sealed
+                    image, _ = prepare_extended_watched(state, template, fixture, competitive=competitive)
+                    self.selection = ExtendedSelection.from_prepared(state, fixture, sealed(image))
+                    self.profile = to_data(self.selection, state.extra_squad)
+                if not opening or self.cancelled:
+                    return
                 raw = encode(state, template)
                 if self.cancelled:
                     return
@@ -266,7 +281,7 @@ class _Preparation:
                 shared.engine.open_encoded(raw)
             except BaseException as exc:
                 self.error = exc
-                self.engine_ran = shared.engine.process is not None
+                self.engine_ran = self.phase == 'open' and shared.engine.process is not None
         self.engine_ran = False
         self.thread = threading.Thread(target=run, name='goal2-engine-open', daemon=True)
         self.thread.start()
@@ -452,7 +467,12 @@ class WatchedJobs:
                                           record_draws=record_draws))
         if self._live_players:self._request['live_players']=True
         if self._substitution_control:self._request['substitution_control']=True
-        if shared.needs_open(job.state, self._template):
+        self._selection = None
+        opening = shared.needs_open(job.state, self._template)
+        if job.state.squad_capacity != 20:
+            self._preparing = _Preparation(shared, job.state, self._template, opening=opening,
+                                           fixture=job.fixture, competitive=self.KIND == 'competitive')
+        elif opening:
             self._preparing = _Preparation(shared, job.state, self._template)
         else:
             self._send_match()
@@ -469,7 +489,8 @@ class WatchedJobs:
                                      frames=request['frames'], bench=request['bench'],
                                      prompts=request.get('prompts', False),
                                      **({'live_players':True} if request.get('live_players') else {}),
-                                     **({'substitution_control':True} if request.get('substitution_control') else {}))
+                                     **({'substitution_control':True} if request.get('substitution_control') else {}),
+                                     **({'selected_bench':request['selected_bench']} if 'selected_bench' in request else {}))
         except OSError as exc:
             self._ended_before_match(exc)
         self._handle.bind()
@@ -495,6 +516,9 @@ class WatchedJobs:
                     # [designed: T160] the game's write failed because the engine ended: its end says why
                     self._ended_before_match(preparing.error)
                 raise preparing.error
+            self._selection = preparing.selection
+            if preparing.profile is not None:
+                self._request['selected_bench'] = preparing.profile
             self._preparing = None
         self._send_match()
 
@@ -524,7 +548,8 @@ class WatchedJobs:
                     raise _reply_failure(kind, value, True)
                 if kind == 'event' and isinstance(value, Event):
                     value = _event(asdict(value),live_players=getattr(self,'_live_players',False),
-                                   substitution_control=getattr(self,'_substitution_control',False))
+                                   substitution_control=getattr(self,'_substitution_control',False),
+                                   selection=getattr(self,'_selection',None))
                     self.events.append(value)
                     new.append(copy.deepcopy(value))
                     if self._bench and value.kind == 'decision' and (
@@ -743,6 +768,7 @@ class WatchedJobs:
             self._pitch_owns_pending = False
         self._active = False
         self._preparing = None
+        self._selection = None
         self._completion_thread = None
         self._completion_work = None
 

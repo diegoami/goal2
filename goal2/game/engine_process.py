@@ -64,6 +64,7 @@ class EngineProcess:
         self._completion_timer = None
         self._matches = 0
         self._live_players = False
+        self._selected_bench = None
         self._substitution_control = False
         self.opens = 0               # `open` requests sent, over every process
         self.ready = None            # the current process's `ready` value
@@ -223,7 +224,8 @@ class EngineProcess:
             else:
                 self._send_open()
 
-    def match(self, kind, fixture, *, options=None, frames=False, bench=False, prompts=False, live_players=False, substitution_control=False) -> None:
+    def match(self, kind, fixture, *, options=None, frames=False, bench=False, prompts=False,
+              live_players=False, substitution_control=False, selected_bench=None) -> None:
         """Start a match on the open game: `kind` watched or competitive; `options` among reference_seed,
         delay_byte and record_draws; `frames` streams the pitch samples; `bench` (with frames) asks the bench's
         decisions and paces the samples on `ack`; `prompts` (with the bench) also asks the player prompts
@@ -239,6 +241,14 @@ class EngineProcess:
             raise ValueError("the bench needs the pitch samples (frames=True)")
         if set(options) - set(OPTIONS):
             raise ValueError(f"engine match options are {', '.join(OPTIONS)}")
+        selection = None
+        if selected_bench is not None:
+            from goal2.game.extended_save import from_data, to_data
+            selection, slots = from_data(selected_bench)
+            if (selection.first, selection.second, selection.index, selection.kind) != (
+                    fixture.first, fixture.second, fixture.index, fixture.kind):
+                raise ValueError('selected-bench request differs from fixture')
+            selected_bench = to_data(selection, slots)
         with self._lock:
             self._usable()
             if self._season_active:
@@ -252,6 +262,7 @@ class EngineProcess:
             self._matches += 1
             self._match = self._matches
             self._live_players = live_players
+            self._selected_bench = selection
             self._substitution_control = substitution_control
             self._events = []
             self._frame_sequence, self._frame_watermark = 0, 0
@@ -263,6 +274,8 @@ class EngineProcess:
                 request["live_players"] = True
             if substitution_control:
                 request["substitution_control"] = True
+            if selection is not None:
+                request["selected_bench"] = selected_bench
             self._send(request)
 
     def ack(self, sample: int) -> bool:
@@ -592,7 +605,8 @@ class EngineProcess:
                 value = None
             elif kind == "event":
                 value = _event(value,live_players=getattr(self,"_live_players",False),
-                               substitution_control=getattr(self,"_substitution_control",False))
+                               substitution_control=getattr(self,"_substitution_control",False),
+                               selection=getattr(self,"_selected_bench",None))
                 self._running(kind)
                 self._events.append(value)
             elif kind == "frame":
@@ -606,7 +620,8 @@ class EngineProcess:
                 if set(value) != {"decision", "event"} or type(value["decision"]) is not int:
                     raise ProtocolError("invalid decision reply")
                 value = {"decision": value["decision"], "event": _event(value["event"],live_players=getattr(self,"_live_players",False),
-                               substitution_control=getattr(self,"_substitution_control",False))}
+                               substitution_control=getattr(self,"_substitution_control",False),
+                               selection=getattr(self,"_selected_bench",None))}
             elif kind == "answered":
                 self._running(kind)
                 value = _report(value)
@@ -620,10 +635,15 @@ class EngineProcess:
                 if set(value) != {"result", "events", "seeds", "engine_year"}:
                     raise ProtocolError("invalid complete reply")
                 value = WatchedOutcome(value["result"], payload, tuple(_event(e,live_players=getattr(self,"_live_players",False),
-                               substitution_control=getattr(self,"_substitution_control",False)) for e in value["events"]),
+                               substitution_control=getattr(self,"_substitution_control",False),
+                               selection=getattr(self,"_selected_bench",None)) for e in value["events"]),
                                        tuple(value["seeds"]), value["engine_year"])
                 if list(value.events) != self._events:
                     raise ProtocolError("the completed match differs from the events streamed")
+                selection = getattr(self, "_selected_bench", None)
+                if selection is not None:
+                    from goal2.game.extended_schema import validate_extended_result
+                    validate_extended_result(value.result, selection, competitive=selection.kind != 1)
                 # [designed: T199, #627] Do not publish before the transcript is confirmed.
                 self._completion = value
                 self._match = None
@@ -644,6 +664,7 @@ class EngineProcess:
                 self._running(kind)
                 value = None
                 self._match = None
+                self._selected_bench = None
             elif kind == "error":
                 if self._assistant_request is not None:
                     raise ProtocolError('unbound error during assistant request')
@@ -658,6 +679,7 @@ class EngineProcess:
     def _take_completion(self):
         """Called under the lifecycle lock: consume or discard the held result."""
         value, self._completion = self._completion, None
+        self._selected_bench = None
         self._cancelled_completion = False
         timer, self._completion_timer = self._completion_timer, None
         if timer is not None:

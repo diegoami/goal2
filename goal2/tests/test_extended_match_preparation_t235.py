@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from goal2.engine.original_match import Image, Fixture
 from goal2.game import campaign_pool
-from goal2.game.watched_match import prepare_watched
+from goal2.game.watched_match import _prepare_match, prepare_watched
 from goal2.tests import requires
 from goal2.tests.test_assistant_pipe_t183c import model
 
@@ -80,7 +80,8 @@ class Preparation(unittest.TestCase):
         image.memory[image.DS*16+0xC1E:image.DS*16+0xC20] = bytes((1,2))
         image.memory[managers+129*3] = 19; s.mem = image.memory_component()
         s.campaign.reserve_ids.reverse()
-        baseline = prepare_watched(s, self.model.template_bytes, self.fixture)
+        # Compare against the preparation before the current pool is projected.
+        baseline = _prepare_match(s, self.model.template_bytes, self.fixture, competitive=False)
         before = copy.deepcopy(s); got, _ = self.projected()
         at = baseline.far(0xA927)+2*baseline.rd(0x6D1A)
         allowed = set(range(at,at+160)) | {game+1,managers+129*3}

@@ -47,6 +47,9 @@ def engine_year(campaign: CampaignState) -> int:
 
 def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Image:
     """[designed: T63] Preserve the public friendly-only preparation contract."""
+    if state.squad_capacity != 20:
+        from goal2.game.extended_match import prepare_extended_watched
+        return prepare_extended_watched(state, original, fixture)[0]
     return _prepare_match(state,original,fixture,competitive=False)
 
 
@@ -254,11 +257,18 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
         _integer(reference_seed,0,65535,'reference seed')
     if delay_byte is not None:
         _integer(delay_byte,0,255,'delay byte')
+    selected_options = {}
+    if getattr(state, 'squad_capacity', 20) != 20:
+        from goal2.game.extended_squad import validate
+        extras = [word for word in validate(state) if word is not None]
+        if extras:
+            selected_options['extra_players'] = extras
+        live_players = True
     # [designed: owner, 2026-10-31; T151] Every match plays on the sealed port; there is no Unicorn fallback.
     match = Match(sealed(image),fixture,managed=state.managed_country,captain=state.captain or None,
                   seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions,
                   engine="port",ticks=_observe_pitch is not None,set_piece=bool(prompts),**({'live_players':True} if live_players else {}),
-                  **({'substitution_control':True} if substitution_control else {}))
+                  **({'substitution_control':True} if substitution_control else {}), **selected_options)
     events = consume_match(match,quick_at_half_time=quick_at_half_time,_observe=_observe,
                            _observe_pitch=_observe_pitch,policy=policy,prompts=prompts,
                            substitution_control=substitution_control)

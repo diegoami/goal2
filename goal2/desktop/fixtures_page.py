@@ -237,7 +237,7 @@ def snapshot(display,view=None):
     """[designed: T78] Pure presentation boundary; malformed copies cannot publish state.
     [derived: T51] Source A/B order and normal goals exclude shootout kicks.
     """
-    from goal2.game.watched_schema import watched,validate_result,resolution,COMPETITIVE_SCHEMA
+    from goal2.game.watched_schema import watched,retained_result_profile,resolution,COMPETITIVE_SCHEMA
     state=display.state;match=state.last_match
     fixture=state.campaign.next_fixture if state.campaign else None
     next_text=((display.goaldat.country_names[fixture.side_a]+' — '+display.goaldat.country_names[fixture.side_b])
@@ -251,7 +251,7 @@ def snapshot(display,view=None):
         stages=[]
         if original:
             competitive=match.get('schema')==COMPETITIVE_SCHEMA
-            validate_result(match.get('original'),competitive=competitive)
+            retained_result_profile(match)
             raw=match['original']
             if match['teams']!=[raw['first'],raw['second']] or match['score']!=list(raw['score']) or match['goals']!=raw['goals']:
                 raise ValueError('Result envelope differs from original result')

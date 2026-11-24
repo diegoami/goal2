@@ -283,9 +283,9 @@ class DesktopModel:
         goals=[f"{g['minute']}′ {self.goaldat.player_names[g['player']]} ({self.goaldat.country_names[teams[g['team']]]})" for g in match['goals']]
         lines=[text,'\n'.join(goals) if goals else 'No goals']
         # [designed: T51] Render validated competitive stages without counting kicks as goals.
-        from goal2.game.watched_schema import watched,COMPETITIVE_SCHEMA,validate_result,resolution
+        from goal2.game.watched_schema import watched,COMPETITIVE_SCHEMA,retained_result_profile,resolution
         if watched(match) and match.get('schema')==COMPETITIVE_SCHEMA:
-            original=match.get('original');validate_result(original,competitive=True)
+            original=match.get('original');retained_result_profile(match)
             stages=resolution(original)
             for key,label in (('regulation','Regulation'),('extra_time','Extra time'),('penalties','Penalties')):
                 score=stages[key]

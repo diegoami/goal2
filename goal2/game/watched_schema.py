@@ -247,6 +247,18 @@ def watched(row):
     return True
 
 
+def retained_result_profile(last):
+    """Validate the declared result profile and return its engine and optional selection."""
+    competitive = last.get('schema') == COMPETITIVE_SCHEMA
+    result = last.get('original')
+    if 'selected_bench' not in last:
+        return validate_result(result, competitive=competitive), None
+    from goal2.game.extended_save import from_data
+    from goal2.game.extended_schema import validate_extended_result
+    selection, _ = from_data(last['selected_bench'])
+    return validate_extended_result(result, selection, competitive=competitive).engine, selection
+
+
 def validate_saved_watched(state):
     """[designed] Validate watched envelopes and their returned-memory continuation."""
     last=state.last_match
@@ -259,12 +271,7 @@ def validate_saved_watched(state):
         if set(last)!=keys or last['schema'] not in (RESULT_SCHEMA,COMPETITIVE_SCHEMA) or type(last['schema']) is not int:
             raise ValueError('invalid watched result envelope')
         result=last['original'];competitive=last['schema']==COMPETITIVE_SCHEMA
-        if extended:
-            from goal2.game.extended_save import from_data
-            from goal2.game.extended_schema import validate_extended_result
-            selection,slots=from_data(last['selected_bench'])
-            engine=validate_extended_result(result,selection,competitive=competitive).engine
-        else:engine=validate_result(result,competitive=competitive)
+        engine,selection=retained_result_profile(last)
         if last['engine']!=engine:raise ValueError('watched engine differs from original result profile')
         teams=[result['first'],result['second']]
         if (result['managed']!=state.managed_country

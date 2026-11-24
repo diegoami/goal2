@@ -4,6 +4,9 @@ from goal2.game.watched_match import _prepare_match, _drive_match
 
 def prepare_competitive(state,original,fixture):
     """[designed] Validate a private source-fixture image; public friendlies stay separate."""
+    if state.squad_capacity != 20:
+        from goal2.game.extended_match import prepare_extended_watched
+        return prepare_extended_watched(state, original, fixture, competitive=True)[0]
     return _prepare_match(state,original,fixture,competitive=True)
 
 
