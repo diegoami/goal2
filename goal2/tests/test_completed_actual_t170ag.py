@@ -233,7 +233,17 @@ raise SystemExit(main())
 @requires.need(modules=('PySide6',),files=('GOAL.DAT',))
 class Window(unittest.TestCase):
     def test_real_pitch_completion_read_under_cover_renders_original_board_then_resumes(self):
+        self.exercise()
+
+    def test_real_post_match_review_handles_help_refusal_and_explicit_exit(self):
+        self.exercise(review=True)
+
+    def test_worker_loss_under_review_help_disables_exit_and_releases_owner(self):
+        self.exercise(review=True, lose_worker=True)
+
+    def exercise(self, *, review=False, lose_worker=False):
         from PySide6.QtCore import QTimer,Qt
+        from PySide6.QtTest import QTest
         from PySide6.QtWidgets import QApplication
         from unittest.mock import patch
         from goal2.data.goaldat import load
@@ -252,11 +262,13 @@ class Window(unittest.TestCase):
         raw=reference_raw();model=DesktopModel(load((ROOT/'.cache/GOAL.DAT').read_bytes()),raw,Path(tmp.name)/'unused')
         before=copy.deepcopy(model.state);helper=old.Actual('test_complete_pause_edit_paced_driver_and_resume_equal_direct_sdk')
         self.addCleanup(helper.doCleanups)
-        native,d,_,_=helper.prepare(model,Image.from_bytes(raw).state(engine_tables.load()));pid=native.pid
+        native,d,prefix,_=helper.prepare(model,Image.from_bytes(raw).state(engine_tables.load()),
+            **({'post_match_review': True} if review else {}));pid=native.pid
         win=AppWindow(data_setup.paths(Path(tmp.name)/'data'));win.resize(1440,1080);win.push(Screen(win));win.show()
         def close():win.leaving=True;win.close();win.deleteLater();app.processEvents()
         self.addCleanup(close);failures=[];completed=[];paused=[];held=[];policy=Policy(True)
         def decision(s,waiting):
+            self.assertNotEqual(waiting['event']['data']['context'], 'post_match')
             s.answer_native(waiting['decision'],policy(waiting['event']['data']))
             if waiting['event']['data']['context']=='pause':d.quick_result()
         def complete(s):
@@ -272,11 +284,87 @@ class Window(unittest.TestCase):
         screen.pitch.on_drawn=painted
         beats=[];timer=QTimer();timer.setInterval(2);timer.timeout.connect(lambda:beats.append(True));timer.start()
         self.addCleanup(timer.stop);now=0.;end=time.monotonic()+120
+        worker_killed = False
         with patch('goal2.ui.native_pitch.time',SimpleNamespace(monotonic=lambda:now)):
+            def tick():
+                nonlocal now
+                now += 1
+                screen.tick()
+                app.processEvents()
+                if screen.stop_box.open:
+                    screen.answer_stop_box(Qt.Key.Key_Return)
+                if not worker_killed:
+                    self.assertEqual(failures, [])
+            if review:
+                helper.until(lambda: getattr(screen, 'review', None) is not None, tick)
+                page = screen.review
+                self.assertEqual(page.phase, 'loading')
+                self.assertEqual(page.enter_hint_text(), '')
+                QTest.keyClick(win, Qt.Key.Key_Return)
+                QTest.keyClick(win, Qt.Key.Key_F1)
+                from goal2.ui.s22_help import HelpScreen
+                self.assertIsInstance(win.current(), HelpScreen)
+                if lose_worker:
+                    worker_killed = True
+                    native.shared.engine.process.kill()
+                    helper.until(lambda: page.phase == 'failed', tick)
+                    self.assertIsInstance(win.current(), HelpScreen)
+                    self.assertEqual(len(failures), 1)
+                    self.assertEqual(completed, [])
+                    QTest.keyClick(win, Qt.Key.Key_Escape)
+                    self.assertIs(win.current(), page)
+                    self.assertFalse(page.available())
+                    page.exit_review()
+                    self.assertFalse(any(context == 'post_match' for context, _ in d.choices))
+                    helper.until(lambda: native.disposed)
+                    return
+                helper.until(lambda: page.phase == 'ready', tick)
+                self.assertIsInstance(win.current(), HelpScreen)
+                self.assertFalse(page.available())
+                self.assertEqual(completed, [])
+                QTest.keyClick(win, Qt.Key.Key_Escape)
+                self.assertIs(win.current(), page)
+                assert_fits(self, win)
+                self.assertTrue(page.available())
+                self.assertNotEqual(page.snapshot.team_context['match_set_up'], 0)
+                left, right = page.snapshot.snapshot.data['board']['final_score']
+                self.assertEqual(page.score.text(), f'{page.names[0]} {left}–{right} {page.names[1]}')
+                self.assertEqual(page.players, page.snapshot.squad if page.snapshot.managed_country ==
+                                 page.snapshot.sides[0] else page.snapshot.opponents)
+                QTest.mouseClick(page.team_button, Qt.MouseButton.LeftButton)
+                self.assertEqual(page.side, 1)
+                self.assertEqual(page.players, page.snapshot.squad if page.snapshot.managed_country ==
+                                 page.snapshot.sides[1] else page.snapshot.opponents)
+                QTest.keyClick(win, Qt.Key.Key_Down)
+                self.assertEqual(page.row, 1)
+                QTest.mouseClick(page.roster.rows[2], Qt.MouseButton.LeftButton)
+                self.assertEqual(page.row, 2)
+                QTest.mouseClick(page.stats_button, Qt.MouseButton.LeftButton)
+                self.assertIsInstance(win.current(), BoardScreen)
+                self.assertEqual(win.current().data['score'], [left, right])
+                QTest.keyClick(win, Qt.Key.Key_Escape)
+                self.assertIs(win.current(), page)
+                QTest.keyClick(win, Qt.Key.Key_Escape)
+                self.assertIs(win.current(), page)
+                answer = screen.answer_native
+                with patch.object(screen, 'answer_native', side_effect=lambda number, _: answer(number, {})):
+                    QTest.keyClick(win, Qt.Key.Key_Return)
+                    helper.until(lambda: page.phase == 'retry', tick)
+                self.assertEqual(d.waiting['decision'], page.decision)
+                QTest.keyClick(win, Qt.Key.Key_Return)
+                helper.until(lambda: page.phase == 'ready', tick)
+                QTest.mouseClick(page.enter_hint, Qt.MouseButton.LeftButton)
+                QTest.keyClick(win, Qt.Key.Key_Return)
+                QTest.keyClick(win, Qt.Key.Key_F1)
+                helper.until(lambda: page.phase == 'finished', tick)
+                self.assertIsInstance(win.current(), HelpScreen)
+                self.assertEqual(completed, [])
+                self.assertEqual(d.choices.count(('post_match', {'post_match_exit': True})), 1)
+                QTest.keyClick(win, Qt.Key.Key_Escape)
+                helper.until(lambda: screen.review is None, tick)
             while time.monotonic()<end and d.completed_view is None:
-                now+=1;screen.tick();app.processEvents();time.sleep(.001)
-                if screen.stop_box.open:screen.answer_stop_box(Qt.Key.Key_Return)
-                self.assertEqual(failures,[])
+                tick()
+                time.sleep(.001)
             view=d.completed_view;self.assertIsNotNone(view,d.error);self.assertEqual(completed,[True])
             self.assertTrue(screen.controller.covered);self.assertGreater(len(beats),2)
             self.assertEqual((digest(d.events),digest(d.frames),d.painted_sequence,d.shown_count),held[0])
@@ -294,7 +382,18 @@ class Window(unittest.TestCase):
             helper.until(lambda:d.status in ('resumed','lost'),lambda:(screen.tick(),app.processEvents()))
         self.assertEqual(d.status,'resumed',d.error);self.assertEqual(native.pid,pid)
         self.assertEqual(native.shared.engine.generation,1);self.assertEqual(model.state,before)
-        self.assertEqual(len(native.take_observations()),1);self.assertEqual(native.take_observations(),[])
+        packets = native.take_observations()
+        self.assertEqual(len(packets),1);self.assertEqual(native.take_observations(),[])
+        if review:
+            expected = pypy_engine.call(__name__+':direct', raw, True)
+            canonical = [event for event in prefix + d.events if not (
+                event['kind'] == 'decision' and event['data']['context'] == 'post_match')]
+            self.assertEqual(digest(canonical), expected['events_hash'])
+            self.assertEqual(digest(d.frames), expected['frames_hash'])
+            self.assertEqual(digest(view.board), expected['board_hash'])
+            self.assertEqual(completed_result_hash(view.result), expected['result_hash'])
+            self.assertEqual(canonical_hash(native.boundary_state), expected['state_hash'])
+            self.assertEqual(digest(packets[0]['observation']), expected['observation_hash'])
 
 
 if __name__=='__main__':unittest.main()

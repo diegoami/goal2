@@ -151,6 +151,7 @@ class NativePitchScreen(PitchScreen):
         self.on_decision, self.on_goal, self.on_complete, self.on_failure = callbacks
         self._delivered = None; self._goal_delivered = None
         self._completed = False; self._failed = False; self._closed = False
+        self.review = None
         controller = NativePitchController(model, native, connection)
         try: super().__init__(window, model, controller)
         except Exception:
@@ -159,6 +160,8 @@ class NativePitchScreen(PitchScreen):
 
     def _failure(self, message):
         self.controller.error = message
+        if self.review is not None:
+            self.review.failed(message)
         self.closing()
         if self._failed: return
         self._failed = True
@@ -175,6 +178,10 @@ class NativePitchScreen(PitchScreen):
             if c.tick(time.monotonic()): self.pitch.update()
             self.refresh()
             if c.error: return self._failure(c.error)
+            if self.review is not None:
+                if self.review.update_review():
+                    self.review = None
+                return
             if c.driver.status == 'resumed':
                 self.timer.stop(); self.ended = True; return
             if c.covered or c.commentary_paused or self.stop_box.open: return
@@ -188,7 +195,12 @@ class NativePitchScreen(PitchScreen):
             if waiting is not None:
                 if self._delivered != waiting['decision']:
                     self._delivered = waiting['decision']
-                    self.on_decision(self, waiting)
+                    if waiting['event']['data'].get('context') == 'post_match':
+                        from goal2.ui.native_review import NativeReviewScreen
+                        self.review = NativeReviewScreen(self, waiting['decision'])
+                        self.window_.push(self.review)
+                    else:
+                        self.on_decision(self, waiting)
                 return
             if c.driver.status == 'complete' and not self._completed:
                 self._completed = True; self.on_complete(self)
