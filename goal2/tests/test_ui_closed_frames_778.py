@@ -1,4 +1,8 @@
 """[designed: owner playtest, #778] Content must not erase panel outlines."""
+import math
+import os
+import subprocess
+import sys
 import unittest
 
 from goal2.tests import requires
@@ -85,3 +89,53 @@ class ClosedFrames(unittest.TestCase):
                 panel.resize(256,96)
                 panel.layout().invalidate();panel.layout().activate()
                 self.assertEqual(panel.outline.geometry(),panel.rect())
+
+    def test_edges_survive_fractional_display_scaling(self):
+        # Qt reads the display scale before creating QApplication.
+        env = os.environ | {'QT_QPA_PLATFORM': 'offscreen', 'QT_SCALE_FACTOR': '1.5'}
+        result = subprocess.run(
+            [sys.executable, '-c', 'from goal2.tests.test_ui_closed_frames_778 import fractional_outline_gaps; '
+             'assert not (gaps := fractional_outline_gaps()), gaps'],
+            env=env, text=True, capture_output=True, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+
+def fractional_outline_gaps():
+    app = QApplication([])
+    theme.install(app)
+    host = QWidget()
+    host.resize(520, 220)
+    frame = Frame('roster', parent=host)
+    frame.setGeometry(111, 11, 145, 141)
+    body = QLabel('Visible roster')
+    body.setStyleSheet('background:#000000;color:white;')
+    frame.add(body, 1)
+    facts = CellFacts({'age': 4, 'caps': 6})
+    facts.setParent(host)
+    facts.setGeometry(311, 11, 160, 141)
+    facts.set({'age': '25', 'caps': '15'}, theme.VALUE)
+    host.show()
+    app.processEvents()
+    pixmap = host.grab()
+    ratio = pixmap.devicePixelRatio()
+    if ratio != 1.5:
+        raise AssertionError(f'Expected a 150% display, got {ratio}')
+    image = pixmap.toImage()
+    gaps = []
+    for panel, heading in ((frame, frame.rule), (facts, facts.labels['age'])):
+        x, y, width, height = panel.geometry().getRect()
+        top = math.ceil((y + heading.height() // 2) * ratio) + 2
+        bottom = math.floor((y + height) * ratio) - 3
+        for edge, coordinate in (('left', x), ('right', x + width - 1)):
+            column = coordinate * ratio
+            if not any(all(image.pixelColor(px, py).name() == theme.FRAME for py in range(top, bottom))
+                       for px in range(math.floor(column) - 1, math.ceil(column) + 2)):
+                gaps.append(f'{type(panel).__name__} {edge} border')
+        row = (y + height - 1) * ratio
+        left = math.ceil(x * ratio) + 2
+        right = math.floor((x + width) * ratio) - 3
+        if not any(all(image.pixelColor(px, py).name() == theme.FRAME for px in range(left, right))
+                   for py in range(math.floor(row) - 1, math.ceil(row) + 2)):
+            gaps.append(f'{type(panel).__name__} bottom border')
+    return gaps
