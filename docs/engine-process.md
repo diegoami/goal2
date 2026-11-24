@@ -247,6 +247,15 @@ with a statistics page and a labelled Exit control. The pitch remains held
 until Exit is acknowledged. A refused Exit offers a fresh read before retry.
 Only the caller's completion action resumes the round.
 
+[designed: T170aj/#842] Set `half_time_controls=True` on the native pitch to
+use Goal2's half-time page. It reads a verified stopped view before enabling
+one substitution or one team tactic at a time. An edit-only reply triggers a
+single bounded read of the stopped continuation. It must return a newer
+half-time decision at the same score and minute without pitch frames. The
+page verifies that decision's fresh view before accepting another action.
+Play is a separate explicit answer. Other native pitch callers retain their
+existing decision callbacks.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

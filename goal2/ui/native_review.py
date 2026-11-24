@@ -18,6 +18,8 @@ class NativeReviewScreen(Screen):
     GRID = True
     title = 'Post-match review'
     escape_text = None
+    primary_label = 'Exit review'
+    statistics_phase = 'full'
 
     def __init__(self, pitch, decision):
         super().__init__(pitch.window_)
@@ -32,7 +34,7 @@ class NativeReviewScreen(Screen):
         self.names = ()
         self.data = pitch.model.goaldat
 
-        body = Cells(90, 25, 'nativeReviewBody')
+        body = self.body = Cells(90, 25, 'nativeReviewBody')
         self.body_layout.addWidget(body, 1)
         self.score = body.text('', 'h1', 0, 0, 90)
         self.team = body.text('', 'sub', 0, 3, 54)
@@ -114,13 +116,16 @@ class NativeReviewScreen(Screen):
         self.snapshot = view
         self.state = view.display_state(self.pitch.model.state)
         self.names = tuple(self.data.country_names[country] for country in view.sides)
-        left, right = view.snapshot.data['board']['final_score']
+        left, right = self.score_pair(view)
         self.score.setText(f'{self.names[0]} {left}–{right} {self.names[1]}')
         self.phase = 'ready'
         self.set_navigation(True)
         self.status.clear()
-        self.set_enter('Exit review', self.exit_review)
+        self.set_enter(self.primary_label, self.exit_review)
         self.show_team()
+
+    def score_pair(self, view):
+        return view.snapshot.data['board']['final_score']
 
     def available(self):
         return (self.phase == 'ready' and self.waiting_here()
@@ -176,8 +181,9 @@ class NativeReviewScreen(Screen):
         if self.available():
             controller = self.pitch.controller
             state = SimpleNamespace(goaldat=self.data, state=self.state)
+            phase = self.statistics_phase
             stats = BoardScreen(self.window_, state, self.names, controller.display.kind,
-                                'full', board(controller.shown(), 'full', False),
+                                phase, board(controller.shown(), phase, False),
                                 lambda _: self.window_.pop(), controller.kits)
             self.window_.push(stats)
 

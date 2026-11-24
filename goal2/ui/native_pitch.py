@@ -144,10 +144,13 @@ class NativePitchScreen(PitchScreen):
     GRID = True  # [designed: T215/T170ad] Explicitly retain S17's cell layout.
 
     def __init__(self, window, model, native, *, on_decision, on_goal,
-                 on_complete, on_failure, connection=None):
+                 on_complete, on_failure, connection=None, half_time_controls=False):
         callbacks = (on_decision, on_goal, on_complete, on_failure)
         if not all(callable(c) for c in callbacks):
             raise ValueError('native pitch requires every owner callback')
+        if type(half_time_controls) is not bool:
+            raise ValueError('half_time_controls must be boolean')
+        self._half_time_controls = half_time_controls
         self.on_decision, self.on_goal, self.on_complete, self.on_failure = callbacks
         self._delivered = None; self._goal_delivered = None
         self._completed = False; self._failed = False; self._closed = False
@@ -195,9 +198,14 @@ class NativePitchScreen(PitchScreen):
             if waiting is not None:
                 if self._delivered != waiting['decision']:
                     self._delivered = waiting['decision']
-                    if waiting['event']['data'].get('context') == 'post_match':
+                    context = waiting['event']['data'].get('context')
+                    if context == 'post_match':
                         from goal2.ui.native_review import NativeReviewScreen
                         self.review = NativeReviewScreen(self, waiting['decision'])
+                        self.window_.push(self.review)
+                    elif context == 'half_time' and self._half_time_controls:
+                        from goal2.ui.native_half_time import NativeHalfTimeScreen
+                        self.review = NativeHalfTimeScreen(self, waiting)
                         self.window_.push(self.review)
                     else:
                         self.on_decision(self, waiting)

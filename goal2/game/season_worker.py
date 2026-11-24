@@ -11,7 +11,7 @@ from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions','frames','post_match_review'}, 'next': {'count'},
-          'answer': {'decision', 'answer'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
+          'answer': {'decision', 'answer', 'half_time_edit'}, 'preview': {'decision'}, 'stopped_preview': {'decision'},
           'pause': set(), 'completed_preview': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
                  'quick', 'speed', 'shootout_order', 'taker', 'edit_only',
@@ -34,6 +34,8 @@ def validate_request(header):
         raise SeasonRequestError('frames must be boolean')
     if action == 'configure' and type(header.get('post_match_review', False)) is not bool:
         raise SeasonRequestError('post_match_review must be boolean')
+    if action == 'answer' and 'half_time_edit' in header and header['half_time_edit'] is not True:
+        raise SeasonRequestError('half_time_edit must be true when supplied')
     return action
 
 
@@ -165,6 +167,13 @@ class SeasonWorker:
                 if at_review or 'post_match_exit' in answer:
                     if not at_review or set(answer) != {'post_match_exit'} or answer['post_match_exit'] is not True:
                         raise SeasonRequestError('post-match review requires an explicit Exit by itself')
+                waiting = getattr(match, 'waiting', None) or {}
+                if header.get('half_time_edit') is True:
+                    from goal2.game.half_time_edit import validate_edit
+                    try:
+                        validate_edit(waiting, answer)
+                    except ValueError as exc:
+                        raise SeasonRequestError(str(exc)) from exc
                 answer = deepcopy(answer)
                 # [designed: packet JSON] JSON object keys are text, Match expects integer elements.
                 for field in ('tactics', 'positions', 'marking', 'own_tactics'):
