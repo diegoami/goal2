@@ -468,3 +468,5 @@ operational status.
 - [T239](T239.md): show squad size, vacancies, and the full match-day bench (#837).
 
 - [T170ai](T170ai.md): read-only native post-match review and explicit Exit (#840).
+
+- [T170aj](T170aj.md): retained half-time substitution, team tactics and explicit Play (#842).
