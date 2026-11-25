@@ -51,13 +51,27 @@ def _validate_bench_edit(data, answer):
         if isinstance(positions, dict) and len(positions) == 1:
             word, position = next(iter(positions.items()))
             # [confirmed: Match.answer] Live position goals are numeric.
-            if type(word) is str and 1 <= len(word) <= 4 and word[0] != '0' and word.isascii() and word.isdecimal():
-                word = int(word)
-            if (type(word) is int and word > 0 and word in data['eleven'] + data['bench']
-                    and type(position) is int and 0 <= position <= 13):
+            if _current_player(data, word) and type(position) is int and 0 <= position <= 13:
                 return
         raise ValueError('Choose one current managed player and a position from 0 to 13.')
+    if set(answer) == {'edit_only', 'own_tactics'} and answer['edit_only'] is True:
+        choices = answer['own_tactics']
+        if isinstance(choices, dict) and len(choices) == 1:
+            word, tactics = next(iter(choices.items()))
+            if _current_player(data, word) and isinstance(tactics, dict) and len(tactics) == 1:
+                element, value = next(iter(tactics.items()))
+                if (type(element) is int and 1 <= element <= 4
+                        or type(element) is str and element in ('1', '2', '3', '4')):
+                    if value is None or type(value) is bool:
+                        return
+        raise ValueError('Choose one current managed player and one own tactic.')
     _validate_pair(data, answer)
+
+
+def _current_player(data, word):
+    if type(word) is str and 1 <= len(word) <= 4 and word[0] != '0' and word.isascii() and word.isdecimal():
+        word = int(word)
+    return type(word) is int and word > 0 and word in data['eleven'] + data['bench']
 
 
 def _validate_pair(data, answer):

@@ -14,7 +14,9 @@ class NativeEditableStopScreen(NativeReviewScreen):
     def __init__(self, pitch, waiting):
         self.controls = []
         self.outgoing = None
-        self._position_player = None
+        self._edited_player = None
+        self.own_editor = None
+        self._own_refusal = ''
         self._score = tuple(waiting['event']['score'])
         self._edit_cursor = pitch.controller.driver.shown_count
         super().__init__(pitch, waiting['decision'])
@@ -23,10 +25,11 @@ class NativeEditableStopScreen(NativeReviewScreen):
             self.budget = self.body.text('', 'sub', 0, 4, 54)
             self.substitute = self.add_action('Substitute', 0, 15, 23, Qt.Key.Key_X, self.substitution)
             self.body.move(self.status, 0, 21, 54, 3)
-            self.next_position = self.add_action('Next position', 0, 19, 23, Qt.Key.Key_R,
+            self.next_position = self.add_action('Next position', 0, 19, 17, Qt.Key.Key_R,
                                                  lambda: self.change_position(club=False))
-            self.club_position = self.add_action('Club position', 25, 19, 23, Qt.Key.Key_C,
+            self.club_position = self.add_action('Club position', 18, 19, 17, Qt.Key.Key_C,
                                                  lambda: self.change_position(club=True))
+            self.own_tactics = self.add_action('Own tactics', 36, 19, 17, Qt.Key.Key_T, self.open_own_tactics)
         self.set_navigation(False)
 
     def add_action(self, label, col, row, width, key, action):
@@ -47,8 +50,8 @@ class NativeEditableStopScreen(NativeReviewScreen):
             button.setEnabled(False)
 
     def show_team(self):
-        if self._position_player in self.snapshot.squad:
-            self.row = self.snapshot.squad.index(self._position_player)
+        if self._edited_player in self.snapshot.squad:
+            self.row = self.snapshot.squad.index(self._edited_player)
         super().show_team()
         self.refresh_controls()
 
@@ -76,6 +79,13 @@ class NativeEditableStopScreen(NativeReviewScreen):
         record = self.snapshot.record(word)
         self.next_position.setEnabled(legal and word != 0 and record[6] < 14)
         self.club_position.setEnabled(legal and word != 0 and record[7] < 14)
+        self.own_tactics.setEnabled(legal and word != 0)
+
+    def open_own_tactics(self):
+        if self.available() and self.own_tactics.isEnabled():
+            from goal2.ui.native_player_tactics import NativePlayerTacticsScreen
+            self.own_editor = NativePlayerTacticsScreen(self, self.players[self.row])
+            self.window_.push(self.own_editor)
 
     def change_position(self, *, club):
         control = self.club_position if club else self.next_position
@@ -84,9 +94,8 @@ class NativeEditableStopScreen(NativeReviewScreen):
         word = self.players[self.row]
         record = self.snapshot.record(word)
         target = record[7] if club else (record[6] + 1) % 14
-        self.apply_edit({'positions': {word: target}})
-        if self.phase == 'editing':
-            self._position_player = word
+        if self.apply_edit({'positions': {word: target}}):
+            self._edited_player = word
 
     def switch_team(self):
         if self.available():
@@ -110,18 +119,24 @@ class NativeEditableStopScreen(NativeReviewScreen):
             self.submit({'edit_only': True, **edit})
         except ValueError as exc:
             self.status.setText(str(exc))
-            return
+            return False
         self.phase = 'editing'
         self.set_navigation(False)
         self.set_enter('', lambda: None)
         self.status.setText(self.edit_message)
+        return True
 
     def update_review(self):
+        if self.own_editor not in self.window_.stack:
+            self.own_editor = None
         if self.phase == 'editing' and not self.driver.pending:
             waiting = self.driver.waiting
             if waiting is not None and waiting['decision'] != self.decision:
                 self.decision = waiting['decision']
                 self.outgoing = None
+                self.request_read()
+            elif self.own_editor is not None and self.own_editor.pending:
+                self._own_refusal = self.driver.message or 'The player tactic was refused.'
                 self.request_read()
             else:
                 self.retry(self.driver.message)
@@ -129,12 +144,26 @@ class NativeEditableStopScreen(NativeReviewScreen):
 
     def show_view(self, view):
         super().show_view(view)
-        self._position_player = None
+        self._edited_player = None
         events = self.driver.events_since(self._edit_cursor)
         refusal = next((event['data']['reason'] for event in reversed(events) if event['kind'] == 'refused'), None)
         refusal = refusal or view.snapshot.data.get('refused')
         if refusal:
             self.status.setText(refusal)
+        if self.own_editor is not None and self.own_editor.pending:
+            self.own_editor.acknowledge(self._own_refusal or refusal)
+            self._own_refusal = ''
+
+    def retry(self, message):
+        super().retry(message)
+        if self.own_editor is not None:
+            self.own_editor.rejected(self.status.text())
+            self._own_refusal = ''
+
+    def failed(self, message):
+        super().failed(message)
+        if self.own_editor is not None and self.own_editor in self.window_.stack:
+            self.own_editor.rejected(message)
 
     def exit_review(self):
         if self.available():
@@ -147,12 +176,13 @@ class NativeEditableStopScreen(NativeReviewScreen):
 
 class NativeTacticStopScreen(NativeEditableStopScreen):
     GRID = True
+    next_tactic_key = Qt.Key.Key_T
 
     def __init__(self, pitch, waiting):
         self.element = 1
         super().__init__(pitch, waiting)
         self.tactic = self.body.text('', 'sub', 0, 13, 54)
-        self.next_button = self.add_action('Next tactic', 25, 15, 13, Qt.Key.Key_T, self.next_tactic)
+        self.next_button = self.add_action('Next tactic', 25, 15, 13, self.next_tactic_key, self.next_tactic)
         self.toggle_button = self.add_action('Toggle tactic', 39, 15, 15, Qt.Key.Key_G, self.toggle_tactic)
         self.set_navigation(False)
 
@@ -183,6 +213,7 @@ class NativeTacticStopScreen(NativeEditableStopScreen):
 class NativeHalfTimeScreen(NativeTacticStopScreen):
     GRID = True
     uses_substitutions = True
+    next_tactic_key = Qt.Key.Key_Y
     title = 'Half-time'
     primary_label = 'Play second half'
     statistics_phase = 'half'
