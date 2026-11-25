@@ -358,7 +358,7 @@ class BenchScreen(Screen):
         self.request_button.clicked.connect(self.toggle_request)
         self.context = CellPara("", "benchMetadata")
         body.put(self.context, 0, 1, LEFT_COLS)
-        self.card = GridCard()
+        self.card = GridCard(segmented_bars=True)
         body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
         feedback = Frame("substitution", "red")
         feedback.setObjectName("benchFeedback")
