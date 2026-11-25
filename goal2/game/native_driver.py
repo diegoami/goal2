@@ -330,9 +330,9 @@ class NativeMatchDriver:
             self._stopped_answer = dict(waiting, edit=bool(values))
 
     def answer_pause(self, decision, values):
-        """[designed: T170al] One latch edit or explicit Play at a verified pause."""
-        from goal2.game.pause_edit import validate_request_edit
-        self._answer_verified_stop(decision, values, 'pause', 'pause_edit', validate_request_edit)
+        """[designed: T170al/T170ap] One paused edit or explicit Play."""
+        from goal2.game.pause_edit import validate_pause_edit
+        self._answer_verified_stop(decision, values, 'pause', 'pause_edit', validate_pause_edit)
 
     def answer_substitution(self, decision, values):
         """[designed: T170an] One legal pair or explicit Play at a verified stop."""
