@@ -18,37 +18,23 @@ from __future__ import annotations
 from PySide6.QtCore import Qt, QTimer
 
 from goal2.ui import theme
+from goal2.ui.cell_parts import CellTableRow
+from goal2.ui.cells import CellPara, Cells
+from goal2.ui.frame import PanelOutline
 from goal2.ui.screen import Screen
 from goal2.ui.squad_card import colour
 
 PACES = (1600, 1000, 600, 300, 120)   # ms between two results [designed: T167]
 PACE = 2                              # the pace a round opens at [designed: T167]
-ROWS = 16                             # rows the box holds [designed: s14-round.png's box]
-HINT = ("The results arrive one by one; Space pauses, ←→ change the pace. Then your match: the match menu, where you "
-        "pick the team, choose the captain and kick off.")   # [designed: s14-round.html]
+ROWS = 16                             # established history limit before the managed fixture
+ROW_WIDTHS = (16, 9, 16, 33)           # reserves the full competition name on an ordinary row
+ROW_COLS = sum(ROW_WIDTHS)
+PANEL_COLS = ROW_COLS + 4
+PANEL_ROWS = ROWS + 5                  # two margins and room for the wrapped managed result
 
 
 def score_text(row):
     return "v" if row["score"] is None else f"{row['score'][0]} - {row['score'][1]}"
-
-
-from goal2.ui.cell_parts import CellTableRow
-
-
-class RoundRow(CellTableRow):
-    """[designed: T213, #667] Keep the results table's row separators without a CSS border taking a pixel from its cells."""
-
-    def paintEvent(self, event):
-        super().paintEvent(event)
-        import math
-        from PySide6.QtGui import QColor, QPainter, QPen
-        from goal2.desktop import fixed_page
-        width = max(1, math.ceil(2 * fixed_page.scale_y_of(self)))
-        painter = QPainter(self)
-        painter.setPen(QPen(QColor(theme.FRAME_DARK), width))
-        y = self.height() - (width + 1) // 2
-        painter.drawLine(0, y, self.width(), y)
-        painter.end()
 
 
 class RoundScreen(Screen):
@@ -62,7 +48,7 @@ class RoundScreen(Screen):
         self.onward = onward
         self.after = after
         number = (after or before)["round"]
-        self.title = f"play next game · round {number}"
+        self.title = f"round {number} · results"
         self.name_label.setText(self.title)
         if after is None:
             self.settled = []
@@ -77,38 +63,34 @@ class RoundScreen(Screen):
         self.shown_rows = list(self.settled)
         self.paused = False
         self.pace = PACE
-        self.bind((Qt.Key.Key_Space,), "pause", self.toggle_pause)
+        self.pause_key = self.bind((Qt.Key.Key_Space,), "pause", self.toggle_pause)
         self.bind((Qt.Key.Key_Left,), "", lambda: self.step_pace(-1), captions=("←",), shown=False)
         self.bind((Qt.Key.Key_Right,), "", lambda: self.step_pace(1), captions=("→",), shown=False)
-        self.bind((), "speed", lambda: self.step_pace(1), captions=("←", "→"))
+        self.speed_key = self.bind((), "speed", lambda: self.step_pace(1), captions=("←", "→"))
         self.set_enter("To your match" if after is None else "To the desk", self.go_on)
-        # [designed: owner, #667; T213] Seventeen results across the page; the final column wraps a long stage and match note.
-        from goal2.ui.cells import Cells, CellPara
-        from goal2.ui.cell_parts import CellTableRow
-        from goal2.ui.country_parts import framed
-        body = Cells(90, 25, "roundBody")
+        # [derived: T156-R1 steps 41, 262–263] Center the cyan results frame and keep completion at the foot.
+        body = Cells(theme.COLS, theme.ROWS - 3, "roundBody")
         self.body_layout.addWidget(body, 1)
-        frame, inner = framed(f"round {number} · the results so far", 90, 19)
-        self.results_area = inner
+        panel = self.results_area = Cells(PANEL_COLS, PANEL_ROWS, "roundResults")
+        body.put(panel, (body.cols - PANEL_COLS) // 2, 2, PANEL_COLS, PANEL_ROWS)
         self.rows = []
         for i in range(ROWS + 1):
-            row = RoundRow(i, (16, 9, 16, 49), aligns=(Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignHCenter,None,None))
-            # The last result may name the stage and "your match is next": it has three rows while ordinary results take one.
+            row = CellTableRow(i, ROW_WIDTHS,
+                               aligns=(Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignHCenter, None, None))
+            # The managed row also carries a note, which can wrap below the fixture type.
             old = row.cells[3]
             text = CellPara("", "rowCell")
             row.area.layout().takeAt(3)
             old.setParent(None)
             old.deleteLater()
-            row.area.put(text, 41, 0, 49, 3 if i == ROWS else 1)
+            row.area.put(text, ROW_COLS - ROW_WIDTHS[-1], 0, ROW_WIDTHS[-1])
             row.cells[3] = text
             row.setCursor(Qt.CursorShape.ArrowCursor)
-            inner.put(row, 0, i, 90, 3 if i == ROWS else 1)
+            panel.put(row, 2, i + 1, ROW_COLS)
             self.rows.append(row)
-        body.put(frame, 0, 0, 90, 20)
-        hint = CellPara(HINT, "sub")
-        hint.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
-        body.put(hint, 0, 21, 90, 3)
-        self.state_label = body.text("", "sub", 0, 24, 90)
+        panel.grid.addWidget(PanelOutline(panel, self._result_edges, colour=theme.HEADING))
+        self.state_label = body.text("", "sub", 0, body.rows - 1, body.cols)
+        self.state_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         colour(self.state_label, theme.VALUE)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.arrive)
@@ -117,43 +99,41 @@ class RoundScreen(Screen):
         if self.arriving:
             self.timer.start()
 
-    # What is shown: the newest rows that fit, your match last.
+    def _result_edges(self):
+        right, bottom = self.results_area.width() - 1, self.results_area.height() - 1
+        return ((0, 0, right, 0), (0, bottom, right, bottom), (0, 0, 0, bottom), (right, 0, right, bottom))
+
     def _show(self):
-        rows = self.shown_rows[-ROWS:] if self.mine is not None else self.shown_rows[-(ROWS + 1):]
-        mine = self.mine
+        rows = self.shown_rows[-(ROWS + 1):] if self.mine is None else self.shown_rows[-ROWS:] + [self.mine]
+        at = 1
         for i, widget in enumerate(self.rows):
-            widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
-            if i < len(rows):
-                r = rows[i]
-                if "note" in r:
-                    widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
-                    widget.set((r["home_name"], score_text(r), r["away_name"], f"{r['kind_name']} · {r['note']}"),
-                               (theme.VALUE,) * 4)
-                else:
-                    widget.set((r["home_name"], score_text(r), r["away_name"], r["kind_name"]),
-                               (theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_NORMAL))
-                widget.show()
-            elif i == len(rows) and mine is not None:
-                widget.cells[3].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
-                widget.set((mine["home_name"], score_text(mine), mine["away_name"],
-                            f"{mine['kind_name']} · {mine['note']}"), (theme.VALUE,) * 4)
-                widget.show()
-            else:
+            if i >= len(rows):
                 widget.set(("", "", "", ""))
                 widget.hide()
-        at = 0
-        for widget in self.rows:
-            if widget.isHidden():
                 continue
-            height = 3 if len(widget.cells[3].text()) > 49 else 1
-            self.results_area.move(widget, 0, at, 90, height)
-            widget.area.move(widget.cells[3], 41, 0, 49, height)
+            row = rows[i]
+            kind = row["kind_name"]
+            tones = (theme.VALUE, theme.TEXT_BRIGHT, theme.VALUE, theme.KEY_HINT)
+            if "note" in row:
+                kind = f"{kind} · {row['note']}"
+                tones = (theme.VALUE,) * 4
+            widget.set((row["home_name"], score_text(row), row["away_name"], kind), tones)
+            height = 3 if len(kind) > ROW_WIDTHS[-1] else 1
+            self.results_area.move(widget, 2, at, ROW_COLS, height)
+            widget.area.move(widget.cells[3], ROW_COLS - ROW_WIDTHS[-1], 0, ROW_WIDTHS[-1], height)
+            widget.show()
             at += height
-        if self.arriving:
-            state = "paused" if self.paused else "the results are arriving"
-        else:
-            state = "the round is complete" if self.after is not None else "every result before your match is in"
-        self.state_label.setText(state)
+        self._show_status()
+
+    def _show_status(self):
+        rolling = bool(self.arriving)
+        action = "resume" if self.paused else "pause"
+        if self.pause_key.shown != rolling or self.pause_key.text != action:
+            self.pause_key.shown = self.speed_key.shown = rolling
+            self.pause_key.text = action
+            self._refresh_bar()
+        state = "paused" if self.paused else "results arriving"
+        self.state_label.setText(f"{state} · speed {self.pace + 1}/{len(PACES)}" if rolling else "")
 
     def arrive(self):
         """The next result arrives."""
@@ -166,11 +146,12 @@ class RoundScreen(Screen):
 
     def toggle_pause(self):
         self.paused = not self.paused
-        self._show()
+        self._show_status()
 
     def step_pace(self, step):
         self.pace = max(0, min(len(PACES) - 1, self.pace + step))
         self.timer.setInterval(PACES[self.pace])
+        self._show_status()
 
     def visible(self):
         """The rows as they read now, your match last: (home, score, away, kind)."""
