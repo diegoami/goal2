@@ -51,7 +51,7 @@ class RosterColour(unittest.TestCase):
         state=SimpleNamespace(managed_country=4)
         model=SimpleNamespace(state=state,goaldat=SimpleNamespace(country_names=names))
         menu=SimpleNamespace(model=model,day=SimpleNamespace(bench=None),phase='before',away_country=7,lineups={},
-                             lineup_words={},lineup_rows={},lineup_headings={},
+                             lineup_words={},lineup_rows={},lineup_headings={},formation_labels={},
                              SIDE_COLS=MenuScreen.SIDE_COLS,SIDE_ROWS=MenuScreen.SIDE_ROWS)
         cards={i:{'role':str(i),'line':lines[(i-1)%4],'full_name':'NAME '+lines[(i-1)%4].upper()} for i in range(1,12)}
         with patch('goal2.game.country_card.card',return_value={'players':list(cards),'formation':'4-4-2'}),patch('goal2.game.player_card.card',side_effect=lambda state,word,data:cards[word]):

@@ -11,9 +11,10 @@ from goal2.ui.s14_round import RoundScreen
 from goal2.ui.s15_match_menu import MenuScreen, SavedGoalMenu
 from goal2.ui.s20_board import BoardScreen, COUNTERS
 from goal2.ui.kits import for_fixture
-from goal2.ui.cells import CellPara
+from goal2.ui.cells import CellLabel, CellPara, Cells
 from goal2.ui import theme
 from goal2.ui.frame import FrameRule
+from goal2.ui.pitch import HOME
 
 @CAREER
 class MatchDayOnTheGrid(Base):
@@ -22,6 +23,7 @@ class MatchDayOnTheGrid(Base):
     phase = "before"
     quick = False
     watch = True
+    score = (0, 0)
 
     def make(self, window):
         model = career()
@@ -31,7 +33,7 @@ class MatchDayOnTheGrid(Base):
                               watch=self.watch, bench=None, asks_watch=lambda *a: True, exit=lambda: None,
                               set_replay_auto=lambda *a: None, refresh_menu=lambda *a: None)
         if self.kind is MenuScreen:
-            screen = self.kind(window, day, self.phase)
+            screen = self.kind(window, day, self.phase, self.score)
         elif self.kind is RoundScreen:
             row = dict(home_name="Trinidad/Tobago", away_name="Trinidad/Tobago", score=[12, 12], kind_name="continental semi-finals and final")
             screen = self.kind(window, dict(round=2,results=[row]*16,match=dict(row,score=None)),lambda:None)
@@ -111,6 +113,29 @@ class MatchDayOnTheGrid(Base):
         for heading in full.lineup_headings.values():
             self.assertIn("view only", [rule.label for rule in heading.parentWidget().findChildren(FrameRule)])
         self.assertEqual(full.highlighted().enter, "Exit")
+
+    def test_match_menu_boxes_two_scores_and_keeps_each_formation_with_its_eleven(self):
+        self.phase = "half"
+        self.score = (12, 3)
+        _, screen = self.canonical(self.make)
+        for country in (screen.home_country, screen.away_country):
+            heading = screen.lineup_headings[country]
+            self.assertEqual(heading.label, screen.model.goaldat.country_names[country].lower())
+            label = screen.formation_labels[country]
+            self.assertEqual(label.text(), f"formation {screen.lineups[country][0]}")
+            self.assertIs(label.parentWidget().parentWidget(), screen.lineup_rows[country][0].parentWidget())
+            self.assertLess(label.parentWidget().geometry().bottom(), screen.lineup_rows[country][0].y())
+        board = screen.findChild(Cells, "matchScore")
+        rows = list(zip(board.findChildren(CellLabel, "matchScoreTeam"),
+                        board.findChildren(CellLabel, "matchScoreValue")))
+        self.assertEqual([(name.text(), score.text()) for name, score in rows],
+                         [(screen.model.goaldat.country_names[screen.home_country], str(self.score[HOME])),
+                          (screen.model.goaldat.country_names[screen.away_country], str(self.score[1 - HOME]))])
+        self.assertEqual(rows[0][1].x(), rows[1][1].x())
+        self.assertLess(rows[0][1].y(), rows[1][1].y())
+        image = board.grab().toImage()
+        self.assertEqual(image.pixelColor(0, image.height() // 2).name(), theme.FRAME)
+        self.assertEqual(image.pixelColor(image.width() - 1, image.height() // 2).name(), theme.FRAME)
 
     def test_tournament_tabs_missing_stages_and_results_message_fit(self):
         self.kind = TournamentScreen

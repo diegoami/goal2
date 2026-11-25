@@ -146,9 +146,11 @@ class Acknowledgement(unittest.TestCase):
         self.assertNotIn('substitution opportunity',self.bench.context.text().lower())
         self.assertNotIn('substitution opportunity',self.pitch.request_badge.text().lower())
     def test_returned_menu_shows_the_acknowledged_current_xi(self):
-        before=copy.deepcopy(self.menu.lineups[self.model.state.managed_country])
+        country = self.model.state.managed_country
+        before=copy.deepcopy(self.menu.lineups[country])
         self.pair();self.deliver();self.window.pop();self.app.processEvents()
-        self.assertNotEqual(self.menu.lineups[self.model.state.managed_country],before)
+        self.assertNotEqual(self.menu.lineups[country],before)
+        self.assertEqual(self.menu.formation_labels[country].text(), f"formation {self.menu.lineups[country][0]}")
 
     def test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity(self):
         self.pair()
