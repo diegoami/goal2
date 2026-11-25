@@ -66,7 +66,6 @@ class Window(unittest.TestCase):
         from goal2.engine.original_match.image import Image
         from goal2.game import engine_tables
         from goal2.ui import theme
-        from goal2.ui.native_match_day import NativeMatchDay
         from goal2.ui.screen import Screen
         from goal2.ui.window import Window
 
@@ -88,9 +87,13 @@ class Window(unittest.TestCase):
         self.window.show()
         self.addCleanup(self.close_window)
         self.boundaries, self.failures = [], []
-        state = image.state(engine_tables.load())
+        self.state = image.state(engine_tables.load())
+
+    def open_match_day(self, watch):
+        from goal2.ui.native_match_day import NativeMatchDay
+
         self.day = NativeMatchDay(
-            self.window, self.model, state, watch=True,
+            self.window, self.model, self.state, watch=watch,
             on_boundary=lambda day, packet: self.boundaries.append((day.native.pid, packet)),
             on_failure=lambda _, message: self.failures.append(message),
             on_goal=lambda screen, _: screen.release_goal(),
@@ -132,10 +135,11 @@ class Window(unittest.TestCase):
 
         QTest.keyClick(self.window, key)
 
-    def kickoff(self):
+    def kickoff(self, *, watch=True):
         from PySide6.QtCore import Qt
         from goal2.ui.s16_choose import ChooseScreen
 
+        self.open_match_day(watch)
         self.until(lambda: self.day.phase == 'prematch')
         pid = self.day.native.pid
         self.key(Qt.Key.Key_Return)
@@ -149,10 +153,13 @@ class Window(unittest.TestCase):
 
     def test_covered_close_and_unexpected_context_do_not_answer(self):
         from PySide6.QtCore import Qt
+        from goal2.ui.s17_pitch import HANG_ON
         from goal2.ui.s22_help import HelpScreen
 
-        self.kickoff()
+        self.kickoff(watch=False)
         pitch = self.day.pitch
+        self.assertTrue(pitch.controller.driver.quick)
+        self.assertEqual(pitch.controller.note, HANG_ON)
         self.key(Qt.Key.Key_F1)
         self.assertIsInstance(self.window.current(), HelpScreen)
         choices = pitch.controller.driver.choices.copy()

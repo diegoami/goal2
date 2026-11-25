@@ -119,7 +119,7 @@ class NativeMatchDay(QObject):
                 opportunity_controls=True, substitution_controls=True, extra_time_controls=True,
             )
             if preferences['watch'] is False:
-                pitch.controller.driver.quick_result()
+                pitch.quick_result()
             self.preferences = dict(preferences)
             # The pre-match pages above this flow's opening page own no lease after handoff.
             while self.window.current() is not self.opening:
