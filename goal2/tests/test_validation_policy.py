@@ -42,6 +42,29 @@ class ValidationPolicy(unittest.TestCase):
         self.assertIs(tests.call_args.args[2], False)
         self.assertTrue(tests.call_args.kwargs['layout_slow'])
 
+    def test_squad_popup_tests_use_a_separate_stage_only_on_native_windows(self):
+        from unittest.mock import Mock
+
+        module = 'test_ui_selected_squad_t239'
+        for platform, backend, isolated in (
+            ('win32', {}, True),
+            ('win32', {'QT_QPA_PLATFORM': 'windows'}, True),
+            ('win32', {'QT_QPA_PLATFORM': 'offscreen'}, False),
+            ('linux', {}, False),
+        ):
+            with self.subTest(platform=platform, backend=backend):
+                runner = Mock()
+                with patch.object(gate.sys, 'platform', platform), patch.dict(gate.os.environ, backend, clear=True), \
+                        patch.object(gate, 'run_stage', return_value=0) as run, redirect_stdout(io.StringIO()):
+                    gate.check_tests(4, 'python', True, runner)
+                batches = [call.args for call in run.call_args_list if module in call.args[0]]
+                self.assertEqual(len(batches), 1)
+                batch, workers, execute, *_ = batches[0]
+                self.assertEqual(workers, 1 if isolated else 4)
+                self.assertEqual(batch == [module], isolated)
+                execute(module)
+                runner.assert_called_once_with(module, 'python', True)
+
     def test_unreadable_main_does_not_implicitly_start_a_full_suite(self):
         tests, changes = self.invoke(change_result=None)
         self.assertIs(tests.call_args.args[2], False)
