@@ -104,6 +104,17 @@ Unicorn performance optimisation is authorised by a resume.
     final line of its log, never with `pgrep -f`: it matches the waiting shell's own command line,
     so the wait never ends (L48 of the old harness; again in the first cloud session, 2026-10-20).
 
+## UI evidence
+
+Before investigating, describing or changing a game screen, read the relevant chapters of the
+[original illustrated manual](docs/original-game/README.md) and the
+[rebuild’s illustrated manual](docs/current-game/README.md). Use the original
+[playthrough](docs/original-game/playthrough.md) and [screen inventory](docs/original-game/screen-inventory.md)
+to find the exact capture and its sequence of actions. Check the game version and screen phase when
+comparing the captures with a live report. Check the [accepted UI design](docs/design/ui-2026-11/README.md)
+for deliberate differences. Cite the relevant capture or playthrough step in the task or PR before
+changing a screen. Make a new capture or ask the owner only if the existing evidence leaves a question open.
+
 ## Project rules
 12. **Evidence tags.** Every behaviour claim in code or docs is tagged `[confirmed]` (cites the
     goal2-archaeology finding(s) and commit it rests on), `[derived]` (follows from confirmed

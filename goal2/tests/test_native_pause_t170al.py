@@ -132,16 +132,10 @@ class Window(unittest.TestCase):
         self.assertEqual(case.failures, [])
 
 
-def actual_pause(raw):
-    from dataclasses import asdict
-    import sys
-
-    from goal2.engine.original_match import Image, Match
-    from goal2.engine.original_match.machine import MEM_SIZE, REGS, Uc
+def reach_pause(raw):
+    from goal2.engine.original_match import Image
     from goal2.game import engine_tables
-    from goal2.game.stopped_snapshot import StoppedMatchSnapshot
 
-    assert sys.implementation.name == 'pypy' and sys.version_info[:2] == (3, 11) and Uc is None
     worker = SeasonWorker()
     request = 0
 
@@ -152,7 +146,6 @@ def actual_pause(raw):
 
     ask('open', state=Image.from_bytes(raw).state(engine_tables.load()))
     ask('advance')
-    match = worker.session.pending_match
     ask('configure', frames=True)
     asked_pause = False
     for _ in range(1000):
@@ -160,17 +153,30 @@ def actual_pause(raw):
         number = batch['decision']
         if number is not None:
             if batch['events'][-1]['data']['context'] == 'pause':
-                break
+                return worker, ask, batch
             ask('answer', decision=number, answer={})
         elif not asked_pause and batch['frames']:
             assert ask('pause')['paused']
             asked_pause = True
-    else:
-        raise AssertionError('The fixture did not reach its requested pause')
+    raise AssertionError('The fixture did not reach its requested pause')
+
+
+def actual_pause(raw):
+    from dataclasses import asdict
+    import sys
+
+    from goal2.engine.original_match import Match
+    from goal2.engine.original_match.machine import MEM_SIZE, REGS, Uc
+    from goal2.game.stopped_snapshot import StoppedMatchSnapshot
+
+    assert sys.implementation.name == 'pypy' and sys.version_info[:2] == (3, 11) and Uc is None
+    worker, ask, batch = reach_pause(raw)
+    match = worker.session.pending_match
+    number = batch['decision']
 
     def verified(current, data):
         packet = ask('stopped_preview', decision=current)
-        return StoppedMatchSnapshot.from_packet(packet, request=request, decision=current,
+        return StoppedMatchSnapshot.from_packet(packet, request=packet['request'], decision=current,
                                                 managed_country=match.opts['managed'], data=data)
 
     views = []

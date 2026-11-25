@@ -11,7 +11,8 @@ from goal2.game.prematch_seam import PrematchSeam
 
 FIELDS = {'open': {'state', 'keys'}, 'advance': set(), 'observe': set(),
           'configure': {'captain', 'substitutions','frames','post_match_review'}, 'next': {'count'},
-          'answer': {'decision', 'answer', 'half_time_edit', 'choice_answer', 'pause_edit'},
+          'answer': {'decision', 'answer', 'half_time_edit', 'choice_answer', 'pause_edit', 'substitution_edit',
+                     'extra_time_edit'},
           'preview': {'decision'}, 'stopped_preview': {'decision'},
           'pause': set(), 'completed_preview': set(), 'resume': set(), 'discard': set()}
 ANSWER_FIELDS = {'substitutions', 'tactics', 'positions', 'marking', 'own_tactics',
@@ -43,6 +44,13 @@ def validate_request(header):
     if action == 'answer' and 'pause_edit' in header:
         if header['pause_edit'] is not True or {'half_time_edit', 'choice_answer'} & header.keys():
             raise SeasonRequestError('pause_edit must be true and supplied by itself')
+    if action == 'answer' and 'substitution_edit' in header:
+        if header['substitution_edit'] is not True or {'half_time_edit', 'choice_answer', 'pause_edit'} & header.keys():
+            raise SeasonRequestError('substitution_edit must be true and supplied by itself')
+    if action == 'answer' and 'extra_time_edit' in header:
+        if header['extra_time_edit'] is not True or {'half_time_edit', 'choice_answer', 'pause_edit',
+                                                    'substitution_edit'} & header.keys():
+            raise SeasonRequestError('extra_time_edit must be true and supplied by itself')
     return action
 
 
@@ -188,9 +196,21 @@ class SeasonWorker:
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
                 if header.get('pause_edit') is True:
-                    from goal2.game.pause_edit import validate_request_edit
+                    from goal2.game.pause_edit import validate_pause_edit
                     try:
-                        validate_request_edit(waiting, answer)
+                        validate_pause_edit(waiting, answer)
+                    except ValueError as exc:
+                        raise SeasonRequestError(str(exc)) from exc
+                if header.get('substitution_edit') is True:
+                    from goal2.game.half_time_edit import validate_substitution
+                    try:
+                        validate_substitution(waiting, answer)
+                    except ValueError as exc:
+                        raise SeasonRequestError(str(exc)) from exc
+                if header.get('extra_time_edit') is True:
+                    from goal2.game.half_time_edit import validate_extra_time
+                    try:
+                        validate_extra_time(waiting, answer)
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
                 answer = deepcopy(answer)

@@ -1,4 +1,4 @@
-"""[designed: T170aj] Guard the single edits offered by the native half-time page."""
+"""[designed: T170aj/T170an] Guard single edits at a legal stopped bench."""
 
 
 def validate_edit(data, answer):
@@ -7,17 +7,47 @@ def validate_edit(data, answer):
             or answer.get('edit_only') is not True):
         raise ValueError('Changes are unavailable at this stop.')
     if set(answer) == {'edit_only', 'tactics'}:
-        values = answer['tactics']
-        if isinstance(values, dict) and len(values) == 1:
-            element, value = next(iter(values.items()))
-            # The worker receives map keys through JSON.
-            if ((type(element) is int and 1 <= element <= 8)
-                    or (type(element) is str and element in '12345678' and len(element) == 1)):
-                if type(value) is bool:
-                    return
-        raise ValueError('Choose one team tactic.')
-    if set(answer) != {'edit_only', 'substitutions'}:
-        raise ValueError('Choose one half-time change.')
+        return validate_tactic(answer['tactics'])
+    _validate_pair(data, answer)
+
+
+def extra_time_half(data):
+    """[confirmed: Match._on_team_menu] The SDK publishes one of two stops."""
+    half = data.get('half')
+    if data.get('context') != 'extra_time' or type(half) is not int or half not in (1, 2):
+        raise ValueError('An extra-time stop needs an exact half.')
+    return half
+
+
+def validate_extra_time(data, answer):
+    """[confirmed: #679/#680] One tactics-only edit at either verified half."""
+    extra_time_half(data)
+    if set(answer) != {'edit_only', 'tactics'} or answer['edit_only'] is not True:
+        raise ValueError('Send only one extra-time team tactic.')
+    validate_tactic(answer['tactics'])
+
+
+def validate_tactic(values):
+    if isinstance(values, dict) and len(values) == 1:
+        element, value = next(iter(values.items()))
+        # The worker receives map keys through JSON.
+        if (type(value) is bool
+                and ((type(element) is int and 1 <= element <= 8)
+                     or (type(element) is str and len(element) == 1 and element in '12345678'))):
+            return
+    raise ValueError('Choose one team tactic.')
+
+
+def validate_substitution(data, answer):
+    """[confirmed: Match.answer/#695] One legal in-match pair without Play."""
+    if data.get('context') != 'substitution' or data.get('substitutions_now') is not True:
+        raise ValueError('A substitution is unavailable at this stop.')
+    _validate_pair(data, answer)
+
+
+def _validate_pair(data, answer):
+    if set(answer) != {'edit_only', 'substitutions'} or answer['edit_only'] is not True:
+        raise ValueError('Send only one substitution.')
     pairs = answer['substitutions']
     if (not isinstance(pairs, list) or len(pairs) != 1 or not isinstance(pairs[0], list)
             or len(pairs[0]) != 2 or any(type(word) is not int or word <= 0 for word in pairs[0])):

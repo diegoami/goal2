@@ -147,7 +147,8 @@ class NativePitchScreen(PitchScreen):
 
     def __init__(self, window, model, native, *, on_decision, on_goal,
                  on_complete, on_failure, connection=None, half_time_controls=False,
-                 choice_controls=False, pause_controls=False, opportunity_controls=False):
+                 choice_controls=False, pause_controls=False, opportunity_controls=False,
+                 substitution_controls=False, extra_time_controls=False):
         callbacks = (on_decision, on_goal, on_complete, on_failure)
         if not all(callable(c) for c in callbacks):
             raise ValueError('native pitch requires every owner callback')
@@ -163,6 +164,12 @@ class NativePitchScreen(PitchScreen):
         if type(opportunity_controls) is not bool:
             raise ValueError('opportunity_controls must be boolean')
         self._opportunity_controls = opportunity_controls
+        if type(substitution_controls) is not bool:
+            raise ValueError('substitution_controls must be boolean')
+        self._substitution_controls = substitution_controls
+        if type(extra_time_controls) is not bool:
+            raise ValueError('extra_time_controls must be boolean')
+        self._extra_time_controls = extra_time_controls
         self.on_decision, self.on_goal, self.on_complete, self.on_failure = callbacks
         self._delivered = None; self._goal_delivered = None
         self._completed = False; self._failed = False; self._closed = False
@@ -241,6 +248,14 @@ class NativePitchScreen(PitchScreen):
                     elif context == 'substitution_opportunity' and self._opportunity_controls:
                         from goal2.ui.native_opportunity import NativeOpportunityFlow
                         self.opportunity = NativeOpportunityFlow(self, waiting['decision'])
+                    elif context == 'substitution' and self._substitution_controls:
+                        from goal2.ui.native_half_time import NativeSubstitutionScreen
+                        self.review = NativeSubstitutionScreen(self, waiting)
+                        self.window_.push(self.review)
+                    elif context == 'extra_time' and self._extra_time_controls:
+                        from goal2.ui.native_half_time import NativeExtraTimeScreen
+                        self.review = NativeExtraTimeScreen(self, waiting)
+                        self.window_.push(self.review)
                     else:
                         self.on_decision(self, waiting)
                 return

@@ -4,6 +4,10 @@ Read [CLAUDE.md](CLAUDE.md): its rules apply to every client (Codex, Claude Code
 [docs/process.md](docs/process.md) for how a task runs. Claude Code's skills and agents under
 `.claude/` are Claude-specific; Codex follows the same steps with its own tools.
 
+Before investigating or changing a game screen, follow the [UI evidence rule](CLAUDE.md#ui-evidence).
+Start with the [original illustrated manual](docs/original-game/README.md) and the
+[rebuild’s illustrated manual](docs/current-game/README.md).
+
 ## Active engine-replacement work
 
 Read the latest comment on the open issue labelled `checkpoint` (#471; process.md §10) and run

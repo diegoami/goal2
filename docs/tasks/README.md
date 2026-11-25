@@ -474,3 +474,7 @@ operational status.
 - [T170ak](T170ak.md): retained native taker and penalty-order choice binding (#844).
 - [T170al](T170al.md): retained ordinary pause and substitution request (#846).
 - [T170am](T170am.md): retained timed substitution opportunity (#848).
+- [T170an](T170an.md): retained legal immediate substitution (#852).
+- [T170ao](T170ao.md): retained extra-time start and midpoint (#855).
+- [T170ap](T170ap.md): team tactics at an ordinary retained pause (#858).
+- [T170aq](T170aq.md): live player positions at a retained bench (#860).

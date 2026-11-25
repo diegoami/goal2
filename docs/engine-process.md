@@ -280,6 +280,25 @@ clears the notice before the pitch draws or requests another batch. The
 guest's next decision determines whether a legal substitution can be made.
 A pure refusal allows an explicit retry with a fresh stopped read.
 
+[designed: T170an/#852] Set `substitution_controls=True` on the native pitch
+to use the retained bench at an actual substitution decision. The same
+verified roster and budget controls as half-time take one legal pair. A
+fresh decision supplies the confirmed roster and budget before another
+edit. Play is separate from the swap and from the earlier timed notice.
+
+[designed: T170ao/#855] Set `extra_time_controls=True` on the native pitch
+to show the verified start and midpoint of extra time. Each phase offers
+one managed team-tactic edit and its own explicit Play. The worker and
+driver admit that edit only at the current confirmed half. Acknowledgement
+must return to the same half, minute and score before the next action.
+Player swaps and personal edits use their own supported contexts.
+
+[designed: T170ap/#858] At a native ordinary pause, the managed side can
+open the existing Team Tactics screen with the verified current lineup.
+One tactic uses the paused edit path and refreshes from the new decision.
+A rejected answer refreshes the same stop before allowing retry. The
+substitution request latch, restart and roster edits have separate inputs.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

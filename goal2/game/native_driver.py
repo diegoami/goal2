@@ -177,6 +177,10 @@ class NativeMatchDriver:
                         or any(event['minute'] != origin['event']['minute']
                                or event['score'] != origin['event']['score'] for event in events)):
                     raise ValueError('native edit did not return to the same stop')
+                if origin['event']['data']['context'] == 'extra_time':
+                    from goal2.game.half_time_edit import extra_time_half
+                    if extra_time_half(events[-1]['data']) != origin['event']['data']['half']:
+                        raise ValueError('native extra-time edit returned to a different half')
                 self._stopped_answer = None
             self._batch(value,self._limit)
         elif action=='completed_preview':
@@ -287,7 +291,8 @@ class NativeMatchDriver:
                 or self._pause_wanted or self._pause_latched or self._expected=='pause'):return False
         self._pause_wanted=True;self.pause_requests+=1;return True
 
-    def answer(self,values,*,half_time_edit=False,choice_answer=False,pause_edit=False):
+    def answer(self,values,*,half_time_edit=False,choice_answer=False,pause_edit=False,
+               substitution_edit=False, extra_time_edit=False):
         self._owner()
         if self.status!='decision':raise ValueError('native decision is not ready for an answer')
         if not isinstance(values,dict) or set(values)-ANSWER_FIELDS or 'captain' in values:
@@ -299,6 +304,10 @@ class NativeMatchDriver:
             options['choice_answer'] = True
         if pause_edit:
             options['pause_edit'] = True
+        if substitution_edit:
+            options['substitution_edit'] = True
+        if extra_time_edit:
+            options['extra_time_edit'] = True
         self._send('answer',decision=self._decision['decision'],answer=values,**options)
 
     def resume(self):
@@ -321,17 +330,30 @@ class NativeMatchDriver:
             self._stopped_answer = dict(waiting, edit=bool(values))
 
     def answer_pause(self, decision, values):
-        """[designed: T170al] One latch edit or explicit Play at a verified pause."""
+        """[designed: T170al/T170ap] One paused edit or explicit Play."""
+        from goal2.game.pause_edit import validate_pause_edit
+        self._answer_verified_stop(decision, values, 'pause', 'pause_edit', validate_pause_edit)
+
+    def answer_substitution(self, decision, values):
+        """[designed: T170an] One legal pair or explicit Play at a verified stop."""
+        from goal2.game.half_time_edit import validate_substitution
+        self._answer_verified_stop(decision, values, 'substitution', 'substitution_edit', validate_substitution)
+
+    def answer_extra_time(self, decision, values):
+        """[designed: T170ao] One tactic or explicit Play at a verified extra-time stop."""
+        from goal2.game.half_time_edit import validate_extra_time
+        self._answer_verified_stop(decision, values, 'extra_time', 'extra_time_edit', validate_extra_time)
+
+    def _answer_verified_stop(self, decision, values, context, flag, validate):
         self._owner()
         waiting = self.waiting
         view = self.stopped_view
         if (view is None or type(decision) is not int or view.snapshot.decision != decision
-                or view.snapshot.data.get('context') != 'pause'):
-            raise ValueError('pause answer needs a verified current decision')
+                or view.snapshot.data.get('context') != context):
+            raise ValueError(f'{context} answer needs a verified current decision')
         if values:
-            from goal2.game.pause_edit import validate_request_edit
-            validate_request_edit(view.snapshot.data, values)
-        self.answer(values, pause_edit=bool(values))
+            validate(view.snapshot.data, values)
+        self.answer(values, **{flag: bool(values)})
         if self.pending:
             self._stopped_answer = dict(waiting, edit=bool(values))
 

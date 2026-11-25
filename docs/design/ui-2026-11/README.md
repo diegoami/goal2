@@ -400,6 +400,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 
 - **Purpose**: substitutions at legal stops, with the live squad and its player cards.
 - **Shows**: the engine's eleven/bench and remaining budget, live red injury labels, and prominent on/off feedback.
+- [derived: T156-R1 step 124] Separate boxes above the player card show the current substitution mode and budget.
+  The roster keeps a visible rule between the starting XI and reserves at larger squad sizes.
 - **Actions**: **↑↓** player; **Enter** marks the first and completes the pair with the second selection. At a legal
   stop that sends one edit, waits for the engine, and shows the confirmed exchange immediately. Esc returns to
   the match menu; Play only continues. **R**, **C**, **T** retain supported tactical edits.
