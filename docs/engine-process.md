@@ -316,6 +316,15 @@ eligible managed starters. It cycles through Protect Zone and the
 available opposing outfield starters. The fresh view supplies the actual
 marking word. A refusal leaves the same stopped match ready to repair.
 
+[designed: T170at/#869] `goal2.ui.native_match_day.NativeMatchDay` is the
+explicit Qt entry for one supplied native boundary and matching identity
+model. It opens the retained pre-match flow, hands the same lease to the
+stopped controls and full-time review, then offers Resume round after
+Exit and stream drain. The caller receives one verified native boundary
+and can read any pre-match deltas from `entry_observation` on the day.
+The day keeps ownership until closed. Goal and pre-match
+route-view callbacks are supplied by the caller.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,
