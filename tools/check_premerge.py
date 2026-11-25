@@ -189,7 +189,7 @@ def check_tests(jobs: int, python: str, slow: bool | set[str], runner=run_module
     # [designed: #851] The native Windows popup needs the foreground to itself.
     # Offscreen milestone runners do not share a desktop and retain their schedule.
     if sys.platform == "win32" and backend in ("", "windows"):
-        serial += ("test_ui_selected_squad_t239",)
+        serial = ("test_ui_selected_squad_t239", *serial)
     batches = [([m for m in rest if m not in serial], jobs)] + [([m], 1) for m in serial if m in rest]
     for batch, workers in batches:
         skipped += run_stage(batch, workers, lambda m: runner(m, python, slow if isinstance(slow, bool) else m in slow),
