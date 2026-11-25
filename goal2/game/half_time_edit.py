@@ -1,4 +1,4 @@
-"""[designed: T170aj] Guard the single edits offered by the native half-time page."""
+"""[designed: T170aj/T170an] Guard single edits at a legal stopped bench."""
 
 
 def validate_edit(data, answer):
@@ -16,8 +16,19 @@ def validate_edit(data, answer):
                 if type(value) is bool:
                     return
         raise ValueError('Choose one team tactic.')
-    if set(answer) != {'edit_only', 'substitutions'}:
-        raise ValueError('Choose one half-time change.')
+    _validate_pair(data, answer)
+
+
+def validate_substitution(data, answer):
+    """[confirmed: Match.answer/#695] One legal in-match pair without Play."""
+    if data.get('context') != 'substitution' or data.get('substitutions_now') is not True:
+        raise ValueError('A substitution is unavailable at this stop.')
+    _validate_pair(data, answer)
+
+
+def _validate_pair(data, answer):
+    if set(answer) != {'edit_only', 'substitutions'} or answer['edit_only'] is not True:
+        raise ValueError('Send only one substitution.')
     pairs = answer['substitutions']
     if (not isinstance(pairs, list) or len(pairs) != 1 or not isinstance(pairs[0], list)
             or len(pairs[0]) != 2 or any(type(word) is not int or word <= 0 for word in pairs[0])):

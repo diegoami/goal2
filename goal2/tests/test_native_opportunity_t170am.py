@@ -183,17 +183,10 @@ class Window(unittest.TestCase):
         self.assertFalse(any(name == 'answer' for name, _ in case.owner.sent))
 
 
-def actual_opportunity(raw, response):
-    from dataclasses import asdict
-    import sys
-
-    from goal2.engine.original_match import Image, Match
-    from goal2.engine.original_match.machine import MEM_SIZE, REGS, Uc
+def reach_requested_opportunity(raw):
+    from goal2.engine.original_match import Image
     from goal2.game import engine_tables
-    from goal2.game.stopped_snapshot import StoppedMatchSnapshot
-    from goal2.game.watched_pitch import snapshot
 
-    assert sys.implementation.name == 'pypy' and sys.version_info[:2] == (3, 11) and Uc is None
     worker = SeasonWorker()
     request = 0
 
@@ -204,7 +197,6 @@ def actual_opportunity(raw, response):
 
     ask('open', state=Image.from_bytes(raw).state(engine_tables.load()))
     ask('advance')
-    match = worker.session.pending_match
     ask('configure', frames=True)
     paused = armed = False
     for _ in range(300):
@@ -218,7 +210,7 @@ def actual_opportunity(raw, response):
         data = batch['events'][-1]['data']
         context = data['context']
         if context == 'substitution_opportunity':
-            break
+            return worker, ask, number, data
         if context == 'pause' and not armed:
             answer = {'edit_only': True, 'request_substitution': True}
             ask('answer', decision=number, answer=answer, pause_edit=True)
@@ -227,12 +219,24 @@ def actual_opportunity(raw, response):
             if context == 'pause':
                 assert data['request_substitution'] is True
             ask('answer', decision=number, answer={})
-    else:
-        raise AssertionError('The requested substitution did not reach a timed opportunity')
+    raise AssertionError('The requested substitution did not reach a timed opportunity')
 
+
+def actual_opportunity(raw, response):
+    from dataclasses import asdict
+    import sys
+
+    from goal2.engine.original_match import Match
+    from goal2.engine.original_match.machine import MEM_SIZE, REGS, Uc
+    from goal2.game.stopped_snapshot import StoppedMatchSnapshot
+    from goal2.game.watched_pitch import snapshot
+
+    assert sys.implementation.name == 'pypy' and sys.version_info[:2] == (3, 11) and Uc is None
+    worker, ask, number, data = reach_requested_opportunity(raw)
+    match = worker.session.pending_match
     saved = match.save()
     packet = ask('stopped_preview', decision=number)
-    preview = StoppedMatchSnapshot.from_packet(packet, request=request, decision=number,
+    preview = StoppedMatchSnapshot.from_packet(packet, request=packet['request'], decision=number,
                                                managed_country=match.opts['managed'], data=data)
     assert preview.data['keeper_unavailable'] is False and preview.data['timeout_polls'] == 400
     assert match.save() == saved
