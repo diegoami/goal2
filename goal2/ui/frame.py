@@ -64,10 +64,12 @@ class PanelOutline(QWidget):
         return False
 
     def paintEvent(self, event):
-        painter=QPainter(self)
-        painter.setPen(QColor(theme.FRAME))
-        for line in self._segments():
-            painter.drawLine(*line)
+        painter = QPainter(self)
+        colour = QColor(theme.FRAME)
+        # [designed: #778] Keep the stroke inside the widget's clip. At a
+        # fractional display scale a line centred on x=0 can rasterise outside it.
+        for left, top, right, bottom in self._segments():
+            painter.fillRect(left, top, right - left + 1, bottom - top + 1, colour)
         painter.end()
 
 
