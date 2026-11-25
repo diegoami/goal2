@@ -12,6 +12,7 @@ from goal2.ui.s15_match_menu import MenuScreen, SavedGoalMenu
 from goal2.ui.s20_board import BoardScreen, COUNTERS
 from goal2.ui.kits import for_fixture
 from goal2.ui.cells import CellPara
+from goal2.ui import theme
 
 @CAREER
 class MatchDayOnTheGrid(Base):
@@ -72,6 +73,21 @@ class MatchDayOnTheGrid(Base):
                     for label in screen.findChildren(CellPara):
                         if label.isVisibleTo(screen):
                             self.assertLessEqual(len(label.lines()),self.rows_of(label),label.text())
+
+    def test_half_time_menu_has_even_lineups_and_boxed_actions(self):
+        self.phase = "half"
+        _, screen = self.canonical(self.make)
+        for rows in screen.lineup_rows.values():
+            self.assertEqual(len(rows), 11)
+            self.assertEqual([row.y() - rows[0].y() for row in rows],
+                             [index * rows[0].height() for index in range(11)])
+        for option in screen.options:
+            if option is screen.highlighted():
+                continue
+            image = option.grab().toImage()
+            for x, y in ((0, image.height() // 2), (image.width() // 2, 0),
+                         (image.width() - 1, image.height() // 2), (image.width() // 2, image.height() - 1)):
+                self.assertEqual(image.pixelColor(x, y).name(), theme.FRAME, option.text_label.text())
 
     def test_tournament_tabs_missing_stages_and_results_message_fit(self):
         self.kind = TournamentScreen

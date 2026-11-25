@@ -14,6 +14,7 @@ from PySide6.QtWidgets import QApplication, QPushButton, QLabel, QWidget
 from goal2.ui import theme
 from goal2.ui.frame import Frame
 from goal2.ui.cell_parts import CellFacts
+from goal2.ui.screen import GridOption
 
 
 class ClosedFrames(unittest.TestCase):
@@ -115,6 +116,9 @@ def fractional_outline_gaps():
     facts.setParent(host)
     facts.setGeometry(311, 11, 160, 141)
     facts.set({'age': '25', 'caps': '15'}, theme.VALUE)
+    action = GridOption(None, 'players', lambda: None)
+    action.setParent(host)
+    action.setGeometry(111, 159, 145, 45)
     host.show()
     app.processEvents()
     pixmap = host.grab()
@@ -123,9 +127,10 @@ def fractional_outline_gaps():
         raise AssertionError(f'Expected a 150% display, got {ratio}')
     image = pixmap.toImage()
     gaps = []
-    for panel, heading in ((frame, frame.rule), (facts, facts.labels['age'])):
+    panels = ((frame, frame.rule.height() // 2), (facts, facts.labels['age'].height() // 2), (action, 0))
+    for panel, heading_middle in panels:
         x, y, width, height = panel.geometry().getRect()
-        top = math.ceil((y + heading.height() // 2) * ratio) + 2
+        top = math.ceil((y + heading_middle) * ratio) + 2
         bottom = math.floor((y + height) * ratio) - 3
         for edge, coordinate in (('left', x), ('right', x + width - 1)):
             column = coordinate * ratio

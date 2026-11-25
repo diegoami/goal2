@@ -86,36 +86,43 @@ class MenuScreen(Screen):
         self.lineup_rows = {}
         self.lineup_headings = {}
         boxes = {c: self._lineup(c) for c in (self.home_country, self.away_country)}
-        middle.put(boxes[self.home_country],0,0,28,20)
-        from goal2.ui.cells import CellPara
-        def option(text, handler, **kwargs):
-            item = self.add_option(text, handler, rows=1, **kwargs)
-            old = item.text_label
-            item.layout().replaceWidget(old, CellPara(text,"optionText"))
-            item.text_label = item.findChildren(CellPara)[0]
-            old.setParent(None)
-            old.deleteLater()
+        middle.put(boxes[self.home_country], 0, 0, 28, 12)
+
+        def option(text, handler, *, key=None, enter, wrap=False):
+            item = self.add_option(text, handler, enter=enter)
+            # The key bar already labels T and Space. Keep the boxes identical on both sides.
+            if key is not None:
+                self.bind((key,), enter.lower(), lambda: self.activate(item))
+            if wrap:
+                old = item.text_label
+                item.text_label = CellPara(text, "optionText")
+                item.layout().replaceWidget(old, item.text_label)
+                old.setParent(None)
+                old.deleteLater()
+            item.text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             return item
-        for column,country in enumerate((self.home_country,self.away_country)):
+
+        # [designed: #777 playtest] Box the controls in two mirrored country columns.
+        for column, country in enumerate((self.home_country, self.away_country)):
             mine = country == own
-            tactics = option(f"{names[country]} team tactics", lambda c=country:self.tactics(c),
-                             key=Qt.Key.Key_T if mine else None,enter="Team tactics")
-            players = option(f"{names[country]} players", lambda c=country:self.players(c),
-                             key=Qt.Key.Key_Space if mine else None,enter="Players")
-            self.country_options[country] = (tactics,players)
-            middle.put(tactics,29+17*column,0,15,3)
-            middle.put(players,29+17*column,4,15,3)
+            left = 29 + 17 * column
+            tactics = option(f"{names[country]} team tactics", lambda c=country: self.tactics(c),
+                             key=Qt.Key.Key_T if mine else None, enter="Team tactics", wrap=True)
+            players = option(f"{names[country]} players", lambda c=country: self.players(c),
+                             key=Qt.Key.Key_Space if mine else None, enter="Players", wrap=True)
+            self.country_options[country] = (tactics, players)
+            middle.put(tactics, left, 0, 15, 3)
+            middle.put(players, left, 4, 15, 3)
         tournament = option("tournament", self.tournament, enter="Tournament")
         stats = option("match stats", self.stats, enter="Match stats")
-        for item in (tournament,stats):
-            item.text_label.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
-        middle.put(tournament,29,8,32,2)
-        middle.put(stats,29,10,32,2)
+        middle.put(tournament, 29, 8, 32, 2)
+        middle.put(stats, 29, 11, 32, 2)
         if phase == "full":
             self.play = option("exit", day.exit, enter="Exit")
         else:
-            self.play = option(f"▶ play     {NEXT[phase]}", self.press_play, enter="Play")
-        middle.put(self.play,29,16,32,4)
+            self.play = option(f"▶ play     {NEXT[phase]}", self.press_play,
+                               enter="Play", wrap=phase == "before")
+        middle.put(self.play, 29, 17, 32, 2)
         self.shared_options = (tournament, stats, self.play)
         # [confirmed: T156-R1 69-73; T184] Vertical keys follow visible rows. The two
         # country columns are horizontal alternatives, not extra vertical entries.
@@ -131,15 +138,11 @@ class MenuScreen(Screen):
         self.bind((), "country", None, captions=("←", "→"))
         self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        middle.put(self.note,29,12,32,4)
-        middle.put(boxes[self.away_country],62,0,28,20)
+        middle.put(self.note, 29, 13, 32, 4)
+        middle.put(boxes[self.away_country], 62, 0, 28, 12)
         body.put(middle,0,2,90,20)
         self.main_layout.removeWidget(self.wait_box)
         body.put(self.wait_box,0,22,90,3)
-        for binding in self.bindings:
-            if binding.keys == (Qt.Key.Key_T,): binding.text = "team tactics"
-            elif binding.keys == (Qt.Key.Key_Space,): binding.text = "players"
-        self._refresh_bar()
         self.bind((Qt.Key.Key_Insert,), "action replay on/off", self.toggle_replay)
         self.watch_bindings = []
         self.highlight(self.options.index(self.play))
@@ -168,20 +171,22 @@ class MenuScreen(Screen):
             eleven, formation = info["players"][:11], info["formation"]
         from goal2.ui.country_parts import framed
         from goal2.ui.cell_parts import CellTableRow
-        frame, column = framed(f"{names[country]} · {formation}",28,19)
+        frame, column = framed(f"{names[country]} · {formation}", 28, 11)
         rows = []
         widgets = []
         for word in eleven:
             c = bench.card(word) if bench is not None else card(state, word, model.goaldat)
             injured = bench is not None and word in bench.injured
-            line = CellTableRow(-1, (2,25), gaps=(0,1))
+            line = CellTableRow(-1, (1, 24), gaps=(0, 1))
             from goal2.ui.squad_card import LINE_COLOUR
             line.set((c["role"], c["full_name"] + (" · INJURED" if injured else "")),
                      (LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL), theme.BAD if injured else LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL)))
             if country == self.away_country:
+                line.area.move(line.cells[0], 25, 0, 1)
+                line.area.move(line.cells[1], 0, 0, 24)
                 line.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             line.setCursor(Qt.CursorShape.ArrowCursor)
-            column.put(line,0,min(2*len(widgets),len(widgets)+8),28)
+            column.put(line, 1, len(widgets), 26)
             rows.append(tuple(line.texts()))
             widgets.append(line)
         if bench is not None:
