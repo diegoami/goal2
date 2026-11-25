@@ -22,7 +22,7 @@ from PySide6.QtWidgets import QPushButton
 from goal2.ui import cells, theme
 from goal2.ui.cell_parts import GridCard, BenchStrip
 from goal2.ui.cells import CellLabel, CellPara, Cells
-from goal2.ui.frame import Frame
+from goal2.ui.frame import Frame, PanelOutline
 from goal2.ui.live_cards import player_snapshot, card_state
 from goal2.ui.screen import Screen
 from goal2.ui.squad_card import colour, full_name, last_on_the_bar
@@ -44,9 +44,8 @@ OFF, ON, MARKED = " v", " ^", " *"              # [designed: T102] the strip's m
 TIMES = {"half_time": "half time", "substitution": "substitution opportunity", "pause": "during play",
          "extra_time": "before extra time"}
 # [designed: T212; docs/design/ui-2026-11/proposal/README.md, s08-squad] S19 on the 16 x 32 grid, in the squad's cells (90 columns, the 25 rows
-# between the title row and the two key rows): at the left the mode and its button on the first row and the match's words on the
-# second, under them the card (69 x 18, the squad's) and under the card the substitution's own words in a frame of five rows (the
-# budget of substitutions at the right of its first row, the words under it); at the right, a cell apart and down to the foot, the
+# between the title row and the two key rows): at the left the boxed mode and budget above the match context, then the card
+# (69 x 18, the squad's) and the substitution feedback. The request button sits beside the feedback legend. At the right,
 # twenty in uniform rows with separate name/status/role columns and a marker legend [designed: owner playtest, #754].
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
 HEAD_ROWS = 2
@@ -55,10 +54,24 @@ LEFT_COLS = 69
 STRIP_COLS = 20
 STRIP_AT = BODY_COLS - STRIP_COLS
 MODE_COLS = 34          # "NO SUBSTITUTIONS BEFORE EXTRA TIME", the longest of the modes
-BUTTON_AT, BUTTON_COLS = MODE_COLS + 1, 22   # "Request substitution", a cell in from each side
+BUTTON_COLS = 22       # "Request substitution", a cell in from each side
 COUNTER_COLS = 35       # "substitutions: unlimited (friendly)", the longest of the budget's words
 FEEDBACK_AT = CARD_AT + GridCard.ROWS
-FEEDBACK_ROWS = BODY_ROWS - FEEDBACK_AT   # its rule, the budget's row and three rows of words
+FEEDBACK_ROWS = BODY_ROWS - FEEDBACK_AT   # its rule, controls and three rows of words
+
+
+def _boxed_readout(label, cols):
+    panel = Cells(cols, 1, "benchReadout")
+    label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    panel.put(label, 0, 0, cols)
+
+    def edges():
+        right, bottom = panel.width() - 1, panel.height() - 1
+        return ((0, 0, right, 0), (0, bottom, right, bottom),
+                (0, 0, 0, bottom), (right, 0, right, bottom))
+
+    panel.grid.addWidget(PanelOutline(panel, edges))
+    return panel
 
 
 class BenchAnswer:
@@ -328,9 +341,12 @@ class BenchScreen(Screen):
         body = Cells(BODY_COLS, BODY_ROWS, "benchBody")
         self.body_layout.addWidget(body, 1)
         self.area = body
+        # [confirmed: T156-R1 step 124] Mode and remaining substitutions each have a visible box.
         self.mode_label = CellLabel("", "h1")
         colour(self.mode_label, theme.VALUE)
-        body.put(self.mode_label, 0, 0, MODE_COLS)
+        body.put(_boxed_readout(self.mode_label, MODE_COLS), 0, 0, MODE_COLS)
+        self.counter = CellLabel("", "benchCounter")
+        body.put(_boxed_readout(self.counter, COUNTER_COLS), MODE_COLS, 0, COUNTER_COLS)
         self.request_button = RequestButton()
         # [designed: T203] Explicit theme contrast; native buttons otherwise
         # inherit white text while retaining their native near-white background.
@@ -340,7 +356,6 @@ class BenchScreen(Screen):
             f"QPushButton:disabled {{color:{theme.TEXT_BRIGHT};background-color:{theme.FRAME_DARK};border-color:{theme.FRAME_DARK};}}"
             f"QPushButton:focus,QPushButton:hover {{color:{theme.GROUND};background-color:{theme.HIGHLIGHT};border-color:{theme.VALUE};}}")
         self.request_button.clicked.connect(self.toggle_request)
-        body.put(self.request_button, BUTTON_AT, 0, BUTTON_COLS)
         self.context = CellPara("", "benchMetadata")
         body.put(self.context, 0, 1, LEFT_COLS)
         self.card = GridCard()
@@ -349,17 +364,14 @@ class BenchScreen(Screen):
         feedback.setObjectName("benchFeedback")
         inner = Cells(GridCard.COLS, FEEDBACK_ROWS - 1, "benchFeedbackRows")
         feedback.add(inner, 1)
-        # the budget at the right of the frame's first row, the substitution's words under it
-        self.counter = CellLabel("", "benchCounter")
-        self.counter.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        inner.put(self.counter, GridCard.COLS - COUNTER_COLS, 0, COUNTER_COLS)
+        inner.put(self.request_button, GridCard.COLS - BUTTON_COLS, 0, BUTTON_COLS)
         self.note = CellPara("", "benchFeedbackText")
         colour(self.note, theme.VALUE)
         inner.put(self.note, 0, 1, GridCard.COLS, inner.rows - 1)
         body.put(feedback, 0, FEEDBACK_AT, GridCard.COLS, FEEDBACK_ROWS)
         self.strip = BenchStrip(STRIP_COLS, count=max(20, len(self.answer.words())))
         if self.strip.compact:
-            inner.text("I injured  * marked  ^ on  v off", "sub", 0, 0, GridCard.COLS - COUNTER_COLS)
+            inner.text("I injured  * marked  ^ on  v off", "sub", 0, 0, GridCard.COLS - BUTTON_COLS - 1)
         self.strip.chosen.connect(self.click_row)
         body.put(self.strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS)
 

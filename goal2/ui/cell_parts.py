@@ -158,8 +158,8 @@ class SquadRule(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.setPen(QColor(theme.FRAME))
-        painter.drawLine(0, 0, self.width() - 1, 0)
+        # Keep the rule inside its clip when its top lands on a fractional device pixel.
+        painter.fillRect(0, 0, self.width(), 1, QColor(theme.FRAME))
         painter.end()
 
 

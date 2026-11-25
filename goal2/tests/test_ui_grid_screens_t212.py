@@ -14,6 +14,10 @@ work area); a shown window is asked for the sizes and the screen must fit the si
 size. The careers read GOAL.DAT and the E010 half-time template from the git-ignored `.cache/` and skip without them
 (goal2/tests/requires.py).
 """
+import math
+import os
+import subprocess
+import sys
 import unittest
 
 from goal2.ui.squad_card import full_name
@@ -608,8 +612,7 @@ class BenchOnTheGrid(Base):
         self.assertEqual(screen.findChildren(QLabel, "kbd"), [], "no boxed key cap on a grid screen")
 
     def test_the_header_the_card_the_feedback_and_the_twenty_are_where_the_cells_put_them(self):
-        """The mode over the match's words (two rows), the card (69 x 18) under them and the substitution's words in a frame of five rows
-        under the card (the budget at the right of its first row), the twenty (20 wide, down to the foot) at the right a cell apart."""
+        """The mode and budget have their own closed boxes above the card, as in T156-R1 step 124."""
         from goal2.ui.s19_bench import FEEDBACK_ROWS, HEAD_ROWS
         window, screen = self.canonical(self.make)
         cell, row = cells.cell_w(screen), cells.row_px(screen)
@@ -624,18 +627,26 @@ class BenchOnTheGrid(Base):
         bottom = screen.card.mapTo(screen, screen.card.rect().bottomLeft()).y() + 1
         self.assertEqual(feedback.mapTo(screen, feedback.rect().topLeft()).y(), bottom)
         self.assertEqual(round(feedback.height() / row), FEEDBACK_ROWS)
-        self.assertIs(screen.counter.parentWidget(), screen.note.parentWidget(), "the budget is in the substitution's frame")
-        self.assertLess(screen.counter.y(), screen.note.y(), "on its first row")
-        self.assertEqual(screen.counter.x() + screen.counter.width(), screen.note.x() + screen.note.width(), "at its right")
+        mode = screen.mode_label.parentWidget()
+        budget = screen.counter.parentWidget()
+        self.assertIs(mode.parentWidget(), screen.area)
+        self.assertIs(budget.parentWidget(), screen.area)
+        self.assertEqual(mode.y(), budget.y())
+        self.assertEqual(mode.geometry().right() + 1, budget.x())
+        for box in (mode, budget):
+            image = box.grab().toImage()
+            for x, y in ((0, image.height() // 2), (image.width() - 1, image.height() // 2),
+                         (image.width() // 2, 0), (image.width() // 2, image.height() - 1)):
+                self.assertEqual(image.pixelColor(x, y).name(), theme.FRAME)
         self.assertEqual(screen.counter.text(), "substitutions: unlimited (friendly)" if screen.answer.friendly else "substitutions left 5")
 
-    def test_the_mode_is_left_of_its_button_whatever_it_says(self):
-        """T203's header test, in cells: the cue's cells end before the button's begin, the button is a row of 22 cells."""
+    def test_the_request_button_fits_in_the_substitution_panel(self):
         self.mode = "request"
         window, screen = self.canonical(self.make)
         self.assertTrue(screen.request_button.isVisibleTo(screen))
         self.assertEqual(screen.request_button.height(), cells.row_px(screen))
-        self.assertLess(screen.mode_label.geometry().right(), screen.request_button.geometry().left())
+        self.assertIs(screen.request_button.parentWidget(), screen.note.parentWidget())
+        self.assertLess(screen.request_button.geometry().bottom(), screen.note.y())
         self.assertGreaterEqual(screen.mode_label.width(), 34 * round(cells.cell_w(screen)) - 1)
 
     def test_the_note_takes_three_rows_the_longest_refusal_included(self):
@@ -713,6 +724,44 @@ class BenchOnTheGrid(Base):
         self.assertEqual(seen,[19])
         self.assertEqual(fixed_page.problems(window),[])
         self.on_the_grid(window)
+
+    def test_the_compact_xi_rule_is_continuous_at_fractional_scaling(self):
+        env = os.environ | {"QT_QPA_PLATFORM": "offscreen", "QT_SCALE_FACTOR": "1.5"}
+        result = subprocess.run(
+            [sys.executable, "-c", "from goal2.tests.test_ui_grid_screens_t212 import "
+             "assert_fractional_bench_rule; assert_fractional_bench_rule()"],
+            env=env, capture_output=True, text=True, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+
+def assert_fractional_bench_rule():
+    from PySide6.QtCore import QPoint
+    from PySide6.QtWidgets import QApplication, QWidget
+    from goal2.ui.cell_parts import BenchStrip
+
+    app = QApplication([])
+    theme.install(app)
+    window = QWidget()
+    window.resize(400, 1000)
+    strip = BenchStrip(count=24)
+    strip.setParent(window)
+    strip.setGeometry(11, 11, 320, 950)
+    strip.show_rows("Holland", [("D", "defence", f"Player {i + 1}") for i in range(24)], current=0)
+    window.show()
+    app.processEvents()
+    pixmap = window.grab()
+    ratio = pixmap.devicePixelRatio()
+    if ratio != 1.5:
+        raise AssertionError(f"Expected a 150% display, got {ratio}")
+    image = pixmap.toImage()
+    origin = strip.gap.mapTo(window, QPoint(0, 0))
+    left = math.ceil(origin.x() * ratio) + 2
+    right = math.floor((origin.x() + strip.gap.width()) * ratio) - 2
+    row = origin.y() * ratio
+    if not any(all(image.pixelColor(x, y).name() == theme.FRAME for x in range(left, right))
+               for y in range(math.floor(row) - 1, math.ceil(row) + 2)):
+        raise AssertionError("The line between the starting XI and the bench is incomplete")
 
 
 
