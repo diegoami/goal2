@@ -1,11 +1,12 @@
-"""[designed: T170ar] S09 backed by one verified retained bench."""
+"""[designed: T170ar/T170as] S09 backed by one verified retained bench."""
 
 from types import SimpleNamespace
 
 from PySide6.QtCore import Qt
 
-from goal2.ui.s09_player_tactics import PlayerTacticsScreen
+from goal2.ui.s09_player_tactics import LINES, MARK, PlayerTacticsScreen
 from goal2.ui.s19_bench import BenchAnswer
+from goal2.ui.squad_card import full_name
 
 
 class NativePlayerTacticsScreen(PlayerTacticsScreen):
@@ -16,10 +17,12 @@ class NativePlayerTacticsScreen(PlayerTacticsScreen):
         self.pending = False
         self.message = ''
         self.goal = None
+        self.current_mark = parent.snapshot.marking_word(word)
         country_name = parent.data.country_names[parent.snapshot.managed_country]
         model = SimpleNamespace(state=parent.state, goaldat=parent.data,
                                 view=lambda: {'country_name': country_name})
-        super().__init__(parent.window_, model, word, self.bench_answer(model), allow_marking=False)
+        super().__init__(parent.window_, model, word, self.bench_answer(model),
+                         allow_marking=bool(parent.snapshot.marking_targets(word)))
 
     def bench_answer(self, model):
         parent = self.parent_bench
@@ -28,6 +31,10 @@ class NativePlayerTacticsScreen(PlayerTacticsScreen):
 
     def refresh(self):
         super().refresh()
+        if self.marks:
+            current = (full_name(self.model, self.current_mark) if 0 < self.current_mark < len(self.model.state.players)
+                       else self.card()['mark'])
+            self.rows[len(LINES)].set((MARK, current or 'Team default'))
         self.explain.setText(self.message or 'One tactic is confirmed at a time. Play stays on the bench.')
 
     def alter(self):
@@ -36,10 +43,23 @@ class NativePlayerTacticsScreen(PlayerTacticsScreen):
                 or self.window_.current() is not self):
             return
         element = self.line + 1
+        if element > len(LINES):
+            targets = parent.snapshot.marking_targets(self.word)
+            if not targets:
+                return
+            index = targets.index(self.current_mark) if self.current_mark in targets else -1
+            value = targets[(index + 1) % len(targets)]
+            if self.current_mark != value:
+                self.submit(element, value, {'marking': {self.word: value}})
+            return
         byte = parent.snapshot.record(self.word)[15]
         personal = bool(byte & (1 << (element + 3)))
         value = (None if byte & (1 << (element - 1)) else True) if personal else False
-        if parent.apply_edit({'own_tactics': {self.word: {element: value}}}):
+        self.submit(element, value, {'own_tactics': {self.word: {element: value}}})
+
+    def submit(self, element, value, edit):
+        parent = self.parent_bench
+        if parent.apply_edit(edit):
             parent._edited_player = self.word
             self.pending = True
             self.goal = (element, value)
@@ -51,10 +71,14 @@ class NativePlayerTacticsScreen(PlayerTacticsScreen):
     def acknowledge(self, message):
         self.model.state = self.parent_bench.state
         self.bench = self.bench_answer(self.model)
+        self.current_mark = self.parent_bench.snapshot.marking_word(self.word)
         element, wanted = self.goal
-        byte = self.bench.record(self.word)[15]
-        actual = bool(byte & (1 << (element - 1))) if byte & (1 << (element + 3)) else None
-        if not message and actual is not wanted:
+        if element > len(LINES):
+            actual = self.current_mark
+        else:
+            byte = self.bench.record(self.word)[15]
+            actual = bool(byte & (1 << (element - 1))) if byte & (1 << (element + 3)) else None
+        if not message and actual != wanted:
             message = 'The game kept the current tactic.'
         self.rejected(message or 'Tactic confirmed. The match is still stopped.')
 

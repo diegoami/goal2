@@ -189,22 +189,18 @@ class SeasonWorker:
                         validate_choice(waiting, answer)
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
-                if header.get('half_time_edit') is True:
-                    from goal2.game.half_time_edit import validate_edit
+                if header.get('half_time_edit') is True or header.get('substitution_edit') is True:
+                    from goal2.game.half_time_edit import validate_edit, validate_substitution
+                    from goal2.game.live_marking import worker_marking_targets
+                    validate = validate_edit if header.get('half_time_edit') else validate_substitution
                     try:
-                        validate_edit(waiting, answer)
+                        validate(waiting, answer, mark_targets=lambda word: worker_marking_targets(match, word))
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
                 if header.get('pause_edit') is True:
                     from goal2.game.pause_edit import validate_pause_edit
                     try:
                         validate_pause_edit(waiting, answer)
-                    except ValueError as exc:
-                        raise SeasonRequestError(str(exc)) from exc
-                if header.get('substitution_edit') is True:
-                    from goal2.game.half_time_edit import validate_substitution
-                    try:
-                        validate_substitution(waiting, answer)
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
                 if header.get('extra_time_edit') is True:

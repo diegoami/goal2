@@ -311,6 +311,11 @@ the team default. The retained decision confirms each value before the card
 updates. Half-time's team-tactic selection uses Y, and Play remains on
 the bench. Live marking has its own domain.
 
+[designed: T170as/#867] The retained Own Tactics editor offers marking for
+eligible managed starters. It cycles through Protect Zone and the
+available opposing outfield starters. The fresh view supplies the actual
+marking word. A refusal leaves the same stopped match ready to repair.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

@@ -324,7 +324,8 @@ class NativeMatchDriver:
             raise ValueError('half-time answer needs a verified current decision')
         if values:
             from goal2.game.half_time_edit import validate_edit
-            validate_edit(self.stopped_view.snapshot.data, values)
+            view = self.stopped_view
+            validate_edit(view.snapshot.data, values, mark_targets=lambda word: view.marking_targets(word))
         self.answer(values, half_time_edit=bool(values))
         if self.pending:
             self._stopped_answer = dict(waiting, edit=bool(values))
@@ -337,7 +338,11 @@ class NativeMatchDriver:
     def answer_substitution(self, decision, values):
         """[designed: T170an] One legal pair or explicit Play at a verified stop."""
         from goal2.game.half_time_edit import validate_substitution
-        self._answer_verified_stop(decision, values, 'substitution', 'substitution_edit', validate_substitution)
+
+        def validate(data, answer):
+            validate_substitution(data, answer, mark_targets=lambda word: self.stopped_view.marking_targets(word))
+
+        self._answer_verified_stop(decision, values, 'substitution', 'substitution_edit', validate)
 
     def answer_extra_time(self, decision, values):
         """[designed: T170ao] One tactic or explicit Play at a verified extra-time stop."""
