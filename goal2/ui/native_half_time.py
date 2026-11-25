@@ -7,8 +7,9 @@ from goal2.game.country_card import PLAYER_DEFAULTS, TEAM_TACTICS, card
 from goal2.ui.native_review import NativeReviewScreen
 
 
-class NativeBenchScreen(NativeReviewScreen):
+class NativeEditableStopScreen(NativeReviewScreen):
     GRID = True
+    uses_substitutions = False
 
     def __init__(self, pitch, waiting):
         self.controls = []
@@ -17,8 +18,9 @@ class NativeBenchScreen(NativeReviewScreen):
         self._edit_cursor = pitch.controller.driver.shown_count
         super().__init__(pitch, waiting['decision'])
         self.body.move(self.details, 0, 8, 54, 5)
-        self.budget = self.body.text('', 'sub', 0, 4, 54)
-        self.substitute = self.add_action('Substitute', 0, 15, 23, Qt.Key.Key_X, self.substitution)
+        if self.uses_substitutions:
+            self.budget = self.body.text('', 'sub', 0, 4, 54)
+            self.substitute = self.add_action('Substitute', 0, 15, 23, Qt.Key.Key_X, self.substitution)
         self.set_navigation(False)
 
     def add_action(self, label, col, row, width, key, action):
@@ -43,6 +45,8 @@ class NativeBenchScreen(NativeReviewScreen):
         self.refresh_controls()
 
     def refresh_controls(self):
+        if not self.uses_substitutions:
+            return
         data = self.snapshot.snapshot.data
         remaining = data['substitutions_left']
         self.budget.setText(f'Substitutions left: {remaining}')
@@ -106,13 +110,8 @@ class NativeBenchScreen(NativeReviewScreen):
             self.status.setText(self.play_message)
 
 
-class NativeHalfTimeScreen(NativeBenchScreen):
+class NativeTacticStopScreen(NativeEditableStopScreen):
     GRID = True
-    title = 'Half-time'
-    primary_label = 'Play second half'
-    statistics_phase = 'half'
-    edit_message = 'Applying half-time change…'
-    play_message = 'Starting the second half…'
 
     def __init__(self, pitch, waiting):
         self.element = 1
@@ -125,7 +124,8 @@ class NativeHalfTimeScreen(NativeBenchScreen):
     def refresh_controls(self):
         super().refresh_controls()
         data = self.snapshot.snapshot.data
-        legal = self.snapshot.sides[self.side] == self.snapshot.managed_country and data['substitutions_now'] is True
+        legal = (self.snapshot.sides[self.side] == self.snapshot.managed_country
+                 and self.tactics_available(data))
         self.next_button.setEnabled(legal)
         self.toggle_button.setEnabled(legal)
         team = card(self.state, self.snapshot.managed_country, self.data)
@@ -144,12 +144,26 @@ class NativeHalfTimeScreen(NativeBenchScreen):
             mask = 1 << (self.element - 1)
             self.apply_edit({'tactics': {self.element: not bool(self.snapshot.snapshot.data['tactics'] & mask)}})
 
+
+class NativeHalfTimeScreen(NativeTacticStopScreen):
+    GRID = True
+    uses_substitutions = True
+    title = 'Half-time'
+    primary_label = 'Play second half'
+    statistics_phase = 'half'
+    edit_message = 'Applying half-time change…'
+    play_message = 'Starting the second half…'
+
+    def tactics_available(self, data):
+        return data['substitutions_now'] is True
+
     def submit(self, answer):
         self.driver.answer_half_time(answer)
 
 
-class NativeSubstitutionScreen(NativeBenchScreen):
+class NativeSubstitutionScreen(NativeEditableStopScreen):
     GRID = True
+    uses_substitutions = True
     title = 'Substitutions'
     primary_label = 'Play'
     statistics_phase = 'stop'
@@ -158,3 +172,25 @@ class NativeSubstitutionScreen(NativeBenchScreen):
 
     def submit(self, answer):
         self.driver.answer_substitution(self.decision, answer)
+
+
+class NativeExtraTimeScreen(NativeTacticStopScreen):
+    GRID = True
+    statistics_phase = 'extra'
+    edit_message = 'Confirming the extra-time tactic…'
+    play_message = 'Continuing to the next period…'
+
+    def __init__(self, pitch, waiting):
+        from goal2.game.half_time_edit import extra_time_half
+        half = extra_time_half(waiting['event']['data'])
+        self.title, self.primary_label = (
+            ('Extra time', 'Play extra time') if half == 1
+            else ('Extra-time half-time', 'Play second half of extra time')
+        )
+        super().__init__(pitch, waiting)
+
+    def tactics_available(self, data):
+        return True  # [confirmed: #679/#680] Neither half needs a legal substitution.
+
+    def submit(self, answer):
+        self.driver.answer_extra_time(self.decision, answer)

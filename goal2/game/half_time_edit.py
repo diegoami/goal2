@@ -7,16 +7,35 @@ def validate_edit(data, answer):
             or answer.get('edit_only') is not True):
         raise ValueError('Changes are unavailable at this stop.')
     if set(answer) == {'edit_only', 'tactics'}:
-        values = answer['tactics']
-        if isinstance(values, dict) and len(values) == 1:
-            element, value = next(iter(values.items()))
-            # The worker receives map keys through JSON.
-            if ((type(element) is int and 1 <= element <= 8)
-                    or (type(element) is str and element in '12345678' and len(element) == 1)):
-                if type(value) is bool:
-                    return
-        raise ValueError('Choose one team tactic.')
+        return _validate_tactic(answer['tactics'])
     _validate_pair(data, answer)
+
+
+def extra_time_half(data):
+    """[confirmed: Match._on_team_menu] The SDK publishes one of two stops."""
+    half = data.get('half')
+    if data.get('context') != 'extra_time' or type(half) is not int or half not in (1, 2):
+        raise ValueError('An extra-time stop needs an exact half.')
+    return half
+
+
+def validate_extra_time(data, answer):
+    """[confirmed: #679/#680] One tactics-only edit at either verified half."""
+    extra_time_half(data)
+    if set(answer) != {'edit_only', 'tactics'} or answer['edit_only'] is not True:
+        raise ValueError('Send only one extra-time team tactic.')
+    _validate_tactic(answer['tactics'])
+
+
+def _validate_tactic(values):
+    if isinstance(values, dict) and len(values) == 1:
+        element, value = next(iter(values.items()))
+        # The worker receives map keys through JSON.
+        if (type(value) is bool
+                and ((type(element) is int and 1 <= element <= 8)
+                     or (type(element) is str and len(element) == 1 and element in '12345678'))):
+            return
+    raise ValueError('Choose one team tactic.')
 
 
 def validate_substitution(data, answer):

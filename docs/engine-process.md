@@ -286,6 +286,13 @@ verified roster and budget controls as half-time take one legal pair. A
 fresh decision supplies the confirmed roster and budget before another
 edit. Play is separate from the swap and from the earlier timed notice.
 
+[designed: T170ao/#855] Set `extra_time_controls=True` on the native pitch
+to show the verified start and midpoint of extra time. Each phase offers
+one managed team-tactic edit and its own explicit Play. The worker and
+driver admit that edit only at the current confirmed half. Acknowledgement
+must return to the same half, minute and score before the next action.
+Player swaps and personal edits use their own supported contexts.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,
