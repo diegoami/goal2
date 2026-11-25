@@ -475,3 +475,4 @@ operational status.
 - [T170al](T170al.md): retained ordinary pause and substitution request (#846).
 - [T170am](T170am.md): retained timed substitution opportunity (#848).
 - [T170an](T170an.md): retained legal immediate substitution (#852).
+- [T170ao](T170ao.md): retained extra-time start and midpoint (#855).
