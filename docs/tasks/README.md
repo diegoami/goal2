@@ -479,3 +479,4 @@ operational status.
 - [T170ap](T170ap.md): team tactics at an ordinary retained pause (#858).
 - [T170aq](T170aq.md): live player positions at a retained bench (#860).
 - [T170ar](T170ar.md): live own tactics at a retained bench (#863).
+- [T170as](T170as.md): live marking at a retained bench (#867).
