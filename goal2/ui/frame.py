@@ -40,10 +40,11 @@ class PanelOutline(QWidget):
     A transparent, mouse-transparent layer preserves content geometry and input.
     Parent painting alone sits behind opaque child widgets and selected rows.
     """
-    def __init__(self, parent, segments):
+    def __init__(self, parent, segments, *, colour=theme.FRAME):
         super().__init__(parent)
         self.setObjectName('panelOutline')
         self._segments=segments
+        self._colour = QColor(colour)
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
@@ -65,11 +66,10 @@ class PanelOutline(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        colour = QColor(theme.FRAME)
         # [designed: #778] Keep the stroke inside the widget's clip. At a
         # fractional display scale a line centred on x=0 can rasterise outside it.
         for left, top, right, bottom in self._segments():
-            painter.fillRect(left, top, right - left + 1, bottom - top + 1, colour)
+            painter.fillRect(left, top, right - left + 1, bottom - top + 1, self._colour)
         painter.end()
 
 

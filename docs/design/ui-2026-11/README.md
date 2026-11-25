@@ -317,8 +317,12 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 ### S14 Round results
 
 - **Purpose**: the round's other results, arriving one by one, before and after your match.
-- **Shows**: each result with its kind; your match, still to play, at the end.
-- **Actions**: **Space** pause, **←→** speed, **Enter** (hit any key) to your match.
+- **Shows**: a centered cyan frame with yellow country names, aligned scores and magenta fixture types.
+  The managed fixture is marked so it is easy to find. The results keep the full country and competition names.
+  [derived: T156-R1 steps 41, 262–263; designed: #862]
+- **Actions**: **Space** pauses or resumes arriving results and **←→** changes their pace. The rolling status
+  shows the current pace. Once the results settle, the footer keeps the labelled **Enter** action for the match
+  menu or the desk. **Enter** can also advance while the results are arriving. [designed: #862]
 - **Replaces**: `round-playing`, `round-results`, `t156-041-round1-results`,
   `t156-262-round2-results-rolling`, `t156-263-round2-results`. [confirmed: T156-R1 steps 41, 262–263;
   E015-r0007 states 27, 52]

@@ -3,8 +3,9 @@ import unittest
 from types import SimpleNamespace
 from goal2.tests import requires
 from goal2.tests.test_ui_grid_screens_t211b import Base
-from goal2.tests.test_ui_match_day_t167 import CAREER, career, tearDownModule
+from goal2.tests.test_ui_match_day_t167 import CAREER, career, key, tearDownModule
 requires.require(modules=("PySide6",))
+from PySide6.QtCore import Qt
 from goal2.ui.s12_tournament import TournamentScreen
 from goal2.ui.s13_history import HistoryScreen
 from goal2.ui.s14_round import RoundScreen
@@ -61,6 +62,48 @@ class MatchDayOnTheGrid(Base):
             with self.subTest(screen=kind.__name__):
                 self.every_state_fits()
                 self.not_pending(kind.__name__,kind)
+
+    def test_round_frames_the_results_and_updates_the_controls_as_they_arrive(self):
+        completed = dict(home_name="Trinidad/Tobago", away_name="Luxembourg", score=[12, 1],
+                         kind_name="continental semi-finals and final")
+        pending = dict(completed, score=None)
+        before = dict(round=2, results=[completed], match=pending)
+        after = dict(round=2, results=[completed], match=completed)
+        for publication, destination in ((None, "To your match"), (after, "To the desk")):
+            continued = []
+            with self.subTest(destination=destination):
+                window, screen = self.canonical(lambda w: w.push(
+                    RoundScreen(w, before, lambda: continued.append(destination), after=publication)))
+                screen.timer.stop()
+                panel = screen.findChild(Cells, "roundResults")
+                self.assertIsNotNone(panel)
+                self.assertGreater(panel.x(), 0)
+                self.assertLessEqual(abs(2 * panel.x() + panel.width() - panel.parentWidget().width()), 1)
+                image = panel.grab().toImage()
+                for x, y in ((0, image.height() // 2), (image.width() - 1, image.height() // 2),
+                             (image.width() // 2, 0), (image.width() // 2, image.height() - 1)):
+                    self.assertEqual(image.pixelColor(x, y).name(), theme.HEADING)
+                self.assertIn("speed 3/5", screen.state_label.text())
+                key(window, Qt.Key.Key_Space)
+                initial_rows = screen.visible()
+                screen.arrive()
+                self.assertEqual(screen.visible(), initial_rows)
+                self.assertIn((("Space",), "resume"), screen.key_texts())
+                key(window, Qt.Key.Key_Right)
+                screen.timer.stop()
+                self.assertIn("speed 4/5", screen.state_label.text())
+                key(window, Qt.Key.Key_Space)
+                screen.arrive()
+                self.relayout(window)
+                self.assertEqual(screen.state_label.text(), "")
+                self.assertFalse(any(label in ("pause", "resume", "speed") for _, label in screen.key_texts()))
+                self.assertEqual(screen.enter_hint_text(), destination)
+                self.assertEqual(len(screen.visible()), 2 if publication is None else 3)
+                for row in screen.rows[:len(screen.visible())]:
+                    label = row.cells[3]
+                    self.assertLessEqual(len(label.lines()), self.rows_of(label), label.text())
+                key(window, Qt.Key.Key_Return)
+                self.assertEqual(continued, [destination])
 
     def test_menu_breaks_watch_question_and_board_modes_keep_all_text(self):
         for kind,phases in ((MenuScreen,("before","half","extra","full","pause","stop")),
