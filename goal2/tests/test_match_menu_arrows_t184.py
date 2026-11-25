@@ -15,9 +15,10 @@ from goal2.tests import requires
 requires.require(modules=('PySide6',))
 from PySide6.QtCore import Qt
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication
 from goal2.desktop import data_setup
 from goal2.ui import theme
+from goal2.ui.country_parts import framed
 from goal2.ui.screen import Screen
 from goal2.ui.s15_match_menu import MenuScreen
 from goal2.ui.window import Window
@@ -44,7 +45,7 @@ class MenuArrows(unittest.TestCase):
                               set_replay_auto=lambda *args: None, refresh_menu=lambda *args: None)
         def lineup(screen, country):
             screen.lineups[country] = ('4-4-2', [])
-            return QWidget()
+            return framed(names[country], screen.SIDE_COLS, screen.SIDE_ROWS)
         with patch.object(MenuScreen, '_lineup', lineup), patch('goal2.ui.s15_match_menu.for_fixture') as kits:
             kits.return_value.colour.return_value = theme.HEADING
             screen = MenuScreen(window, day, phase)

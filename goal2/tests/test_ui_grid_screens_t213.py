@@ -13,6 +13,7 @@ from goal2.ui.s20_board import BoardScreen, COUNTERS
 from goal2.ui.kits import for_fixture
 from goal2.ui.cells import CellPara
 from goal2.ui import theme
+from goal2.ui.frame import FrameRule
 
 @CAREER
 class MatchDayOnTheGrid(Base):
@@ -88,6 +89,28 @@ class MatchDayOnTheGrid(Base):
             for x, y in ((0, image.height() // 2), (image.width() // 2, 0),
                          (image.width() - 1, image.height() // 2), (image.width() // 2, image.height() - 1)):
                 self.assertEqual(image.pixelColor(x, y).name(), theme.FRAME, option.text_label.text())
+
+    def test_match_menu_groups_each_side_with_its_own_actions(self):
+        self.phase = "half"
+        _, screen = self.canonical(self.make)
+        left = screen.lineup_headings[screen.home_country].parentWidget()
+        right = screen.lineup_headings[screen.away_country].parentWidget()
+        for country, panel in ((screen.home_country, left), (screen.away_country, right)):
+            for option in screen.country_options[country]:
+                self.assertTrue(panel.isAncestorOf(option))
+            labels = [rule.label for rule in panel.findChildren(FrameRule)]
+            self.assertEqual("view only" in labels, country != screen.model.state.managed_country)
+        for option in screen.shared_options:
+            self.assertLess(left.geometry().right(), option.x())
+            self.assertLess(option.geometry().right(), right.x())
+        self.assertIs(screen.highlighted(), screen.play)
+        self.assertGreater(screen.replay_label.y(), left.geometry().bottom())
+
+        self.phase = "full"
+        _, full = self.canonical(self.make)
+        for heading in full.lineup_headings.values():
+            self.assertIn("view only", [rule.label for rule in heading.parentWidget().findChildren(FrameRule)])
+        self.assertEqual(full.highlighted().enter, "Exit")
 
     def test_tournament_tabs_missing_stages_and_results_message_fit(self):
         self.kind = TournamentScreen

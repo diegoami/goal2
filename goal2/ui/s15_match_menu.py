@@ -49,6 +49,7 @@ WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do y
 class MenuScreen(Screen):
     GRID = True   # [designed: owner, #667; T213]
     escape_text = "select Play / Exit"
+    SIDE_COLS, SIDE_ROWS = 29, 17
 
     def __init__(self, window, day, phase, score=(0, 0)):
         self.escape_text = "resume match" if phase in ("pause", "half", "stop", "extra") else "select Play / Exit"
@@ -66,6 +67,7 @@ class MenuScreen(Screen):
         self.name_label.setText(self.title)
         # [designed: owner, #667; T213] Score and situation over the two elevens and the existing two-country menu.
         from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.frame import FrameRule
         kits = for_fixture(model, fixture)
         body = Cells(90,25,"matchBody")
         self.body_layout.addWidget(body,1)
@@ -77,7 +79,6 @@ class MenuScreen(Screen):
         colour(second, kits.colour(1-HOME))
         self.situation = CellPara(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}", "sub")
         head.put(self.situation, 0, 1, 90)
-        self.replay_label = head.text("", "sub", 56, 0, 34)
         body.put(head,0,0,90,2)
         middle = Cells(90,20,"matchMenuBody")
         self.lineups = {}
@@ -85,8 +86,6 @@ class MenuScreen(Screen):
         self.lineup_words = {}
         self.lineup_rows = {}
         self.lineup_headings = {}
-        boxes = {c: self._lineup(c) for c in (self.home_country, self.away_country)}
-        middle.put(boxes[self.home_country], 0, 0, 28, 12)
 
         def option(text, handler, *, key=None, enter):
             item = self.add_option(text, handler, enter=enter)
@@ -101,27 +100,32 @@ class MenuScreen(Screen):
             item.text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             return item
 
-        # [designed: #777 playtest] Box the controls in two mirrored country columns.
-        for column, country in enumerate((self.home_country, self.away_country)):
+        # [derived: T156-R1 step 42; designed: #678, #862] Give each team a
+        # single frame for its formation, eleven and the actions that belong to it.
+        for left, country in ((0, self.home_country), (90 - self.SIDE_COLS, self.away_country)):
             mine = country == own
-            left = 29 + 17 * column
+            frame, column = self._lineup(country)
+            middle.put(frame, left, 0, self.SIDE_COLS, self.SIDE_ROWS + 1)
+            column.put(FrameRule("view only" if not mine or phase == "full" else ""), 0, 11, self.SIDE_COLS)
             tactics = option(f"{names[country]} team tactics", lambda c=country: self.tactics(c),
                              key=Qt.Key.Key_T if mine else None, enter="Team tactics")
             players = option(f"{names[country]} players", lambda c=country: self.players(c),
                              key=Qt.Key.Key_Space if mine else None, enter="Players")
             self.country_options[country] = (tactics, players)
-            middle.put(tactics, left, 0, 15, 3)
-            middle.put(players, left, 4, 15, 3)
+            column.put(tactics, 1, 12, self.SIDE_COLS - 2, 2)
+            column.put(players, 1, 15, self.SIDE_COLS - 2, 2)
+        shared_left = self.SIDE_COLS + 1
+        shared_width = 90 - 2 * shared_left
         tournament = option("tournament", self.tournament, enter="Tournament")
         stats = option("match stats", self.stats, enter="Match stats")
-        middle.put(tournament, 29, 8, 32, 2)
-        middle.put(stats, 29, 11, 32, 2)
+        middle.put(tournament, shared_left, 5, shared_width, 2)
+        middle.put(stats, shared_left, 8, shared_width, 2)
         if phase == "full":
             self.play = option("exit", day.exit, enter="Exit")
         else:
             self.play = option(f"▶ play     {NEXT[phase]}", self.press_play,
                                enter="Play")
-        middle.put(self.play, 29, 17, 32, 2)
+        middle.put(self.play, shared_left, 15, shared_width, 3)
         self.shared_options = (tournament, stats, self.play)
         # [confirmed: T156-R1 69-73; T184] Vertical keys follow visible rows. The two
         # country columns are horizontal alternatives, not extra vertical entries.
@@ -137,8 +141,9 @@ class MenuScreen(Screen):
         self.bind((), "country", None, captions=("←", "→"))
         self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        middle.put(self.note, 29, 13, 32, 4)
-        middle.put(boxes[self.away_country], 62, 0, 28, 12)
+        middle.put(self.note, shared_left, 10, shared_width, 5)
+        self.replay_label = middle.text("", "sub", 0, 19, 90)
+        self.replay_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         body.put(middle,0,2,90,20)
         self.main_layout.removeWidget(self.wait_box)
         body.put(self.wait_box,0,22,90,3)
@@ -170,7 +175,7 @@ class MenuScreen(Screen):
             eleven, formation = info["players"][:11], info["formation"]
         from goal2.ui.country_parts import framed
         from goal2.ui.cell_parts import CellTableRow
-        frame, column = framed(f"{names[country]} · {formation}", 28, 11)
+        frame, column = framed(f"{names[country]} · {formation}", self.SIDE_COLS, self.SIDE_ROWS)
         rows = []
         widgets = []
         for word in eleven:
@@ -185,7 +190,8 @@ class MenuScreen(Screen):
                 line.area.move(line.cells[1], 0, 0, 24)
                 line.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             line.setCursor(Qt.CursorShape.ArrowCursor)
-            column.put(line, 1, len(widgets), 26)
+            inset = self.SIDE_COLS - 27 if country == self.away_country else 1
+            column.put(line, inset, len(widgets), 26)
             rows.append(tuple(line.texts()))
             widgets.append(line)
         if bench is not None:
@@ -194,7 +200,7 @@ class MenuScreen(Screen):
         self.lineups[country] = (formation, rows)
         self.lineup_rows[country] = widgets
         self.lineup_headings[country] = frame.rule
-        return frame
+        return frame, column
 
     @staticmethod
     def _lineup_signature(bench):
