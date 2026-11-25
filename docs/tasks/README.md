@@ -480,3 +480,4 @@ operational status.
 - [T170aq](T170aq.md): live player positions at a retained bench (#860).
 - [T170ar](T170ar.md): live own tactics at a retained bench (#863).
 - [T170as](T170as.md): live marking at a retained bench (#867).
+- [T170at](T170at.md): one explicit retained native match day (#869).
