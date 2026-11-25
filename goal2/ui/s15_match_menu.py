@@ -33,6 +33,8 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 
 from goal2.ui import theme
+from goal2.ui.cells import Cells
+from goal2.ui.frame import PanelOutline
 from goal2.ui.pitch import HOME
 from goal2.ui.screen import Screen
 from goal2.ui.kits import for_fixture
@@ -46,10 +48,26 @@ DURING = "These tactics and players are view only."
 WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do you want to watch this match ?"]
 
 
+def _outlined_cells(cols, rows, name, score_column=None):
+    box = Cells(cols, rows, name)
+
+    def edges():
+        right, bottom = box.width() - 1, box.height() - 1
+        lines = [(0, 0, right, 0), (0, bottom, right, bottom), (0, 0, 0, bottom), (right, 0, right, bottom)]
+        if score_column is not None:
+            x = round(box.width() * score_column / cols)
+            y = box.height() // 2
+            lines.extend(((x, 0, x, bottom), (x, y, right, y)))
+        return lines
+
+    box.grid.addWidget(PanelOutline(box, edges))
+    return box
+
+
 class MenuScreen(Screen):
     GRID = True   # [designed: owner, #667; T213]
     escape_text = "select Play / Exit"
-    SIDE_COLS, SIDE_ROWS = 29, 17
+    SIDE_COLS, SIDE_ROWS = 29, 18
 
     def __init__(self, window, day, phase, score=(0, 0)):
         self.escape_text = "resume match" if phase in ("pause", "half", "stop", "extra") else "select Play / Exit"
@@ -66,19 +84,22 @@ class MenuScreen(Screen):
         self.title = f"match menu · {names[self.home_country]} v {names[self.away_country]}"
         self.name_label.setText(self.title)
         # [designed: owner, #667; T213] Score and situation over the two elevens and the existing two-country menu.
-        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.cells import CellPara
         from goal2.ui.frame import FrameRule
         kits = for_fixture(model, fixture)
         body = Cells(90,25,"matchBody")
         self.body_layout.addWidget(body,1)
         head = Cells(90, 2, "matchHead")
-        first = head.text(names[self.home_country], "h1", 0, 0, 16)
-        colour(first, kits.colour(HOME))
-        self.score_label = head.text(f"{score[HOME]}  v  {score[1-HOME]}", "h1", 17, 0, 10)
-        second = head.text(names[self.away_country], "h1", 28, 0, 16)
-        colour(second, kits.colour(1-HOME))
+        # [derived: T156-R1 step 42] Both goals have their own aligned score cells.
+        scoreboard = _outlined_cells(28, 2, "matchScore", score_column=22)
+        for row, side in enumerate((HOME, 1 - HOME)):
+            name = scoreboard.text(names[sides[side]], "matchScoreTeam", 1, row, 20)
+            colour(name, kits.colour(side))
+            goals = scoreboard.text(str(score[side]), "matchScoreValue", 23, row, 4)
+            goals.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        head.put(scoreboard, 0, 0, 28, 2)
         self.situation = CellPara(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}", "sub")
-        head.put(self.situation, 0, 1, 90)
+        head.put(self.situation, 30, 0, 60, 2)
         body.put(head,0,0,90,2)
         middle = Cells(90,20,"matchMenuBody")
         self.lineups = {}
@@ -86,6 +107,7 @@ class MenuScreen(Screen):
         self.lineup_words = {}
         self.lineup_rows = {}
         self.lineup_headings = {}
+        self.formation_labels = {}
 
         def option(text, handler, *, key=None, enter):
             item = self.add_option(text, handler, enter=enter)
@@ -106,14 +128,14 @@ class MenuScreen(Screen):
             mine = country == own
             frame, column = self._lineup(country)
             middle.put(frame, left, 0, self.SIDE_COLS, self.SIDE_ROWS + 1)
-            column.put(FrameRule("view only" if not mine or phase == "full" else ""), 0, 11, self.SIDE_COLS)
+            column.put(FrameRule("view only" if not mine or phase == "full" else ""), 0, 12, self.SIDE_COLS)
             tactics = option(f"{names[country]} team tactics", lambda c=country: self.tactics(c),
                              key=Qt.Key.Key_T if mine else None, enter="Team tactics")
             players = option(f"{names[country]} players", lambda c=country: self.players(c),
                              key=Qt.Key.Key_Space if mine else None, enter="Players")
             self.country_options[country] = (tactics, players)
-            column.put(tactics, 1, 12, self.SIDE_COLS - 2, 2)
-            column.put(players, 1, 15, self.SIDE_COLS - 2, 2)
+            column.put(tactics, 1, 13, self.SIDE_COLS - 2, 2)
+            column.put(players, 1, 16, self.SIDE_COLS - 2, 2)
         shared_left = self.SIDE_COLS + 1
         shared_width = 90 - 2 * shared_left
         tournament = option("tournament", self.tournament, enter="Tournament")
@@ -175,7 +197,12 @@ class MenuScreen(Screen):
             eleven, formation = info["players"][:11], info["formation"]
         from goal2.ui.country_parts import framed
         from goal2.ui.cell_parts import CellTableRow
-        frame, column = framed(f"{names[country]} · {formation}", self.SIDE_COLS, self.SIDE_ROWS)
+        frame, column = framed(names[country], self.SIDE_COLS, self.SIDE_ROWS)
+        formation_box = _outlined_cells(self.SIDE_COLS - 2, 1, "matchFormation")
+        label = formation_box.text(f"formation {formation}", "value", 0, 0, self.SIDE_COLS - 2)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        column.put(formation_box, 1, 0, self.SIDE_COLS - 2)
+        self.formation_labels[country] = label
         rows = []
         widgets = []
         for word in eleven:
@@ -191,7 +218,7 @@ class MenuScreen(Screen):
                 line.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             line.setCursor(Qt.CursorShape.ArrowCursor)
             inset = self.SIDE_COLS - 27 if country == self.away_country else 1
-            column.put(line, inset, len(widgets), 26)
+            column.put(line, inset, len(widgets) + 1, 26)
             rows.append(tuple(line.texts()))
             widgets.append(line)
         if bench is not None:
@@ -230,7 +257,7 @@ class MenuScreen(Screen):
                 rows.append(tuple(row.texts()))
             self.lineup_words[country] = list(bench.eleven)
             self.lineups[country] = (formation,rows)
-            self.lineup_headings[country].setText(f"{self.model.goaldat.country_names[country]} · {formation}".upper())
+            self.formation_labels[country].setText(f"formation {formation}")
             self._accepted_projection = signature
         names = self.model.goaldat.country_names
         time = TIMES[self.phase] if self.phase != "stop" or bench.opportunity_visible else "MATCH STOPPED"
