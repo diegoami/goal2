@@ -7,7 +7,7 @@ def validate_edit(data, answer):
             or answer.get('edit_only') is not True):
         raise ValueError('Changes are unavailable at this stop.')
     if set(answer) == {'edit_only', 'tactics'}:
-        return _validate_tactic(answer['tactics'])
+        return validate_tactic(answer['tactics'])
     _validate_pair(data, answer)
 
 
@@ -24,10 +24,10 @@ def validate_extra_time(data, answer):
     extra_time_half(data)
     if set(answer) != {'edit_only', 'tactics'} or answer['edit_only'] is not True:
         raise ValueError('Send only one extra-time team tactic.')
-    _validate_tactic(answer['tactics'])
+    validate_tactic(answer['tactics'])
 
 
-def _validate_tactic(values):
+def validate_tactic(values):
     if isinstance(values, dict) and len(values) == 1:
         element, value = next(iter(values.items()))
         # The worker receives map keys through JSON.

@@ -293,6 +293,12 @@ driver admit that edit only at the current confirmed half. Acknowledgement
 must return to the same half, minute and score before the next action.
 Player swaps and personal edits use their own supported contexts.
 
+[designed: T170ap/#858] At a native ordinary pause, the managed side can
+open the existing Team Tactics screen with the verified current lineup.
+One tactic uses the paused edit path and refreshes from the new decision.
+A rejected answer refreshes the same stop before allowing retry. The
+substitution request latch, restart and roster edits have separate inputs.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

@@ -196,9 +196,9 @@ class SeasonWorker:
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
                 if header.get('pause_edit') is True:
-                    from goal2.game.pause_edit import validate_request_edit
+                    from goal2.game.pause_edit import validate_pause_edit
                     try:
-                        validate_request_edit(waiting, answer)
+                        validate_pause_edit(waiting, answer)
                     except ValueError as exc:
                         raise SeasonRequestError(str(exc)) from exc
                 if header.get('substitution_edit') is True:
