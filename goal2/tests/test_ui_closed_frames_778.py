@@ -76,10 +76,17 @@ class ClosedFrames(unittest.TestCase):
         button.setStyleSheet('background:#000000;border:none;')
         clicked=[];button.clicked.connect(lambda:clicked.append(True))
         frame.add(button,1);self.shown(frame,320,200)
-        point=button.mapToGlobal(button.rect().center())
-        target=self.app.widgetAt(point)
-        self.assertIs(target,button)
-        QTest.mouseClick(target,Qt.MouseButton.LeftButton,Qt.KeyboardModifier.NoModifier,target.mapFromGlobal(point))
+        # Test the panel's hit routing. Native desktop lookup can return no
+        # widget at a shown button's mapped coordinates on scaled Windows.
+        point = button.mapTo(frame, button.rect().center())
+        self.assertIs(frame.childAt(point), button)
+        frame.outline.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
+        self.assertIs(frame.childAt(point), frame.outline)
+        frame.outline.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        target = frame.childAt(point)
+        self.assertIs(target, button)
+        QTest.mouseClick(target, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier,
+                         target.mapFrom(frame, point))
         self.assertEqual(clicked,[True])
 
     def test_never_shown_layout_places_outline_at_actual_panel_size(self):
