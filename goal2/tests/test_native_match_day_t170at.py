@@ -89,11 +89,11 @@ class Window(unittest.TestCase):
         self.boundaries, self.failures = [], []
         self.state = image.state(engine_tables.load())
 
-    def open_match_day(self, watch):
+    def open_match_day(self, watch, *, show_bulletins=False):
         from goal2.ui.native_match_day import NativeMatchDay
 
         self.day = NativeMatchDay(
-            self.window, self.model, self.state, watch=watch,
+            self.window, self.model, self.state, watch=watch, show_bulletins=show_bulletins,
             on_boundary=lambda day, packet: self.boundaries.append((day.native.pid, packet)),
             on_failure=lambda _, message: self.failures.append(message),
             on_goal=lambda screen, _: screen.release_goal(),
@@ -135,11 +135,11 @@ class Window(unittest.TestCase):
 
         QTest.keyClick(self.window, key)
 
-    def kickoff(self, *, watch=True):
+    def kickoff(self, *, watch=True, show_bulletins=False):
         from PySide6.QtCore import Qt
         from goal2.ui.s16_choose import ChooseScreen
 
-        self.open_match_day(watch)
+        self.open_match_day(watch, show_bulletins=show_bulletins)
         self.until(lambda: self.day.phase == 'prematch')
         pid = self.day.native.pid
         self.key(Qt.Key.Key_Return)
@@ -176,13 +176,15 @@ class Window(unittest.TestCase):
     @requires.need(slow=True)
     def test_explicit_qt_match_day_matches_sdk_and_resumes_on_one_worker(self):
         from PySide6.QtCore import Qt
+        from goal2.game.bulletin_view import native_bulletins
         from goal2.ui.native_half_time import NativeHalfTimeScreen
         from goal2.ui.native_pause import NativePauseScreen
         from goal2.ui.native_review import NativeReviewScreen
         from goal2.ui.s16_choose import ChooseScreen
+        from goal2.ui.s05_bulletin import BulletinScreen
 
         reference = pypy_engine.start(__name__ + ':direct_match_day', self.raw)
-        pid = self.kickoff()
+        pid = self.kickoff(show_bulletins=True)
         pitch = self.day.pitch
         driver = pitch.controller.driver
         original_painted = pitch.pitch.on_drawn
@@ -244,15 +246,27 @@ class Window(unittest.TestCase):
         self.assertEqual(self.boundaries, [])
         self.assertEqual(pitch.enter_hint_text(), 'Resume round')
         self.key(Qt.Key.Key_Return)
-        self.key(Qt.Key.Key_Return)
-        self.until(lambda: self.day.phase == 'finished', step=pitch.tick)
+        self.day.resume()
+        self.until(lambda: self.day.phase == 'bulletin', step=pitch.tick)
+        bulletin = self.window.current()
+        self.assertIsInstance(bulletin, BulletinScreen)
+        self.assertEqual(self.boundaries, [])
+        expected = reference.result(timeout=120)
+        pages = native_bulletins(expected['entry'], expected['observation'])
+        self.assertTrue(pages)
+        self.assertEqual(bulletin.pages, pages)
+        for page in pages:
+            for name, story in page.items():
+                self.assertEqual(bulletin.panels[name][2].text(), story['masthead'])
+                self.assertEqual(bulletin.panels[name][3].text(), '\n'.join(story['lines']))
+            self.key(Qt.Key.Key_Return)
+        self.assertEqual(self.day.phase, 'finished')
         self.assertEqual(len(self.boundaries), 1)
         actual_pid, packet = self.boundaries[0]
         self.assertEqual(actual_pid, pid)
         self.assertFalse(self.day.native.disposed)
         self.assertEqual(self.model.state, self.before)
 
-        expected = reference.result(timeout=120)
         self.assertEqual(digest(driver.events), digest(expected['events'][driver.event_base:]))
         self.assertEqual(digest(driver.frames), expected['frames'])
         self.assertEqual(digest(packet['state']), digest(expected['state']))

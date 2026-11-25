@@ -30,13 +30,15 @@ class NativeMatchDay(QObject):
     """One explicit route action with a single reply consumer at every phase."""
 
     def __init__(self, window, model, state, *, on_boundary, on_failure, on_goal,
-                 on_tournament, on_stats, watch=None):
+                 on_tournament, on_stats, watch=None, show_bulletins=False):
         super().__init__(window)
         if not all(callable(callback) for callback in
                    (on_boundary, on_failure, on_goal, on_tournament, on_stats)):
             raise ValueError('Native match day requires explicit owner callbacks.')
         if watch is not None and type(watch) is not bool:
             raise ValueError('The watch preference must be a boolean or None.')
+        if type(show_bulletins) is not bool:
+            raise ValueError('The bulletin preference must be a boolean.')
         country = model.state.managed_country
         self.window = window
         self.model = model
@@ -46,6 +48,8 @@ class NativeMatchDay(QObject):
         self.on_tournament = on_tournament
         self.on_stats = on_stats
         self.watch = watch
+        self.show_bulletins = show_bulletins
+        self.bulletin = None
         self.preferences = None
         self.entry_observation = None
         self.phase = 'opening'
@@ -155,9 +159,31 @@ class NativeMatchDay(QObject):
         return observations[0]
 
     def deliver_boundary(self):
+        if self.show_bulletins and self.window.current() is not (self.pitch or self.opening):
+            return
         observation = self.take_observation()
-        self.phase = 'finished'
         self.timer.stop()
+        if self.show_bulletins:
+            from goal2.game.bulletin_view import native_bulletins
+            from goal2.ui.s05_bulletin import BulletinScreen
+
+            packets = (self.entry_observation, observation) if self.entry_observation is not None else (observation,)
+            pages = native_bulletins(*(packet['observation'] for packet in packets))
+            if pages:
+                self.phase = 'bulletin'
+                self.bulletin = self.window.push(BulletinScreen(
+                    self.window, pages, lambda: self.finish_bulletin(observation)))
+                return
+        self.finish_boundary(observation)
+
+    def finish_bulletin(self, observation):
+        if self.phase == 'bulletin' and self.window.current() is self.bulletin:
+            self.window.pop()
+            self.bulletin = None
+            self.finish_boundary(observation)
+
+    def finish_boundary(self, observation):
+        self.phase = 'finished'
         self.on_boundary(self, observation)
 
     def fail(self, message):

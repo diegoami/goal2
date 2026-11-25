@@ -6,10 +6,8 @@ bulletins have (goal2/core/views.py `bulletin`, goal2/desktop/bulletin_page.py):
 `{"masthead": str, "lines": [str]}`; an optional `"tag"` labels a page (the screenshot's stand-ins say so).
 [confirmed: F032/E038, views.BULLETIN_PANELS; T156-R1 steps 11–12, 200, 317]
 
-[designed: owner, 2026-11-03, #509] The Python route has no bulletins yet: today's come from the original's memory on
-the Core route, and the news text is Track B's port (U2). Until then a new career goes from S04 straight home
-(`Window.open_career` shows this screen only for a career that supplies pages), and this screen is visited with
-stand-in pages only.
+[designed: owner, #509; T170au] The page consumes supplied stories. The native match-day entry can supply
+verified news cells after a round. `Window.open_career` shows the screen whenever its caller supplies pages.
 """
 from __future__ import annotations
 
