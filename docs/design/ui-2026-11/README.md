@@ -333,6 +333,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
   formations and elevens; the actions, with *play* highlighted first as in the original (step 42): each side's
   team tactics and players, tournament, match stats, and
   **play** (before and during) or **exit** (after the final whistle); automatic action replay ON/OFF.
+- [derived: T156-R1 step 42; designed: #862] Each team's formation, lineup and actions share a frame. The opponent's
+  actions are marked view-only. Shared actions stay between the teams, with the replay state below them.
 - **Actions**: **arrows** choose, **Enter** open; **Ins** action replay on/off. *play* names what follows:
   "choose your captain, then kick-off" before the match, "second half" at half time. [designed: #523, the owner
   did not know that kick-off waits for a captain]
