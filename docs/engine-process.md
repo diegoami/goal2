@@ -305,6 +305,12 @@ position from the current verified record. Both submit one numeric live
 target. The refreshed roster keeps the same player selected even if the
 original reorders it. Play remains separate from confirming the edit.
 
+[designed: T170ar/#863] T opens the existing own-tactics editor at a legal
+native bench. Enter steps one line through personal off, personal on and
+the team default. The retained decision confirms each value before the card
+updates. Half-time's team-tactic selection uses Y, and Play remains on
+the bench. Live marking has its own domain.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

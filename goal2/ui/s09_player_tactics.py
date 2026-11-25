@@ -38,7 +38,7 @@ class PlayerTacticsScreen(Screen):
     GRID = True   # [designed: owner, #667; T212b]
     escape_text = "back to the card"
 
-    def __init__(self, window, model, word, bench=None):
+    def __init__(self, window, model, word, bench=None, *, allow_marking=True):
         during = bench is not None and not getattr(bench, 'held_prematch', False)
         self.title = f"{'players' if during else 'select squad'} · {full_name(model, word)} · tactics"
         super().__init__(window)
@@ -48,6 +48,7 @@ class PlayerTacticsScreen(Screen):
         if getattr(bench, 'held_prematch', False):
             # [confirmed: archaeology T137/87d92501, 1771:49B8] Available outfield bench too.
             self.marks = bench.can_mark(word)
+        self.marks = self.marks and allow_marking
         self.line = 0
         self._build()
         self.bind((Qt.Key.Key_Up,), "", lambda: self.choose(self.line - 1), captions=("",), shown=False)
