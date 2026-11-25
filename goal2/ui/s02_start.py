@@ -99,11 +99,12 @@ class StartScreen(Screen):
         self.new_item = CellKeyItem("New game", "N", self.press_n, 42, primary=True)
         self.load_item = CellKeyItem("Load selected save", "Y", self.press_y, 42)
         self.empty_load = menu.text("No saved careers", "sub", 47, 0, 42)
-        self.friendly_item = CellKeyItem("Standalone friendly", "F", self.press_f, 42)
+        self.friendly_item = CellKeyItem("Standalone friendly", "F", self.press_f, 24)
         self.quit_item = CellKeyItem("Quit", "Esc", self.escape, 42)
         menu.put(self.new_item, 1, 0, 42)
         menu.put(self.load_item, 47, 0, 42)
-        menu.put(self.friendly_item, 1, 1, 42)
+        menu.put(self.friendly_item, 1, 1, 24)
+        self.friendly_tag = menu.text("GOAL2 ADDITION", "tagNew", 26, 1, 19)
         menu.put(self.quit_item, 47, 1, 42)
         body.put(self.menu_box, 0, 22, 90, 3)
         self.list_box,inner=framed("saved games",90,11)
@@ -146,6 +147,7 @@ class StartScreen(Screen):
         self.load_item.setVisible(has or failed)
         self.empty_load.setVisible(not has and not failed)
         self.friendly_item.setVisible(not failed)
+        self.friendly_tag.setVisible(not failed)
         self.quit_item.setVisible(not failed)
         self.y.shown = has or failed
         self.f.shown = not failed
