@@ -157,9 +157,11 @@ class NativeReviewScreen(Screen):
             return
         player = player_card(self.state, word, self.data)
         self.player.setText(player['full_name'])
+        self.details.setText('\n'.join(self.player_details(player)))
+
+    def player_details(self, player):
         performance = str(player['performance_bar']) + '/9' if player['performance'] is not None else 'Unavailable'
-        lines = [player['position'], player['readiness'].capitalize(), f'Performance {performance}']
-        self.details.setText('\n'.join(lines))
+        return [player['position'], player['readiness'].capitalize(), f'Performance {performance}']
 
     def select_player(self, row):
         if self.available() and 0 <= row < len(self.players):

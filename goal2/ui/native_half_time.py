@@ -14,6 +14,7 @@ class NativeEditableStopScreen(NativeReviewScreen):
     def __init__(self, pitch, waiting):
         self.controls = []
         self.outgoing = None
+        self._position_player = None
         self._score = tuple(waiting['event']['score'])
         self._edit_cursor = pitch.controller.driver.shown_count
         super().__init__(pitch, waiting['decision'])
@@ -21,6 +22,11 @@ class NativeEditableStopScreen(NativeReviewScreen):
         if self.uses_substitutions:
             self.budget = self.body.text('', 'sub', 0, 4, 54)
             self.substitute = self.add_action('Substitute', 0, 15, 23, Qt.Key.Key_X, self.substitution)
+            self.body.move(self.status, 0, 21, 54, 3)
+            self.next_position = self.add_action('Next position', 0, 19, 23, Qt.Key.Key_R,
+                                                 lambda: self.change_position(club=False))
+            self.club_position = self.add_action('Club position', 25, 19, 23, Qt.Key.Key_C,
+                                                 lambda: self.change_position(club=True))
         self.set_navigation(False)
 
     def add_action(self, label, col, row, width, key, action):
@@ -41,8 +47,21 @@ class NativeEditableStopScreen(NativeReviewScreen):
             button.setEnabled(False)
 
     def show_team(self):
+        if self._position_player in self.snapshot.squad:
+            self.row = self.snapshot.squad.index(self._position_player)
         super().show_team()
         self.refresh_controls()
+
+    def player_details(self, player):
+        details = super().player_details(player)
+        if self.uses_substitutions:
+            details.append(f"Club position: {player['club_position']}")
+        return details
+
+    def select_player(self, row):
+        super().select_player(row)
+        if self.uses_substitutions and self.available():
+            self.refresh_controls()
 
     def refresh_controls(self):
         if not self.uses_substitutions:
@@ -53,6 +72,21 @@ class NativeEditableStopScreen(NativeReviewScreen):
         legal = self.snapshot.sides[self.side] == self.snapshot.managed_country and data['substitutions_now'] is True
         self.substitute.setEnabled(legal and remaining > 0)
         self.substitute.setText('Choose outgoing' if self.outgoing is None else 'Make substitution')
+        word = self.players[self.row]
+        record = self.snapshot.record(word)
+        self.next_position.setEnabled(legal and word != 0 and record[6] < 14)
+        self.club_position.setEnabled(legal and word != 0 and record[7] < 14)
+
+    def change_position(self, *, club):
+        control = self.club_position if club else self.next_position
+        if not self.available() or not control.isEnabled():
+            return
+        word = self.players[self.row]
+        record = self.snapshot.record(word)
+        target = record[7] if club else (record[6] + 1) % 14
+        self.apply_edit({'positions': {word: target}})
+        if self.phase == 'editing':
+            self._position_player = word
 
     def switch_team(self):
         if self.available():
@@ -95,6 +129,7 @@ class NativeEditableStopScreen(NativeReviewScreen):
 
     def show_view(self, view):
         super().show_view(view)
+        self._position_player = None
         events = self.driver.events_since(self._edit_cursor)
         refusal = next((event['data']['reason'] for event in reversed(events) if event['kind'] == 'refused'), None)
         refusal = refusal or view.snapshot.data.get('refused')
