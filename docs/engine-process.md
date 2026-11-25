@@ -273,6 +273,13 @@ page displays the latch and budget from the verified fresh view. Play is a
 separate answer. The timed opportunity and any later player swap have their
 own decisions.
 
+[designed: T170am/#848] Set `opportunity_controls=True` on the native pitch
+to show the existing timed substitution notice at the verified stop. Enter
+and Esc accept, and expiry sends the no-key response. One acknowledgement
+clears the notice before the pitch draws or requests another batch. The
+guest's next decision determines whether a legal substitution can be made.
+A pure refusal allows an explicit retry with a fresh stopped read.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

@@ -103,7 +103,7 @@ class StopBox(QFrame):
         self.show()
         self.raise_()
 
-    def show_opportunity(self, data, handler):
+    def show_opportunity(self, data, handler, *, detail=None):
         """[confirmed: original7FCF/CC2E; #695]400/1000 polls,10 nominal ms.
         [designed: owner #636] Large lower-pitch flashing heading; UI Esc accepts.
         Ordinary source headline0x70 is black on gray; keeper source0x0B is
@@ -112,14 +112,16 @@ class StopBox(QFrame):
         """
         # Full packets are validated before the view. This method also supports
         # the focused widget's minimal timing input without constructing a stop.
+        from goal2.game.native_choice import opportunity_duration
+        duration = opportunity_duration(data)
         keeper = data['keeper_unavailable']
-        polls, ms = data['timeout_polls'], data['poll_ms']
-        if type(keeper) is not bool or type(polls) is not int or type(ms) is not int or polls != (1000 if keeper else 400) or ms != 10:
-            raise ValueError('invalid original opportunity timing')
-        self.show_stop(NOTICE_SUBSTITUTION, NO_GOALKEEPER if keeper else SUBSTITUTION_OPPORTUNITY, '', handler)
+        self.show_stop(NOTICE_SUBSTITUTION, NO_GOALKEEPER if keeper else SUBSTITUTION_OPPORTUNITY, detail or '', handler)
         self.timed = True
         self._opportunity_keeper = keeper
-        self.tag.hide();self.detail.hide()
+        self.tag.hide()
+        self.detail.setVisible(detail is not None)
+        if detail is not None:
+            colour(self.detail, '#55ffff' if keeper else '#000000')
         pitch = getattr(self.parentWidget(), 'pitch', self.parentWidget())
         across = round(pitch.width() / cells.cell_w(self)) - 2
         self.cols = max(TIMED_COLS[0], min(TIMED_COLS[1], across))
@@ -132,7 +134,7 @@ class StopBox(QFrame):
         self._opportunity_colours()
         self.place();self.raise_()
         self.blink_timer.start()
-        self.opportunity_timer.start(polls * ms)
+        self.opportunity_timer.start(duration)
 
     def _opportunity_colours(self):
         foreground = ('#55ffff' if self._opportunity_keeper else '#000000') if self._opportunity_lit else ('#000000' if self._opportunity_keeper else '#aaaaaa')

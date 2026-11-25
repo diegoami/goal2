@@ -87,6 +87,11 @@ class StoppedMatchSnapshot:
             for name,offset in (('substitutions_now',S.SUBS_ALLOWED),('request_substitution',S.SUBS_REQUEST)):
                 if name in current and (type(current[name]) is not bool or current[name]!=bool(image.rd(offset,1))):
                     raise ValueError('stopped decision differs from native substitution flags')
+            if current['context'] == 'substitution_opportunity':
+                from goal2.game.native_choice import opportunity_duration
+                opportunity_duration(current)
+                if type(current.get('substitutions_now')) is not bool:
+                    raise ValueError('stopped opportunity lacks native substitution status')
             if current['context'] in ('set_piece','shootout_order'):
                 available=[w for w in squad[:11] if w and 0<players[w][14]<128 and not players[w][16]&0xA4]
                 if canonical_hash(current.get('available'))!=canonical_hash(available):

@@ -725,12 +725,8 @@ class PitchScreen(Screen):
             # A deadline is no key. UI Esc is the owner's accepting-key alias;
             # literal original Esc remains the upstream 'dismiss' operation.
             self.resume({"opportunity": "timeout" if key is None else "accept"})
-        self.stop_box.show_opportunity(decision.data, respond)
         from goal2.ui.s18_stop import substitution_text
-        self.stop_box.detail.setText(substitution_text(self.model, decision))
-        colour(self.stop_box.detail, "#55ffff" if decision.data["keeper_unavailable"] else "#000000")
-        self.stop_box.detail.show()
-        self.stop_box.place()
+        self.stop_box.show_opportunity(decision.data, respond, detail=substitution_text(self.model, decision))
         self.set_enter("Open the bench", lambda: self.answer_stop_box(Qt.Key.Key_Return))
         self.refresh()
 
