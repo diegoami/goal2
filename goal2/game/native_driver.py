@@ -177,6 +177,10 @@ class NativeMatchDriver:
                         or any(event['minute'] != origin['event']['minute']
                                or event['score'] != origin['event']['score'] for event in events)):
                     raise ValueError('native edit did not return to the same stop')
+                if origin['event']['data']['context'] == 'extra_time':
+                    from goal2.game.half_time_edit import extra_time_half
+                    if extra_time_half(events[-1]['data']) != origin['event']['data']['half']:
+                        raise ValueError('native extra-time edit returned to a different half')
                 self._stopped_answer = None
             self._batch(value,self._limit)
         elif action=='completed_preview':
@@ -288,7 +292,7 @@ class NativeMatchDriver:
         self._pause_wanted=True;self.pause_requests+=1;return True
 
     def answer(self,values,*,half_time_edit=False,choice_answer=False,pause_edit=False,
-               substitution_edit=False):
+               substitution_edit=False, extra_time_edit=False):
         self._owner()
         if self.status!='decision':raise ValueError('native decision is not ready for an answer')
         if not isinstance(values,dict) or set(values)-ANSWER_FIELDS or 'captain' in values:
@@ -302,6 +306,8 @@ class NativeMatchDriver:
             options['pause_edit'] = True
         if substitution_edit:
             options['substitution_edit'] = True
+        if extra_time_edit:
+            options['extra_time_edit'] = True
         self._send('answer',decision=self._decision['decision'],answer=values,**options)
 
     def resume(self):
@@ -332,6 +338,11 @@ class NativeMatchDriver:
         """[designed: T170an] One legal pair or explicit Play at a verified stop."""
         from goal2.game.half_time_edit import validate_substitution
         self._answer_verified_stop(decision, values, 'substitution', 'substitution_edit', validate_substitution)
+
+    def answer_extra_time(self, decision, values):
+        """[designed: T170ao] One tactic or explicit Play at a verified extra-time stop."""
+        from goal2.game.half_time_edit import validate_extra_time
+        self._answer_verified_stop(decision, values, 'extra_time', 'extra_time_edit', validate_extra_time)
 
     def _answer_verified_stop(self, decision, values, context, flag, validate):
         self._owner()

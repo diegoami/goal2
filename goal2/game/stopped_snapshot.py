@@ -92,6 +92,9 @@ class StoppedMatchSnapshot:
                 opportunity_duration(current)
                 if type(current.get('substitutions_now')) is not bool:
                     raise ValueError('stopped opportunity lacks native substitution status')
+            if current['context'] == 'extra_time':
+                from goal2.game.half_time_edit import extra_time_half
+                extra_time_half(current)
             if current['context'] in ('set_piece','shootout_order'):
                 available=[w for w in squad[:11] if w and 0<players[w][14]<128 and not players[w][16]&0xA4]
                 if canonical_hash(current.get('available'))!=canonical_hash(available):

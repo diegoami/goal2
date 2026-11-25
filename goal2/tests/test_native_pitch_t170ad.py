@@ -47,6 +47,7 @@ class WindowControls(unittest.TestCase):
                 pause_controls=getattr(self, 'pause_controls', False),
                 **({'opportunity_controls': True} if getattr(self, 'opportunity_controls', False) else {}),
                 **({'substitution_controls': True} if getattr(self, 'substitution_controls', False) else {}),
+                **({'extra_time_controls': True} if getattr(self, 'extra_time_controls', False) else {}),
                 **({'choice_controls': True} if getattr(self, 'choice_controls', False) else {}))
         self.win.push(self.screen);self.screen.timer.stop()
         self.addCleanup(self.dispose)
