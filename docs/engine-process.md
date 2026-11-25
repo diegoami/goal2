@@ -299,6 +299,12 @@ One tactic uses the paused edit path and refreshes from the new decision.
 A rejected answer refreshes the same stop before allowing retry. The
 substitution request latch, restart and roster edits have separate inputs.
 
+[designed: T170aq/#860] At a legal retained half-time or substitution bench,
+R advances the selected managed player's position and C uses the club
+position from the current verified record. Both submit one numeric live
+target. The refreshed roster keeps the same player selected even if the
+original reorders it. Play remains separate from confirming the edit.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,

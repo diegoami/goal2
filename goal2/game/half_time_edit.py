@@ -1,4 +1,4 @@
-"""[designed: T170aj/T170an] Guard single edits at a legal stopped bench."""
+"""[designed: T170aj/T170an/T170aq] Guard single edits at a legal stopped bench."""
 
 
 def validate_edit(data, answer):
@@ -8,7 +8,7 @@ def validate_edit(data, answer):
         raise ValueError('Changes are unavailable at this stop.')
     if set(answer) == {'edit_only', 'tactics'}:
         return validate_tactic(answer['tactics'])
-    _validate_pair(data, answer)
+    _validate_bench_edit(data, answer)
 
 
 def extra_time_half(data):
@@ -39,9 +39,24 @@ def validate_tactic(values):
 
 
 def validate_substitution(data, answer):
-    """[confirmed: Match.answer/#695] One legal in-match pair without Play."""
+    """[confirmed: Match.answer/#695] One legal in-match edit without Play."""
     if data.get('context') != 'substitution' or data.get('substitutions_now') is not True:
         raise ValueError('A substitution is unavailable at this stop.')
+    _validate_bench_edit(data, answer)
+
+
+def _validate_bench_edit(data, answer):
+    if set(answer) == {'edit_only', 'positions'} and answer['edit_only'] is True:
+        positions = answer['positions']
+        if isinstance(positions, dict) and len(positions) == 1:
+            word, position = next(iter(positions.items()))
+            # [confirmed: Match.answer] Live position goals are numeric.
+            if type(word) is str and 1 <= len(word) <= 4 and word[0] != '0' and word.isascii() and word.isdecimal():
+                word = int(word)
+            if (type(word) is int and word > 0 and word in data['eleven'] + data['bench']
+                    and type(position) is int and 0 <= position <= 13):
+                return
+        raise ValueError('Choose one current managed player and a position from 0 to 13.')
     _validate_pair(data, answer)
 
 

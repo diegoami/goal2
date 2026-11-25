@@ -45,6 +45,7 @@ class WindowControls(unittest.TestCase):
                 on_complete=lambda s:self.completions.append(s),
                 on_failure=lambda s,e:self.failures.append(e),
                 pause_controls=getattr(self, 'pause_controls', False),
+                **({'half_time_controls': True} if getattr(self, 'half_time_controls', False) else {}),
                 **({'opportunity_controls': True} if getattr(self, 'opportunity_controls', False) else {}),
                 **({'substitution_controls': True} if getattr(self, 'substitution_controls', False) else {}),
                 **({'extra_time_controls': True} if getattr(self, 'extra_time_controls', False) else {}),
