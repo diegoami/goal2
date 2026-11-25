@@ -88,17 +88,16 @@ class MenuScreen(Screen):
         boxes = {c: self._lineup(c) for c in (self.home_country, self.away_country)}
         middle.put(boxes[self.home_country], 0, 0, 28, 12)
 
-        def option(text, handler, *, key=None, enter, wrap=False):
+        def option(text, handler, *, key=None, enter):
             item = self.add_option(text, handler, enter=enter)
             # The key bar already labels T and Space. Keep the boxes identical on both sides.
             if key is not None:
                 self.bind((key,), enter.lower(), lambda: self.activate(item))
-            if wrap:
-                old = item.text_label
-                item.text_label = CellPara(text, "optionText")
-                item.layout().replaceWidget(old, item.text_label)
-                old.setParent(None)
-                old.deleteLater()
+            old = item.text_label
+            item.text_label = CellPara(text, "optionText")
+            item.layout().replaceWidget(old, item.text_label)
+            old.setParent(None)
+            old.deleteLater()
             item.text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             return item
 
@@ -107,9 +106,9 @@ class MenuScreen(Screen):
             mine = country == own
             left = 29 + 17 * column
             tactics = option(f"{names[country]} team tactics", lambda c=country: self.tactics(c),
-                             key=Qt.Key.Key_T if mine else None, enter="Team tactics", wrap=True)
+                             key=Qt.Key.Key_T if mine else None, enter="Team tactics")
             players = option(f"{names[country]} players", lambda c=country: self.players(c),
-                             key=Qt.Key.Key_Space if mine else None, enter="Players", wrap=True)
+                             key=Qt.Key.Key_Space if mine else None, enter="Players")
             self.country_options[country] = (tactics, players)
             middle.put(tactics, left, 0, 15, 3)
             middle.put(players, left, 4, 15, 3)
@@ -121,7 +120,7 @@ class MenuScreen(Screen):
             self.play = option("exit", day.exit, enter="Exit")
         else:
             self.play = option(f"▶ play     {NEXT[phase]}", self.press_play,
-                               enter="Play", wrap=phase == "before")
+                               enter="Play")
         middle.put(self.play, 29, 17, 32, 2)
         self.shared_options = (tournament, stats, self.play)
         # [confirmed: T156-R1 69-73; T184] Vertical keys follow visible rows. The two
