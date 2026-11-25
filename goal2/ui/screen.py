@@ -146,8 +146,13 @@ class GridOption(Option):
         super().paintEvent(event)
         if self.rows > 1 and not self.property("on"):
             painter = QPainter(self)
-            painter.setPen(QColor(theme.FRAME))
-            painter.drawRect(self.rect().adjusted(0, 0, -1, -1))
+            colour = QColor(theme.FRAME)
+            # [designed: #778] Draw inside the clip at fractional display scales.
+            width, height = self.width(), self.height()
+            painter.fillRect(0, 0, width, 1, colour)
+            painter.fillRect(0, height - 1, width, 1, colour)
+            painter.fillRect(0, 0, 1, height, colour)
+            painter.fillRect(width - 1, 0, 1, height, colour)
             painter.end()
 
 
