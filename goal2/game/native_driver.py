@@ -287,7 +287,8 @@ class NativeMatchDriver:
                 or self._pause_wanted or self._pause_latched or self._expected=='pause'):return False
         self._pause_wanted=True;self.pause_requests+=1;return True
 
-    def answer(self,values,*,half_time_edit=False,choice_answer=False,pause_edit=False):
+    def answer(self,values,*,half_time_edit=False,choice_answer=False,pause_edit=False,
+               substitution_edit=False):
         self._owner()
         if self.status!='decision':raise ValueError('native decision is not ready for an answer')
         if not isinstance(values,dict) or set(values)-ANSWER_FIELDS or 'captain' in values:
@@ -299,6 +300,8 @@ class NativeMatchDriver:
             options['choice_answer'] = True
         if pause_edit:
             options['pause_edit'] = True
+        if substitution_edit:
+            options['substitution_edit'] = True
         self._send('answer',decision=self._decision['decision'],answer=values,**options)
 
     def resume(self):
@@ -322,16 +325,24 @@ class NativeMatchDriver:
 
     def answer_pause(self, decision, values):
         """[designed: T170al] One latch edit or explicit Play at a verified pause."""
+        from goal2.game.pause_edit import validate_request_edit
+        self._answer_verified_stop(decision, values, 'pause', 'pause_edit', validate_request_edit)
+
+    def answer_substitution(self, decision, values):
+        """[designed: T170an] One legal pair or explicit Play at a verified stop."""
+        from goal2.game.half_time_edit import validate_substitution
+        self._answer_verified_stop(decision, values, 'substitution', 'substitution_edit', validate_substitution)
+
+    def _answer_verified_stop(self, decision, values, context, flag, validate):
         self._owner()
         waiting = self.waiting
         view = self.stopped_view
         if (view is None or type(decision) is not int or view.snapshot.decision != decision
-                or view.snapshot.data.get('context') != 'pause'):
-            raise ValueError('pause answer needs a verified current decision')
+                or view.snapshot.data.get('context') != context):
+            raise ValueError(f'{context} answer needs a verified current decision')
         if values:
-            from goal2.game.pause_edit import validate_request_edit
-            validate_request_edit(view.snapshot.data, values)
-        self.answer(values, pause_edit=bool(values))
+            validate(view.snapshot.data, values)
+        self.answer(values, **{flag: bool(values)})
         if self.pending:
             self._stopped_answer = dict(waiting, edit=bool(values))
 

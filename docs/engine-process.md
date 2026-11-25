@@ -280,6 +280,12 @@ clears the notice before the pitch draws or requests another batch. The
 guest's next decision determines whether a legal substitution can be made.
 A pure refusal allows an explicit retry with a fresh stopped read.
 
+[designed: T170an/#852] Set `substitution_controls=True` on the native pitch
+to use the retained bench at an actual substitution decision. The same
+verified roster and budget controls as half-time take one legal pair. A
+fresh decision supplies the confirmed roster and budget before another
+edit. Play is separate from the swap and from the earlier timed notice.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,
