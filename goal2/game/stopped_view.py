@@ -70,6 +70,10 @@ class NativeMatchView:
         if not word or word not in self.squad:raise ValueError('player has no current squad marking slot')
         return self.marks[self.squad.index(word)]
 
+    def marking_targets(self, word):
+        from goal2.game.live_marking import live_marking_targets
+        return live_marking_targets(word, self.eleven, self.opponents, self.players, self._setup)
+
     def display_state(self,identities=None):
         """Detached full current records/memory; no old campaign/roster is copied."""
         state=GameState(list(self.players),list(self.countries),self.managed_country,list(self.squad),

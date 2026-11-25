@@ -1,14 +1,14 @@
 """[designed: T170aj/T170an/T170aq] Guard single edits at a legal stopped bench."""
 
 
-def validate_edit(data, answer):
+def validate_edit(data, answer, *, mark_targets=None):
     """Check the public decision domain before the SDK consumes the answer."""
     if (data.get('context') != 'half_time' or data.get('substitutions_now') is not True
             or answer.get('edit_only') is not True):
         raise ValueError('Changes are unavailable at this stop.')
     if set(answer) == {'edit_only', 'tactics'}:
         return validate_tactic(answer['tactics'])
-    _validate_bench_edit(data, answer)
+    _validate_bench_edit(data, answer, mark_targets)
 
 
 def extra_time_half(data):
@@ -38,14 +38,14 @@ def validate_tactic(values):
     raise ValueError('Choose one team tactic.')
 
 
-def validate_substitution(data, answer):
+def validate_substitution(data, answer, *, mark_targets=None):
     """[confirmed: Match.answer/#695] One legal in-match edit without Play."""
     if data.get('context') != 'substitution' or data.get('substitutions_now') is not True:
         raise ValueError('A substitution is unavailable at this stop.')
-    _validate_bench_edit(data, answer)
+    _validate_bench_edit(data, answer, mark_targets)
 
 
-def _validate_bench_edit(data, answer):
+def _validate_bench_edit(data, answer, mark_targets):
     if set(answer) == {'edit_only', 'positions'} and answer['edit_only'] is True:
         positions = answer['positions']
         if isinstance(positions, dict) and len(positions) == 1:
@@ -65,13 +65,26 @@ def _validate_bench_edit(data, answer):
                     if value is None or type(value) is bool:
                         return
         raise ValueError('Choose one current managed player and one own tactic.')
+    if set(answer) == {'edit_only', 'marking'} and answer['edit_only'] is True:
+        marking = answer['marking']
+        if mark_targets is not None and isinstance(marking, dict) and len(marking) == 1:
+            word, target = next(iter(marking.items()))
+            word = _player_word(word)
+            if word in data['eleven'] and word > 0 and type(target) is int and target in mark_targets(word):
+                return
+        raise ValueError('Choose an eligible starter and a current marking target.')
     _validate_pair(data, answer)
 
 
-def _current_player(data, word):
+def _player_word(word):
     if type(word) is str and 1 <= len(word) <= 4 and word[0] != '0' and word.isascii() and word.isdecimal():
-        word = int(word)
-    return type(word) is int and word > 0 and word in data['eleven'] + data['bench']
+        return int(word)
+    return word if type(word) is int else 0
+
+
+def _current_player(data, word):
+    word = _player_word(word)
+    return word > 0 and word in data['eleven'] + data['bench']
 
 
 def _validate_pair(data, answer):
