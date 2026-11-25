@@ -14,7 +14,7 @@ The saves live in the data root's `saves` folder (`data_setup.Paths.saves`).
 **F**, a standalone friendly between any two countries, outside a career, is a GOAL2 ADDITION the original lacks
 [designed: owner, §6 item 18 (docs/design/ui-2026-11, 2026-11-03); T177, #557]: today's *New standalone friendly*
 (goal2/ui/friendly.py). The original's title takes only Y and N [confirmed: T156-R1 steps 0, 242–244; E031 C11–C12],
-so F changes no key's meaning. It is the menu's last item, under the addition's tag; the friendly returns here with
+so F changes no key's meaning. It remains a secondary action; the friendly returns here with
 its result on this screen, and nothing is saved.
 """
 from __future__ import annotations
@@ -40,8 +40,6 @@ def year_stage(model) -> str:
 
 class StartScreen(Screen):
     GRID = True   # [designed: owner, #667; T214]
-    title = "title"
-    pre_game = True
     escape_text = "quit"
 
     def __init__(self, window):
@@ -58,45 +56,57 @@ class StartScreen(Screen):
         self.bind((Qt.Key.Key_Down,), "", lambda: self.move(1), shown=False)
         self.choose_binding = self.bind((), "choose save", None, captions=("↑", "↓"))
         # Esc last on the bar, as the mockup lists it.
-        esc = next(b for b in self.bindings if Qt.Key.Key_Escape in b.keys)
-        self.bindings.remove(esc)
-        self.bindings.append(esc)
+        self.esc = next(b for b in self.bindings if Qt.Key.Key_Escape in b.keys)
+        self.bindings.remove(self.esc)
+        self.bindings.append(self.esc)
         self._refresh_bar()
         self._build()
         self.read()
 
     # The screen.
     def _build(self):
-        """[designed: owner, #667; T214] Continue and the direct menu over five two-row saves; all metadata is retained."""
-        from goal2.ui.cells import Cells,CellPara
-        from goal2.ui.cell_parts import CellKeyItem,CellTableRow
+        """[designed: #862; confirmed: T156-R1 step 0] Keep the title's choice near the foot."""
+        from goal2.ui.cells import Cells, CellPara
+        from goal2.ui.cell_parts import CellKeyItem, CellTableRow
         from goal2.ui.country_parts import framed
+        from goal2.ui.frame import PanelOutline
         from goal2.ui import theme
-        body=Cells(90,25,"startBody")
-        self.body_layout.addWidget(body,1)
-        body.text("GOAL2","titleBrand",0,0,8)
-        body.text("the 1993 international management game · version 2","sub",10,0,80)
-        self.continue_box,inner=framed("continue",60,6)
-        self.continue_item=CellKeyItem("","Enter",self.press_enter,60,rows=2,primary=True)
+        body = self.area = Cells(90, 25, "startBody")
+        self.body_layout.addWidget(body, 1)
+        banner = self.banner = Cells(90, 1, "startBanner")
+        subtitle = banner.text("International football management", "titleBrand", 0, 0, 90)
+        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        def rules():
+            right, bottom = banner.width() - 1, banner.height() - 1
+            return ((0, 0, right, 0), (0, bottom, right, bottom))
+
+        banner.grid.addWidget(PanelOutline(banner, rules))
+        body.put(banner, 0, 0, 90)
+        self.continue_box, inner = framed("continue", 90, 6)
+        self.continue_item = CellKeyItem("", "Enter", self.press_enter, 90, rows=2, primary=True)
         self.continue_text=self.continue_item.text_label
-        inner.put(self.continue_item,0,0,60,2)
+        inner.put(self.continue_item, 0, 0, 90, 2)
         self.facts={}
         for name,row,rows in (("manager",2,1),("next",3,1),("saved",4,2)):
             inner.text(name,"cardLabel",0,row,7)
             value=CellPara("","value")
             value.setTextFormat(Qt.TextFormat.PlainText)
-            inner.put(value,8,row,52,rows)
+            inner.put(value, 8, row, 82, rows)
             self.facts[name]=value
-        body.put(self.continue_box,0,1,60,7)
-        self.menu_box,menu=framed("load a saved game?",29,6)
-        self.load_item=CellKeyItem("Load another save","Y",self.press_y,29)
-        self.new_item=CellKeyItem("New game","N",self.press_n,29)
-        self.quit_item=CellKeyItem("Quit","Esc",self.escape,29)
-        for row,item in enumerate((self.load_item,self.new_item,self.quit_item)):menu.put(item,0,row,29)
-        menu.text("GOAL2 ADDITION","tagNew",0,3,29)
-        self.friendly_item=CellKeyItem("Standalone friendly","F",self.press_f,29)
-        menu.put(self.friendly_item,0,4,29)
-        body.put(self.menu_box,61,1,29,7)
+        body.put(self.continue_box, 0, 1, 90, 7)
+        self.menu_box, menu = framed("load a saved game?", 90, 2)
+        self.new_item = CellKeyItem("New game", "N", self.press_n, 42, primary=True)
+        self.load_item = CellKeyItem("Load selected save", "Y", self.press_y, 42)
+        self.empty_load = menu.text("No saved careers", "sub", 47, 0, 42)
+        self.friendly_item = CellKeyItem("Standalone friendly", "F", self.press_f, 24)
+        self.quit_item = CellKeyItem("Quit", "Esc", self.escape, 42)
+        menu.put(self.new_item, 1, 0, 42)
+        menu.put(self.load_item, 47, 0, 42)
+        menu.put(self.friendly_item, 1, 1, 24)
+        self.friendly_tag = menu.text("GOAL2 ADDITION", "tagNew", 26, 1, 19)
+        menu.put(self.quit_item, 47, 1, 42)
+        body.put(self.menu_box, 0, 22, 90, 3)
         self.list_box,inner=framed("saved games",90,11)
         widths=tuple(width for _,width in COLUMNS)
         heads=CellTableRow(-1,widths)
@@ -112,9 +122,9 @@ class StartScreen(Screen):
         body.put(self.list_box,0,8,90,12)
         self.message=CellPara("","sub")
         self.message.hide()
-        body.put(self.message,0,20,90,5)
+        body.put(self.message, 0, 20, 90, 2)
         self.problem=CellPara("","error")
-        body.put(self.problem,0,20,90,5)
+        body.put(self.problem, 0, 16, 90, 6)
 
     def read(self):
         """Read every save again, newest first, and show them."""
@@ -130,11 +140,24 @@ class StartScreen(Screen):
     def _show(self):
         has = bool(self.entries)
         newest = self.newest()
-        self.continue_box.setVisible(newest is not None)
-        self.list_box.setVisible(has)
-        self.load_item.setVisible(has)
-        self.y.shown = has
-        self.choose_binding.shown = has and len(self.entries) > 1
+        failed = self.failed is not None
+        self.area.move(self.banner, 0, 0 if has else 10, 90)
+        self.continue_box.setVisible(newest is not None and not failed)
+        self.list_box.setVisible(has and not failed)
+        self.load_item.setVisible(has or failed)
+        self.empty_load.setVisible(not has and not failed)
+        self.friendly_item.setVisible(not failed)
+        self.friendly_tag.setVisible(not failed)
+        self.quit_item.setVisible(not failed)
+        self.y.shown = has or failed
+        self.f.shown = not failed
+        self.esc.text = "back" if failed else "quit"
+        self.choose_binding.shown = len(self.entries) > 1 and not failed
+        self.menu_box.set_label("try again?" if failed else "load a saved game?")
+        self.new_item.text_label.setText("Back to saves" if failed else "New game")
+        self.load_item.text_label.setText("Try again" if failed else "Load selected save")
+        self.new_item.setProperty("on", newest is None and not failed)
+        refresh(self.new_item)
         if newest is not None:
             summary = newest.model.summary()
             set_para(self.continue_text, f"Continue {summary['country']}, {year_stage(newest.model)}")
@@ -153,7 +176,8 @@ class StartScreen(Screen):
                 self.set_enter("Continue", self.do_continue)
             else:
                 self.set_enter("New game", self.press_n)
-        self.problem.setVisible(self.failed is not None)
+        self.problem.setVisible(failed)
+        self.message.setVisible(not failed and bool(self.message.text()))
         self._show_rows()
         self._refresh_bar()
 
@@ -209,7 +233,7 @@ class StartScreen(Screen):
     def say(self, text):
         """A line under the title's boxes: what a standalone friendly ended with (S17's result line)."""
         set_para(self.message, text)
-        self.message.setVisible(bool(text))
+        self.message.setVisible(bool(text) and self.failed is None)
 
     def press_n(self):
         if self.failed is not None:

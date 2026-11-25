@@ -149,6 +149,8 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 - **Purpose**: the title's question, *load a saved game?*, with the obvious answer first.
 - **Shows**: *Continue* with the last save's country, manager, next match and time saved; the title's choices;
   the list of saved games with country, year and stage, next match and time.
+- [derived: T156-R1 step 0; designed: #862] A single GOAL2 wordmark and a ruled subtitle lead to the new/save
+  choice at the foot of the page. A refused load puts its reason and retry choices in that same lower region.
 - **Actions**: *Continue* (Enter; owner decision 4); **Y** load the highlighted save; **N** new game; ↑↓ choose a
   save; Esc quit. A save that cannot be opened says why on this screen, with **Y** try again and **N** back.
 - **Replaces**: `title-load-prompt`, the load name (`m244-load-name`, `t156-243-load-name`) and

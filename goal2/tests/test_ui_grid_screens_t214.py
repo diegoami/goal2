@@ -6,6 +6,7 @@ from goal2.tests.test_ui_grid_screens_t211b import Base
 from goal2.tests.test_ui_match_day_t167 import CAREER, career, tearDownModule
 requires.require(modules=('PySide6',))
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QLabel
 from goal2.ui.s01_import import ImportScreen,ROWS
 from goal2.ui.s06_desk import ReimportScreen
 from goal2.ui.s02_start import StartScreen
@@ -54,6 +55,25 @@ class StartOnTheGrid(Base):
             for cell in row.cells:self.assertLessEqual(len(cell.lines()),self.rows_of(cell))
         screen.move(5)
         self.assertEqual(screen.rows[-1].cells[0].text(),screen.entries[-1].name)
+
+    def test_start_uses_one_wordmark_and_keeps_the_load_question_at_the_foot(self):
+        self.kind = StartScreen
+        for self.saved in (False, True):
+            with self.subTest(saved=self.saved):
+                window, screen = self.canonical(self.make)
+                wordmarks = [label for label in screen.findChildren(QLabel)
+                             if label.text() == "GOAL2" and label.isVisibleTo(screen)]
+                self.assertEqual(len(wordmarks), 1)
+                self.assertEqual(screen.menu_box.label, "load a saved game?")
+                self.assertGreater(screen.menu_box.y(), screen.body.height() * .8)
+                if self.saved:
+                    self.assertLess(screen.list_box.geometry().bottom(), screen.menu_box.y())
+                    self.assertTrue(screen.load_item.isVisibleTo(screen))
+                else:
+                    self.assertFalse(screen.load_item.isVisibleTo(screen))
+                    self.assertTrue(screen.empty_load.isVisibleTo(screen))
+                    self.assertTrue(screen.new_item.property("on"))
+                self.on_the_grid(window, 20)
 
     def test_multiline_import_errors_and_folder_paths_stay_complete(self):
         self.kind=ImportScreen
