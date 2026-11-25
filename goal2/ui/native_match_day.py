@@ -184,7 +184,10 @@ class NativeMatchDay(QObject):
 
     def finish_boundary(self, observation):
         self.phase = 'finished'
-        self.on_boundary(self, observation)
+        try:
+            self.on_boundary(self, observation)
+        except (KeyError, RuntimeError, TypeError, ValueError) as exc:
+            self.fail(str(exc))
 
     def fail(self, message):
         if self.phase in ('failed', 'closed'):
