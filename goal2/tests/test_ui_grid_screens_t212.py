@@ -19,6 +19,7 @@ import os
 import subprocess
 import sys
 import unittest
+from itertools import groupby
 
 from goal2.ui.squad_card import full_name
 from goal2.tests import requires
@@ -733,6 +734,24 @@ class BenchOnTheGrid(Base):
             env=env, capture_output=True, text=True, timeout=30,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_player_card_bars_show_the_exact_number_of_filled_blocks(self):
+        _, screen = self.canonical(self.make)
+        filled, empty = theme.BAR_FILLED, theme.BAR_EMPTY
+        for panel, name, count in ((screen.card.skills, "keeping", 25),
+                                   (screen.card.characteristics, "fitness", 14)):
+            bar, label = panel.rows[name]
+            self.assertEqual(bar.width() % round(cells.cell_w(screen)), 0)
+            word = label.text()
+            for value in (0, count // 2, count, None):
+                with self.subTest(name=name, value=value):
+                    panel.set(name, value, count, word)
+                    image = bar.grab().toImage()
+                    line = (image.pixelColor(x, image.height() // 2).name() for x in range(image.width()))
+                    blocks = [colour for colour, _ in groupby(line) if colour in (filled, empty)]
+                    expected = [] if value is None else [filled] * value + [empty] * (count - value)
+                    self.assertEqual(blocks, expected)
+                    self.assertEqual(label.text(), word)
 
 
 def assert_fractional_bench_rule():

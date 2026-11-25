@@ -333,9 +333,10 @@ class CellBar(QWidget):
     height (the cell's top and bottom are left black, so bars of rows that touch are rows). [designed: T211]"""
     INSET = 0.2   # of the row, above and below the bar
 
-    def __init__(self):
+    def __init__(self, *, segmented=False):
         super().__init__()
         self.setObjectName("bar")
+        self.segmented = segmented
         self.value = None
 
     def set(self, filled, cells):
@@ -349,10 +350,20 @@ class CellBar(QWidget):
         filled, cells = self.value
         filled = max(0, min(cells, filled))
         inset = round(self.height() * self.INSET)
+        height = self.height() - 2 * inset
+        full, empty = QColor(theme.BAR_FILLED), QColor(theme.BAR_EMPTY)
         painter = QPainter(self)
-        split = round(self.width() * filled / cells) if cells else 0
-        painter.fillRect(0, inset, split, self.height() - 2 * inset, QColor(theme.BAR_FILLED))
-        painter.fillRect(split, inset, self.width() - split, self.height() - 2 * inset, QColor(theme.BAR_EMPTY))
+        if self.segmented and cells:
+            # [confirmed: T156-R1 step 124] One visible block per value unit.
+            for index in range(cells):
+                left = round(self.width() * index / cells)
+                right = round(self.width() * (index + 1) / cells)
+                gap = int(index + 1 < cells and right - left > 1)
+                painter.fillRect(left, inset, right - left - gap, height, full if index < filled else empty)
+        else:
+            split = round(self.width() * filled / cells) if cells else 0
+            painter.fillRect(0, inset, split, height, full)
+            painter.fillRect(split, inset, self.width() - split, height, empty)
         painter.end()
 
 
@@ -360,13 +371,13 @@ class CellBars(Cells):
     """Rows of a label, a bar and a word, as `squad_card.Bars`, in cells: the label `label_cols` wide, the bar `bar_cols`, then the
     word. The same `rows`, `labels` and `set` as `Bars`."""
 
-    def __init__(self, names, label_cols, bar_cols, word_cols):
+    def __init__(self, names, label_cols, bar_cols, word_cols, *, segmented=False):
         super().__init__(label_cols + bar_cols + word_cols + 2, len(names), "bars")
         self.rows, self.labels = {}, {}
         for r, name in enumerate(names):
             name_label = self.text(name, "barLabel", 0, r, label_cols)
             colour(name_label, theme.CARD_LABEL)   # [designed: owner611; T193] brown labels, as the original's
-            bar = CellBar()
+            bar = CellBar(segmented=segmented)
             self.put(bar, label_cols + 1, r, bar_cols)
             word = CellLabel("", "barWord")
             self.put(word, label_cols + bar_cols + 2, r, word_cols)
@@ -478,7 +489,7 @@ class GridCard(Cells):
     NAME_COLS = 16
     HALF = 33   # the skills' frame; the tactics and characteristics take the rest, a cell apart
 
-    def __init__(self):
+    def __init__(self, *, segmented_bars=False):
         super().__init__(self.COLS, self.ROWS, "card")
         from goal2.game.player_card import SKILLS, TACTICS
         head = Frame("name")
@@ -505,7 +516,7 @@ class GridCard(Cells):
         self.put(self.name_line, 0, 1, 34)
         right_cols = self.COLS - self.HALF - 1
         skills = Frame("skills", "red")
-        self.skills = CellBars(SKILLS, 10, 20, 1)
+        self.skills = CellBars(SKILLS, 10, 20, 1, segmented=segmented_bars)
         skills.add(self.skills, 1)
         self.put(skills, 0, 5, self.HALF, 1 + len(SKILLS))
         tactics = Frame("tactics", "red")
@@ -513,7 +524,8 @@ class GridCard(Cells):
         tactics.add(self.tactics, 1)
         self.put(tactics, self.HALF + 1, 5, right_cols, 1 + len(TACTICS) + 1)
         characteristics = Frame("characteristics", "red")
-        self.characteristics = CellBars(("hardness", "fitness", "energy", "morale", "leadership"), 10, 9, 14)
+        self.characteristics = CellBars(("hardness", "fitness", "energy", "morale", "leadership"),
+                                        10, 9, 14, segmented=segmented_bars)
         characteristics.add(self.characteristics, 1)
         self.put(characteristics, self.HALF + 1, 5 + 1 + len(TACTICS) + 1, right_cols, 6)
         self.card = None
