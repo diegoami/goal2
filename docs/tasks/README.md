@@ -482,3 +482,4 @@ operational status.
 - [T170as](T170as.md): live marking at a retained bench (#867).
 - [T170at](T170at.md): one explicit retained native match day (#869).
 - [T170au](T170au.md): verified native round bulletins (#874).
+- [T170av](T170av.md): verified native round results in S14 (#876).
