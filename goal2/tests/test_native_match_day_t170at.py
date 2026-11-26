@@ -89,11 +89,12 @@ class Window(unittest.TestCase):
         self.boundaries, self.failures = [], []
         self.state = image.state(engine_tables.load())
 
-    def open_match_day(self, watch, *, show_bulletins=False):
+    def open_match_day(self, watch, *, show_bulletins=False, show_round_results=False, round_number=None):
         from goal2.ui.native_match_day import NativeMatchDay
 
         self.day = NativeMatchDay(
             self.window, self.model, self.state, watch=watch, show_bulletins=show_bulletins,
+            show_round_results=show_round_results, round_number=round_number,
             on_boundary=lambda day, packet: self.boundaries.append((day.native.pid, packet)),
             on_failure=lambda _, message: self.failures.append(message),
             on_goal=lambda screen, _: screen.release_goal(),
@@ -135,11 +136,20 @@ class Window(unittest.TestCase):
 
         QTest.keyClick(self.window, key)
 
-    def kickoff(self, *, watch=True, show_bulletins=False):
+    def kickoff(self, *, watch=True, show_bulletins=False, show_round_results=False):
         from PySide6.QtCore import Qt
+        from goal2.ui.s14_round import RoundScreen
         from goal2.ui.s16_choose import ChooseScreen
 
-        self.open_match_day(watch, show_bulletins=show_bulletins)
+        self.open_match_day(watch, show_bulletins=show_bulletins, show_round_results=show_round_results)
+        if show_round_results:
+            self.until(lambda: self.day.phase == 'before_results')
+            results = self.window.current()
+            self.assertIsInstance(results, RoundScreen)
+            self.assertEqual(results.title, 'round results')
+            self.assertEqual(results.mine['home'], self.day.native.fixture.side_b)
+            self.assertIn('your match is next', results.visible()[-1][3])
+            self.key(Qt.Key.Key_Return)
         self.until(lambda: self.day.phase == 'prematch')
         pid = self.day.native.pid
         self.key(Qt.Key.Key_Return)
@@ -173,18 +183,42 @@ class Window(unittest.TestCase):
         self.assertEqual(self.boundaries, [])
         self.assertEqual(self.model.state, self.before)
 
+    def test_round_results_close_under_help_before_match(self):
+        from PySide6.QtCore import Qt
+        from goal2.ui.s14_round import RoundScreen
+        from goal2.ui.s22_help import HelpScreen
+
+        self.open_match_day(True, show_round_results=True, round_number=8)
+        self.until(lambda: self.day.phase == 'before_results')
+        results = self.window.current()
+        self.assertIsInstance(results, RoundScreen)
+        self.assertEqual(results.title, 'round 8 · results')
+        self.key(Qt.Key.Key_F1)
+        self.assertIsInstance(self.window.current(), HelpScreen)
+        results.onward()
+        self.assertIsNone(self.day.prematch)
+        self.window.leaving = True
+        self.window.close()
+        self.until(lambda: self.day.native.disposed)
+        self.assertFalse(results.timer.isActive())
+        self.assertEqual(self.boundaries, [])
+
     @requires.need(slow=True)
     def test_explicit_qt_match_day_matches_sdk_and_resumes_on_one_worker(self):
         from PySide6.QtCore import Qt
+        from goal2.core.views import round_results
+        from goal2.engine.original_match.image import Image
         from goal2.game.bulletin_view import native_bulletins
+        from goal2.game import engine_tables
         from goal2.ui.native_half_time import NativeHalfTimeScreen
         from goal2.ui.native_pause import NativePauseScreen
         from goal2.ui.native_review import NativeReviewScreen
         from goal2.ui.s16_choose import ChooseScreen
         from goal2.ui.s05_bulletin import BulletinScreen
+        from goal2.ui.s14_round import RoundScreen
 
         reference = pypy_engine.start(__name__ + ':direct_match_day', self.raw)
-        pid = self.kickoff(show_bulletins=True)
+        pid = self.kickoff(show_bulletins=True, show_round_results=True)
         pitch = self.day.pitch
         driver = pitch.controller.driver
         original_painted = pitch.pitch.on_drawn
@@ -247,11 +281,26 @@ class Window(unittest.TestCase):
         self.assertEqual(pitch.enter_hint_text(), 'Resume round')
         self.key(Qt.Key.Key_Return)
         self.day.resume()
-        self.until(lambda: self.day.phase == 'bulletin', step=pitch.tick)
+        self.until(lambda: self.day.phase == 'after_results', step=pitch.tick)
+        results = self.window.current()
+        self.assertIsInstance(results, RoundScreen)
+        self.assertEqual(self.boundaries, [])
+        expected = reference.result(timeout=120)
+        fixtures = expected['observation']['played_fixtures']
+        self.assertTrue(fixtures)
+        image = Image.from_state(expected['state'], engine_tables.load())
+        first = fixtures[0]['fixture']
+        row = round_results(image, first, first)['rows'][0]
+        self.assertEqual(results.after['match']['score'], row['score'])
+        self.assertEqual(results.after['match']['home'], row['first'])
+        self.assertEqual(results.after['match']['kind_name'], row['kind_name'])
+        self.assertEqual([row['fixture_id'] for row in results.after['results']],
+                         [fixture['fixture'] for fixture in fixtures[1:] if fixture['kind'] and fixture['score'][0] < 254])
+        self.key(Qt.Key.Key_Return)
+        self.assertEqual(self.day.phase, 'bulletin')
         bulletin = self.window.current()
         self.assertIsInstance(bulletin, BulletinScreen)
         self.assertEqual(self.boundaries, [])
-        expected = reference.result(timeout=120)
         pages = native_bulletins(expected['entry'], expected['observation'])
         self.assertTrue(pages)
         self.assertEqual(bulletin.pages, pages)

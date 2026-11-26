@@ -43,12 +43,12 @@ class RoundScreen(Screen):
     GRID = True   # [designed: owner, #667; T213]
     escape_text = None
 
-    def __init__(self, window, before, onward, after=None):
+    def __init__(self, window, before, onward, after=None, *, onward_text=None):
         super().__init__(window)
         self.onward = onward
         self.after = after
         number = (after or before)["round"]
-        self.title = f"round {number} · results"
+        self.title = f"round {number} · results" if number is not None else "round results"
         self.name_label.setText(self.title)
         if after is None:
             self.settled = []
@@ -67,7 +67,7 @@ class RoundScreen(Screen):
         self.bind((Qt.Key.Key_Left,), "", lambda: self.step_pace(-1), captions=("←",), shown=False)
         self.bind((Qt.Key.Key_Right,), "", lambda: self.step_pace(1), captions=("→",), shown=False)
         self.speed_key = self.bind((), "speed", lambda: self.step_pace(1), captions=("←", "→"))
-        self.set_enter("To your match" if after is None else "To the desk", self.go_on)
+        self.set_enter(onward_text or ("To your match" if after is None else "To the desk"), self.go_on)
         # [derived: T156-R1 steps 41, 262–263] Center the cyan results frame and keep completion at the foot.
         body = Cells(theme.COLS, theme.ROWS - 3, "roundBody")
         self.body_layout.addWidget(body, 1)

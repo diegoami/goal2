@@ -30,7 +30,8 @@ class NativeMatchDay(QObject):
     """One explicit route action with a single reply consumer at every phase."""
 
     def __init__(self, window, model, state, *, on_boundary, on_failure, on_goal,
-                 on_tournament, on_stats, watch=None, show_bulletins=False):
+                 on_tournament, on_stats, watch=None, show_bulletins=False,
+                 show_round_results=False, round_number=None):
         super().__init__(window)
         if not all(callable(callback) for callback in
                    (on_boundary, on_failure, on_goal, on_tournament, on_stats)):
@@ -39,6 +40,10 @@ class NativeMatchDay(QObject):
             raise ValueError('The watch preference must be a boolean or None.')
         if type(show_bulletins) is not bool:
             raise ValueError('The bulletin preference must be a boolean.')
+        if type(show_round_results) is not bool:
+            raise ValueError('The round results preference must be a boolean.')
+        if round_number is not None and (type(round_number) is not int or round_number < 1):
+            raise ValueError('The displayed round number must be a positive integer or None.')
         country = model.state.managed_country
         self.window = window
         self.model = model
@@ -49,6 +54,10 @@ class NativeMatchDay(QObject):
         self.on_stats = on_stats
         self.watch = watch
         self.show_bulletins = show_bulletins
+        self.show_round_results = show_round_results
+        self.round_number = round_number
+        self.results = None
+        self.round_screen = None
         self.bulletin = None
         self.preferences = None
         self.entry_observation = None
@@ -83,8 +92,13 @@ class NativeMatchDay(QObject):
                     self.phase = 'advancing'
                     self.native.advance()
                 elif status == 'prematch':
+                    if self.show_round_results and self.window.current() is not self.opening:
+                        return
                     self.entry_observation = self.take_observation()
-                    self.open_prematch()
+                    if self.show_round_results:
+                        self.open_round_results()
+                    else:
+                        self.open_prematch()
                 elif status in ('boundary', 'terminal'):
                     self.deliver_boundary()
             elif self.phase == 'prematch' and self.native.status == 'lost':
@@ -97,6 +111,29 @@ class NativeMatchDay(QObject):
                     self.completed(self.pitch)
         except (KeyError, RuntimeError, TypeError, ValueError) as exc:
             self.fail(str(exc))
+
+    def open_round_results(self):
+        from goal2.game.native_round_view import NativeRoundResults
+        from goal2.ui.s14_round import RoundScreen
+
+        self.results = NativeRoundResults(self.entry_observation, self.native.fixture,
+                                          self.model.goaldat.country_names, self.round_number)
+        self.phase = 'before_results'
+        self.round_screen = self.window.push(RoundScreen(self.window, self.results.before, self.finish_before_results))
+
+    def leave_results(self, phase):
+        if self.phase != phase or self.window.current() is not self.round_screen:
+            return False
+        self.window.pop()
+        self.round_screen = None
+        return True
+
+    def finish_before_results(self):
+        if self.leave_results('before_results'):
+            try:
+                self.open_prematch()
+            except (KeyError, RuntimeError, TypeError, ValueError) as exc:
+                self.fail(str(exc))
 
     def open_prematch(self):
         native = self.native
@@ -159,10 +196,29 @@ class NativeMatchDay(QObject):
         return observations[0]
 
     def deliver_boundary(self):
-        if self.show_bulletins and self.window.current() is not (self.pitch or self.opening):
+        if (self.show_bulletins or self.results is not None) and self.window.current() is not (self.pitch or self.opening):
             return
         observation = self.take_observation()
         self.timer.stop()
+        if self.results is not None:
+            from goal2.ui.s14_round import RoundScreen
+
+            after = self.results.after(observation)
+            self.phase = 'after_results'
+            self.round_screen = self.window.push(RoundScreen(
+                self.window, self.results.before, lambda: self.finish_after_results(observation),
+                after=after, onward_text='Continue round'))
+            return
+        self.show_boundary(observation)
+
+    def finish_after_results(self, observation):
+        if self.leave_results('after_results'):
+            try:
+                self.show_boundary(observation)
+            except (KeyError, RuntimeError, TypeError, ValueError) as exc:
+                self.fail(str(exc))
+
+    def show_boundary(self, observation):
         if self.show_bulletins:
             from goal2.game.bulletin_view import native_bulletins
             from goal2.ui.s05_bulletin import BulletinScreen
@@ -206,4 +262,6 @@ class NativeMatchDay(QObject):
             self.prematch.close()
         if self.pitch is not None:
             self.pitch.closing()
+        if self.round_screen is not None:
+            self.round_screen.timer.stop()
         self.native.close()
