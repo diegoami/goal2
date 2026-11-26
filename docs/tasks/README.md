@@ -483,3 +483,4 @@ operational status.
 - [T170at](T170at.md): one explicit retained native match day (#869).
 - [T170au](T170au.md): verified native round bulletins (#874).
 - [T170av](T170av.md): verified native round results in S14 (#876).
+- [T170aw](T170aw.md): verified native results without a managed fixture (#880).
