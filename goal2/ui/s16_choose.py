@@ -29,25 +29,24 @@ from PySide6.QtCore import Qt, QTimer
 
 from goal2.ui import theme
 from goal2.ui.cell_parts import GridCard, GridStrip
-from goal2.ui.cells import CellPara, Cells
+from goal2.ui.cells import Cells
+from goal2.ui.country_parts import framed
+from goal2.ui.frame import PanelOutline
 from goal2.ui.screen import Screen
-from goal2.ui.squad_card import colour, full_name
+from goal2.ui.squad_card import LINE_COLOUR, colour
 
 WAIT_MS = 10_000   # [confirmed: F030, 0791:CC7B wait_or_key(1000) of 10 nominal ms]
 ROLES = {1: "captain", 2: "corner", 3: "penalty", 4: "free kick", 5: "goal kick"}   # [confirmed: F030, DS:0A29]
 
-# [designed: T212; docs/design/ui-2026-11/proposal/README.md, s08-squad] S16 on the 16 x 32 grid, in the squad's cells (90 columns, the 25
-# rows between the title row and the two key rows): what the match waits for across the top (the headline and up to three rows of its
-# words), then the card (69 x 18, the squad's) with the eleven in a frame at its right, a cell apart and level with the card's foot (the
-# original's list is lower right too, and no region of the page is left empty), and under them the penalty order's lines.
+# [derived: T156-R1 steps 43 and 56; M244-G4C-07 step 56] A decision above the card, the eleven
+# at its right, and the numbered kick order below the roster when the shoot-out needs it.
 BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
-WAIT_AT, WAIT_ROWS = 0, 4
-CARD_AT = WAIT_AT + WAIT_ROWS
+WAIT_ROWS = 4
 STRIP_COLS = 20
 STRIP_ROWS = 12   # its rule and the eleven
 STRIP_AT = BODY_COLS - STRIP_COLS
-STRIP_ROW = CARD_AT + GridCard.ROWS - STRIP_ROWS
-ORDER_AT = CARD_AT + GridCard.ROWS
+STRIP_ROW = WAIT_ROWS + GridCard.ROWS - STRIP_ROWS
+ORDER_ROW = BODY_ROWS - STRIP_ROWS
 
 
 class ChooseScreen(Screen):
@@ -75,47 +74,37 @@ class ChooseScreen(Screen):
             state = card_state(state, records, decision_data.get("tactics"))
         self.cards = [card(state, w, model.goaldat) for w in self.eleven]
         self.index = self.eleven.index(current) if current in self.eleven else 0
-        what = ROLES.get(role, "taker")
-        self.title = f"{match} · {'penalty order' if mode == 'order' else what}"
+        what = ROLES.get(role) if role != 1 else None
+        taker = f"{what} taker" if what else "taker"
+        decision = {"captain": "captain", "taker": taker, "order": "penalty order"}[mode]
+        self.title = f"{match} · {decision}" if match else decision
         self.name_label.setText(self.title)
         self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), shown=False)
         self.bind((Qt.Key.Key_Down,), "", lambda: self.move(1), shown=False)
         self.bind((), "player", None, captions=("↑", "↓"))
-        self.bind((Qt.Key.Key_C,), "computer select", self.computer_select)
+        self.bind((Qt.Key.Key_C,), "fill remaining" if mode == "order" else "computer select", self.computer_select)
         if mode == "order":
             self.bind((Qt.Key.Key_Escape,), "undo a pick", self.undo)
         body = Cells(BODY_COLS, BODY_ROWS, "chooseBody")
         self.body_layout.addWidget(body, 1)
         self.area = body
-        # what the match waits for, across the top, in the cells the squad gives its pick's words
-        self.main_layout.removeWidget(self.wait_box)
-        body.put(self.wait_box, 0, WAIT_AT, BODY_COLS, WAIT_ROWS)
-        self.wait_box.layout().addStretch(1)   # a headline over two rows of words is not spread over the four rows the box has
-        colour(self.wait_detail, theme.TEXT_BRIGHT)   # the words are what the screen is for: bright, not the normal text's grey
-        self.card = GridCard()
-        body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
+        self._place_prompt(body)
+        self.card = GridCard(segmented_bars=True)
+        body.put(self.card, 0, WAIT_ROWS, GridCard.COLS, GridCard.ROWS)
         self.strip = GridStrip(STRIP_COLS, count=11)
         self.strip.chosen.connect(self.click)
-        body.put(self.strip, STRIP_AT, STRIP_ROW, STRIP_COLS, STRIP_ROWS)
-        # the order so far: the picks wrap in the rows under the words (eleven picks of the longest names fit)
-        self.order_label = CellPara("", "sub")
-        colour(self.order_label, theme.VALUE)
-        body.put(self.order_label, 0, ORDER_AT, BODY_COLS, BODY_ROWS - ORDER_AT)
+        body.put(self.strip, STRIP_AT, 0 if mode == "order" else STRIP_ROW, STRIP_COLS, STRIP_ROWS)
         if mode == "captain":
             self.wait_for("Choose your captain to kick off",
-                          "The match starts as soon as a captain is chosen. The highlight starts on the computer's "
-                          "pick. Enter: the highlighted player · C: computer select · no key: the computer's pick "
-                          "stands after the original's wait (10 s).")
+                          "No key for 10 s: kick off with the computer's captain.")
             enter = "Captain: kick off"
         elif mode == "taker":
-            self.wait_for(f"Choose your {what} taker",
-                          "The match waits for its taker. Enter: the highlighted player · C: computer select · no key: "
-                          "the current pick stands after the original's wait (10 s).")
-            enter = f"{what.capitalize()} taker"
+            self.wait_for(f"Choose your {taker}",
+                          "No key for 10 s: play on with the current taker.")
+            enter = taker.capitalize()
         else:
-            self.wait_for("Choose your penalty takers",
-                          f"Pick {takers} takers in order; Enter adds the highlighted player, Esc undoes a pick, "
-                          "C leaves the rest to the original's order.")
+            self._place_order(body)
+            self.wait_for("Choose your penalty takers", f"Pick {takers} takers in order.")
             enter = "Add to the order"
         self.set_enter(enter, self.choose)
         self.timer = QTimer(self)
@@ -126,6 +115,30 @@ class ChooseScreen(Screen):
             self.timer.start()
         self._show()
 
+    def _place_prompt(self, body):
+        panel = Cells(GridCard.COLS, WAIT_ROWS, "choicePrompt")
+        body.put(panel, 0, 0, GridCard.COLS, WAIT_ROWS)
+        self.main_layout.removeWidget(self.wait_box)
+        panel.put(self.wait_box, 1, 1, GridCard.COLS - 2, WAIT_ROWS - 1)
+        self.wait_box.layout().addStretch(1)
+        colour(self.wait_detail, theme.TEXT_BRIGHT)
+
+        def edges():
+            right, bottom = panel.width() - 1, panel.height() - 1
+            return ((0, 0, right, 0), (0, bottom, right, bottom), (0, 0, 0, bottom), (right, 0, right, bottom))
+
+        panel.grid.addWidget(PanelOutline(panel, edges))
+
+    def _place_order(self, body):
+        self.order_panel, slots = framed("kick order", STRIP_COLS, STRIP_ROWS - 1)
+        body.put(self.order_panel, STRIP_AT, ORDER_ROW, STRIP_COLS, STRIP_ROWS)
+        self.order_slots = []
+        for i in range(min(self.takers, len(self.eleven))):
+            number = slots.text(str(i + 1), "kickNumber", 1, i, 2)
+            name = slots.text("", "kickPlayer", 3, i, STRIP_COLS - 4)
+            name.setTextFormat(Qt.TextFormat.PlainText)
+            self.order_slots.append((number, name))
+
     def _show(self):
         names = self.model.goaldat.country_names
         rows = [(c["role"], c["line"], c["full_name"]) for c in self.cards]
@@ -134,8 +147,15 @@ class ChooseScreen(Screen):
         self.strip.show_rows(names[self.model.state.managed_country], rows, self.index, False)
         self.card.set_card(self.cards[self.index])
         if self.mode == "order":
-            picked = ", ".join(full_name(self.model, w) for w in self.picks) or "none yet"
-            self.order_label.setText(f"Order: {picked} ({len(self.picks)} of {self.takers})")
+            for i, (number, name) in enumerate(self.order_slots):
+                chosen = i < len(self.picks)
+                colour(number, theme.VALUE if chosen else theme.TEXT_NORMAL)
+                if chosen:
+                    selected = self.cards[self.eleven.index(self.picks[i])]
+                    name.setText(selected["full_name"])
+                    colour(name, LINE_COLOUR.get(selected["line"], theme.TEXT_NORMAL))
+                else:
+                    name.clear()
 
     def highlighted(self):
         return self.eleven[self.index]
