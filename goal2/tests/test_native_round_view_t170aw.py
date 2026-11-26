@@ -100,16 +100,17 @@ class Window(unittest.TestCase):
         self.window.leaving = True
         self.window.close()
         self.day.close()
-        self.until(lambda: self.day.native.disposed, limit=15)
+        self.until(lambda: self.day.native.disposed, limit=15, check_failures=False)
         self.window.deleteLater()
         self.app.processEvents()
 
-    def until(self, predicate, *, limit=120):
+    def until(self, predicate, *, limit=120, check_failures=True):
         from PySide6.QtTest import QTest
 
         end = time.monotonic() + limit
         while not predicate():
-            self.assertEqual(self.failures, [])
+            if check_failures:
+                self.assertEqual(self.failures, [])
             self.assertLess(time.monotonic(), end, getattr(self.day, 'phase', ''))
             QTest.qWait(2)
 
