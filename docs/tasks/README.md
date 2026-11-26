@@ -484,3 +484,4 @@ operational status.
 - [T170au](T170au.md): verified native round bulletins (#874).
 - [T170av](T170av.md): verified native round results in S14 (#876).
 - [T170aw](T170aw.md): verified native results without a managed fixture (#880).
+- [T170ax](T170ax.md): publish acknowledged native worker rounds atomically (#882).
