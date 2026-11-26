@@ -138,6 +138,45 @@ class Pure(unittest.TestCase):
         self.assertEqual(n.poll(),'boundary');self.assertEqual(n.message,'pure refusal')
         n.advance();self.assertEqual(e.calls[-1][0],'advance')
 
+    def test_publication_requires_the_owners_current_delivered_completion(self):
+        from goal2.game.season_publication import SeasonCampaign, SeasonPublication
+
+        n,e,p,_,_=self.make();self.opened(n,e,p)
+        ready,=n.take_observations()
+        start=p['state']
+        campaign=SeasonCampaign(start);publication=SeasonPublication(campaign)
+        with self.assertRaisesRegex(ValueError,'current verified native completion'):
+            publication.complete_native(n,ready)
+        n.advance()
+        e.emit('advance',**boundary(start,1,'complete',fixtures=({'fixture':1},)))
+        self.assertEqual(n.poll(),'boundary')
+        old,=n.take_observations()
+        n.advance()
+        e.emit('advance',**boundary(start,2,'deferred-rollover',fixtures=({'fixture':2},)))
+        self.assertEqual(n.poll(),'terminal')
+        final,=n.take_observations()
+        for invalid in (old,copy.deepcopy(final)):
+            with self.assertRaisesRegex(ValueError,'current verified native completion'):
+                publication.complete_native(n,invalid)
+        final['observation']['played_fixtures'][0]['fixture']=3
+        with self.assertRaisesRegex(ValueError,'current verified native completion'):
+            publication.complete_native(n,final)
+        final['observation']['played_fixtures'][0]['fixture']=2
+        observed, detached=n.completed_boundary(final)
+        observed.played_fixtures[0]['fixture']=3
+        detached.clear()
+        self.assertEqual(campaign.published,())
+        record=publication.complete_native(n,final)
+        self.assertEqual((record.call_number,record.status),(2,'deferred-rollover'))
+        self.assertEqual(record.input_hash,record.output_hash)
+        self.assertEqual(campaign.state,start)
+        self.assertEqual(campaign.published,(record,))
+        with self.assertRaisesRegex(ValueError,'is already published'):
+            publication.complete_native(n,final)
+        n.close()
+        with self.assertRaisesRegex(ValueError,'current verified native completion'):
+            publication.complete_native(n,final)
+
     def test_handoff_is_once_and_keeps_the_session_lease(self):
         n,e,p,d,_=self.make();self.prematch(n,e,p,d);c=n.controller;c.play(captain=None)
         e.emit('answer');c.receive(*n.replies.get_nowait())

@@ -14,7 +14,7 @@ from goal2.engine.original_match.image import Image, GAME_PTR, FIXTURES_PTR, FIX
 from goal2.engine.original_match import route
 from goal2.game import engine_tables
 from goal2.game.prematch_controller import PrematchController
-from goal2.game.season import canonical_hash
+from goal2.game.season import SeasonObservation, canonical_hash
 from goal2.game.watched_jobs import MatchEngine
 
 
@@ -84,6 +84,7 @@ class NativeSeasonOwner:
         self.owner=owner;self.managed_country=country;self._thread=threading.get_ident()
         self._initial=native;self._input_hash=canonical_hash(native)
         self._boundary=None;self._observations=[];self._entry_events=[]
+        self._completed_packet=None;self._delivered_completion=None
         self.replies=queue.Queue();self.controller=None;self.fixture=None
         self._phase='opening';self._expected='open';self._last_request=0
         self._call_number=0
@@ -160,7 +161,22 @@ class NativeSeasonOwner:
         self.message='';self._phase='advancing';self._request('advance')
 
     def take_observations(self):
-        self._owner();result=deepcopy(self._observations);self._observations=[];return result
+        self._owner()
+        result=deepcopy(self._observations)
+        if self._observations and self._observations[-1] is self._completed_packet:
+            self._delivered_completion=result[-1]
+        self._observations=[]
+        return result
+
+    def completed_boundary(self, packet):
+        """[designed: T170ax] Read the current verified completion for publication."""
+        self._owner()
+        if (self.status not in ('boundary', 'terminal') or self._completed_packet is None
+                or packet is not self._delivered_completion
+                or packet != self._completed_packet):
+            raise ValueError('Publication requires the current verified native completion.')
+        verified = deepcopy(self._completed_packet)
+        return SeasonObservation(**verified['observation']), verified['state']
 
     def take_entry_events(self):
         self._owner();result=deepcopy(self._entry_events);self._entry_events=[];return result
@@ -191,7 +207,10 @@ class NativeSeasonOwner:
         fixture=NativeFixture.from_boundary(state,self.managed_country) if obs['status']=='match' else None
         self._call_number=obs['call_number']
         self._call_input_hash=obs['input_hash'];self.fixture=fixture
-        self._boundary=state;self._observations.append(deepcopy(value))
+        packet=deepcopy(value)
+        self._completed_packet=packet if obs['status'] in ('complete','deferred-rollover') else None
+        self._delivered_completion=None
+        self._boundary=state;self._observations.append(packet)
         return obs['status']
 
     def poll(self):

@@ -89,12 +89,13 @@ class Window(unittest.TestCase):
         self.boundaries, self.failures = [], []
         self.state = image.state(engine_tables.load())
 
-    def open_match_day(self, watch, *, show_bulletins=False, show_round_results=False, round_number=None):
+    def open_match_day(self, watch, *, show_bulletins=False, show_round_results=False, round_number=None,
+                       campaign=None):
         from goal2.ui.native_match_day import NativeMatchDay
 
         self.day = NativeMatchDay(
             self.window, self.model, self.state, watch=watch, show_bulletins=show_bulletins,
-            show_round_results=show_round_results, round_number=round_number,
+            show_round_results=show_round_results, round_number=round_number, campaign=campaign,
             on_boundary=lambda day, packet: self.boundaries.append((day.native.pid, packet)),
             on_failure=lambda _, message: self.failures.append(message),
             on_goal=lambda screen, _: screen.release_goal(),
@@ -136,12 +137,13 @@ class Window(unittest.TestCase):
 
         QTest.keyClick(self.window, key)
 
-    def kickoff(self, *, watch=True, show_bulletins=False, show_round_results=False):
+    def kickoff(self, *, watch=True, show_bulletins=False, show_round_results=False, campaign=None):
         from PySide6.QtCore import Qt
         from goal2.ui.s14_round import RoundScreen
         from goal2.ui.s16_choose import ChooseScreen
 
-        self.open_match_day(watch, show_bulletins=show_bulletins, show_round_results=show_round_results)
+        self.open_match_day(watch, show_bulletins=show_bulletins, show_round_results=show_round_results,
+                            campaign=campaign)
         if show_round_results:
             self.until(lambda: self.day.phase == 'before_results')
             results = self.window.current()
@@ -210,6 +212,7 @@ class Window(unittest.TestCase):
         from goal2.engine.original_match.image import Image
         from goal2.game.bulletin_view import native_bulletins
         from goal2.game import engine_tables
+        from goal2.game.season_publication import PublishedCall, SeasonCampaign
         from goal2.ui.native_half_time import NativeHalfTimeScreen
         from goal2.ui.native_pause import NativePauseScreen
         from goal2.ui.native_review import NativeReviewScreen
@@ -218,7 +221,8 @@ class Window(unittest.TestCase):
         from goal2.ui.s14_round import RoundScreen
 
         reference = pypy_engine.start(__name__ + ':direct_match_day', self.raw)
-        pid = self.kickoff(show_bulletins=True, show_round_results=True)
+        campaign = SeasonCampaign(self.state)
+        pid = self.kickoff(show_bulletins=True, show_round_results=True, campaign=campaign)
         pitch = self.day.pitch
         driver = pitch.controller.driver
         original_painted = pitch.pitch.on_drawn
@@ -285,6 +289,7 @@ class Window(unittest.TestCase):
         results = self.window.current()
         self.assertIsInstance(results, RoundScreen)
         self.assertEqual(self.boundaries, [])
+        self.assertEqual((campaign.state, campaign.revision), (self.state, 0))
         expected = reference.result(timeout=120)
         fixtures = expected['observation']['played_fixtures']
         self.assertTrue(fixtures)
@@ -305,6 +310,7 @@ class Window(unittest.TestCase):
         self.assertTrue(pages)
         self.assertEqual(bulletin.pages, pages)
         for page in pages:
+            self.assertEqual(campaign.revision, 0)
             for name, story in page.items():
                 self.assertEqual(bulletin.panels[name][2].text(), story['masthead'])
                 self.assertEqual(bulletin.panels[name][3].text(), '\n'.join(story['lines']))
@@ -321,3 +327,9 @@ class Window(unittest.TestCase):
         self.assertEqual(digest(packet['state']), digest(expected['state']))
         self.assertEqual(digest(packet['observation']), digest(expected['observation']))
         self.assertEqual(digest(self.day.entry_observation['observation']), digest(expected['entry']))
+        observed = expected['observation']
+        self.assertEqual(campaign.state, expected['state'])
+        self.assertEqual(campaign.published, (PublishedCall(
+            observed['call_number'], observed['status'], observed['input_hash'], observed['output_hash']),))
+        self.day.finish_boundary(packet)
+        self.assertEqual((len(self.boundaries), campaign.revision), (1, 1))
