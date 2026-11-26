@@ -38,8 +38,10 @@ def score_text(row):
 
 
 class RoundScreen(Screen):
-    """`before`: DesktopModel.round_before(); `after`: round_after(your fixture) once your match is published.
-    `onward` is what Enter does."""
+    """Show a pending managed fixture, published managed results, or a delta with `match=None`.
+
+    `onward` is what Enter does.
+    """
     GRID = True   # [designed: owner, #667; T213]
     escape_text = None
 
@@ -53,7 +55,8 @@ class RoundScreen(Screen):
         if after is None:
             self.settled = []
             self.arriving = list(before["results"])
-            self.mine = dict(before["match"], note="your match is next")
+            match = before["match"]
+            self.mine = dict(match, note="your match is next") if match is not None else None
         else:
             # your result where your match was, the rest of the round arriving after it
             mine = dict(after["match"], note="your match")
@@ -67,7 +70,7 @@ class RoundScreen(Screen):
         self.bind((Qt.Key.Key_Left,), "", lambda: self.step_pace(-1), captions=("←",), shown=False)
         self.bind((Qt.Key.Key_Right,), "", lambda: self.step_pace(1), captions=("→",), shown=False)
         self.speed_key = self.bind((), "speed", lambda: self.step_pace(1), captions=("←", "→"))
-        self.set_enter(onward_text or ("To your match" if after is None else "To the desk"), self.go_on)
+        self.set_enter(onward_text or ("To your match" if self.mine is not None else "To the desk"), self.go_on)
         # [derived: T156-R1 steps 41, 262–263] Center the cyan results frame and keep completion at the foot.
         body = Cells(theme.COLS, theme.ROWS - 3, "roundBody")
         self.body_layout.addWidget(body, 1)

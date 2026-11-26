@@ -196,20 +196,31 @@ class NativeMatchDay(QObject):
         return observations[0]
 
     def deliver_boundary(self):
-        if (self.show_bulletins or self.results is not None) and self.window.current() is not (self.pitch or self.opening):
+        if (self.show_bulletins or self.show_round_results) and self.window.current() is not (self.pitch or self.opening):
             return
         observation = self.take_observation()
         self.timer.stop()
-        if self.results is not None:
-            from goal2.ui.s14_round import RoundScreen
-
-            after = self.results.after(observation)
-            self.phase = 'after_results'
-            self.round_screen = self.window.push(RoundScreen(
-                self.window, self.results.before, lambda: self.finish_after_results(observation),
-                after=after, onward_text='Continue round'))
+        if self.show_round_results and self.open_boundary_results(observation):
             return
         self.show_boundary(observation)
+
+    def open_boundary_results(self, observation):
+        from goal2.game.native_round_view import completed_round_results
+        from goal2.ui.s14_round import RoundScreen
+
+        if self.results is None:
+            before = completed_round_results(observation, self.model.goaldat.country_names, self.round_number)
+            if not before['results']:
+                return False
+            after = None
+        else:
+            before = self.results.before
+            after = self.results.after(observation)
+        self.phase = 'after_results'
+        self.round_screen = self.window.push(RoundScreen(
+            self.window, before, lambda: self.finish_after_results(observation),
+            after=after, onward_text='Continue round'))
+        return True
 
     def finish_after_results(self, observation):
         if self.leave_results('after_results'):

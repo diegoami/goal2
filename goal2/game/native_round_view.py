@@ -1,4 +1,4 @@
-"""[designed: T170av/#876] S14 data from one verified managed native round."""
+"""[designed: T170av/#876, T170aw/#880] S14 data from verified native rounds."""
 
 from goal2.core.views import Memory
 from goal2.engine.original_match.image import Image
@@ -8,19 +8,11 @@ from goal2.game import engine_tables
 FIELDS = {'fixture', 'first', 'second', 'kind', 'score', 'winner_flag'}
 
 
-class NativeRoundResults:
-    def __init__(self, entry, fixture, country_names, number):
-        observation = entry['observation']
-        if observation['status'] != 'match':
-            raise ValueError('Native round results need the pending managed fixture.')
-        self.identity = observation['call_number'], observation['input_hash']
-        self.fixture = fixture
+class RoundFixtureRows:
+    def __init__(self, state, country_names):
         self.names = country_names
-        image = Image.from_state(entry['state'], engine_tables.load())
+        image = Image.from_state(state, engine_tables.load())
         self.kind_name = Memory(image).kind_name
-        self.number = number
-        self.before = {'round': number, 'results': self.rows(observation),
-                       'match': self.row(fixture.index, fixture.side_a, fixture.side_b, fixture.kind, None)}
 
     def row(self, index, first, second, kind, score):
         # [confirmed: 1771:7812/77C3 and Core round_results] The second
@@ -52,13 +44,35 @@ class NativeRoundResults:
             result.append(self.row(index, first, second, kind, score))
         return result
 
+
+class NativeRoundResults:
+    def __init__(self, entry, fixture, country_names, number):
+        observation = entry['observation']
+        if observation['status'] != 'match':
+            raise ValueError('Native round results need the pending managed fixture.')
+        self.identity = observation['call_number'], observation['input_hash']
+        self.fixture = fixture
+        self.fixture_rows = RoundFixtureRows(entry['state'], country_names)
+        self.number = number
+        self.before = {'round': number, 'results': self.fixture_rows.rows(observation),
+                       'match': self.fixture_rows.row(fixture.index, fixture.side_a, fixture.side_b, fixture.kind, None)}
+
     def after(self, packet):
         observation = packet['observation']
         if (observation['call_number'], observation['input_hash']) != self.identity:
             raise ValueError('Native results belong to another round.')
-        rows = self.rows(observation)
+        rows = self.fixture_rows.rows(observation)
         fixture = self.fixture
         if not rows or (rows[0]['fixture_id'], rows[0]['away'], rows[0]['home'], rows[0]['kind']) != (
                 fixture.index, fixture.side_a, fixture.side_b, fixture.kind):
             raise ValueError('Native results are missing the managed fixture.')
         return {'round': self.number, 'match': rows[0], 'results': rows[1:]}
+
+
+def completed_round_results(packet, country_names, number):
+    """Project just the verified fixture delta from an advance-only boundary."""
+    observation = packet['observation']
+    if observation['status'] not in ('complete', 'deferred-rollover'):
+        raise ValueError('Native round results need a completed or deferred boundary.')
+    rows = RoundFixtureRows(packet['state'], country_names).rows(observation)
+    return {'round': number, 'results': rows, 'match': None}
