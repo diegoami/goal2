@@ -272,15 +272,19 @@ class TeamInfoOnTheGrid(Base):
     def test_it_is_not_on_either_pending_list(self):
         self.not_pending("TeamInfoScreen", TeamInfoScreen)
 
-    def test_its_panels_are_frames_and_the_original_heading_is_the_rows_over_the_list(self):
+    def test_its_country_list_frame_names_the_ranking_in_use(self):
         window, screen = self.canonical(self.make)
         labels = [frame.label for frame in screen.findChildren(Frame)]
         self.assertEqual(sorted(labels), sorted(["team", "skills", "performance", "team tactics", "ranking", "line-up",
-                                                  "characteristics", "player defaults", "countries"]))
+                                                  "characteristics", "player defaults", "world ranking"]))
         self.assertEqual(grid_check.cards(window), [])
-        heading = [w for w in screen.findChildren(QLabel, "sub") if w.text() == "check out all the competitors"]
-        self.assertEqual(len(heading), 1)
-        self.assertLess(heading[0].y(), screen.countries_frame.y(), "over the list")
+        self.assertEqual(screen.countries_frame.y(), screen.card_view.y())
+        chosen = screen.chosen()
+        screen.toggle_rank()
+        self.assertEqual(screen.countries_frame.label, "continental ranking")
+        self.assertEqual(screen.chosen(), chosen)
+        start = screen.index // 16 * 16
+        self.assertEqual(screen.group_note.text(), f"{start + 1}–{start + 16} of 128")
 
     def test_the_card_is_the_same_60_cells_as_s04s_and_the_list_the_same_29(self):
         window, screen = self.canonical(self.make)
@@ -297,6 +301,9 @@ class TeamInfoOnTheGrid(Base):
         row = screen.rows[marks.index(MARK)]
         self.assertEqual(row.cells[0].width() + cells.cell_w(screen) + row.cells[1].width(),
                          row.width(), "the name, a cell, the mark: the list's 29")
+        for country, other in zip(screen.visible_names(), screen.rows):
+            if other is not row:
+                self.assertEqual(other.cells[1].text(), "-" * (LIST_COLS - len(country) - 3))
 
     def test_every_country_of_the_game_fits_the_cells_its_card_gives_it(self):
         window, screen = self.canonical(self.make)

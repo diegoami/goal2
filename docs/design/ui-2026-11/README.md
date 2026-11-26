@@ -229,6 +229,7 @@ changing its 14-character limit or the game rules.
 
 - **Purpose**: check out all the competitors.
 - **Shows**: any country's card (the S04 card) and the country list, the next opponent marked.
+  [designed: #862] Dashed rows keep the list easy to scan. Its frame names the active ranking and its last row shows the page range.
 - **Actions**: **arrows** country, **Ins** ranking, **Space** that country's players (the S08 card, read
   only), **T** its tactics, **Enter** its fixtures, **Esc** desk.
 - **Replaces**: `m244-team-info-2030`, `m244-team-info-players-2030`. [confirmed: M244-G4C-05 steps 2–6]
