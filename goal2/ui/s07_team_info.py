@@ -71,7 +71,8 @@ class TeamInfoScreen(Screen):
         self.bindings.append(esc)
         self._refresh_bar()
         self._build()
-        self.set_enter("", self.fixtures)
+        # [designed: #862; M244-G4C-05 step 3] The selection already names the country.
+        self.set_enter("Fixtures", self.fixtures)
         self.preview()
         self._show()
 
@@ -97,7 +98,6 @@ class TeamInfoScreen(Screen):
 
     # What is shown.
     def _show(self):
-        _, name = self.chosen()
         start = self.index // GROUP * GROUP
         for i, row in enumerate(self.rows):
             n, country_name = self.order[start + i][:2]
@@ -106,7 +106,6 @@ class TeamInfoScreen(Screen):
         ranking = "continental" if self.continental else "world"
         self.countries_frame.set_label(f"{ranking} ranking")
         self.group_note.setText(f"{start + 1}–{start + GROUP} of {len(self.order)}")
-        self.set_enter(f"Fixtures of {name}", self.fixtures)
         self._show_card()
 
     @staticmethod

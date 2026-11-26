@@ -318,7 +318,7 @@ class TeamInfoOnTheGrid(Base):
         screen.index = next(i for i, c in enumerate(screen.order) if c[1] == TRINIDAD)
         screen._show()
         self.relayout(window)
-        self.assertEqual(screen.enter_text.text(), f"Fixtures of {TRINIDAD}")
+        self.assertEqual(screen.enter_text.text(), "Fixtures")
         self.key_bar_is_two_rows(window, screen)
 
     def test_a_message_fits_its_two_rows(self):
