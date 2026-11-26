@@ -330,6 +330,13 @@ match day to acknowledge its verified entry and final news pages in S05.
 The existing story regions are projected from the original composed cells.
 After the last page, the caller receives its verified boundary once.
 
+[designed: T170av/#876] Pass `show_round_results=True` to the explicit
+native day to show S14 on both sides of a managed match. The projection
+uses the accepted entry and resume fixture deltas, with home score first
+and original fixture-kind words. The optional `round_number` is supplied
+by the caller. After the results, optional S05 and the verified boundary
+callback retain their established order.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,
