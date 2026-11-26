@@ -246,6 +246,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
   cards, readiness; twelve skills, his tactics, five characteristics with their words); the twenty or the
   pool on the right. Once a pool player is picked, the Enter hint reads *put here*, as in the original
   (T156-R1 step 17).
+  [designed: #862] Line-coloured names and a separate role column sit beside segmented skill bars.
+  The pool frame shows its visible range and the card clears if a search has no results.
 - **Actions**: **↑↓** player, **←→** squad / pool, **Enter** move player (Enter on a pool player,
   ← back, Enter on the player he replaces), **A** (or **Ins**) the assistant's recommended 20 [designed: owner playtest #766], **R** next position
   (Shift+R back), **C** club position, **T** his tactics, **F2** new name, **Esc** desk.

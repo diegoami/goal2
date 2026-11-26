@@ -207,7 +207,8 @@ class SquadOnTheGrid(Base):
 
         def search(screen):
             screen.open_search()
-            screen.set_query("muller")
+            screen.set_query("de jong")
+            self.assertIsNotNone(screen.current())
 
         def position(screen):
             screen.show_side("pool")
@@ -274,6 +275,36 @@ class SquadOnTheGrid(Base):
         self.assertEqual(round(screen.strip.width() / cell), 20)
         gap = screen.strip.x() - (screen.card.x() + screen.card.width())
         self.assertEqual(round(gap / cell), 1, "one empty cell separates")
+
+    def test_the_squad_and_pool_put_the_role_to_the_right_of_the_coloured_name(self):
+        window, screen = self.canonical(self.make)
+        for side in ("squad", "pool"):
+            screen.show_side(side)
+            self.relayout(window)
+            row = screen.strip.rows[1]
+            role, name = row.cells
+            self.assertLess(name.geometry().right(), role.x())
+            self.assertEqual(row.tones[0], row.tones[1])
+            self.assertTrue(name.text())
+            self.assertTrue(role.text())
+        self.assertTrue(all(bar.segmented for bar, _ in screen.card.skills.rows.values()))
+        self.assertTrue(all(bar.segmented for bar, _ in screen.card.characteristics.rows.values()))
+
+    def test_empty_pool_search_clears_the_card_until_a_player_is_visible(self):
+        window, screen = self.canonical(self.make)
+        screen.show_side("pool")
+        self.assertEqual(screen.strip.label, "pool 1–20 of 80")
+        self.assertTrue(screen.card.isVisibleTo(screen))
+        screen.set_query("zzzzzzzzzzzz")
+        self.assertEqual(screen.rows(), [])
+        self.assertEqual(screen.strip.label, "pool · 0 players")
+        self.assertFalse(screen.card.isVisibleTo(screen))
+        self.assertIsNone(screen.card.card)
+        self.relayout(window)
+        self.assertEqual(grid_check.violations(window), [])
+        screen.set_query("")
+        self.assertTrue(screen.card.isVisibleTo(screen))
+        self.assertEqual(screen.card.name.text(), screen.strip.rows[0].cells[1].text())
 
     def test_the_tag_and_the_filters_are_cells_not_boxes(self):
         window, screen = self.canonical(self.make)
