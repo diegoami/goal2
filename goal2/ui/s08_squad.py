@@ -43,8 +43,9 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QApplication, QHBoxLayout, QMenu
 
 from goal2.ui import theme
-from goal2.ui.cell_parts import GridCard, GridStrip
+from goal2.ui.cell_parts import CellTableRow, GridCard, GridStrip
 from goal2.ui.cells import CellLabel, CellPara, Cells
+from goal2.ui.frame import PanelOutline
 from goal2.ui.screen import Clickable, Screen
 from goal2.ui.squad_card import colour, full_name, last_on_the_bar, squad_rows
 
@@ -64,6 +65,28 @@ ADDITION = "GOAL2 ADDITION · POOL SEARCH"
 ASSISTANT_WAIT = "The assistant is choosing twenty.\nEsc: cancel and return to desk."
 ASSISTANT_UNAVAILABLE = "The assistant is not available for this career yet.\nYour selection is unchanged."
 ASSISTANT_IDLE = "A: ask your assistant to choose twenty.\nThe full squad and pool are considered."
+ROLE_AT = STRIP_COLS - 3
+
+
+class SquadStrip(GridStrip):
+    """[designed: #862; m244-squad.png] Keep the line colour and place the role behind a rail."""
+
+    def __init__(self, *, expanded):
+        super().__init__(STRIP_COLS, count=24 if expanded else GridStrip.PAGE, compact=expanded)
+        self.role_rail = PanelOutline(self.area, self._role_segments)
+        self.area.layout().addWidget(self.role_rail)
+
+    def make_row(self, index):
+        name_cols = ROLE_AT - 1
+        row = CellTableRow(index, (2, name_cols), (Qt.AlignmentFlag.AlignRight, None), (1, 1), plain=True)
+        role, name = row.cells
+        row.area.move(name, 1, 0, name_cols)
+        row.area.move(role, ROLE_AT, 0, 2)
+        return row
+
+    def _role_segments(self):
+        x = round(self.area.width() * ROLE_AT / self.cols)
+        return ((x, 0, x, self.area.height() - 1),)
 
 
 def shift_held():
@@ -106,6 +129,7 @@ class FilterButton(Clickable):
         self.clicked.connect(handler)
 
     def set_text(self, text, active=False):
+        self.text.reserve = len(text) + 1
         self.text.setText(text)
         colour(self.text, theme.VALUE if active else theme.TEXT_BRIGHT)
 
@@ -173,10 +197,12 @@ class SquadScreen(Screen):
         self.pool_button.clicked.connect(lambda: self.show_side("pool"))
         body.put(self.squad_button, 0, 0, len("Squad (20)") + 2)
         body.put(self.pool_button, len("Squad (20)") + 3, 0, len("Pool") + 2)
-        self.hint = CellLabel("←→ squad / pool · A assistant", "sub")
+        self.name_label.reserve = len(self.title) + 1
+        hint = "←→ squad / pool · A assistant"
+        self.hint = CellLabel(hint, "sub", reserve=len(hint) + 2)
         self.name_label.parentWidget().layout().addWidget(self.hint)
         # [designed: owner, §6 item 18; T177] the pool's search and position filter, tagged as a goal2 addition
-        body.text(ADDITION, "tagNew", len("Squad (20)") + len("Pool") + 6, 0)
+        body.text(ADDITION, "tagNew", len("Squad (20)") + len("Pool") + 6, 0, len(ADDITION) + 2)
         self.size_button = FilterButton("F6", "", self.choose_size)
         body.put(self.size_button, 52, 0, 17)
         self.size_button.setVisible(self.can_resize())
@@ -194,7 +220,7 @@ class SquadScreen(Screen):
         body.put(self.search_button, 0, 1, 27)
         self.position_button = FilterButton("P", "", lambda: self.step_position(1))
         body.put(self.position_button, 28, 1, 36)
-        self.card = GridCard()
+        self.card = GridCard(segmented_bars=True)
         body.put(self.card, 0, CARD_AT, GridCard.COLS, GridCard.ROWS)
         self.note = CellPara("", "sub")
         body.put(self.note, 0, CARD_AT + GridCard.ROWS, LEFT_COLS, 2)
@@ -211,10 +237,7 @@ class SquadScreen(Screen):
             self.area.layout().removeWidget(self.strip)
             self.strip.setParent(None)
             self.strip.deleteLater()
-        if expanded:
-            self.strip = GridStrip(STRIP_COLS, count=24, compact=True)
-        else:
-            self.strip = GridStrip(STRIP_COLS)
+        self.strip = SquadStrip(expanded=expanded)
         self.strip.chosen.connect(self.click_row)
         self.area.put(self.strip, STRIP_AT, 0, STRIP_COLS, BODY_ROWS if expanded else GridStrip.PAGE + 2)
 
@@ -291,7 +314,8 @@ class SquadScreen(Screen):
         else:
             start = self.page() * GridStrip.PAGE
             shown = rows[start:start + GridStrip.PAGE]
-            heading, gap, cursor = "Pool of players", False, self.cursor["pool"] - start
+            heading = f"Pool {start + 1}–{start + len(shown)} of {len(rows)}" if shown else "Pool · 0 players"
+            gap, cursor = False, self.cursor["pool"] - start
         self.strip.show_rows(heading, [(r["role"], r["line"], full_name(self.model, r["id"])
                                        if r["id"] is not None else "Empty place") for r in shown],
                              cursor, gap)
@@ -299,12 +323,17 @@ class SquadScreen(Screen):
         self.size_button.set_text(f"Size {self.capacity()}")
         self.squad_button.set_on(self.side == "squad")
         self.pool_button.set_on(self.side == "pool")
-        self.card.setVisible(word is not None or not expanded)
-        if word is None and expanded:
+        # [designed: #862] The card belongs to the current selection, even after filtering.
+        self.card.setVisible(word is not None)
+        if word is None:
             self.card.card = None
-        if word is not None:
-            self.card.set_card(self.model.card(word) if getattr(self.model, 'held_prematch', False)
-                               else card(self.model.state, word, self.model.goaldat))
+        else:
+            player = (self.model.card(word) if getattr(self.model, 'held_prematch', False)
+                      else card(self.model.state, word, self.model.goaldat))
+            self.card.set_card(player)
+            # [designed: #862] Call out injury, suspension and dismissal on the card.
+            unavailable = player["readiness"] in ("injured", "suspended", "sent off")
+            colour(self.card.readiness, theme.BAD if unavailable else theme.TEXT_BRIGHT)
         self._show_filters(rows)
         if self._assistant_token is not None:
             self.message = self.assistant_wait()
