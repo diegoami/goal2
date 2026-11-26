@@ -3,6 +3,8 @@
 from PySide6.QtCore import QObject, QTimer
 
 from goal2.game.native_season import NativeSeasonOwner
+from goal2.game.season import canonical_hash
+from goal2.game.season_publication import SeasonCampaign, SeasonPublication
 from goal2.ui.cells import Cells
 from goal2.ui.held_prematch import HeldPrematchFlow
 from goal2.ui.native_pitch import NativePitchScreen
@@ -31,7 +33,7 @@ class NativeMatchDay(QObject):
 
     def __init__(self, window, model, state, *, on_boundary, on_failure, on_goal,
                  on_tournament, on_stats, watch=None, show_bulletins=False,
-                 show_round_results=False, round_number=None):
+                 show_round_results=False, round_number=None, campaign=None):
         super().__init__(window)
         if not all(callable(callback) for callback in
                    (on_boundary, on_failure, on_goal, on_tournament, on_stats)):
@@ -44,6 +46,9 @@ class NativeMatchDay(QObject):
             raise ValueError('The round results preference must be a boolean.')
         if round_number is not None and (type(round_number) is not int or round_number < 1):
             raise ValueError('The displayed round number must be a positive integer or None.')
+        if campaign is not None and (not isinstance(campaign, SeasonCampaign)
+                                    or campaign.canonical_hash != canonical_hash(state)):
+            raise ValueError('The native match day must start from its campaign state.')
         country = model.state.managed_country
         self.window = window
         self.model = model
@@ -61,6 +66,8 @@ class NativeMatchDay(QObject):
         self.bulletin = None
         self.preferences = None
         self.entry_observation = None
+        self.publication = SeasonPublication(campaign) if campaign is not None else None
+        self.campaign_revision = campaign.revision if campaign is not None else None
         self.phase = 'opening'
         self.prematch = None
         self.pitch = None
@@ -250,8 +257,15 @@ class NativeMatchDay(QObject):
             self.finish_boundary(observation)
 
     def finish_boundary(self, observation):
-        self.phase = 'finished'
+        if self.phase in ('publishing', 'finished', 'failed', 'closed'):
+            return
+        self.phase = 'publishing'
         try:
+            if self.publication is not None:
+                if self.publication.campaign.revision != self.campaign_revision:
+                    raise ValueError('The campaign changed while the native round was open.')
+                self.publication.complete_native(self.native, observation)
+            self.phase = 'finished'
             self.on_boundary(self, observation)
         except (KeyError, RuntimeError, TypeError, ValueError) as exc:
             self.fail(str(exc))
@@ -269,6 +283,8 @@ class NativeMatchDay(QObject):
             return
         self.phase = 'closed'
         self.timer.stop()
+        if self.publication is not None:
+            self.publication.cancel()
         if self.prematch is not None:
             self.prematch.close()
         if self.pitch is not None:

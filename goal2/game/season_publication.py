@@ -8,9 +8,8 @@ typed to a watched fixture and WatchedOutcome, which a SeasonObservation is not.
 
 [designed] The campaign of the sealed route is the accepted state/2 the SeasonSession produced, plus the ledger
 of calls it has accepted. Results, records, tables, calendars, ordered news and RNG are inside that state:
-the session computed them, publication only moves them. Publication reads the session's public, detached
-`observe()` and `state`; it never touches the Match, the continuation or the backend, and never calls the route.
-No UI, wire or watched job is involved.
+the session computed them, publication only moves them. It reads either the session's detached
+`observe()` and `state`, or the native owner's verified current completion (T170ax).
 """
 import copy
 import secrets
@@ -25,6 +24,7 @@ from goal2.game.season import canonical_hash
 # advancement. 'ready' (no call yet) and 'match' (a call suspended on its Match) are not finished.
 PUBLISHABLE = ('complete', 'deferred-rollover')
 _COMPARED = ('call_number', 'status', 'input_hash', 'output_hash', 'rng_words')
+_INSTALLING = object()
 
 
 @dataclass(frozen=True)
@@ -84,7 +84,7 @@ class SeasonCampaign:
 
     def _view_candidate(self, candidate):
         if self._view is not None:
-            self._view(candidate)
+            self._view(copy.deepcopy(candidate))
 
     def _install(self, candidate):
         """Single assignment of the whole new holding; everything that can fail is computed first."""
@@ -164,6 +164,9 @@ class SeasonPublication:
 
     def prepare_completion(self, token, session):
         """Bind private computation: the session's detached observation and state are read here, once."""
+        return self._prepare(token, lambda: (session.observe(), session.state))
+
+    def _prepare(self, token, read_boundary):
         pending = self._pending_for(token)
         if self._preparation is not None:
             raise ValueError('season publication is already preparing')
@@ -172,28 +175,43 @@ class SeasonPublication:
         except Exception:
             self.cancel()
             raise
-        self._preparation = _SeasonPreparation(pending[1], session.observe(), session.state)
+        self._preparation = _SeasonPreparation(pending[1], *read_boundary())
         return self._preparation
 
     def publish_prepared(self, token, preparation):
         """Only the bound, ready preparation may install; a failure anywhere leaves the campaign unchanged."""
         pending = self._pending_for(token)
-        if self._preparation is None or preparation is not self._preparation:
+        if self._preparation in (None, _INSTALLING) or preparation is not self._preparation:
             raise ValueError('unknown or consumed season publication preparation')
         if not preparation.ready:
             raise ValueError('season publication is still preparing')
-        self.cancel()
-        if preparation.error is not None:
-            raise preparation.error
-        self._check_owner(pending)
-        self.campaign._view_candidate(preparation.candidate)
-        self.campaign._install(preparation.candidate)
-        return preparation.candidate.record
+        self._preparation = _INSTALLING
+        try:
+            if preparation.error is not None:
+                raise preparation.error
+            self._check_owner(pending)
+            self.campaign._view_candidate(preparation.candidate)
+            # The owner callback can close the window or install another round.
+            self._pending_for(token)
+            self._check_owner(pending)
+            self.campaign._install(preparation.candidate)
+            return preparation.candidate.record
+        finally:
+            if self._pending is pending:
+                self.cancel()
 
     def complete(self, token, session):
         preparation = self.prepare_completion(token, session)
         preparation.run()
         return self.publish_prepared(token, preparation)
+
+    def complete_native(self, owner, packet):
+        """[designed: T170ax] Install only the acknowledged completion from this owner."""
+        observation, state = owner.completed_boundary(packet)
+        job = self.begin(observation)
+        preparation = self._prepare(job.token, lambda: (observation, state))
+        preparation.run()
+        return self.publish_prepared(job.token, preparation)
 
     def cancel(self):
         """Invalidate both token and preparation without publishing."""

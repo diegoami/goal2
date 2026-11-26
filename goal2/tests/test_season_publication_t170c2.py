@@ -173,6 +173,42 @@ class Publication(unittest.TestCase):
         rig.publication.complete(rig.publication.begin(obs).token,rig.session)  # a cancel is not a ledger entry
         self.assertEqual(rig.campaign.canonical_hash,obs.output_hash)
 
+    def test_cancellation_in_candidate_validation_prevents_the_install(self):
+        rig=Rig(self,view=lambda _:rig.publication.cancel())
+        obs=rig.session.advance();job=rig.publication.begin(obs)
+        with self.assertRaisesRegex(ValueError,'unknown or consumed'):
+            rig.publication.complete(job.token,rig.session)
+        self.assertEqual(rig.campaign.state,rig.start)
+        self.assertEqual(rig.campaign.published,())
+
+    def test_a_rival_install_during_validation_invalidates_the_outer_candidate(self):
+        def view(_):
+            nonlocal contender
+            if contender is None:
+                return
+            other=contender;contender=None
+            output=other.advance()
+            publication=SeasonPublication(rig.campaign)
+            publication.complete(publication.begin(output).token,other)
+
+        rival=state(8)
+        rig=Rig(self,view=view,second=step('complete',rival))
+        contender=SeasonSession(rig.start)
+        obs=rig.session.advance()
+        with self.assertRaisesRegex(ValueError,'stale'):
+            rig.publication.complete(rig.publication.begin(obs).token,rig.session)
+        self.assertEqual(rig.campaign.state,rival)
+        self.assertEqual(rig.campaign.revision,1)
+
+    def test_validation_reads_a_detached_candidate(self):
+        def view(candidate):
+            candidate.state.clear()
+
+        rig=Rig(self,view=view);obs=rig.session.advance()
+        rig.publication.complete(rig.publication.begin(obs).token,rig.session)
+        self.assertEqual(rig.campaign.state,rig.after)
+        self.assertEqual(rig.campaign.published[0].output_hash,rig.campaign.canonical_hash)
+
     def test_pending_and_unready_calls_are_refused_by_name(self):
         rig=Rig(self,first='match')
         ready=rig.session.observe()

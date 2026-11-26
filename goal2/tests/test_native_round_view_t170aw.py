@@ -8,6 +8,7 @@ import time
 from types import SimpleNamespace
 import unittest
 
+from goal2.game.season_publication import PublishedCall, SeasonCampaign
 from goal2.tests import pypy_engine, requires
 from goal2.tests.season_oracle import component_of
 from goal2.tests.test_native_round_view_t170av import result
@@ -57,7 +58,7 @@ class Projection(unittest.TestCase):
 
 @requires.need(modules=('PySide6', 'unicorn'), files=('GOAL.DAT', ARTIFACTS[0]['name'], ARTIFACTS[2]['name']))
 class Window(unittest.TestCase):
-    def open(self, state, *, number=None, bulletins=True):
+    def open(self, state, *, number=None, bulletins=True, campaign=None):
         from PySide6.QtWidgets import QApplication
         from goal2.data.goaldat import load
         from goal2.desktop.data_setup import paths
@@ -86,6 +87,7 @@ class Window(unittest.TestCase):
         self.boundaries, self.failures = [], []
         self.day = NativeMatchDay(
             self.window, model, state, show_round_results=True, show_bulletins=bulletins, round_number=number,
+            campaign=campaign,
             on_boundary=lambda _, value: self.boundaries.append(value),
             on_failure=lambda _, message: self.failures.append(message),
             on_goal=self.unexpected, on_tournament=self.unexpected, on_stats=self.unexpected,
@@ -124,6 +126,13 @@ class Window(unittest.TestCase):
         self.assertIsNone(self.day.prematch)
         self.assertIsNone(self.day.pitch)
 
+    def assert_published(self, campaign, state, observed):
+        self.assert_boundary(state, observed)
+        self.assertEqual(campaign.state, state)
+        self.assertEqual(campaign.revision, 1)
+        self.assertEqual(campaign.published, (PublishedCall(
+            observed['call_number'], observed['status'], observed['input_hash'], observed['output_hash']),))
+
     @staticmethod
     @cache
     def case(index, count):
@@ -148,7 +157,8 @@ class Window(unittest.TestCase):
         self.assertEqual(observation['status'], 'complete')
         self.assertTrue(observation['played_fixtures'])
         self.assertTrue(observation['news_pages'])
-        self.open(entry, number=13)
+        campaign = SeasonCampaign(entry)
+        self.open(entry, number=13, campaign=campaign)
         self.key(Qt.Key.Key_F1)
         self.assertIsInstance(self.window.current(), HelpScreen)
         self.until(lambda: self.day.native.status == 'boundary')
@@ -162,6 +172,7 @@ class Window(unittest.TestCase):
         self.assertEqual(results.title, 'round 13 · results')
         self.assertIsNone(results.mine)
         self.assertEqual(results.visible(), [])
+        self.assertEqual((campaign.state, campaign.revision), (entry, 0))
         self.key(Qt.Key.Key_Space)
         results.arrive()
         self.assertEqual(results.visible(), [])
@@ -182,8 +193,9 @@ class Window(unittest.TestCase):
         self.assertEqual(bulletin.pages, native_bulletins(observation))
         self.assertFalse(self.boundaries)
         for _ in bulletin.pages:
+            self.assertEqual(campaign.revision, 0)
             self.key(Qt.Key.Key_Return)
-        self.assert_boundary(state, observation)
+        self.assert_published(campaign, state, observation)
         self.day.poll()
         self.assertEqual(len(self.boundaries), 1)
 
@@ -195,7 +207,8 @@ class Window(unittest.TestCase):
         entry, state, observation = self.case(2, 2)
         self.assertEqual(observation['status'], 'deferred-rollover')
         self.assertTrue(observation['played_fixtures'])
-        self.open(entry)
+        campaign = SeasonCampaign(entry)
+        self.open(entry, campaign=campaign)
         self.until(lambda: self.day.phase in ('after_results', 'bulletin', 'finished'))
         results = self.window.current()
         self.assertIsInstance(results, RoundScreen)
@@ -203,12 +216,13 @@ class Window(unittest.TestCase):
         self.assertIsNone(results.mine)
         self.assertEqual(len(results.arriving) + len(results.shown_rows), len(observation['played_fixtures']))
         self.assertFalse(self.boundaries)
+        self.assertEqual(campaign.revision, 0)
         self.key(Qt.Key.Key_Return)
         bulletin = self.window.current()
         if isinstance(bulletin, BulletinScreen):
             for _ in bulletin.pages:
                 self.key(Qt.Key.Key_Return)
-        self.assert_boundary(state, observation)
+        self.assert_published(campaign, state, observation)
         self.assertEqual(self.day.native.status, 'terminal')
 
     def test_actual_empty_rollover_guard_has_no_result_board(self):
@@ -220,14 +234,56 @@ class Window(unittest.TestCase):
         self.assertFalse(observation['played_fixtures'])
         self.assertFalse(observation['news_pages'])
         self.assertEqual(state, entry)
-        self.open(entry, bulletins=False)
+        campaign = SeasonCampaign(entry)
+        self.open(entry, bulletins=False, campaign=campaign)
         self.key(Qt.Key.Key_F1)
         self.until(lambda: self.day.native.status == 'terminal')
         self.assertFalse(self.boundaries)
+        self.assertEqual(campaign.revision, 0)
         self.key(Qt.Key.Key_Escape)
         self.until(lambda: self.day.phase == 'finished')
         self.assertIs(self.window.current(), self.day.opening)
-        self.assert_boundary(state, observation)
+        self.assert_published(campaign, state, observation)
+
+    def test_closing_during_validation_cancels_the_native_publication(self):
+        _, entry, _ = self.case(2, 2)
+        validated = []
+
+        def close(candidate):
+            validated.append(candidate.record)
+            self.window.leaving = True
+            self.window.close()
+
+        campaign = SeasonCampaign(entry, view=close)
+        self.open(entry, bulletins=False, campaign=campaign)
+        self.until(lambda: self.day.native.disposed)
+        self.assertEqual(self.day.phase, 'closed')
+        self.assertEqual(len(validated), 1)
+        self.assertEqual(validated[0].status, 'deferred-rollover')
+        self.assertEqual((campaign.state, campaign.revision, campaign.published), (entry, 0, ()))
+        self.assertFalse(self.boundaries)
+
+    def test_campaign_revision_is_pinned_even_when_a_rival_keeps_the_same_state(self):
+        from PySide6.QtCore import Qt
+        from goal2.game.season import SeasonSession
+        from goal2.game.season_publication import SeasonPublication
+
+        _, entry, _ = self.case(2, 2)
+        campaign = SeasonCampaign(entry)
+        self.open(entry, bulletins=False, campaign=campaign)
+        self.key(Qt.Key.Key_F1)
+        self.until(lambda: self.day.native.status == 'terminal')
+        # The terminal guard can complete in-process without entering the backend.
+        rival = SeasonSession(entry)
+        observed = rival.advance()
+        self.assertEqual(observed.input_hash, observed.output_hash)
+        publication = SeasonPublication(campaign)
+        record = publication.complete(publication.begin(observed).token, rival)
+        self.key(Qt.Key.Key_Escape)
+        self.until(lambda: self.day.phase == 'failed')
+        self.assertEqual(self.failures, ['The campaign changed while the native round was open.'])
+        self.assertFalse(self.boundaries)
+        self.assertEqual((campaign.state, campaign.revision, campaign.published), (entry, 1, (record,)))
 
     def test_close_under_help_at_actual_unmanaged_results_releases_owner(self):
         from PySide6.QtCore import Qt
@@ -235,7 +291,8 @@ class Window(unittest.TestCase):
         from goal2.ui.s22_help import HelpScreen
 
         entry, _, _ = self.case(0, 1)
-        self.open(entry)
+        campaign = SeasonCampaign(entry)
+        self.open(entry, campaign=campaign)
         self.until(lambda: self.day.phase in ('after_results', 'bulletin', 'finished'))
         results = self.window.current()
         self.assertIsInstance(results, RoundScreen)
@@ -246,3 +303,4 @@ class Window(unittest.TestCase):
         self.until(lambda: self.day.native.disposed, limit=15)
         self.assertFalse(results.timer.isActive())
         self.assertFalse(self.boundaries)
+        self.assertEqual((campaign.state, campaign.revision, campaign.published), (entry, 0, ()))
