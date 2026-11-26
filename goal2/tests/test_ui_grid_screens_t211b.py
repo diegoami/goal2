@@ -312,6 +312,20 @@ class TeamInfoOnTheGrid(Base):
             screen.card_view.set_card(data)
             self.text_fits_its_cells(screen.card_view, f"country {number}")
 
+    def test_a_wide_font_keeps_the_last_glyph_inside_the_country_cell(self):
+        _, screen = self.canonical(self.make)
+        label = screen.rows[0].cells[0]
+        length = len(label.text())
+        font = label.font()
+        font.setStretch(200)
+        label.setFont(font)
+        prefix = " " * (length - 1)
+        self.assertGreater(label.fontMetrics().horizontalAdvance(prefix), label.width())
+        label.setText(" " * length)
+        blank = label.grab().toImage()
+        label.setText(prefix + "X")
+        self.assertNotEqual(label.grab().toImage(), blank)
+
     def test_the_bar_keeps_its_two_rows_for_each_enter_hint(self):
         window, screen = self.canonical(self.make)
         self.key_bar_is_two_rows(window, screen)

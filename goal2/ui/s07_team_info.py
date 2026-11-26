@@ -19,12 +19,13 @@ nothing [designed: owner, 2026-11-03, #527 D2].
 """
 from __future__ import annotations
 
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QRectF, Qt, QTimer
+from PySide6.QtGui import QFontMetricsF, QPainter
 
 from goal2.game.country_card import card as country_card
 from goal2.ui import theme
 from goal2.ui.cell_parts import CellTableRow
-from goal2.ui.cells import CellPara, Cells
+from goal2.ui.cells import CellLabel, CellPara, Cells
 from goal2.ui.country_parts import framed
 from goal2.ui.frame import DASH
 from goal2.ui.s04_country import (BODY_COLS, BODY_ROWS, GROUP, LIST_AT, LIST_COLS, PREVIEW_MS, CountryCard, PlayersScreen, averages,
@@ -36,6 +37,25 @@ from goal2.ui.squad_card import colour
 MARK = "next opponent"   # [designed: s07-team-info.html]
 MARK_COLS = len(MARK)
 NAME_COLS = LIST_COLS - MARK_COLS - 1
+
+
+class CountryRowLabel(CellLabel):
+    """[designed: #862] Keep the full row text when Windows rounds font advances up."""
+
+    def paintEvent(self, event):
+        text = self.text()
+        if not text or not self.width():
+            return
+        painter = QPainter(self)
+        font = self.font()
+        painter.setFont(font)
+        painter.setPen(self.palette().color(self.foregroundRole()))
+        advance = QFontMetricsF(font, self).horizontalAdvance(text)
+        scale = min(1.0, self.width() / max(1.0, advance))
+        painter.scale(scale, 1.0)
+        rect = QRectF(0, 0, self.width() / scale, self.height())
+        painter.drawText(rect, int(self.alignment()), text)
+        painter.end()
 
 
 class TeamInfoScreen(Screen):
@@ -72,6 +92,7 @@ class TeamInfoScreen(Screen):
         self._refresh_bar()
         self._build()
         # [designed: #862; M244-G4C-05 step 3] The selection already names the country.
+        self.enter_text.reserve = len("Fixtures") + 1
         self.set_enter("Fixtures", self.fixtures)
         self.preview()
         self._show()
@@ -86,7 +107,7 @@ class TeamInfoScreen(Screen):
         self.countries_frame, inner = framed("world ranking", LIST_COLS, GROUP + 1)
         self.rows = []
         for i in range(GROUP):
-            row = CellTableRow(i, (NAME_COLS, MARK_COLS), gaps=(0, 1), plain=True)
+            row = CellTableRow(i, (NAME_COLS, MARK_COLS), gaps=(0, 1), plain=True, label_type=CountryRowLabel)
             row.chosen.connect(self.click_row)
             inner.put(row, 0, i, LIST_COLS)
             self.rows.append(row)

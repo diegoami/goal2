@@ -99,7 +99,7 @@ class CellTableRow(CellRow):
     cursor's. `aligns` is a `Qt.AlignmentFlag` per cell (left by default). `wrap_rows` uses that many cell rows per field; `plain` retains literal names. A cell's text longer than its width is squeezed below
     the cells it needs, which `fixed_page.problems` reports: a column is never clipped. [designed: T211b]"""
 
-    def __init__(self, index, widths, aligns=None, gaps=None, *, wrap_rows=1, plain=False):
+    def __init__(self, index, widths, aligns=None, gaps=None, *, wrap_rows=1, plain=False, label_type=CellLabel):
         Clickable.__init__(self, "listRow")
         self.index = index
         self.underline = False
@@ -113,7 +113,7 @@ class CellTableRow(CellRow):
         self.tones = []
         column = 0
         for number, width in enumerate(widths):
-            cell = CellPara("", "rowCell") if wrap_rows > 1 else CellLabel("", "rowCell")
+            cell = CellPara("", "rowCell") if wrap_rows > 1 else label_type("", "rowCell")
             if plain:
                 cell.setTextFormat(Qt.TextFormat.PlainText)
             if aligns is not None and aligns[number] is not None:
