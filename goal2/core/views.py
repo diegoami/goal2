@@ -25,6 +25,7 @@ from contextlib import contextmanager
 
 from goal2.engine.original_match.image import Image
 from goal2.core.runner import CP437_LOW
+from goal2.game.bulletin_view import BULLETIN_PANELS, FILLER, bulletin_columns
 
 # [designed: T136] Pure display calls may resolve identities; original driver/oracle reads default to raw names.
 _display_names = ContextVar('goal2_display_names', default=None)
@@ -622,12 +623,6 @@ def country_card(state, country):
 # and 075F the right at column 0x3B, rows 0x0B..0x0D (18 characters). The animation 000E:0572 draws on the screen
 # only, so the buffer holds the page as composed.
 PAGE_BUFFER = 0xA96E
-# [derived: the writers' columns and rows above, 1-based; E038-r0001's bulletins] each story's masthead row and box:
-# (masthead row, first row, last row, first column, last column), 0-based, the box's inside.
-BULLETIN_PANELS = {"left": (8, 10, 18, 3, 22), "middle": (6, 8, 20, 29, 50), "right": (8, 10, 18, 57, 76)}
-FILLER = set("≡░ ")                   # [derived: the template's text lines] the page's filler glyphs, words of no story
-
-
 def bulletin(state):
     """THE SOCCER BULLETIN as its writers composed it in the page buffer: each story's masthead and its lines, top
     to bottom, without the template's filler (rows made of ≡ and ░ only)."""
@@ -637,12 +632,8 @@ def bulletin(state):
     def cells(row, a, b):
         raw = bytes(mem.mem[base + 160 * row + 2 * a:base + 160 * row + 2 * b + 2:2])
         return "".join(" " if c == 0 else CP437_LOW[c - 1] if c < 32 else bytes([c]).decode("cp437")
-                       for c in raw).strip()
-    out = {}
-    for name, (head, first, last, a, b) in BULLETIN_PANELS.items():
-        lines = [cells(r, a, b) for r in range(first, last + 1)]
-        out[name] = {"masthead": cells(head, a, b), "lines": [t for t in lines if t and not set(t) <= FILLER]}
-    return out
+                       for c in raw)
+    return bulletin_columns(cells)
 
 
 def achievement_bulletin(state):

@@ -15,7 +15,7 @@ PAGE_FIELDS = frozenset(field.name for field in fields(NewsPageMemory))
 OPTIONAL_INTS = ('buffer_address', 'data_segment', 'country', 'side', 'manager', 'waiting_key')
 
 
-def _validate_page(page):
+def validate_news_page(page):
     if not isinstance(page, dict) or set(page) != PAGE_FIELDS:
         raise ValueError('invalid season news snapshot fields')
     if type(page['cells']) is not bytes or len(page['cells']) != PAGE_BYTES:
@@ -53,7 +53,7 @@ def _observation(value, decoding):
                 page['cells'] = base64.b64decode(cells['base64'], validate=True)
             except (binascii.Error, ValueError) as exc:
                 raise ValueError('invalid season news cell encoding') from exc
-        _validate_page(page)
+        validate_news_page(page)
         if not decoding:
             page['cells'] = {'schema': CELLS_SCHEMA, 'base64': base64.b64encode(page['cells']).decode('ascii')}
         pages.append(page)

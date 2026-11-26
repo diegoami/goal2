@@ -325,6 +325,11 @@ and can read any pre-match deltas from `entry_observation` on the day.
 The day keeps ownership until closed. Goal and pre-match
 route-view callbacks are supplied by the caller.
 
+[designed: T170au/#874] Pass `show_bulletins=True` to the explicit native
+match day to acknowledge its verified entry and final news pages in S05.
+The existing story regions are projected from the original composed cells.
+After the last page, the caller receives its verified boundary once.
+
 [designed: T170s/#746; confirmed: T170r audit at archaeology `fb6d3093`]
 `preview` returns `preview={schema:"goal2/prematch-preview/1", decision, state_hash}`
 and the current state/2 in the binary JSON payload. The parent checks that identity,
