@@ -19,13 +19,15 @@ nothing [designed: owner, 2026-11-03, #527 D2].
 """
 from __future__ import annotations
 
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QRectF, Qt, QTimer
+from PySide6.QtGui import QFontMetricsF, QPainter
 
 from goal2.game.country_card import card as country_card
 from goal2.ui import theme
 from goal2.ui.cell_parts import CellTableRow
-from goal2.ui.cells import CellPara, Cells
+from goal2.ui.cells import CellLabel, CellPara, Cells
 from goal2.ui.country_parts import framed
+from goal2.ui.frame import DASH
 from goal2.ui.s04_country import (BODY_COLS, BODY_ROWS, GROUP, LIST_AT, LIST_COLS, PREVIEW_MS, CountryCard, PlayersScreen, averages,
                                   ordered)
 from goal2.ui.s06_desk import next_match
@@ -33,10 +35,27 @@ from goal2.ui.screen import Screen
 from goal2.ui.squad_card import colour
 
 MARK = "next opponent"   # [designed: s07-team-info.html]
-# [designed: T211b] A row of the list: the country's name right-aligned in 15 cells (the longest name is 15 characters), a cell, then the
-# mark's 13: the list's 29. Right-aligned, the names stand in the page's last quarter, where the list is the only ink: left-aligned, six
-# of every name's characters fall in the tile before it and check_density.py reads a region of 1.05 % there (the original's list: 4.9 %).
 MARK_COLS = len(MARK)
+NAME_COLS = LIST_COLS - MARK_COLS - 1
+
+
+class CountryRowLabel(CellLabel):
+    """[designed: #862] Keep the full row text when Windows rounds font advances up."""
+
+    def paintEvent(self, event):
+        text = self.text()
+        if not text or not self.width():
+            return
+        painter = QPainter(self)
+        font = self.font()
+        painter.setFont(font)
+        painter.setPen(self.palette().color(self.foregroundRole()))
+        advance = QFontMetricsF(font, self).horizontalAdvance(text)
+        scale = min(1.0, self.width() / max(1.0, advance))
+        painter.scale(scale, 1.0)
+        rect = QRectF(0, 0, self.width() / scale, self.height())
+        painter.drawText(rect, int(self.alignment()), text)
+        painter.end()
 
 
 class TeamInfoScreen(Screen):
@@ -72,46 +91,57 @@ class TeamInfoScreen(Screen):
         self.bindings.append(esc)
         self._refresh_bar()
         self._build()
-        self.set_enter("", self.fixtures)
+        # [designed: #862; M244-G4C-05 step 3] The selection already names the country.
+        self.enter_text.reserve = len("Fixtures") + 1
+        self.set_enter("Fixtures", self.fixtures)
         self.preview()
         self._show()
 
     def _build(self):
-        """[designed: owner, 2026-11-08, #667; T211b; docs/design/ui-2026-11/proposal/README.md] The card (60 cells wide, the same as S04's)
-        at the left and at the right, a cell apart, the original's heading of the list, *check out all the competitors*, over the sixteen
-        countries in a frame, on the 90 x 25 cells between the title row and the key rows; what the screen says under the list."""
+        """[designed: #667, T211b, #862] The S04 card and the framed country list sit side by side."""
         body = Cells(BODY_COLS, BODY_ROWS, "teamBody")
         self.body_layout.addWidget(body, 1)
         self.area = body
         self.card_view = CountryCard(family=self.window_.family, rows=CountryCard.ROWS_WITH_PERFORMANCE)
         body.put(self.card_view, 0, 0, CountryCard.COLS, CountryCard.ROWS_WITH_PERFORMANCE)
-        body.text("check out all the competitors", "sub", LIST_AT, 2)
-        self.countries_frame, inner = framed("countries", LIST_COLS, GROUP + 2)
+        self.countries_frame, inner = framed("world ranking", LIST_COLS, GROUP + 1)
         self.rows = []
         for i in range(GROUP):
-            row = CellTableRow(i, (LIST_COLS - MARK_COLS - 1, MARK_COLS), (Qt.AlignmentFlag.AlignRight, None), (0, 1))
+            row = CellTableRow(i, (NAME_COLS, MARK_COLS), gaps=(0, 1), plain=True, label_type=CountryRowLabel)
             row.chosen.connect(self.click_row)
             inner.put(row, 0, i, LIST_COLS)
             self.rows.append(row)
-        self.group_note = CellPara("", "sub")   # "16 of 128 · continental ranking": 31 characters, two rows
-        inner.put(self.group_note, 0, GROUP, LIST_COLS, 2)
-        body.put(self.countries_frame, LIST_AT, 4, LIST_COLS, GROUP + 3)
+        self.group_note = inner.text("", "sub", 1, GROUP, LIST_COLS - 2)
+        body.put(self.countries_frame, LIST_AT, 0, LIST_COLS, GROUP + 2)
         self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        body.put(self.note, LIST_AT, GROUP + 7, LIST_COLS, 2)
+        body.put(self.note, LIST_AT, GROUP + 3, LIST_COLS, 2)
 
     # What is shown.
     def _show(self):
-        number, name = self.order[self.index][:2]
         start = self.index // GROUP * GROUP
         for i, row in enumerate(self.rows):
             n, country_name = self.order[start + i][:2]
-            row.set_cells([country_name, MARK if n == self.opponent else ""])
+            self._show_country(row, country_name, n == self.opponent)
             row.set_on(start + i == self.index)
         ranking = "continental" if self.continental else "world"
-        self.group_note.setText(f"{start + GROUP} of {len(self.order)} · {ranking} ranking")
-        self.set_enter(f"Fixtures of {name}", self.fixtures)
+        self.countries_frame.set_label(f"{ranking} ranking")
+        self.group_note.setText(f"{start + 1}–{start + GROUP} of {len(self.order)}")
         self._show_card()
+
+    @staticmethod
+    def _show_country(row, name, next_opponent):
+        """[designed: #862; m244-team-info-2030.png] Fill the row after the name, leaving the opponent cue readable."""
+        if next_opponent:
+            name_width, detail_width = NAME_COLS, MARK_COLS
+            detail, tone = MARK, theme.VALUE
+        else:
+            name_width = len(name)
+            detail_width = LIST_COLS - name_width - 3
+            detail, tone = DASH * detail_width, theme.FRAME_DARK
+        row.area.move(row.cells[0], 0, 0, name_width)
+        row.area.move(row.cells[1], name_width + 1, 0, detail_width)
+        row.set_cells((name, detail), (theme.TEXT_BRIGHT, tone))
 
     def _show_card(self):
         if self.card is not None:
@@ -142,7 +172,7 @@ class TeamInfoScreen(Screen):
         return [row.cells[0].text() for row in self.rows]
 
     def marks(self):
-        return [row.cells[1].text() for row in self.rows]
+        return [MARK if row.cells[1].text() == MARK else "" for row in self.rows]
 
     def say(self, text):
         self.note.setText(text)

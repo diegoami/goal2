@@ -272,15 +272,19 @@ class TeamInfoOnTheGrid(Base):
     def test_it_is_not_on_either_pending_list(self):
         self.not_pending("TeamInfoScreen", TeamInfoScreen)
 
-    def test_its_panels_are_frames_and_the_original_heading_is_the_rows_over_the_list(self):
+    def test_its_country_list_frame_names_the_ranking_in_use(self):
         window, screen = self.canonical(self.make)
         labels = [frame.label for frame in screen.findChildren(Frame)]
         self.assertEqual(sorted(labels), sorted(["team", "skills", "performance", "team tactics", "ranking", "line-up",
-                                                  "characteristics", "player defaults", "countries"]))
+                                                  "characteristics", "player defaults", "world ranking"]))
         self.assertEqual(grid_check.cards(window), [])
-        heading = [w for w in screen.findChildren(QLabel, "sub") if w.text() == "check out all the competitors"]
-        self.assertEqual(len(heading), 1)
-        self.assertLess(heading[0].y(), screen.countries_frame.y(), "over the list")
+        self.assertEqual(screen.countries_frame.y(), screen.card_view.y())
+        chosen = screen.chosen()
+        screen.toggle_rank()
+        self.assertEqual(screen.countries_frame.label, "continental ranking")
+        self.assertEqual(screen.chosen(), chosen)
+        start = screen.index // 16 * 16
+        self.assertEqual(screen.group_note.text(), f"{start + 1}–{start + 16} of 128")
 
     def test_the_card_is_the_same_60_cells_as_s04s_and_the_list_the_same_29(self):
         window, screen = self.canonical(self.make)
@@ -297,6 +301,9 @@ class TeamInfoOnTheGrid(Base):
         row = screen.rows[marks.index(MARK)]
         self.assertEqual(row.cells[0].width() + cells.cell_w(screen) + row.cells[1].width(),
                          row.width(), "the name, a cell, the mark: the list's 29")
+        for country, other in zip(screen.visible_names(), screen.rows):
+            if other is not row:
+                self.assertEqual(other.cells[1].text(), "-" * (LIST_COLS - len(country) - 3))
 
     def test_every_country_of_the_game_fits_the_cells_its_card_gives_it(self):
         window, screen = self.canonical(self.make)
@@ -305,13 +312,27 @@ class TeamInfoOnTheGrid(Base):
             screen.card_view.set_card(data)
             self.text_fits_its_cells(screen.card_view, f"country {number}")
 
+    def test_a_wide_font_keeps_the_last_glyph_inside_the_country_cell(self):
+        _, screen = self.canonical(self.make)
+        label = screen.rows[0].cells[0]
+        length = len(label.text())
+        font = label.font()
+        font.setStretch(200)
+        label.setFont(font)
+        prefix = " " * (length - 1)
+        self.assertGreater(label.fontMetrics().horizontalAdvance(prefix), label.width())
+        label.setText(" " * length)
+        blank = label.grab().toImage()
+        label.setText(prefix + "X")
+        self.assertNotEqual(label.grab().toImage(), blank)
+
     def test_the_bar_keeps_its_two_rows_for_each_enter_hint(self):
         window, screen = self.canonical(self.make)
         self.key_bar_is_two_rows(window, screen)
         screen.index = next(i for i, c in enumerate(screen.order) if c[1] == TRINIDAD)
         screen._show()
         self.relayout(window)
-        self.assertEqual(screen.enter_text.text(), f"Fixtures of {TRINIDAD}")
+        self.assertEqual(screen.enter_text.text(), "Fixtures")
         self.key_bar_is_two_rows(window, screen)
 
     def test_a_message_fits_its_two_rows(self):

@@ -518,7 +518,7 @@ class TeamInfo(App):
         start = screen.index // 16 * 16
         self.assertEqual(screen.marks()[screen.index - start], "next opponent")
         self.assertEqual(sum(1 for m in screen.marks() if m), 1)
-        self.assertEqual(screen.enter_text.text(), f"Fixtures of {name}")
+        self.assertEqual(screen.enter_text.text(), "Fixtures")
         card = country_card(model.state, opponent, model.goaldat)
         self.assertEqual(screen.card_view.ranks["world"].text(), str(card["world"]))
         self.assertEqual(screen.card_view.tactics["defence system"].text(), card["team_tactics"][0][1])
