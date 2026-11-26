@@ -89,7 +89,7 @@ original asks. [confirmed: T156-R1 steps 36–45, 262–266; designed: owner dec
 | 4 | Country browser (steps 3–5) | which country | S04 Country | Same, with the card and the list together. |
 | 5 | Name entry (steps 6–10) | manager's name | S04 Country | Same, on the same screen, as in the original (an overlay of the browser). |
 | 6 | Bulletins (steps 11–12) | read the news | S05 Bulletin | Same. |
-| 7 | Hub (step 13) | what to do next | S06 Desk | Same: the landing page with all six options visible, *play next game* among them, the cursor on *team info*, the same F-keys. |
+| 7 | Hub (step 13) | what to do next | S06 Desk | Same six options, cursor on *team info* and same F-keys. **Changed** [designed: #862]: the opponent and fixture type/venue also appear on separate lines above *play next game* so the player can see what they are starting. |
 | 8 | Squad and pool (steps 14–29) | who is in the twenty | S08 Squad | Same keys and the same two-Enter exchange. |
 | 9 | Player tactics (step 30) | one player's tactics | S09 Player tactics | Same. |
 | 10 | Team tactics (steps 33–34) | the team's tactics | S10 Team tactics | Same. |

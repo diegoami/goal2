@@ -100,9 +100,6 @@ class ManagerSummary(Cells):
     def text(self):
         return self.name_line.text() + "\n" + self.country_line.text()
 
-HINT = ("↑↓ chooses; Enter opens. Play next game opens the match menu, captain and watched pitch.")   # [designed: s06-hub.html]
-
-
 
 def next_match(model):
     """(opponent's number or None, the match's kind in words) of the career's next fixture, from the model's own
@@ -115,7 +112,8 @@ def next_match(model):
     if fixture is None:
         return None, "stage complete"
     opponent = fixture.side_b if fixture.side_a == state.managed_country else fixture.side_a
-    kind = model.fixture_label(fixture).split(" / ", 1)[1].lower()
+    # [designed: #862] The banner already names the continental competition.
+    kind = model.fixture_label(fixture).split(" / ", 1)[1].lower().removeprefix("continental ")
     # [confirmed: F031 "Venue", 000E:724A; t156-013-hub.png "friendly away"] the hub's home or away (#562)
     return opponent, f"{kind} {model.venue(fixture)}"
 
@@ -149,7 +147,7 @@ class DeskScreen(Screen):
     def _build(self):
         """[designed: owner, 2026-11-08, #667; T211; docs/design/ui-2026-11/proposal/README.md, s06-hub] The desk on the 90 x 25
         cells between the title row and the key rows: three columns, one empty cell apart. At the left the frames of the manager, the
-        team, the next opponent and the managers, and under them the hint and the screen's message; in the middle the six options as
+        team, the next opponent and the managers, and under them the screen's message; in the middle the six options as
         boxes of two rows, as the original's, and the goal2 additions as boxes under their tag; at the right the twenty."""
         body = Cells(BODY_COLS, BODY_ROWS, "deskBody")
         self.body_layout.addWidget(body, 1)
@@ -171,23 +169,20 @@ class DeskScreen(Screen):
         opponents, inner = panel("next opponents", LEFT_COLS, 4)
         self.opponent_name = inner.text("", "h1", 0, 0, LEFT_COLS)
         colour(self.opponent_name, theme.VALUE)
-        rows, self.opponent_ranks = key_values((("world", "world"), ("continent", "continent"), ("match", "match")),
-                                               LEFT_COLS, LABEL_COLS)
-        inner.put(rows, 0, 1, LEFT_COLS, 3)
+        rows, self.opponent_ranks = key_values((("world", "world"), ("continent", "continent")), LEFT_COLS, LABEL_COLS)
+        inner.put(rows, 0, 1, LEFT_COLS, 2)
+        self.opponent_kind = inner.text("", "sub", 1, 3, LEFT_COLS - 2)
         body.put(opponents, 0, 9, LEFT_COLS, 5)
         managers, inner = panel("managers", LEFT_COLS, 2)
         self.managers = ManagerSummary()
         inner.put(self.managers, 0, 0, LEFT_COLS, 2)
         body.put(managers, 0, 15, LEFT_COLS, 3)
-        body.put(CellPara(HINT, "sub"), 0, 18, LEFT_COLS, 4)
         # The six options, in the original's order. [confirmed: t156-013-hub.png]
         self.add_option("team info", self.team_info, enter="Team info")
         self.add_option("fixture list", self.fixture_list, enter="Fixture list")
         self.add_option("tournament", self.tournament, enter="Tournament")
         self.add_option("history", self.history, enter="History")
         self.add_option("select squad", self.select_squad, key=Qt.Key.Key_Space, enter="Select squad")
-        self.add_option("play next game", self.play_next_game, enter="Play next game")
-        self.play_note = CellLabel("", "sub")
         # Space is on its option, not on the bar, as the mockup draws it. [designed: s06-hub.html]
         for binding in self.bindings:
             if binding.keys == (Qt.Key.Key_Space,):
@@ -195,10 +190,16 @@ class DeskScreen(Screen):
         self._refresh_bar()
         for index, option in enumerate(self.options):
             body.put(option, MIDDLE_AT, 3 * index, MIDDLE_COLS, 2)   # a row between boxes, as the original's
-        body.put(self.play_note, MIDDLE_AT, 17, MIDDLE_COLS)
+        # [designed: #862; t156-013-hub.png] Put the fixture beside the
+        # decision to play it, with room for the country and venue on separate rows.
+        self.play_opponent = body.text("", "value", MIDDLE_AT + 1, 14, MIDDLE_COLS - 2)
+        colour(self.play_opponent, theme.VALUE)
+        self.play_kind = body.text("", "sub", MIDDLE_AT + 1, 15, MIDDLE_COLS - 2)
+        play = self.add_option("play next game", self.play_next_game, enter="Play next game")
+        body.put(play, MIDDLE_AT, 16, MIDDLE_COLS, 2)
         self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        body.put(self.note, 0, 22, LEFT_COLS, 3)
+        body.put(self.note, 0, 19, LEFT_COLS, 6)
         body.text("GOAL2 ADDITION", "tagNew", MIDDLE_AT, 18)
         # [designed: owner #598] the extra actions keep their full size, boxes as the six
         for index, (text, handler, enter) in enumerate((("manager's name", self.rename, "New manager's name"),
@@ -231,8 +232,9 @@ class DeskScreen(Screen):
         else:
             self.opponent_name.setText(names[opponent])
             self._ranks(self.opponent_ranks, country_card(state, opponent, model.goaldat))
-        self.opponent_ranks["match"].setText(kind)
-        self.play_note.setText(f"{names[opponent]} · {kind}" if opponent is not None else kind)
+        self.opponent_kind.setText(kind)
+        self.play_opponent.setText(names[opponent] if opponent is not None else "")
+        self.play_kind.setText(kind)
         self.managers.show_manager(model.manager, names[state.managed_country])
         rows, eleven = squad_rows(model)
         self.strip.show_rows(names[state.managed_country],

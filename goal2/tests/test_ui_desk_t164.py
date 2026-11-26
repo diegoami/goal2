@@ -12,6 +12,7 @@ The careers read GOAL.DAT and the E010 half-time template from the git-ignored `
 (goal2/tests/requires.py); nothing of the original is in this file (CLAUDE.md rule 14).
 """
 import copy
+from dataclasses import replace
 import shutil
 import tempfile
 import unittest
@@ -253,7 +254,7 @@ class Landing(App):
         self.assertEqual(desk.opponent_ranks["world"].text(), str(card["world"]))
         self.assertEqual(desk.opponent_ranks["continent"].text(), str(card["continental"]))
         # [T167, #562] the hub's home or away after the kind: Holland is side B of Romania v Holland, so home
-        self.assertEqual(desk.opponent_ranks["match"].text(), f"friendly {model.venue(fixture)}")
+        self.assertEqual(desk.opponent_kind.text(), f"friendly {model.venue(fixture)}")
         self.assertEqual(model.venue(fixture), "home" if fixture.side_b == HOLLAND else "away")
         self.assertIn("1 · K Ees", desk.managers.text())
         rows, eleven = squad_rows(model)
@@ -284,6 +285,36 @@ class Landing(App):
 
 @CAREER
 class Options(App):
+    def test_play_shows_the_pending_fixture_in_two_rows_above_the_choice(self):
+        model = holland()
+        campaign = model.state.campaign
+        friendly = campaign.next_fixture
+        window, desk = self.desk(model)
+        play = desk.options[5]
+        opponent = friendly.side_b if friendly.side_a == HOLLAND else friendly.side_a
+        self.assertEqual(desk.play_opponent.text(), model.goaldat.country_names[opponent])
+        self.assertEqual(desk.play_kind.text(), f"friendly {model.venue(friendly)}")
+        self.assertEqual(desk.play_opponent.geometry().bottom() + 1, desk.play_kind.y())
+        self.assertEqual(desk.play_kind.geometry().bottom() + 1, play.y())
+        self.assertEqual(desk.cursor, 0)
+
+        # Present a long fixture label with the managed country away.
+        names = model.goaldat.country_names
+        opponent = max((i for i in range(len(names)) if i != HOLLAND), key=lambda i: len(names[i]))
+        knockout = replace(friendly, stage=4, kind=8, home_country=HOLLAND, away_country=opponent)
+        with mock.patch.object(type(campaign), "next_fixture", new_callable=mock.PropertyMock,
+                               return_value=knockout) as pending:
+            desk.shown()
+            self.assertEqual(desk.play_opponent.text(), names[opponent])
+            self.assertEqual(desk.play_kind.text(), "semi-finals and final away")
+            self.assertEqual(desk.opponent_kind.text(), desk.play_kind.text())
+            self.fits(window)
+            pending.return_value = None
+            desk.shown()
+            self.assertEqual(desk.play_opponent.text(), "")
+            self.assertEqual(desk.play_kind.text(), "stage complete")
+            self.fits(window)
+
     def test_each_option_opens_its_screen_or_names_its_task(self):
         window, desk = self.desk()
         # [T167, the match day; was T166's interim route] play next game opens S14, the round, for the friendly and
