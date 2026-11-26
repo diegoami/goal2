@@ -108,13 +108,14 @@ class ChooseOnTheGrid(Base):
     """S16 in each mode it has: the captain, a set-piece taker and the penalty order."""
 
     mode = "captain"
+    takers = 11
 
     def make(self, window):
         model = holland()
         window.open_career(model)
         self.model = model
         words = list(model.state.managed_squad[:11])
-        screen = ChooseScreen(window, model, self.mode, words, words[0], lambda value: None, role=2, takers=5,
+        screen = ChooseScreen(window, model, self.mode, words, words[0], lambda value: None, role=2, takers=self.takers,
                               match="Holland v Norway", computer=words[1])
         screen.timer.stop()
         return window.push(screen)
@@ -170,7 +171,7 @@ class ChooseOnTheGrid(Base):
         self.assertEqual(screen.findChildren(QLabel, "kbd"), [], "no boxed key cap on a grid screen")
 
     def test_the_card_the_strip_and_the_wait_are_where_the_cells_put_them(self):
-        """The wait (4 rows) across the top, the card (69 x 18) and the strip (20 wide, its twelve rows) under it a cell apart."""
+        """Keep the decision over the card and the eleven at the foot of the card."""
         window, screen = self.canonical(self.make)
         cell, row = cells.cell_w(screen), cells.row_px(screen)
         self.assertEqual(round(screen.card.width() / cell), GridCard.COLS)
@@ -179,9 +180,12 @@ class ChooseOnTheGrid(Base):
         self.assertEqual(round(screen.strip.height() / row), 12, "its rule and the eleven, no taller")
         gap = screen.strip.x() - (screen.card.x() + screen.card.width())
         self.assertEqual(round(gap / cell), 1, "one empty cell separates")
-        self.assertEqual(screen.wait_box.height(), row * 4)
-        self.assertEqual(screen.wait_box.width(), window.page.width())
-        self.assertLessEqual(screen.wait_box.y() + screen.wait_box.height(), screen.card.y(), "the words are over the card")
+        panel = screen.findChild(cells.Cells, "choicePrompt")
+        self.assertIsNotNone(panel)
+        self.assertIs(screen.wait_box.parentWidget(), panel)
+        self.assertEqual(panel.height(), row * 4)
+        self.assertEqual(panel.width(), screen.card.width())
+        self.assertEqual(panel.geometry().bottom() + 1, screen.card.y())
         self.assertEqual(screen.strip.y() + screen.strip.height(), screen.card.y() + screen.card.height(),
                          "the eleven is level with the card's foot (no region of the page is left empty)")
         self.assertEqual(len(screen.strip.shown_texts()), 11)
@@ -202,16 +206,36 @@ class ChooseOnTheGrid(Base):
                 self.assertEqual(screen.key_bar.height(), cells.span_px(screen, 2), "two rows, the page's own")
                 self.assertEqual(screen.body.height(), window.page.height() - cells.row_px(screen) - screen.key_bar.height())
 
-    def test_the_order_wraps_in_its_rows_whatever_the_eleven_picked(self):
+    def test_the_order_shows_eleven_numbered_slots_and_undo_clears_only_the_last_pick(self):
         self.mode = "order"
         window, screen = self.canonical(self.make)
+        self.assertEqual([number.text() for number, _ in screen.order_slots],
+                         [str(number) for number in range(1, 12)])
+        self.assertEqual([name.text() for _, name in screen.order_slots], [""] * 11)
+        self.assertEqual(screen.order_panel.x(), screen.strip.x())
+        self.assertGreater(screen.order_panel.y(), screen.strip.geometry().bottom())
         self.longest(screen)
         for _ in range(10):
             screen.choose()
             screen.move(1)
         self.relayout(window)
-        self.assertLessEqual(len(screen.order_label.lines()), screen.order_label.height() // cells.row_px(screen))
-        self.assertIn("of 5)", screen.order_label.text())
+        self.assertEqual([name.text() for _, name in screen.order_slots], ["X Abcdefghij"] * 10 + [""])
+        self.assertFalse(screen.done)
+        screen.undo()
+        screen.move(-2)
+        screen.choose()  # an already picked player stays in their original slot
+        self.assertEqual([name.text() for _, name in screen.order_slots], ["X Abcdefghij"] * 9 + [""] * 2)
+        screen.move(1)
+        screen.choose()
+        screen.move(1)
+        screen.choose()
+        self.assertTrue(screen.done)
+        self.assertEqual(screen.picks, screen.eleven)
+
+    def test_short_penalty_order_only_numbers_the_required_slots(self):
+        self.mode, self.takers = "order", 5
+        _, screen = self.canonical(self.make)
+        self.assertEqual([number.text() for number, _ in screen.order_slots], ["1", "2", "3", "4", "5"])
 
 
 class FakeBridge:

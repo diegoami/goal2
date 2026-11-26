@@ -359,8 +359,11 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 - **Purpose**: the stops where the original waits for one of your players: the captain before kick-off, the
   corner or goal-kick taker during play, the penalty order before a shoot-out.
 - **Shows**: a headline that says what the match waits for ("Choose your captain to kick off"); the
-  highlighted player's card; the eleven, the highlight starting on the computer's pick as in the original
-  (T156-R1 step 43).
+  highlighted player's card with segmented skill bars; the eleven, the highlight starting on the computer's
+  pick as in the original (T156-R1 step 43). [derived: T156-R1 steps 43 and 56] The decision is framed
+  above the card. The shoot-out shows the required numbered slots under the roster, using the players'
+  line colours as slots fill. The roster stays browsable so earlier picks' cards can still be checked.
+  [derived: M244-G4C-07 step 56 and M244-G4C-08 step 5; designed: #862]
 - **Actions**: **↑↓** player, **Enter** choose ("Captain: kick off"), **C** computer select; no key:
   the computer's pick stands after the original's wait (6–12 s for a taker in T156-R1). For the penalty
   order, **Esc** undoes a pick.
