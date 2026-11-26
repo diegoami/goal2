@@ -276,6 +276,7 @@ class MatchDay(unittest.TestCase):
         out["choices"] = list(controller.choices)
         out["snapshot"] = controller.given._snapshot
         out["desk_note"] = cls.desk.note.text()
+        out["next_fixture_cue"] = (cls.desk.play_opponent.text(), cls.desk.play_kind.text())
         out["state_after"] = copy.deepcopy(model.state)
         return out
 
@@ -337,6 +338,10 @@ class MatchDay(unittest.TestCase):
         self.assertIn("HALF TIME", out["menus"]["half"]["situation"])
         self.assertIn("FULL TIME", out["menus"]["full"]["situation"])
         self.assertIn("Full time:", out["desk_note"])
+        following = out["state_after"].campaign.next_fixture
+        opponent = following.side_b if following.side_a == HOLLAND else following.side_a
+        names = self.model.goaldat.country_names
+        self.assertEqual(out["next_fixture_cue"], (names[opponent], f"qualifier {self.model.venue(following)}"))
         self.assertEqual(self.model.state.match_count, out["state_before"].match_count + 2)
 
     def test_s14_lists_the_round_before_and_after_with_your_match(self):
