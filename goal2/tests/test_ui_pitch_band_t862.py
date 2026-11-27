@@ -243,6 +243,22 @@ class PitchBand(GridBase):
         self.assertEqual(colour_of(box.headline), theme.HEADING, "a question is cyan")
         self.assertEqual(colour_of(box.key_hint), theme.HEADING)
 
+    def test_every_stop_label_fits_its_cells(self):
+        """[confirmed: t156-067, plain text on grey] A synthetic bold widens each glyph a pixel, so the 24-character
+        SUBSTITUTION OPPORTUNITY overran its cells on Windows at 100% (408 px for 384). Every label's text advance fits its width."""
+        screen = self.screen()
+        self.addCleanup(screen.stop_box.cancel)
+        box = screen.stop_box
+        for name, put in self.stops(screen):
+            with self.subTest(stop=name):
+                box.cancel()
+                put()
+                self.relayout(self.window_)
+                for label in (box.headline, box.label, box.rest, box.key_hint):
+                    if label.isVisibleTo(box):
+                        self.assertFalse(label.font().bold() or "font-weight:700" in label.styleSheet(), label.text())
+                        self.assertLessEqual(label.fontMetrics().horizontalAdvance(label.text()), label.width() + 2, label.text())
+
     def test_the_mouse_answers_a_stop_as_the_keys_do(self):
         from goal2.ui.s18_stop import YES_NO
         screen = self.screen()

@@ -181,7 +181,7 @@ class StopBox(QFrame):
         keeper = self._opportunity_keeper
         foreground = ('#55ffff' if keeper else '#000000') if self._opportunity_lit else ('#000000' if keeper else LABEL_GREY)
         background = '#000000' if keeper else LABEL_GREY
-        self.headline.setStyleSheet(f'color:{foreground};background:{background};font-weight:700;')
+        self.headline.setStyleSheet(f'color:{foreground};background:{background};')
         self.key_hint.setStyleSheet(f"color:{'#ff55ff' if self._opportunity_lit else '#000000'};background:#000000;")
 
     def _blink_opportunity(self):

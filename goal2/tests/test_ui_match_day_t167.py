@@ -285,7 +285,7 @@ class MatchDay(unittest.TestCase):
         from goal2.ui.match_day import MatchDay as Day
         window, model = cls.window, cls.model
         out = {"fixture": model.state.campaign.next_fixture}
-        original = Day.asks_watch
+        original = Day.__dict__["asks_watch"]   # the staticmethod itself: Day.asks_watch would unwrap it, and restoring a plain function makes it a method
         Day.asks_watch = staticmethod(lambda model, fixture: True)   # a stand-in: the original asks for kinds 8, 200…
         try:
             menu = cls._start(out)
@@ -495,8 +495,9 @@ class MatchDay(unittest.TestCase):
 
     # The home side.
     def test_each_side_wears_the_engine_s_kit(self):
-        """[#583; was 'home is drawn light red'] The pitch, S17's names and S15's are in the kits the engine
-        computed for this match (DS:832E..8331, 0791:1073); home has no colour of its own."""
+        """[#583] The pitch and S15's names are in the kits the engine computed for this match (DS:832E..8331, 0791:1073).
+        [derived: t156-045 (Norway at home), match-commentary.png (Italy at home, in blue), e031-shootout-start; #862] S17's score
+        box names home in light red whatever its kit, as the original's band does."""
         from goal2.tests.test_ui_pitch_t166 import engine_kits
         from goal2.ui.pitch import HOME, KEEPERS
         out = self.out["friendly"]
@@ -509,8 +510,9 @@ class MatchDay(unittest.TestCase):
         for slot, team, text, colour, box in painted:
             self.assertEqual(colour, kits.colour(team, slot in KEEPERS))
         names = self.model.goaldat.country_names
-        self.assertEqual(out["home_label"][0], names[fixture.side_b])
-        self.assertIn(kits.colour(HOME), out["home_label"][1])
+        from goal2.ui.s17_pitch import SIDE_COLS
+        self.assertEqual(out["home_label"][0], names[fixture.side_b].ljust(SIDE_COLS, "-"))   # [confirmed: t156-045, NORWAY------]
+        self.assertIn(theme.TITLE_BANNER.lower(), out["home_label"][1].lower())
         self.assertIn(f"location: {names[fixture.side_b]}", out["menu_before"]["situation"])
 
 
