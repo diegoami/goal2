@@ -263,6 +263,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 - **Purpose**: one player's own tactics: position, possession, passing, tackling, mark.
 - **Shows**: the five lines and their values, **P** on a line set for this player; his skills and
   characteristics beside them.
+  [designed: #862] Segmented skills at left and the editor above the traits at right follow the original card.
+  The roster includes occupied extra squad places and highlights the player being edited.
 - **Actions**: **arrows** line, **Enter** alter, **Esc** back to the card. Reached by **T** from
   S08 and from the bench S19.
 - **Replaces**: `m244-individual-tactics`, `m244-position-tactic-toggle`, `mark-protect-zone`,
@@ -274,7 +276,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 ### S10 Team tactics
 
 - **Purpose**: the team's eight lines: defence system, protection, offside, then the player defaults.
-- **Shows**: each line, its value now and the other option; the formation; the characteristics.
+- **Shows**: each line and its current value, the formation, team skills, characteristics and squad.
+  [designed: #862] The skill and performance bars show segments and the roster uses Squad's right-hand role rail.
 - **Actions**: **↑↓** line, **Enter** change, **Esc** desk.
 - **Replaces**: `team-tactics`, `m244-team-tactics`, `t156-033-team-tactics`, `t156-034-team-tactic-changed`.
   [confirmed: T156-R1 steps 33–35; M244-G1A-02 step 11; E031 C07]

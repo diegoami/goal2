@@ -19,6 +19,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 
 from goal2.ui import theme
+from goal2.ui.s08_squad import SquadStrip
 from goal2.ui.screen import LINE_HEIGHT, Screen
 from goal2.ui.squad_card import (NOT_DECODED, full_name, last_on_the_bar, rich,
                                  squad_rows)
@@ -49,6 +50,7 @@ class TeamTacticsScreen(Screen):
         # [designed: #799] The caller names the actual parent; held matches keep their default.
         self.escape_text = back if back is not None else "match menu" if answer is not None else "desk"
         super().__init__(window)
+        self.name_label.reserve = len(self.title) + 2
         self.model = model
         self.answer, self.apply = answer, apply
         self.pending = False
@@ -61,13 +63,14 @@ class TeamTacticsScreen(Screen):
         self.bind((Qt.Key.Key_Down,), "", lambda: self.choose(self.line + 1), captions=("",), shown=False)
         self.bind((), "line", None, captions=("↑", "↓"))
         last_on_the_bar(self, self.escape_text)
-        self.set_enter("Change line", self.change)
+        self.enter_text.reserve = len("Change tactic") + 2
+        self.set_enter("Change tactic", self.change)
         self.refresh()
 
     def _build(self):
         """[designed: owner, #667; T212b] TEAM and its bars, the editor and traits, and the twenty in three cell columns."""
-        from goal2.ui.cells import Cells, CellPara
-        from goal2.ui.cell_parts import CellTableRow, CellValues, CellFacts, GridStrip
+        from goal2.ui.cells import Cells, CellPara, FittedCellLabel
+        from goal2.ui.cell_parts import CellTableRow, CellValues, CellFacts
         from goal2.ui.country_parts import CellTeamHeader, CellLineBars, CellCharacteristics, framed
         body = Cells(90, 25, "tacticsBody")
         self.body_layout.addWidget(body, 1)
@@ -75,11 +78,11 @@ class TeamTacticsScreen(Screen):
         self.country = self.team_header.name
         body.put(self.team_header, 0, 0, 34, 11)
         skills, inner = framed("skills", 34, 4)
-        self.skills = CellLineBars()
+        self.skills = CellLineBars(segmented=True)
         inner.put(self.skills, 0, 0, 34, 4)
         body.put(skills, 0, 11, 34, 5)
         self.performance_heading, inner = framed("performance", 34, 4)
-        self.performance = CellLineBars()
+        self.performance = CellLineBars(segmented=True)
         inner.put(self.performance, 0, 0, 34, 4)
         body.put(self.performance_heading, 0, 16, 34, 5)
         self.facts = CellPara("", "sub")
@@ -92,7 +95,7 @@ class TeamTacticsScreen(Screen):
             else:
                 self.defaults_heading = frame.rule
             for i in range(first, first + count):
-                line = CellTableRow(i, (14, 19, 0), gaps=(0, 1, 0))
+                line = CellTableRow(i, (14, 19, 0), gaps=(0, 1, 0), plain=True, label_type=FittedCellLabel)
                 line.cells[2].hide()  # lines() retains the alternative; the original shows the current value only
                 line.chosen.connect(self.click)
                 inner.put(line, 0, i - first, 34)
@@ -115,7 +118,7 @@ class TeamTacticsScreen(Screen):
         body.put(self.note, 35, 21, 34, 4)
         count = (len(self.answer.words()) if self.answer is not None else
                  20 + sum(word is not None for word in getattr(self.model.state, "extra_squad", ())))
-        self.strip = GridStrip(cols=20, count=max(20, count), compact=count > 20)
+        self.strip = SquadStrip(expanded=count > 20)
         body.put(self.strip, 70, 0, 20, 25 if count > 20 else 23)
         self.injury_hint = body.text("* injured", "sub", 70, 23, 20)
 

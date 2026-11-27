@@ -24,6 +24,7 @@ from goal2.ui import theme
 from goal2.ui.cell_parts import GridStrip
 from goal2.ui.match_day import for_window
 from goal2.ui.s08_squad import open_squad
+from goal2.ui.s09_player_tactics import PlayerTacticsScreen
 from goal2.ui.s19_bench import BenchScreen
 from goal2.ui.s20_board import BoardScreen
 from goal2.ui.window import Window
@@ -114,6 +115,14 @@ class SelectedSquadUI(unittest.TestCase):
         self.assertEqual(screen.current(), row["id"])
         self.assertTrue(screen.card.isVisible())
         self.assertNotIn(row["id"], [r["id"] for r in screen.rows("pool")])
+        self.key(Qt.Key.Key_T)
+        tactics = self.win.current()
+        self.assertIsInstance(tactics, PlayerTacticsScreen)
+        self.assertEqual(tactics.word, row["id"])
+        self.assertEqual(len(tactics.strip.shown_texts()), 21)
+        self.assertTrue(tactics.strip.rows[20].on)
+        self.key(Qt.Key.Key_Escape)
+        self.assertIs(self.win.current(), screen)
         self.key(Qt.Key.Key_F6)
         self.key(Qt.Key.Key_Escape, screen.size_menu)
         self.assertEqual(self.owner.state.extra_squad, [None, None, None, row["id"]])
@@ -176,6 +185,16 @@ class SelectedSquadUI(unittest.TestCase):
         self.key(Qt.Key.Key_Escape)
         self.assertIs(self.win.current(), bench)
         last = bench.answer.words()[-1]
+        self.click(bench.strip.rows[-1])
+        self.key(Qt.Key.Key_T)
+        player = self.win.current()
+        self.assertIsInstance(player, PlayerTacticsScreen)
+        self.assertEqual(player.word, last)
+        self.assertEqual(len(player.strip.shown_texts()), 24)
+        self.assertTrue(player.strip.rows[-1].on)
+        assert_fits(self, self.win)
+        self.key(Qt.Key.Key_Escape)
+        self.assertIs(self.win.current(), bench)
         off = next(a for a, b in pairs if b == last)
         self.click(bench.strip.rows[bench.answer.words().index(off)])
         if bench.answer.first is None:

@@ -44,7 +44,7 @@ from PySide6.QtWidgets import QApplication, QHBoxLayout, QMenu
 
 from goal2.ui import theme
 from goal2.ui.cell_parts import CellTableRow, GridCard, GridStrip
-from goal2.ui.cells import CellLabel, CellPara, Cells
+from goal2.ui.cells import CellLabel, CellPara, Cells, FittedCellLabel
 from goal2.ui.frame import PanelOutline
 from goal2.ui.screen import Clickable, Screen
 from goal2.ui.squad_card import colour, full_name, last_on_the_bar, squad_rows
@@ -78,7 +78,8 @@ class SquadStrip(GridStrip):
 
     def make_row(self, index):
         name_cols = ROLE_AT - 1
-        row = CellTableRow(index, (2, name_cols), (Qt.AlignmentFlag.AlignRight, None), (1, 1), plain=True)
+        row = CellTableRow(index, (2, name_cols), (Qt.AlignmentFlag.AlignRight, None), (1, 1),
+                           plain=True, label_type=FittedCellLabel)
         role, name = row.cells
         row.area.move(name, 1, 0, name_cols)
         row.area.move(role, ROLE_AT, 0, 2)

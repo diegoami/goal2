@@ -50,6 +50,17 @@ class TacticsOnTheGrid(Base):
         for kind in (TeamTacticsScreen, CountryTacticsScreen, PlayerTacticsScreen, TeamPlayersScreen):
             self.not_pending(kind.__name__, kind)
 
+    def test_the_tactics_screens_use_segmented_skills_and_a_right_hand_role_column(self):
+        for kind in (PlayerTacticsScreen, TeamTacticsScreen):
+            self.kind = kind
+            _, screen = self.canonical(self.make)
+            self.assertTrue(all(bar.segmented for bar, _ in screen.skills.rows.values()))
+            code, name = screen.strip.rows[0].cells
+            self.assertLess(name.geometry().right(), code.x())
+            if kind is PlayerTacticsScreen:
+                self.assertLess(screen.skills.mapTo(screen, screen.skills.rect().topLeft()).x(),
+                                screen.rows[0].mapTo(screen, screen.rows[0].rect().topLeft()).x())
+
     def test_all_tactic_choices_and_player_cards_keep_their_text(self):
         for kind in (TeamTacticsScreen, CountryTacticsScreen, PlayerTacticsScreen, TeamPlayersScreen):
             self.kind = kind

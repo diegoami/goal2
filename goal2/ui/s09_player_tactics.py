@@ -20,6 +20,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 
+from goal2.ui.s08_squad import SquadStrip
 from goal2.ui.screen import Screen
 from goal2.ui.squad_card import (CHARACTERISTIC_CELLS, SKILL_CELLS, colour,
                                  full_name, last_on_the_bar, squad_rows, LINE_COLOUR)
@@ -27,11 +28,9 @@ from goal2.ui import theme
 
 LINES = ("position", "possession", "passing", "tackling")   # [confirmed: F008, F010: own-tactics rows 1..4]
 MARK = "mark"   # [confirmed: F010, `1771:49B8`; s09-player-tactics.png] the fifth line, with a match set up
-EXPLAIN = ("Enter steps the highlighted line to its next option. P marks a line set for this player, not by the "
-           "team's defaults. The mark line appears with a match set up: the original offers it only then.")
-EXPLAIN_MATCH = ("Enter steps the highlighted line to its next option. During the match these changes go to the "
-                 "engine with the bench's answer, when play goes on. Mark: one of their outfield players, nobody, "
-                 "or — to leave the original's marking as it is.")
+EXPLAIN = "P marks a personal tactic."
+EXPLAIN_MATCH = ("P marks a personal tactic. Edits go to the engine when play resumes. "
+                 "For marking, choose an opponent, nobody, or — to leave it as it is.")
 
 
 class PlayerTacticsScreen(Screen):
@@ -42,6 +41,7 @@ class PlayerTacticsScreen(Screen):
         during = bench is not None and not getattr(bench, 'held_prematch', False)
         self.title = f"{'players' if during else 'select squad'} · {full_name(model, word)} · tactics"
         super().__init__(window)
+        self.name_label.reserve = len(self.title) + 4
         self.model, self.word, self.bench = model, word, bench
         # [confirmed: 1771:49B8] the mark line only with a match set up, for a player of the eleven
         self.marks = bench is not None and word in bench.eleven
@@ -57,13 +57,14 @@ class PlayerTacticsScreen(Screen):
         self.bind((Qt.Key.Key_Right,), "", lambda: self.choose(self.line + 1), captions=("",), shown=False)
         self.bind((), "line", None, captions=("↑", "↓", "←", "→"))
         last_on_the_bar(self, self.escape_text)
+        self.enter_text.reserve = len("Alter tactic") + 2
         self.set_enter("Alter tactic", self.alter)
         self.refresh()
 
     def _build(self):
         """[designed: owner, #667; T212b] The editable lines beside all twelve skills and five traits, with the twenty at the right."""
-        from goal2.ui.cells import Cells, CellPara
-        from goal2.ui.cell_parts import CellTableRow, CellBars, GridStrip
+        from goal2.ui.cells import Cells, CellPara, FittedCellLabel
+        from goal2.ui.cell_parts import CellTableRow, CellBars
         from goal2.ui.country_parts import framed
         from goal2.game.player_card import SKILLS
         body = Cells(90, 25, "playerTacticsBody")
@@ -77,23 +78,27 @@ class PlayerTacticsScreen(Screen):
         own, inner = framed("his own tactics", 34, 5)
         self.rows = []
         for i in range(len(LINES) + (1 if self.marks else 0)):
-            line = CellTableRow(i, (10, 23), gaps=(0, 1))
+            line = CellTableRow(i, (10, 23), gaps=(0, 1), plain=True, label_type=FittedCellLabel)
             line.chosen.connect(self.click)
             inner.put(line, 0, i, 34)
             self.rows.append(line)
-        body.put(own, 0, 4, 34, 6)
+        body.put(own, 35, 5, 34, 6)
         self.explain = CellPara(EXPLAIN if self.bench is None else EXPLAIN_MATCH, "sub")
-        body.put(self.explain, 0, 11, 34, 8)
+        body.put(self.explain, 0, 19, 69, 6)
         skills, inner = framed("skills", 34, len(SKILLS))
-        self.skills = CellBars(SKILLS, 10, 20, 2)
+        self.skills = CellBars(SKILLS, 10, 20, 2, segmented=True, label_type=FittedCellLabel)
         inner.put(self.skills, 0, 0, 34, len(SKILLS))
-        body.put(skills, 35, 5, 34, 1 + len(SKILLS))
+        body.put(skills, 0, 5, 34, 1 + len(SKILLS))
         traits, inner = framed("characteristics", 34, 5)
-        self.characteristics = CellBars(("hardness", "fitness", "energy", "morale", "leadership"), 10, 8, 14)
+        self.characteristics = CellBars(("hardness", "fitness", "energy", "morale", "leadership"),
+                                        10, 8, 14, segmented=True, label_type=FittedCellLabel)
         inner.put(self.characteristics, 0, 0, 34, 5)
-        body.put(traits, 0, 19, 34, 6)
-        self.strip = GridStrip(cols=20)
-        body.put(self.strip, 70, 0, 20, 22)
+        body.put(traits, 35, 12, 34, 6)
+        # [designed: #777, #862] Include occupied extra places in the visible tactics context.
+        count = (len(self.bench.words()) if self.bench is not None else
+                 20 + sum(word is not None for word in getattr(self.model.state, "extra_squad", ())))
+        self.strip = SquadStrip(expanded=count > 20)
+        body.put(self.strip, 70, 0, 20, 25 if count > 20 else 22)
 
     def card(self):
         from goal2.game.player_card import card
@@ -129,7 +134,7 @@ class PlayerTacticsScreen(Screen):
                                  words.index(self.word) if self.word in words else -1,
                                  len(self.bench.eleven) == 11)
             return
-        rows, eleven = squad_rows(self.model)
+        rows, eleven = squad_rows(self.model, include_extra=True)
         current = next((i for i, r in enumerate(rows) if r["id"] == self.word), -1)
         self.strip.show_rows(self.model.view()["country_name"],
                              [(r["role"], r["line"], full_name(self.model, r["id"])) for r in rows], current,

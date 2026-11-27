@@ -371,15 +371,15 @@ class CellBars(Cells):
     """Rows of a label, a bar and a word, as `squad_card.Bars`, in cells: the label `label_cols` wide, the bar `bar_cols`, then the
     word. The same `rows`, `labels` and `set` as `Bars`."""
 
-    def __init__(self, names, label_cols, bar_cols, word_cols, *, segmented=False):
+    def __init__(self, names, label_cols, bar_cols, word_cols, *, segmented=False, label_type=CellLabel):
         super().__init__(label_cols + bar_cols + word_cols + 2, len(names), "bars")
         self.rows, self.labels = {}, {}
         for r, name in enumerate(names):
-            name_label = self.text(name, "barLabel", 0, r, label_cols)
+            name_label = self.put(label_type(name, "barLabel"), 0, r, label_cols)
             colour(name_label, theme.CARD_LABEL)   # [designed: owner611; T193] brown labels, as the original's
             bar = CellBar(segmented=segmented)
             self.put(bar, label_cols + 1, r, bar_cols)
-            word = CellLabel("", "barWord")
+            word = label_type("", "barWord")
             self.put(word, label_cols + bar_cols + 2, r, word_cols)
             self.labels[name], self.rows[name] = name_label, (bar, word)
 
