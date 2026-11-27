@@ -141,9 +141,11 @@ screen of the new window too.
 ## The look
 
 Colours come from `theme` only, by role; a colour that is not in the palette table is a design question for the
-owner. Text sizes are whole multiples of the 16 px cell. The screens follow their mockups in
-[docs/design/ui-2026-11/mockups](design/ui-2026-11/mockups/) (sizes, spacing, layout, words), and a departure from a
-mockup is a design question too.
+owner. There is one text size, `theme.TEXT` (32 px, one cell). [designed: owner, 2026-11-08, #666; 2026-11-25, #862;
+2026-11-27] A screen follows the **original's capture** of it (layout, information hierarchy, colour roles, keys and
+words), on the cell grid, as [docs/design/README.md](design/README.md#the-target-in-short) states. The 2026-11-03 mockups in
+[docs/design/ui-2026-11/mockups](design/ui-2026-11/mockups/) show the pre-grammar look and are not the target. A
+departure from the original names its benefit to the player and is a design question for the owner.
 
 ## Tests
 
@@ -373,13 +375,14 @@ skips without them. The pictures are in [design/ui-2026-11/T167-screens](design/
 C39–C41k] The stops T167 left on a default answer are the original's screens. The claim: every substitution the
 player makes on S19 is the pair the engine receives, and every refusal the player sees is the engine's.
 
-- **S18** (`goal2/ui/s18_stop.py`) is a box over the pitch (`PitchScreen.stop_box`): *SUBSTITUTION OPPORTUNITY* (your
+- **S18** (`goal2/ui/s18_stop.py`) is on the key line at the foot of the screen, as the original's stops are, with the
+  pitch and the top band in view [designed: owner, 2026-11-27, #862; #893] (`PitchScreen.stop_box`): *SUBSTITUTION OPPORTUNITY* (your
   player injured, or the stoppage after a request; the original's refused eleven is said there), any key to S15
   (phase *stop*), whose *players* opens S19; the other side's substitution (*SUBSTITUTION X on for Y*), any key plays
   on; the penalty shoot-out's notice before S16's order. T181's goal questions use the same box (below).
-- **S18's box** [designed: T212, on the 16 × 32 grid] is 40 cells wide and as many rows as its words take (the tag, the headline, the detail, the
-  key line, one empty cell at each edge: its border is drawn at the edge), centred over the pitch's cells; the timed opportunity is a bar at the pitch's
-  foot as wide as the pitch less two cells (24 to 46). The request badge is a row of the pitch's cells.
+- **S18's bar** [designed: #893, replacing T212's 40-cell box over the pitch] replaces the key line: as wide as the page, as tall as the
+  key line (two rows) or the rows its words take above it, the headline at the left and the answer at the right of its last row
+  (`goal2/ui/s18_stop.py`'s docstring has the colours of each kind). The request badge is a row of the pitch's cells.
 - **S19** (`goal2/ui/s19_bench.py`) shows the card, live eleven/bench and the engine's remaining budget. [designed: T212, on the 16 × 32 grid] At the left
   the mode and its button, the match's words, the substitution's words in a frame of five rows and the squad's card; at the right the twenty in a frame
   down to the foot, the budget at the right of the title row. A live injury is said after the name (*· INJURED*) and the name then takes two rows of the

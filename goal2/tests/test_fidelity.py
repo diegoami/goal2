@@ -1,7 +1,7 @@
 """Fidelity test: the seam reproduces E010-r0001 seed-exactly (T01 scope, DW1).
 
 The test loads E010-r0001's published half-time savestate from `.cache/e010-r0001-halftime.sav`
-(git-ignored; never committed, CLAUDE.md rule 19). It downloads the state from goal2-archaeology
+(git-ignored; never committed, CLAUDE.md rule 14). It downloads the state from goal2-archaeology
 release E010 when missing; if `gh` is not logged in or the download fails, the test skips with
 the reason. The expected values come from the run record
 `runs/E010/E010-r0001.json` in the archaeology checkout (or, when the checkout is absent,

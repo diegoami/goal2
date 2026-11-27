@@ -1,7 +1,7 @@
 # Where artifacts live
 
 [designed: owner, 2026-10-20] Keep everything the project needs in the repository, so a fresh
-clone (a cloud session included) has it. CLAUDE.md rule 19 draws the one line this public
+clone (a cloud session included) has it. CLAUDE.md rule 14 draws the one line this public
 repository cannot cross.
 
 | What | Where |
