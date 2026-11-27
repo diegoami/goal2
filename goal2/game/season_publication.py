@@ -16,6 +16,7 @@ import re
 import secrets
 from dataclasses import dataclass
 
+from goal2.core.views import Memory
 from goal2.engine.original_match.image import Image
 from goal2.game import engine_tables
 from goal2.game.season import canonical_hash
@@ -27,6 +28,7 @@ PUBLISHABLE = ('complete', 'deferred-rollover')
 _COMPARED = ('call_number', 'status', 'input_hash', 'output_hash', 'rng_words')
 _INSTALLING = object()
 _DIGEST = re.compile(r'[0-9a-f]{64}')
+_MANAGEMENT_ACTIONS = ('select-twenty',)
 
 
 @dataclass(frozen=True)
@@ -43,6 +45,15 @@ class PublishedCall:
 
 
 @dataclass(frozen=True)
+class PublishedManagementEdit:
+    """[designed: T170be] An original manager-menu change between season calls."""
+
+    action: str
+    input_hash: str
+    output_hash: str
+
+
+@dataclass(frozen=True)
 class SeasonJob:
     token: str
     call_number: int
@@ -51,7 +62,19 @@ class SeasonJob:
 @dataclass(frozen=True)
 class _Candidate:
     state: dict
-    record: PublishedCall
+    record: PublishedCall | PublishedManagementEdit
+
+
+def _management_boundary(image):
+    country, = image.managed_countries()
+    memory = Memory(image)
+    manager = memory.game(1)
+    if memory.manager_country(0x80 + manager) != country or memory.game(0x47 + manager):
+        raise ValueError('management edit requires the active native manager')
+    # [derived: T170aa, Core Desk reader] Index/count, year, stage and rounds.
+    calendar = tuple(memory.game(offset, width) for offset, width in
+                     ((0x26, 2), (0x28, 2), (0x38, 2), (0x3A, 2), (0x3C, 1), (0x3D, 1)))
+    return country, manager, calendar
 
 
 class SeasonCampaign:
@@ -78,14 +101,14 @@ class SeasonCampaign:
 
     @property
     def published(self):
-        return self._held[1]
+        return tuple(row for row in self._held[1] if isinstance(row, PublishedCall))
 
     @property
     def revision(self):
         return self._held[2]
 
     def committed_snapshot(self):
-        """[designed: T170ay] Read state and immutable ledger from one committed holding."""
+        """[designed: T170ay/T170be] Read state and ordered history from one committed holding."""
         state, ledger, _ = self._held
         return copy.deepcopy(state), ledger
 
@@ -97,17 +120,20 @@ class SeasonCampaign:
         seen = set()
         previous = None
         for row in ledger:
-            if (not isinstance(row, PublishedCall)
-                    or type(row.call_number) is not int or row.call_number < 1
-                    or row.status not in PUBLISHABLE
+            if (not isinstance(row, (PublishedCall, PublishedManagementEdit))
                     or any(not isinstance(digest, str) or not _DIGEST.fullmatch(digest)
                            for digest in (row.input_hash, row.output_hash))):
                 raise ValueError('invalid native ledger record')
-            if row.identity in seen:
-                raise ValueError('duplicate native ledger record')
+            if isinstance(row, PublishedCall):
+                if type(row.call_number) is not int or row.call_number < 1 or row.status not in PUBLISHABLE:
+                    raise ValueError('invalid native ledger record')
+                if row.identity in seen:
+                    raise ValueError('duplicate native ledger record')
+                seen.add(row.identity)
+            elif row.action not in _MANAGEMENT_ACTIONS or row.input_hash == row.output_hash:
+                raise ValueError('invalid native ledger record')
             if previous is not None and previous != row.input_hash:
                 raise ValueError('native ledger chain does not connect')
-            seen.add(row.identity)
             previous = row.output_hash
         if ledger and previous != campaign.canonical_hash:
             raise ValueError('native ledger does not end at the saved state')
@@ -116,7 +142,35 @@ class SeasonCampaign:
 
     def has_published(self, call_number, input_hash, output_hash):
         identity = call_number, input_hash, output_hash
-        return any(row.identity == identity for row in self._held[1])
+        return any(row.identity == identity for row in self.published)
+
+    def publish_management(self, state, *, action, revision, input_hash, output_hash):
+        """[designed: T170be] Install an already verified, detached native edit result."""
+        if action not in _MANAGEMENT_ACTIONS:
+            raise ValueError('unsupported native management action')
+        held = self._held
+        if type(revision) is not int or revision != held[2] or input_hash != canonical_hash(held[0]):
+            raise ValueError('native management edit is stale; the campaign changed')
+        rounds = self.published
+        if rounds and rounds[-1].status == 'deferred-rollover':
+            raise ValueError('native management edit is unavailable after deferred rollover')
+        value = copy.deepcopy(state)
+        if canonical_hash(value) != output_hash:
+            raise ValueError('native management state differs from the declared output')
+        tables = engine_tables.load()
+        original = Image.from_state(held[0], tables)
+        edited = Image.from_state(value, tables)
+        if _management_boundary(original) != _management_boundary(edited):
+            raise ValueError('native management edit changed the manager or calendar')
+        if input_hash == output_hash:
+            return None
+        record = PublishedManagementEdit(action, input_hash, output_hash)
+        candidate = _Candidate(value, record)
+        self._view_candidate(candidate)
+        if self._held is not held:
+            raise ValueError('native management edit is stale; the campaign changed')
+        self._install(candidate)
+        return record
 
     def _view_candidate(self, candidate):
         if self._view is not None:
@@ -126,7 +180,7 @@ class SeasonCampaign:
         """Single assignment of the whole new holding; everything that can fail is computed first."""
         _, ledger, revision = self._held
         row = candidate.record
-        if self.has_published(row.call_number, row.input_hash, row.output_hash):
+        if isinstance(row, PublishedCall) and self.has_published(row.call_number, row.input_hash, row.output_hash):
             raise ValueError(f'season call {row.call_number} is already published')
         self._held = (candidate.state, ledger + (row,), revision + 1)
 

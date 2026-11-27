@@ -6,6 +6,7 @@ from goal2.core.views import desk
 from goal2.engine.original_match.image import Image
 from goal2.game import engine_tables
 from goal2.game.season import canonical_hash
+from goal2.game.season_publication import PublishedCall
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,8 +77,9 @@ def read(campaign):
             raise ValueError('The current manager differs from the saved country.')
         fixture = (DeskFixture(view['fixture'], DeskCountry(**view['opponent']), view['fixture_kind'])
                    if view['fixture'] is not None else None)
+        status = next((row.status for row in reversed(ledger) if isinstance(row, PublishedCall)), None)
         return NativeDeskView(
-            state_hash=canonical_hash(state), revision=len(ledger), status=ledger[-1].status if ledger else None,
+            state_hash=canonical_hash(state), revision=len(ledger), status=status,
             manager=DeskManager(view['manager_number'], view['manager'], managed), rating=view['rating'],
             team=DeskCountry(**view['team']), managers=tuple(DeskManager(**row) for row in view['managers']),
             year=view['year'], stage=view['stage'], stage_word=view['stage_word'], fixture=fixture,
