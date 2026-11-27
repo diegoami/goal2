@@ -8,7 +8,7 @@ player watched is the match the engine published. It drives nothing: `MatchContr
 - **Shows** [confirmed: T156-R1 steps 45-192, t156-045-kick-off.png, t156-066-injury-and-booking.png, match-commentary.png;
   designed: owner, 2026-11-25, #862] the original's top band: the score box (the home side over `versus` over the away side,
   each name run out with dashes and its goals boxed on its row), the frame of the kind of match with the last three events,
-  and the minute in large blocky digits at the right (`Clock`, line-art, #675). Under it the pitch (goal2/ui/pitch.py) down to
+  and the big clock, the minutes left in large blocky digits at the right (`Clock`, line-art, #675). Under it the pitch (goal2/ui/pitch.py) down to
   the key line, and the commentary beside it (owner decision 2), with what the bench or a key said and your side's colour at
   its foot.
 - **Keys** [confirmed: E031 C39-C40, C08; T156-R1 steps 45, 267; the capture's bottom line, `↑↓-display ↔-speed»»»»»»
@@ -79,7 +79,7 @@ EVENT_ROWS = HEAD_ROWS - 1
 SIDE_COLS = 15            # a country's name: the longest is 15 characters, run out with dashes to 15 (`NORWAY---------`)
 DIGIT_COLS = 3
 SCORE_COLS = SIDE_COLS + 1 + DIGIT_COLS + 1   # the name, a cell, the goals' box, a cell for the frame's side
-CLOCK_COLS = 11           # three digits of three cells a cell apart: the third only past minute 99 (extra time)
+CLOCK_COLS = 7            # two digits of three cells a cell apart (t156-045-kick-off.png: the two boxes)
 KIND_AT = SCORE_COLS      # the frame of the kind of match touches the score box, as the original's (t156-045-kick-off.png)
 KIND_COLS = BODY_COLS - SCORE_COLS - CLOCK_COLS
 PITCH_AT = HEAD_ROWS
@@ -543,30 +543,32 @@ SEGMENTS = {"0": "abcdef", "1": "bc", "2": "abged", "3": "abgcd", "4": "fgbc", "
 
 
 class Clock(QWidget):
-    """The minute in large blocky digits at the right of the band, drawn as line-art: segments, not type (one text size, #666).
+    """The big clock at the right of the band, drawn as line-art: segments, not type (one text size, #666, #675).
 
-    [confirmed: t156-045-kick-off.png (minute 0: two empty boxes), t156-175-replay-prompt.png (minute 8: an empty box and a
-    cyan 8), t156-066-injury-and-booking.png (56); designed: owner, 2026-11-08, #675] Two digit places, cyan, as tall as the
-    band; a place with no digit is an empty dark-grey box, so the minute is right-aligned and 0 shows two empty boxes.
-    [designed: #862] The original shows extra time's own minutes (15 at the extra-time half time, M244-G4C-07 step 50), while
-    goal2's samples and the commentary's stamps carry the match minute (105 there, test_native_extra_time_t170ao): the clock
-    shows the match minute, so it agrees with the commentary beside it, and a third place appears past minute 99.
+    [confirmed: decompiled/seg_0791_06.c 0791:970C, the match clock, draws DS:831B with draw_big_digits 0791:054C; 0791:998C sets
+    DS:831B := 91 for the first half and 0791:9B0C := 31 for extra time (routines.tsv); t156-175-replay-prompt.png shows 8 at
+    Bergkamp's goal in minute 83; M244-G4C-07 step 50 shows 15 at the extra-time half time] The original's clock is the minutes
+    **left**, counting down, in regular and extra time alike. Every pitch sample carries DS:831B as `remaining`
+    (goal2/game/watched_pitch.py), and the clock shows it. [confirmed: t156-045-kick-off.png, two empty boxes] Until the
+    clock's first minute (the sample's minute 0) the places are empty boxes; a place with no digit is an empty dark-grey box, so
+    a one-digit minute is right-aligned. Two places (DS:831B is 91 at most), cyan, as tall as the band.
     """
 
-    PLACES = 3
+    PLACES = 2
 
     def __init__(self):
         super().__init__()
         self.setObjectName("clock")
-        self.minute = 0
+        self.left = None
 
     def digits(self) -> str:
-        return str(self.minute) if self.minute > 0 else ""
+        return "" if self.left is None else str(self.left)
 
-    def set_minute(self, minute):
-        minute = max(0, int(minute))
-        if minute != self.minute:
-            self.minute = minute
+    def show_left(self, left):
+        """The minutes left (DS:831B), or None for the empty boxes before the clock's first minute."""
+        left = None if left is None else max(0, int(left))
+        if left != self.left:
+            self.left = left
             self.update()
 
     def paintEvent(self, event):
@@ -876,7 +878,12 @@ class PitchScreen(Screen):
         self._seen = len(shown)
         minute, score = ((self.replay.frame['minute'], self.replay.frame['score'])
                          if self.replay is not None and self.replay.frame is not None else controller.frame_or_event())
-        self.clock.set_minute(minute)
+        frame = (self.replay.frame if self.replay is not None and self.replay.frame is not None
+                 else getattr(controller.display, "frame", None))
+        if frame is not None and "remaining" in frame:
+            self.clock.show_left(frame["remaining"] if frame.get("minute", 0) > 0 else None)
+        elif minute == 0:
+            self.clock.show_left(None)
         for text, goals in zip(self.goals, (score[HOME], score[1 - HOME])):
             _set(text, str(goals))
         texts = [e["data"].get("text", "") for e in shown if e["kind"] == "commentary"][-EVENT_ROWS:]

@@ -264,9 +264,18 @@ class StopBox(QFrame):
         width = parent.width() if parent is not None else round(self.cols * cell)
         self.cols = max(1, round(width / cell))
         rows = self.rows()
-        height = cells.span_px(self, rows)   # as the bottom bar's own height is made, so the bar covers it exactly
+        # [designed: T211's rows] The bar is the page's last `rows` rows, each where the page puts it (row k at the exact cell height
+        # times k, rounded), so its lines sit on the page's grid and its foot covers the bottom bar exactly.
+        exact = cells.cell_h(self)
+        first = (parent.height() / exact if parent is not None else rows) - rows
+
+        def y(k):
+            return round((first + k) * exact) - round(first * exact)
+
+        height = y(rows)
         self.resize(width, height)
-        last = height - row
+        last = y(rows - 1)
+        row = y(rows) - last
         at = 0
         if self.label.isVisibleTo(self):
             self.label.setGeometry(0, last, round(len(self.label.text()) * cell), row)
@@ -291,7 +300,7 @@ class StopBox(QFrame):
                 self.detail.setGeometry(round(start * cell), last, round((self.cols - right - 1 - start) * cell), row)
             else:
                 lines = len(self.detail.lines(round(self.cols * cell)))
-                self.detail.setGeometry(0, last - lines * row, round(self.cols * cell), lines * row)
+                self.detail.setGeometry(0, y(rows - 1 - lines), round(self.cols * cell), last - y(rows - 1 - lines))
         if parent is not None:
             self.move(0, parent.height() - height)
 

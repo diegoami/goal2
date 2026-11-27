@@ -96,25 +96,43 @@ class PitchBand(GridBase):
         frame = next(f for f in screen.findChildren(Frame) if f.label == screen.controller.display.kind.lower())
         self.assertEqual(round(frame.height() / cells.row_px(screen)), 4, "the rule and three events")
 
-    def test_the_minute_is_large_line_art_digits_at_the_right(self):
+    def frame(self, screen, minute, remaining):
+        from goal2.tests.test_ui_replay_t181 import frames
+        screen.controller.display.frame = dict(frames(1)[0], minute=minute, remaining=remaining)
+        screen.refresh()
+
+    def test_the_clock_is_large_line_art_digits_at_the_right(self):
         from goal2.ui.s17_pitch import HEAD_ROWS
         screen = self.screen()
         clock = screen.clock
         self.assertEqual(clock.findChildren(QLabel), [], "line-art, not type")
         self.assertNotIsInstance(clock, QLabel)
-        for minute, shown in ((0, ""), (8, "8"), (17, "17"), (105, "105")):
-            screen.controller.frame_or_event = lambda m=minute: (m, [0, 0])
-            screen.refresh()
-            self.assertEqual(clock.digits(), shown)
         page = self.window_.page
         right = clock.mapTo(page, QPoint(clock.width(), 0)).x()
         self.assertEqual(right, page.width(), "at the right of the band")
         self.assertEqual(round(clock.height() / cells.row_px(screen)), HEAD_ROWS, "as tall as the band")
-        screen.controller.frame_or_event = lambda: (17, [0, 0])
-        screen.refresh()
+        self.frame(screen, 83, 8)
         image = clock.grab().toImage()
         ink = {image.pixelColor(x, y).name() for x in range(image.width()) for y in range(image.height())}
         self.assertIn(theme.HEADING, ink, "cyan digits")
+
+    def test_the_clock_counts_the_minutes_left_as_the_originals(self):
+        """[confirmed: 0791:970C draws DS:831B; t156-045 (empty at kick-off), t156-175 (8 at minute 83)]"""
+        screen = self.screen()
+        for minute, remaining, shown in ((0, 91, ""), (1, 90, "90"), (46, 45, "45"), (83, 8, "8"), (91, 0, "0")):
+            with self.subTest(minute=minute):
+                self.frame(screen, minute, remaining)
+                self.assertEqual(screen.clock.digits(), shown)
+
+    def test_the_clock_shows_extra_times_own_minutes(self):
+        """[confirmed: M244-G4C-07 step 50, 15 at the extra-time half time; 0791:9B0C sets DS:831F := 89 and DS:831B := 31] The
+        samples' minute runs on from 90 (105 at the extra-time half time, test_native_extra_time_t170ao); the clock shows DS:831B."""
+        screen = self.screen()
+        for minute, remaining, shown in ((90, 30, "30"), (105, 15, "15"), (120, 0, "0")):
+            with self.subTest(minute=minute):
+                self.frame(screen, minute, remaining)
+                self.assertEqual(screen.clock.digits(), shown)
+                self.assertNotEqual(screen.clock.digits(), str(minute))
 
     # No dead region.
     def test_the_pitch_and_the_commentary_reach_the_foot_and_the_foot_has_ink_across_the_pitch(self):
