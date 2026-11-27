@@ -45,6 +45,9 @@ class AssistantJobs:
         self._active=False
         self._counter=0
         self.token=None
+        # [designed: #896] Accepted requests, counted. `token` is only the request that is still pending,
+        # so a caller who reads it after a fast reply cannot tell a refusal from a request that has ended.
+        self.starts=0
         self._request=None
         self._handle=None
         self._before=self._identity=None
@@ -70,6 +73,7 @@ class AssistantJobs:
         handle=_Reply(self.shared)
         self.shared.claim(handle)
         self._counter+=1;self.token=self._counter
+        self.starts+=1
         self._identity,self._before=identity,before
         self._handle,self._request=handle,None
         self._cancelled=threading.Event()
