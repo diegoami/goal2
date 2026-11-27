@@ -93,8 +93,8 @@ class ManagerSummary(Cells):
         self.put(widget, 0, row, LEFT_COLS)
         return widget
 
-    def show_manager(self, name, country):
-        self.name_line.setText(f"1 · {name}")
+    def show_manager(self, name, country, number=1):
+        self.name_line.setText(f"{number} · {name}")
         self.country_line.setText(f"({country})")
 
     def text(self):
