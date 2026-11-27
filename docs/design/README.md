@@ -5,6 +5,23 @@ GitHub issues, so it links them. Read it before changing a screen of `goal2/ui`,
 [UI evidence rule](../../CLAUDE.md#ui-evidence). Status (what is done, what is next) is kept on the
 issues, not here (CLAUDE.md rule 9). [designed: owner, 2026-11-27]
 
+## The target, in short
+
+**Build each screen as the original's capture of it shows it**: its layout, information hierarchy, colour roles, key
+placement and order of play, drawn on the 16 × 32 cell grid at 4:3. Keep the accepted screen list S01–S22, its flow
+and keys, and the owner's tagged departures listed below. Nothing else is a target. [designed: owner, 2026-11-08, #666;
+2026-11-25, #862; 2026-11-27]
+
+**Not the target**, though they are pictures of goal2:
+- the 2026-11-03 mockups in `ui-2026-11/images/` and `mockups/`, which show the pre-grammar look (#666 replaced it);
+- the six screens of `ui-2026-11/proposal/`, which illustrate the grammar. Where they differ from the original's capture,
+  the capture wins;
+- vision-266's nineteen illustrations, football-gui and the other directions under "Earlier directions" below;
+- `docs/current-game`, the older `goal2/desktop` window that v0.1 ships.
+
+**Already redrawn**: #862's after-captures in [review-862/](ui-2026-11/review-862/README.md). A slice extends them.
+Don't redo a screen there without a new owner direction. **What comes next**: the newest comment on #862.
+
 ## What is being built
 
 A native Windows desktop game: the PySide6 window `goal2/ui`, drawn in the original's layout

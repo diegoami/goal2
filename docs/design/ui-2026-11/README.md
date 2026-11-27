@@ -9,8 +9,16 @@ to say what it keeps, changes and drops. [designed: owner, 2026-11-02, #523, #52
 The design follows the original exactly: its **decisions, information, layout and keys**, in the same order.
 It departs only where a DOS limit forced the original's way or where the owner hit a problem in the playtest
 (#523), and each departure is tagged `[designed]` with its reason ([the rule](#3-rules-for-the-whole-ui)). The
-look is the original's: its own palette and a blocky VGA-style font, on a modern, readable layout. It chooses no toolkit
+look is the original's: its own palette and a blocky VGA-style font, on a modern, readable layout (superseded on
+2026-11-08: the layout too is the original's grammar, §3, #666). It chooses no toolkit
 and no technology; that is T158. [designed: owner, 2026-11-03, [owner decisions, 2026-11-03, #526](https://github.com/diegoami/goal2/issues/526#issuecomment-6590816260)]
+
+**What to build, in one line** [designed: owner, 2026-11-08, #666; 2026-11-25, #862; 2026-11-27]: each screen as the
+original's capture shows it (layout, information hierarchy, colour roles, key placement and order of play), drawn on
+the 16 × 32 cell grid at 4:3, keeping this document's screen list, flow and keys and the owner's tagged departures. **The
+mockups in section 2 are not the visual target**: they are the 2026-11-03 look, which #666 replaced. Where a mockup and
+the original's capture differ, the capture wins; #862's after-captures in [review-862/](review-862/README.md) show
+screens already redrawn.
 
 **Since this design.** The owner's layout-grammar decisions of 2026-11-08 (#666) change how these screens are drawn,
 and #862 (2026-11-25) orders the walkthrough-led redesign, which redraws them one slice at a time. The mockups below
@@ -523,17 +531,22 @@ steps 13, 17, 42, 43, 224]
 **The match.**
 - Your own matches are watched by default, as in the original; no watch control is added. [owner decision 1]
 - It is watched in the main window (S17), with the commentary always beside the pitch. [designed: owner
-  decision 2] The questions and notices are boxes over the pitch (S18); half time and full time are the board
+  decision 2] The questions and notices sit on the key line at the foot, as the original's, with the pitch in view
+  (S18) [designed: owner, 2026-11-27, #862; it replaces "boxes over the pitch"]; half time and full time are the board
   (S20) and then the match menu (S15).
 - Watch or quick result is the original's choice: the watch question where the original asks it (S15), and
   **R** on the pitch for a quick result. No other button. [confirmed: E031 C35, C08; T156-R1 step 267; owner
   decision 3]
 - Speed, display and commentary keep the original's keys.
 
-**The look.** The original's palette and a blocky font, on a modern layout. [designed: owner, 2026-11-03, #526:
+**The look.** [designed: owner, 2026-11-08, #666] **The original's layout grammar at 2×**: the original's palette, a
+blocky font, one text size, rule-and-label frames, dash leaders, line-art titles and no dead regions, on the cell grid
+below. The 2026-11-03 wording that follows ("on a modern layout", "Layout stays modern") is kept as the decision log and
+is superseded where it says the layout is modern. [Earlier: owner, 2026-11-03, #526:
 "try to mimic the color scheme of goal and try to have more of a retro feeling, maybe a blocky font is enough and
 we can keep the rest"]
-- **Layout** stays modern: the screens, boxes, flow and key bar of section 2.
+- ~~**Layout** stays modern~~ (superseded, #666): the screens, flow and keys of section 2 stay; their layout follows the
+  original's capture.
 - **Colours** are the original's own sixteen-colour palette, read from the captures by
   [palette.py](palette.py). Each colour keeps the meaning it has in the original:
 
@@ -728,7 +741,7 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
 5. **Managers:** 1 to 6, hot seat, as the original.
 6. **Autopilot:** decided later; left out of this design.
 7. **The look:** modern and readable, with the original's layout, colour meanings and role codes. Revised the
-   same day (below).
+   same day (below), and again on 2026-11-08 (#666: the original's layout grammar at 2×, §3).
 8. **Save names:** free names, shown in the save list, not the 8.3 names.
 9. **The start year:** the PC clock's year by default, as the original (NG-9), changeable in one optional field.
 
@@ -739,7 +752,8 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
     the import is made in T153's code, in a separate PR.
 12. **The look:** the original's colour scheme and a retro feel. The mockups use the original's palette, read from
     the captures, and a blocky VGA-style font (PxPlus IBM VGA 8x16, CC BY-SA 4.0). The layout and everything else
-    stay ([the look](#3-rules-for-the-whole-ui)).
+    stay ([the look](#3-rules-for-the-whole-ui)). The layout part was superseded on 2026-11-08 (#666): the layout too
+    follows the original.
 
 **Owner decisions, 2026-11-03** (on T162's questions, #536: "do as proposed"):
 
