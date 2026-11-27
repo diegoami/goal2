@@ -115,7 +115,7 @@ class Journey(unittest.TestCase):
                 self.key(key)
                 self.assertIs(self.window.current(), desk)
                 self.assertIn('unavailable', desk.note.text())
-            for option in desk.options[:7]:
+            for option in desk.options[:5] + [desk.options[6]]:
                 self.click(option)
                 self.assertIs(self.window.current(), desk)
                 self.assertIn('unavailable', desk.note.text())

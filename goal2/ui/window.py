@@ -93,6 +93,10 @@ class Window(QMainWindow):
 
     def replace_home(self, screen):
         """Empty the stack and start from `screen`."""
+        if self.stack:
+            close_native_round = getattr(self.stack[0], 'close_native_round', None)
+            if close_native_round is not None:
+                close_native_round()
         while self.stack:
             old = self.stack.pop()
             stop = getattr(old, 'stop_assistant', None)
