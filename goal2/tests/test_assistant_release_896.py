@@ -51,6 +51,42 @@ class ReleaseBeforeResult(unittest.TestCase):
             self.assertLess(time.monotonic(), deadline, "the second request did not end")
             time.sleep(0.01)
 
+    def test_a_reply_is_not_read_before_its_handle_has_ended(self):
+        """The reader thread queued a terminal reply, then set `ended` and released. A worker that read the
+        reply in between skipped its own release, so the claim outlived the posted result."""
+        from unittest import mock
+        from goal2.game import best_twenty_jobs
+
+        class LateEnd(threading.Event):
+            def set(self):
+                time.sleep(HOLD)   # the reader thread pauses here, as the gate's load made it do
+                super().set()
+
+        init = best_twenty_jobs._Reply.__init__
+
+        def late_init(reply, shared):
+            init(reply, shared)
+            reply.ended = LateEnd()
+
+        m = model()
+        jobs = best_twenty_jobs.for_model(m)
+        self.addCleanup(jobs.close)
+        with mock.patch.object(best_twenty_jobs._Reply, "__init__", late_init):
+            token = jobs.start()
+            deadline, result = time.monotonic() + 120, None
+            while result is None:
+                self.assertLess(time.monotonic(), deadline, "the first request did not finish")
+                result = jobs.poll(token)
+                time.sleep(0.01)
+            self.assertEqual(result["status"], "complete")
+            second = jobs.start()   # before the fix: ValueError, the claim still held by the first reply
+        self.assertIsNotNone(second)
+        self.assertTrue(jobs.cancel(second))
+        deadline = time.monotonic() + 120
+        while jobs.poll(second) is None:
+            self.assertLess(time.monotonic(), deadline, "the second request did not end")
+            time.sleep(0.01)
+
 
 if __name__ == "__main__":
     unittest.main()
