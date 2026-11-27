@@ -301,7 +301,8 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 
 - **Purpose**: the coming round, and which other matches to watch.
 - **Shows**: each fixture with its kind, **✓** on the matches to watch, and for the highlighted row what Enter
-  will do (watch match, auto result; cancel or rearrange on your own friendly).
+  will do: *Play next game on the desk* on your own match (this route starts it there), *Watch match: later* on
+  another country's, *Cancel or rearrange: later* on your own friendly. [designed: T242]
 - **Actions**: **↑↓** scroll, **Enter** the named action, **Esc** desk.
 - **Replaces**: `fixtures-watch`, `fixtures-auto`, `m244-fixtures`, `m244-fixtures-watch`,
   `t156-224-fixture-list`. [confirmed: T156-R1 step 224; M244-G1A-03 steps 4–5; E031 C17–C18]
@@ -313,8 +314,9 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 - **Purpose**: the groups, their tables and matches, the finals and the bracket.
 - **Shows**: the display (Qualifying, Finals, Championship) and the continent, as tabs; the group table
   (P W D L F A T) beside the group's matches; on Finals the top scorers; on Championship the bracket.
-- **Actions**: **↑↓** group, **Space** continent, **←→** display, **Ins** Championship results (where the
-  original prints it), **Esc** desk. Read only.
+- **Actions**: **↑↓** group, **Space** continent, **←→** display, **Ins** Championship results on the Finals
+  display only, where the original prints that line (M244-G4C-05 step 9; t156-229 and t156-230 print none), **Esc**
+  desk. Read only. [designed: T242]
 - **Replaces**: `m244-tournament-group-f`, `m244-tournament-group-g`, `m244-world-finals-bracket`,
   `m244-world-qualifying-a`, `m244-world-qualifying-b`, `m244-final-qualifying-table`,
   `t156-227-tournament-europe`, `t156-228-tournament-americas`, `t156-229-tournament-finals`,
