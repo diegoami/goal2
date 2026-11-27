@@ -1,4 +1,7 @@
-"""[designed: owner2026-11-18, #777/T231] Optional22/24-player squad metadata.
+"""[designed: owner2026-11-18, #777/T231] Optional22-player squad metadata.
+
+[designed: owner, 2026-11-27, #862/T240] Twenty-four places are withdrawn: 22 is the largest. A save
+that says capacity 24 is read as 22 (see `from_data`), so no career is refused.
 
 The original recommended twenty remains authoritative. Extra choices balance
 outfield lines using supplied original-strength scores, never a new rating.
@@ -6,14 +9,14 @@ Match eligibility/wiring is a separate native-engine capability.
 """
 from copy import deepcopy
 
-CAPACITIES=(20,22,24)
+CAPACITIES=(20,22)
 
 
 def validate(state):
     capacity=getattr(state,'squad_capacity',20)
     slots=getattr(state,'extra_squad',[])
     if type(capacity) is not int or capacity not in CAPACITIES:
-        raise ValueError('squad capacity must be20,22or24')
+        raise ValueError('squad capacity must be20or22')
     if not isinstance(slots,list) or len(slots)!=capacity-20:
         raise ValueError('extra squad places differ from capacity')
     filled=[w for w in slots if w is not None]
@@ -31,7 +34,7 @@ def validate(state):
 def resized(state,capacity):
     current=validate(state)
     if type(capacity) is not int or capacity not in CAPACITIES:
-        raise ValueError('squad capacity must be20,22or24')
+        raise ValueError('squad capacity must be20or22')
     candidate=deepcopy(state)
     candidate.squad_capacity=capacity
     count=capacity-20
@@ -62,21 +65,30 @@ def from_data(state,data):
         raise ValueError('extended squad has missing or unknown fields')
     if type(data['capacity']) is not int or data['capacity'] not in (22,24):
         raise ValueError('extended squad data requires22or24places')
+    players=data['players']
+    if not isinstance(players,list):
+        raise ValueError('extended squad players must be a list')
+    if data['capacity']==24:
+        # [designed: owner, 2026-11-27, #862/T240] Twenty-four places are withdrawn. The career keeps 22:
+        # empty places are dropped first, then the last filled ones, and those players fall back to the
+        # pool they were recruited from, so nothing is lost and no save is refused.
+        players=[w for w in players if w is not None][:2]
+        players=players+[None]*(2-len(players))
     candidate=deepcopy(state)
-    candidate.squad_capacity=data['capacity']
-    candidate.extra_squad=deepcopy(data['players'])
+    candidate.squad_capacity=22
+    candidate.extra_squad=deepcopy(players)
     validate(candidate)
     return candidate
 
 
 def balanced_extras(candidates,places):
-    """Return2/4nullable places; line0 keeper,1 defence,2 midfield,3 attack.
+    """Return2nullable places; line0 keeper,1 defence,2 midfield,3 attack.
 
     Scores are supplied by original1771:377E; this function only selects a
     balanced additional group. Stable input order breaks equal-score ties.
     """
-    if type(places) is not int or places not in (0,2,4):
-        raise ValueError('additional places must be0,2or4')
+    if type(places) is not int or places not in (0,2):
+        raise ValueError('additional places must be0or2')
     if not isinstance(candidates,(list,tuple)) or len(candidates)>80:
         raise ValueError('additional candidates need the bounded made pool')
     eligible=[];seen=set()

@@ -250,11 +250,20 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
             state=squad_from_data(state,data['extended_squad'])
         except (ValueError,TypeError,KeyError) as exc:
             raise SessionSaveError(f'invalid extended squad: {exc}') from exc
+    dropped_receipt=False
+    if version == SELECTED_RESULT_VERSION and isinstance(state.last_match,dict) and 'selected_bench' in state.last_match:
+        from goal2.game.extended_save import legacy_capacity
+        if legacy_capacity(state.last_match['selected_bench']) == 24:
+            # [designed: owner, 2026-11-27, #862/T240] Twenty-four places are withdrawn. This career's last
+            # match saved a 24-place bench receipt, which a 22-place squad cannot host: the receipt is
+            # dropped, the career loads, and its records, results and RNG are untouched.
+            state.last_match=None
+            dropped_receipt=True
     try:
         from goal2.game.watched_schema import needs_version3, validate_saved_watched
         validate_saved_watched(state)
         from goal2.game.extended_save import needs_version6
-        if needs_version6(state) != (version == SELECTED_RESULT_VERSION):
+        if needs_version6(state) != (version == SELECTED_RESULT_VERSION) and not dropped_receipt:
             raise ValueError('selected-bench results require explicit session version6')
         if needs_version3(state) and version not in (_WATCHED_VERSION, VERSION, SQUAD_VERSION, SELECTED_RESULT_VERSION):
             raise ValueError("watched results require session version 3")

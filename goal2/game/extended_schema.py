@@ -31,7 +31,7 @@ class ExtendedSelection:
                 or self.first==self.second or self.managed not in (self.first,self.second)
                 or not integer(self.index,1,2400) or type(self.kind) is not int
                 or self.kind not in (1,2,3,5,6,7,8,101,102,103,200,201,202,203)
-                or type(self.capacity) is not int or self.capacity not in (22,24)
+                or type(self.capacity) is not int or self.capacity!=22
                 or type(self.image_sha256) is not str
                 or re.fullmatch('[0-9a-f]{64}',self.image_sha256) is None):
             raise ValueError('invalid extended selection identity')
@@ -65,7 +65,7 @@ class ExtendedSelection:
     @classmethod
     def from_prepared(cls,state,fixture,image):
         slots=extended_squad.validate(state)
-        if state.squad_capacity==20:raise ValueError('extended selection needs capacity22or24')
+        if state.squad_capacity==20:raise ValueError('extended selection needs capacity22')
         core=tuple(state.starting_eleven)+tuple(w for w in state.managed_squad if w not in state.starting_eleven)
         if tuple(image.squad(state.managed_country))!=core or image.players()!=state.players:
             raise ValueError('prepared selection differs from current canonical records')

@@ -30,7 +30,7 @@ on GitHub, not in these files (CLAUDE.md rule 9). [designed: owner, 2026-11-27]
 **The game and its rules**
 - [assumptions.md](assumptions.md): every rule the rebuild plays by, and where it comes from.
 - [engine-process.md](engine-process.md): the sealed match engine under PyPy, in its own process, over a pipe.
-- [extended-squads.md](extended-squads.md): optional 22- and 24-player squads (#777).
+- [extended-squads.md](extended-squads.md): optional 22-player squads (#777, T240).
 - [pool-names.md](pool-names.md): the 33 authored country name profiles, and nothing beyond them.
 - The Python route's campaign rules, used by `goal2/game` and `DesktopModel`:
   [campaign-state.md](campaign-state.md), [campaign-pool.md](campaign-pool.md),

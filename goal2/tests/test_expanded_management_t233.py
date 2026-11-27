@@ -11,7 +11,7 @@ from goal2.game import extended_squad as extended,campaign_pool
 class Management(unittest.TestCase):
     def setUp(self):self.model=model()
 
-    def filled(self,capacity=24,count=None):
+    def filled(self,capacity=22,count=None):
         m=self.model;m.resize_squad(capacity)
         words=campaign_pool.validate(m.state)[:capacity-20 if count is None else count]
         for index,word in enumerate(words):
@@ -28,16 +28,16 @@ class Management(unittest.TestCase):
     def test_nullable_capacity_views_and_search_are_pure(self):
         m=self.model;default=m.view();before=copy.deepcopy(m.state)
         m.resize_squad(20);self.assertEqual(m.state,before);self.assertEqual(m.view(),default)
-        for capacity in (22,24):
+        for capacity in (22,):
             m.resize_squad(capacity);before=copy.deepcopy(m.state)
             self.assertEqual(m.state.extra_squad,[None]*(capacity-20))
             v=m.view();self.assertEqual(v['squad_capacity'],capacity)
             self.assertEqual(v['squad_slots'],m.state.managed_squad+[None]*(capacity-20))
             self.assertEqual(len(v['players']),20);m.pool_view();self.assertEqual(m.state,before)
-        words=self.filled(count=3);before=copy.deepcopy(m.state)
-        v=m.view();self.assertEqual(len(v['players']),23)
-        self.assertEqual(v['squad_slots'][-4:],words+[None])
-        pool=m.pool_view();self.assertEqual(len(pool['reserves']),77);self.assertEqual(len(pool['squad']),23)
+        words=self.filled(count=2);before=copy.deepcopy(m.state)
+        v=m.view();self.assertEqual(len(v['players']),22)
+        self.assertEqual(v['squad_slots'][-2:],words)
+        pool=m.pool_view();self.assertEqual(len(pool['reserves']),78);self.assertEqual(len(pool['squad']),22)
         self.assertFalse(set(words)&{r['id'] for r in pool['reserves']})
         for word in words:
             row=next(r for r in pool['squad'] if r['id']==word)
@@ -67,14 +67,15 @@ class Management(unittest.TestCase):
         self.assertEqual(m.state.extra_squad[-1],incoming)
         self.assertEqual(m.state.managed_squad,native);self.assertEqual(m.state.campaign.reserve_ids,pool)
         self.assertIn(words[-1],{r['id'] for r in m.pool_view()['reserves']})
-        m.resize_squad(22);self.assertEqual(m.state.extra_squad,words[:2]);self.coherent()
-        m.resize_squad(24);self.assertEqual(m.state.extra_squad,words[:2]+[None,None])
+        m.resize_squad(22);self.assertEqual(m.state.extra_squad,[words[0],incoming]);self.coherent()
         m.resize_squad(20);self.assertEqual(m.state.extra_squad,[])
+        # [designed: owner, 2026-11-27, #862/T240] 24 places are withdrawn
+        self.assertRaises(ValueError,m.resize_squad,24)
         self.assertNotIn('squad_capacity',m.view());self.coherent()
 
     def test_invalid_slots_words_windows_and_validation_fail_atomically(self):
         m=self.model;m.resize_squad(22)
-        for capacity in (True,21,23,'24'):
+        for capacity in (True,21,23,24,'24'):
             before=copy.deepcopy(m.state)
             self.assertRaises(ValueError,m.resize_squad,capacity);self.assertEqual(m.state,before)
         pool=campaign_pool.validate(m.state)
@@ -98,4 +99,5 @@ class Management(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             path=Path(folder)/'expanded.g2save';m.save(path);m.resize_squad(20)
             with patch('goal2.desktop.model.start_opening_campaign',side_effect=AssertionError('no regeneration')):m.resume(path)
-        self.assertEqual(m.state,before);self.assertEqual(m.state.extra_squad[-2:],[None,None]);self.coherent()
+        self.assertEqual(m.state,before);self.assertIn(words[0],m.state.managed_squad)
+        self.assertEqual(m.state.extra_squad,before.extra_squad);self.coherent()

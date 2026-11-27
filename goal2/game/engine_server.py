@@ -313,7 +313,7 @@ class Server:
         try:
             extra_places=header.get('extra_places',0)
             if (type(number) is not int or number < 1
-                    or type(extra_places) is not int or extra_places not in (0,2,4)
+                    or type(extra_places) is not int or extra_places not in (0,2)
                     or set(header) != ({'op', 'request', 'input_hash', 'size'}
                                        | ({'extra_places'} if 'extra_places' in header else set()))):
                 raise ValueError('invalid assistant request')

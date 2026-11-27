@@ -19,7 +19,7 @@ class NativeExtras(unittest.TestCase):
         from goal2.engine.original_match import Image
         from goal2.game import engine_tables
         value=previous.state();base=call('goal2.tests.test_best_twenty_t183a:native',value)
-        for places in (2,4):
+        for places in (2,):
             with self.subTest(places=places):
                 answer=call(__name__+':native_extras',value,places)
                 self.assertEqual(answer['state'],base['state'])
@@ -43,7 +43,7 @@ class NativeExtras(unittest.TestCase):
         from goal2.game.extended_squad import balanced_extras
         d=OriginalAction().source();tables=engine_tables.load()
         value=Image.from_memory_component(d.wait.state.memory_component()).state(tables)
-        answer=call(__name__+':native_extras',value,4)
+        answer=call(__name__+':native_extras',value,2)
         d.goto('select-squad');d.press(INSERT,expect=('select-squad',))
         image=Image.from_memory_component(d.wait.state.memory_component())
         expected=records(image);actual=records(Image.from_state(answer['state'],tables))
@@ -56,17 +56,17 @@ class NativeExtras(unittest.TestCase):
             available=not bool(m.reg('ax')&255)
             position=image.memory[image.far(0xA91B)+20*word+6]
             rows.append(dict(id=word,line=image.memory[image.DS*16+0xD5C+position],strength=strength,available=available))
-        self.assertEqual(answer['extra_squad'],balanced_extras(rows,4))
+        self.assertEqual(answer['extra_squad'],balanced_extras(rows,2))
 
     def test_candidate_installs_only_valid_requested_extra_metadata(self):
         from goal2.game.extended_squad import resized,validate
         from goal2.game.best_twenty_state import prepare,candidate
-        m=previous.model();m.state=resized(m.state,24);p=prepare(m.state);before=copy.deepcopy(m.state)
-        answer=call(__name__+':native_extras',p.native,4);selected=candidate(p,answer)
+        m=previous.model();m.state=resized(m.state,22);p=prepare(m.state);before=copy.deepcopy(m.state)
+        answer=call(__name__+':native_extras',p.native,2);selected=candidate(p,answer)
         self.assertEqual(selected.extra_squad,answer['extra_squad']);validate(selected)
         self.assertEqual(m.state,before)
-        for value in ([None], [answer['squad'][0],None,None,None],[True,None,None,None],
-                      [answer['pool'][0],answer['pool'][0],None,None]):
+        for value in ([None], [answer['squad'][0],None],[True,None],
+                      [answer['pool'][0],answer['pool'][0]]):
             bad=copy.deepcopy(answer);bad['extra_squad']=value
             with self.subTest(value=value):self.assertRaises(ValueError,candidate,p,bad)
         missing=copy.deepcopy(answer);del missing['extra_squad']
@@ -80,7 +80,7 @@ class PipeExtras(unittest.TestCase):
 
     def test_real_shared_pipe_matches_direct_and_default_remains_compatible(self):
         value=previous.state();e,q=self.engine(denied=True)
-        for places in (2,4,0):
+        for places in (2,0):
             expected=call(__name__+':native_extras',value,places)
             number=e.assistant(value,extra_places=places);reply=self.wait(q,'assistant')
             self.assertEqual(reply['request'],number);self.assertEqual(reply['result'],expected)
@@ -91,12 +91,12 @@ class PipeExtras(unittest.TestCase):
 
     def test_invalid_count_refuses_without_starting_the_child(self):
         e,q=self.engine()
-        for places in (True,1,3,5,'4'):
+        for places in (True,1,3,4,5,'4'):
             with self.subTest(places=places):self.assertRaises(ValueError,e.assistant,previous.state(),extra_places=places)
         self.assertIsNone(e.process)
 
     def test_completed_extra_reply_can_be_cancelled_without_publishing(self):
-        e,q=self.engine('cancel');number=e.assistant(previous.state(),extra_places=4)
+        e,q=self.engine('cancel');number=e.assistant(previous.state(),extra_places=2)
         self.assertTrue(e.cancel_assistant(number));reply=self.wait(q,'assistant_cancelled')
         self.assertEqual(reply['request'],number);self.assertFalse(e.busy)
 
@@ -117,11 +117,11 @@ def fake_extras(mode):
         state=json.loads(payload.decode('utf8'))
         result=dict(allowed=True,refusal=None,country=4,manager=1,squad=list(range(61,81)),
                     pool=list(range(2561,2641)),changed=False,recruited=[],calls={'0791:DC7E':1})
-        words=[2561,2562,2563,2564]
-        if mode=='count':words=words[:2]
-        elif mode=='duplicate':words=[2561,2561,None,None]
-        elif mode=='bool':words=[True,None,None,None]
-        elif mode=='foreign':words=[3060,None,None,None]
+        words=[2561,2562]
+        if mode=='count':words=words[:1]
+        elif mode=='duplicate':words=[2561,2561]
+        elif mode=='bool':words=[True,None]
+        elif mode=='foreign':words=[3060,None]
         if mode!='missing':result['extra_squad']=words
         write_packet(out,{'kind':'assistant','value':dict(request=header['request'],input_hash=header['input_hash'],
                      output_hash=canonical_hash(state),result=result)},payload)
@@ -137,7 +137,7 @@ class ReplyGuards(unittest.TestCase):
             with self.subTest(mode=mode):
                 q=queue.Queue();e=EngineProcess(lambda k,v:q.put((k,v)),command=[sys.executable,'-u','-m',__name__,'--fake',mode])
                 try:
-                    e.assistant(previous.state(),extra_places=0 if mode=='unrequested' else 4)
+                    e.assistant(previous.state(),extra_places=0 if mode=='unrequested' else 2)
                     reply=self.wait(q,'death')
                     self.assertIn('assistant',reply['error'])
                     self.assertFalse(e.busy)
@@ -170,19 +170,19 @@ if sys.implementation.name != "pypy":
         def setUp(self):
             from goal2.game.extended_squad import resized
             ui_previous.AssistantUI.setUp(self)
-            self.model.state=resized(self.model.state,24)
+            self.model.state=resized(self.model.state,22)
 
         def test_actual_a_publishes_balanced_extras_with_capacity_feedback(self):
             from PySide6.QtCore import Qt
             from goal2.game.best_twenty_state import prepare,candidate
             from goal2.tests.ui_assertions import assert_fits
             p=prepare(self.model.state)
-            expected=candidate(p,call(__name__+':native_extras',p.native,4))
+            expected=candidate(p,call(__name__+':native_extras',p.native,2))
             self.key(Qt.Key.Key_A);self.finished()
             self.assertEqual(self.model.state,expected)
-            self.assertEqual(len(self.model.state.extra_squad),4)
-            self.assertIn('Filled 4 of 4',self.screen.note.text())
-            self.assertIn('24',self.screen.note.text())
+            self.assertEqual(len(self.model.state.extra_squad),2)
+            self.assertIn('Filled 2 of 2',self.screen.note.text())
+            self.assertIn('22',self.screen.note.text())
             assert_fits(self,self.win)
 
         def test_capacity_change_while_preparing_cannot_publish(self):
@@ -191,11 +191,11 @@ if sys.implementation.name != "pypy":
             try:
                 with control:
                     self.click_assistant();self.assertTrue(entered.wait(5))
-                    self.model.state=resized(self.model.state,22)
+                    self.model.state=resized(self.model.state,20)
                     expected=copy.deepcopy(self.model.state)
                     release.set();self.finished()
                 self.assertEqual(self.model.state,expected)
-                self.assertEqual(self.model.state.extra_squad,[None,None])
+                self.assertEqual(self.model.state.extra_squad,[])
                 self.assertIn('career changed',self.screen.note.text())
             finally:release.set()
 

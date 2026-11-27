@@ -111,8 +111,8 @@ class EngineProcess:
         """[designed: T183c] Ask on a private state/2; replies are request/hash bound."""
         import json
         from goal2.game.season import canonical_hash
-        if type(extra_places) is not int or extra_places not in (0,2,4):
-            raise ValueError('additional assistant places must be0,2or4')
+        if type(extra_places) is not int or extra_places not in (0,2):
+            raise ValueError('additional assistant places must be0or2')
         if not isinstance(state, dict) or state.get('schema') != 'original_match.state/2':
             raise ValueError('assistant input must be state/2')
         payload = json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')

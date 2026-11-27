@@ -22,7 +22,7 @@ def actual_case(state,original,fixture,count):
     from goal2.engine.original_match import Match
     assert sys.implementation.name=='pypy'
     before=copy.deepcopy(state)
-    state=extended_squad.resized(state,22 if count<=2 else 24)
+    state=extended_squad.resized(state,22)
     pool=campaign_pool.validate(state);pairs=[]
     def available(w):
         record=state.players[w]
@@ -97,7 +97,7 @@ class ExtendedProfiles(unittest.TestCase):
 
     def test_all_partial_full_bench_cards_are_detached_and_old_limit_stays_strict(self):
         api=schema()
-        for count in (1,2,3,4):
+        for count in (1,2):
             with self.subTest(count=count):
                 sample=self.sample(count);selection=self.selection(sample);data=copy.deepcopy(sample['decision'])
                 before=copy.deepcopy(data);view=api.validate_extended_decision(data,selection)
@@ -111,7 +111,7 @@ class ExtendedProfiles(unittest.TestCase):
 
     def test_actual_full_consequence_union_retains_truthful_absence_and_native_effects(self):
         api=schema()
-        for count in (1,2,3,4):
+        for count in (1,2):
             with self.subTest(count=count):
                 sample=self.sample(count);selection=self.selection(sample);result=sample['result'];before=copy.deepcopy(result)
                 checked=api.validate_extended_result(result,selection)

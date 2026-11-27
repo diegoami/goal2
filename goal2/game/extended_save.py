@@ -13,6 +13,14 @@ def needs_version6(state):
     return isinstance(state.last_match,dict) and KEY in state.last_match
 
 
+def legacy_capacity(data):
+    """[designed: owner, 2026-11-27, #862/T240] The capacity a saved selected-bench receipt declares.
+
+    Twenty-four places are withdrawn; `session_save.decode` drops a receipt that says 24 (a 22-place
+    squad cannot host its four extras) instead of refusing the career."""
+    return data.get('capacity') if isinstance(data,dict) else None
+
+
 def _slots(selection,slots):
     if (type(slots) not in (tuple,list) or len(slots)!=selection.capacity-20
             or any(w is not None and not integer(w,1,3060) for w in slots)
