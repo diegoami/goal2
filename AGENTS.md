@@ -1,113 +1,93 @@
-# goal2 — Codex entrypoint
+# goal2: start here
 
-Read [CLAUDE.md](CLAUDE.md): its rules apply to every client (Codex, Claude Code, OpenCode), and
-[docs/process.md](docs/process.md) for how a task runs. Claude Code's skills and agents under
-`.claude/` are Claude-specific; Codex follows the same steps with its own tools.
+This file is for every agent: Codex, OpenCode (any model) and Claude Code. It says where the work
+is, how to find your next step, and how to run the checks. The rules are in [CLAUDE.md](CLAUDE.md)
+and apply to every client. Claude Code's skills and agents under `.claude/` are Claude-specific;
+other clients follow the same steps with their own tools. [designed: owner, 2026-11-27]
 
-Before investigating or changing a game screen, follow the [UI evidence rule](CLAUDE.md#ui-evidence).
-Start with the [original illustrated manual](docs/original-game/README.md) and the
-[rebuild’s illustrated manual](docs/current-game/README.md). The rebuild's manual shows the older
-`goal2/desktop` window. The UI design's sources and issues are indexed in
-[docs/design/README.md](docs/design/README.md), and the redesign's execution order is #862.
+goal2 rebuilds the 1993 DOS game *goal (version 2)* as a native Windows desktop game in Python. The
+redesigned window is `goal2/ui` (PySide6). The match engine is a sealed Python port of the
+original, run under PyPy in its own process. Everything rests on evidence from the private
+goal2-archaeology repository.
 
-## Active engine-replacement work
+## 1. Read, in this order
 
-Read the latest comment on the open issue labelled `checkpoint` (#471; process.md §10) and run
-`python3 tools/checkpoint.py`, then check live heads/checks and labels. The handover before it is the
-[engine checkpoint](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606) on #308. Owner explicitly resumed and prioritized
-engine replacement on2026-10-27. This session owns the persistent independent upstream
-clone `/home/diego/projects/goal2-archaeology-engine`; the other archaeology session owns
-`/home/diego/projects/goal2-archaeology` and continues analysis. Preserve that other checkout.
-Do not resume Unicorn performance optimization or old-career migration. Preserve accepted scoped UI
-work. No obsolete #253 automatic sequence.
+1. [CLAUDE.md](CLAUDE.md): the rules. Above all: never edit `goal2/engine/`; never commit an
+   original-game file; never `git stash`, force-push or rewrite `main`; tag every behaviour claim
+   `[confirmed]`, `[derived]` or `[designed]`; a question is not a request to edit.
+2. [docs/plan.md](docs/plan.md): the owner's current decisions and milestones.
+3. [docs/process.md](docs/process.md): how one task runs, from branch to merge.
+4. [docs/README.md](docs/README.md): which documents are current and which are history. **Don't take
+   work from a document marked history.**
+5. For any screen: [docs/design/README.md](docs/design/README.md), then the
+   [UI evidence rule](CLAUDE.md#ui-evidence).
 
-Status (2026-11-18): v0.1 shipped and closed (milestone #705, tag `m2.1-v0.1-core-route`).
-The held-Match team-tactic/roster seam is in the kit through T170w (#765), including own/marking overrides, pool
-exchanges, full-twenty pair domains, late captain Play and budgets. T170o/#736 retains the actual
-SeasonSession/Match in the PyPy worker. T170s/#750 supplies pure decision-bound current previews;
-its complete PyPy Play/resume control preserves events, full RAM/all16 and round/news data.
-T170t/#752 carries raw news cells and provenance losslessly over the season pipe, with
-complete actual PyPy pipe/direct-worker equality and once-only deltas proven.
-No desktop switch yet. T170r/#747 audits every accepted
-pre-match action in `docs/design/ui-2026-11/prematch-actions.md`. Native position/club inputs
-are accepted upstream as T135/#721 at `fc6b5294e1c9970f492ba8ddccf8a74333206ed9`:
-numeric goals drive R, explicit `"club"` drives C; both cover squad and pool. T170u/#755
-adopts them in the held seam/worker with repairable validation and fresh previews. Personal
-tactics False/True/inherit are accepted upstream as T136/#723 at
-`46315dcf391740018bb486416bce2a00062fda24`, across squad/pool through original T;
-T170v/#757 adopts them with exact three-value seam/pipe inputs, repairable
-validation and fresh previews. Native marking is accepted upstream as T137/#726 at
-`87d925013da43b266f72bd198fda7a7a2c67dac8`: None/inherit,0/protected-zone
-and opponent goals;10 Native/manual/API scenarios,38 guards,19 exact PyPy replay
-checkpoints,107 inherited methods and all12 full CI groups pass. Parent #719 is closed;
-T170w/#765 adopts it in the seam/worker: exact goals, same-decision repair,
-current status/table previews and separate Play are proven; all pre-match input
-arms are now available in the worker. T170x/#769 adds the verified immutable
-PrematchView window read boundary: native current squad/pool/opponent records,
-marking/status/domains and existing card/TEAM decoding, no career publication.
-Six methods,10 actual worker snapshots and parent-pipe proof pass;260-module
-local/Linux/Windows/native gates pass. Windows's first unchanged T223 timing
-failure is retained; the same-head retry passes without bound/case changes.
-T170y/#772 now supplies the owner-thread confirmed edit/captain coordinator:
-answer→fresh decision→verified preview, one pending edit, pure refusal/repair,
-loss invalidation/no replay, native Play refusal and intact first-packet handoff.
-Nine methods,11 actual edit stages/direct fullRAM/all16/event equality and real
-parent pipe pass;47 focused methods and261-module platform gates pass. It owns
-no session/transport/widget lifecycle; detach is not backend cancellation.
-T170z/#779 now binds the existing S15/S08/S09/S10/S16 widgets through
-`HeldPrematchFlow` to an explicitly supplied configured native session/controller.
-All14 actual parent-PyPy/window cases pass unskipped on local/Linux/Windows;
-264-module gates, both native scales per platform and Windows native scenarios pass.
-The existing full legacy two-match journey15/15 and five native-screen layouts pass.
-Native XI refusal, pending/loss/close and once-only handoff are covered; the first
-parallel gate's test scheduling race is retained and corrected without runtime,
-fixture, case or bound changes. Receipts are in `measurements/T170z`.
-Owner callbacks still supply current-route views, handoff and disposal; this is
-not a normal desktop entry, native career bootstrap, round publication or ZIP flip.
-T170aa/#784 supplies `NativeSeasonOwner`: explicit native state/2 input, the
-existing owner's shared PyPy lease, actual route fixture metadata and verified
-entry into T170z's controller/screens. Its once-only first-packet connection keeps
-that lease for the next driver. Close waits asynchronously for delivered
-discard/death, invalidates the legacy bridge cache consistently, and completes
-even at interpreter exit. Generation/registry/disposal races have positive
-before/after controls;16 new methods run unskipped on local/Linux/Windows.
-The97-method affected run and268-module gates plus all native scenarios/scales
-pass; receipts are in `measurements/T170aa`. This accepts caller-supplied native
-input, not an authenticated provenance claim or a fresh native career generator.
-Original marking-menu
-eligibility includes available outfield bench players, not only the XI. Route-boundary state is
-stale after held edits; do not use it as a current card/lineup preview.
+## 2. Where the work is
 
-Next, in order: **worker activation**: connect T170aa's retained first-packet
-handoff to the actual in-match driver/pacing and resume, then current native
-route-view UI and save/load/publication. Audit the driver's required configuration
-before entry; do not reconfigure a started Match or patch private options. The
-continuing driver must eventually close the same native owner. Fresh native
-career bootstrap still needs its own source-bound input contract before a normal
-desktop/default switch. Use T170x/T170y/T170z/T170aa; read T170i's mapping,
-T170r's inventory and existing screen/process owners before the next contract.
-The legacy assistant-only current-career projection
-(`best_twenty_state.prepare`) is not a native season bootstrap. Read the owned upstream
-clone's instructions and original menu evidence before writing each bounded source contract; the
-complete action inventory is `docs/design/ui-2026-11/prematch-actions.md`.
-Preserve the explicit existing T183 assistant exception. Then the
-**Prover comparison** (T132 Done-when 2, archaeology #709, independent of the focused seam
-receipts), **#702** (oracle no-fixture round, awaiting milestone round 20), T170f (#693's nine
-ports) and T183, then **T169 flips the ZIP**. The bug queue #697/#698/#682/#684 is swept.
-UI2 foundation T215/#748 merged at3b561483 after renewed owner review/playtest
-and approval (#754 closed). The other session owns the T183 fast-track: T183a/#759
-and T183b/#761 are merged; T183c/#764 delivers async assistant action for supported
-opening careers, and #767 makes A its visible shortcut (Ins remains compatible).
-Preserve those accepted controls, the isolated owner apps/data and all fidelity
-cases; held-season assistant integration still needs its explicit contract.
-The parent's native-season/UI acceptance remains open. #771 supplies the genuine
-G4B native finals refusal/acknowledgement and exact PyPy equality; archaeology#725
-is fulfilled. T183e/#774 supplies the synchronous native SeasonSession assistant
-at completed manager boundaries. T183f/#775 scopes private proposals and explicit
-commit/abort before separate cancellable worker/UI delivery. Preserve that session and checkout.
-The UI redesign runs alongside, in the order of #862 (owner, 2026-11-25), under the umbrella #666;
-its slices take up #673–#680. Sources and status: [docs/design/README.md](docs/design/README.md).
+Two tracks run in parallel, usually in two sessions. Status lives on GitHub, never in this file.
 
-Durable task decisions/status live on the relevant GitHub issues/PRs; supporting evidence is in `/home/diego/projects/goal2-keep`. The owner's final naming scope (2026-10-26) is only the existing33 authored profiles: canonical top32 plus Greece,80 surnames each, unchanged. Drop the128-country expansion; unlisted countries retain original names. Do not restart extra-country surname research.
+| Track | Parent issue | What it does | Its sources |
+| --- | --- | --- | --- |
+| **UI redesign** | [#862](https://github.com/diegoami/goal2/issues/862), under [#666](https://github.com/diegoami/goal2/issues/666) | redraws each `goal2/ui` screen from the original, one slice at a time | [docs/design/README.md](docs/design/README.md) |
+| **Native season** | [#566](https://github.com/diegoami/goal2/issues/566) (T170), toward [#509](https://github.com/diegoami/goal2/issues/509) m3 | makes the Python route play a whole season on the native engine, without Unicorn | [docs/engine-process.md](docs/engine-process.md), the T170 task files |
 
-Never read or alter these protected owner untracked files: `.claude/settings.local.json.clother-20261020-181204.bak`, `1`, `error1.txt`. Read the repository-required `worktree-cleanup` skill and latest sweep receipt on resume; the skill is supplied by the environment, at `/home/diego/.codex/skills/worktree-cleanup/SKILL.md` on the owner's machine. Preserve active/unresolved work and reviews.
+**Find your next step:**
+1. Read the latest comments on the checkpoint issue [#471](https://github.com/diegoami/goal2/issues/471).
+   Both tracks post there. Take the newest comment whose **Next:** line names your track; another
+   track's next step is not yours.
+2. Run `python3 tools/checkpoint.py` for the live snapshot: branches, open PRs, jobs.
+3. Recheck the live PR heads, labels and checks before acting. A vanished job is rerun, never
+   assumed to have passed.
+4. For the UI track, the newest comment on #862 names the slice in progress and the one after it.
+
+Don't take the other track's open PR or branch. If the owner hasn't said which track you are on, ask.
+
+## 3. Running things locally
+
+The owner's machine has the private game files in `.cache/` and a project virtualenv in `.cache/venv`.
+A fresh checkout runs `tools/cloud_setup.sh` first ([docs/cloud.md](docs/cloud.md)).
+
+```bash
+source .cache/cloud.env      # venv on PATH, offscreen Qt, SDL dummy drivers
+export GOAL2_ARCHAEOLOGY=/home/diego/projects/goal2-archaeology-engine   # the clone with the vendored pins
+python -m unittest goal2.tests.test_ui_pitch_t166                       # one test module
+python3 tools/jobs.py start gate -- python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" --jobs 4
+python3 tools/jobs.py wait gate                                          # the pre-merge gate, as a tracked job
+python -m goal2.ui                                                       # the redesigned window
+```
+
+- Run only one pre-merge gate at a time on a computer (process.md §10).
+- Without `GOAL2_ARCHAEOLOGY`, the vendor and provenance tests fail. Without `cloud.env`, the
+  real-window tests fail under WSLg. Neither failure is a defect in your change.
+- Wait on a job with `tools/jobs.py wait`, never with `pgrep -f` (CLAUDE.md rule 11a).
+
+## 4. Checkouts and files you must not touch
+
+- `/home/diego/projects/goal2-archaeology-engine` is the delivery clone of goal2-archaeology.
+  `/home/diego/projects/goal2-archaeology` belongs to another analysis session: don't change it.
+- Never read or alter the owner's untracked `.claude/settings.local.json.clother-20261020-181204.bak`,
+  `1` or `error1.txt`.
+- Evidence and receipts too large or private for git are in `/home/diego/projects/goal2-keep`.
+- Codex on the owner's machine: read the `worktree-cleanup` skill
+  (`/home/diego/.codex/skills/worktree-cleanup/SKILL.md`) and its latest sweep receipt on resume.
+
+## 5. Not to be restarted
+
+No resume authorises these (CLAUDE.md, owner 2026-10-26 and 2026-10-27):
+- Unicorn performance work.
+- Migrating old careers.
+- Surname research beyond the 33 authored country profiles (the top 32 plus Greece, 80 surnames
+  each; other countries keep their original names).
+- The October #253 queue.
+
+## 6. Pitfalls found earlier
+
+- **Native-season state.** The route-boundary state goes stale after held edits, so don't use it as a
+  current card or lineup preview. The legacy assistant projection (`best_twenty_state.prepare`) is not
+  a native season bootstrap.
+- **Marking menu.** The original's marking-menu eligibility includes the available outfield bench
+  players, not only the XI.
+- **The assistant (T183).** Preserve the accepted A / Ins controls and their isolated owner data. Native
+  held-season integration needs its own explicit contract.
+- **Native-track history.** The detailed status this file carried until 2026-11-18 is on
+  [#471](https://github.com/diegoami/goal2/issues/471#issuecomment-7213437303).

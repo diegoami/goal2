@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Every file under `goal2/engine/` must have a PROVENANCE row whose source commit exists
-in goal2-archaeology (CLAUDE.md rule 18). Exit 0 on success, non-zero on any mismatch.
+in goal2-archaeology (CLAUDE.md rule 13). Exit 0 on success, non-zero on any mismatch.
 
 The PROVENANCE.md columns are: `File`, `Source repo`, `Source commit`, `Findings`, `Vendored`.
 The script parses the table, walks the vendored directory recursively (every file under it

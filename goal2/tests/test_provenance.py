@@ -1,6 +1,6 @@
 """Tests for `tools/check_provenance.py` (T01 scope).
 
-The check enforces CLAUDE.md rule 18: every file under `goal2/engine/` has a PROVENANCE row
+The check enforces CLAUDE.md rule 13: every file under `goal2/engine/` has a PROVENANCE row
 whose source commit exists in goal2-archaeology. The tests build a temporary repo layout
 and call the script's `main` directly, so a bypass on the real layout shows up here too.
 [confirmed: rule 18's contract; the table format is the project's own.]
