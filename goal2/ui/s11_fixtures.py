@@ -52,11 +52,15 @@ NOTE = ("✓ marks a match you will watch: your own, always. The column on the r
 
 
 def action(row):
-    """(what happens at kick-off, the Enter hint, Enter's answer) for one fixture row of the model."""
+    """(what happens at kick-off, the Enter hint, Enter's answer) for one fixture row of the model.
+
+    [confirmed: t156-224-fixture-list.png; M244-G1A-03 steps 4–5] The original prints what Enter will do for the
+    highlighted row, and the wording follows the row. On this route your own match is started from the desk, so its
+    caption says that rather than promising a watch this screen cannot perform."""
     if row["own"]:
         if row["kind"] == 1:
             return "your match", "Cancel or rearrange: later", LATER_FRIENDLY
-        return "your match", "Watch match", OWN_WATCHED
+        return "your match", "Play next game on the desk", OWN_WATCHED
     return "auto result", "Watch match: later", LATER_WATCH
 
 

@@ -286,7 +286,7 @@ class Fixtures(App):
         self.assertIn("ROUND 2", screen.heading().upper())
         first = screen.shown_rows()[0]
         self.assertEqual((first[0], first[4], first[5]), (CHECK, "qualifying", "your match"))
-        self.assertEqual(screen.enter_text.text(), "Watch match")
+        self.assertEqual(screen.enter_text.text(), "Play next game on the desk")
         self.key(window, Qt.Key.Key_Return)
         self.assertIn("always watched", screen.note.text())
 
@@ -329,8 +329,12 @@ class Tournament(App):
         self.assertIn("QUALIFYING", screen.banner.text())
         bar = self.bar(screen)
         for caps, text in ((("↑", "↓"), "group"), (("Space",), "continent"), (("←", "→"), "display"),
-                           (("Ins",), "Championship results"), (("Esc",), "desk")):
+                           (("Esc",), "desk")):
             self.assertEqual(bar.get(caps), text, caps)
+        # [confirmed: t156-229, t156-230] no Ins line on the opening stage's Qualifying display
+        self.assertNotIn(("Ins",), bar)
+        self.key(window, Qt.Key.Key_Right)
+        self.assertEqual(self.bar(screen).get(("Ins",)), "Championship results")
         self.back_to_desk(window, desk)
 
     def test_groups_continents_and_displays(self):
@@ -360,7 +364,7 @@ class Tournament(App):
         self.assertIn("American Championship", screen.banner.text())
         self.click(screen.continent_tabs[0])
         self.assertEqual(TABS[screen.tab][1], "Europe")
-        # Finals and Championship: not reached yet, no rows.
+        # Finals and Championship: not reached yet, no rows. Ins is printed on Finals only.
         before = copy.deepcopy(model.state)
         for display in ("FINALS", "CHAMPIONSHIP"):
             self.key(window, Qt.Key.Key_Right)
@@ -368,10 +372,13 @@ class Tournament(App):
             self.assertEqual(screen.table(), [])
             self.assertEqual(screen.matches(), [])
             self.assertIn("FINALS", screen.banner.text())
+            self.assertEqual(self.bar(screen).get(("Ins",)) == "Championship results", display == "FINALS")
             assert_fits(self, window)
+        self.key(window, Qt.Key.Key_Left)     # back to Finals: the original prints Ins there
+        self.assertEqual(self.bar(screen).get(("Ins",)), "Championship results")
         self.key(window, Qt.Key.Key_Insert)
         self.assertIn("not reach", screen.message_label.text())
-        self.key(window, Qt.Key.Key_Left, 2)
+        self.key(window, Qt.Key.Key_Left)
         self.assertEqual(screen.display, 0)
         expect(1, start + 2)
         self.click(screen.display_tabs[1])
