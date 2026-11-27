@@ -110,10 +110,7 @@ class SelectedSquadUI(unittest.TestCase):
         self.assertEqual(self.owner.state.squad_capacity, 22)
         self.assertEqual(self.owner.state.extra_squad, [None, None])
         self.assertEqual(len(screen.strip.shown_texts()), 22)
-        self.choose(screen, 24)
-        self.assertEqual(self.owner.state.extra_squad, [None] * 4)
         self.assertEqual(screen.findChildren(GridStrip), [screen.strip])
-        self.assertEqual(len(screen.strip.shown_texts()), 24)
         self.click(screen.strip.rows[-1])
         self.assertIsNone(screen.current())
         self.assertFalse(screen.card.isVisible())
@@ -130,7 +127,7 @@ class SelectedSquadUI(unittest.TestCase):
         self.click(screen.strip.rows[index])
         if screen.side == "pool":
             self.key(Qt.Key.Key_Return)
-        self.assertEqual(self.owner.state.extra_squad, [None, None, None, row["id"]])
+        self.assertEqual(self.owner.state.extra_squad, [None, row["id"]])
         self.assertEqual(screen.current(), row["id"])
         self.assertTrue(screen.card.isVisible())
         self.assertNotIn(row["id"], [r["id"] for r in screen.rows("pool")])
@@ -144,18 +141,18 @@ class SelectedSquadUI(unittest.TestCase):
         self.assertIs(self.win.current(), screen)
         self.key(Qt.Key.Key_F6)
         self.key(Qt.Key.Key_Escape, screen.size_menu)
-        self.assertEqual(self.owner.state.extra_squad, [None, None, None, row["id"]])
+        self.assertEqual(self.owner.state.extra_squad, [None, row["id"]])
         self.choose(screen, 20)
         self.assertEqual(screen.findChildren(GridStrip), [screen.strip])
         self.assertIn(row["id"], [r["id"] for r in screen.rows("pool")])
         self.assertEqual(len(screen.strip.shown_texts()), 20)
 
-    def test_a_fills_two_and_four_outfield_slots_on_the_visible_squad(self):
+    def test_a_fills_the_two_extra_outfield_slots_on_the_visible_squad(self):
         screen = open_squad(self.win, self.owner)
         original = None
         initial = copy.deepcopy(self.owner.state)
         jobs = self.owner.assistant_jobs()
-        for size in (20, 22, 24):
+        for size in (20, 22):
             if size != 20:
                 self.owner.state = copy.deepcopy(initial)
                 screen.refresh()
@@ -197,7 +194,7 @@ class SelectedSquadUI(unittest.TestCase):
 
     @requires.need(slow=True)
     def test_actual_quick_watch_bench_selects_last_extra_and_reloads(self):
-        state, template, _, pairs = selected_state(4, True)
+        state, template, _, pairs = selected_state(2, True)
         self.owner.state, self.owner.template_bytes = state, template
         self.owner.mark_saved()
         day = for_window(self.win, self.owner)
@@ -210,13 +207,13 @@ class SelectedSquadUI(unittest.TestCase):
         self.key(Qt.Key.Key_Escape)
         bench = self.win.current()
         self.assertIsInstance(bench, BenchScreen)
-        self.assertEqual(len(bench.strip.shown_texts()), 24)
-        self.assertEqual(len(bench.answer.live_records), 24)
+        self.assertEqual(len(bench.strip.shown_texts()), 22)
+        self.assertEqual(len(bench.answer.live_records), 22)
         assert_fits(self, self.win)
         with canonical_page(self.win):
             assert_on_grid(self, self.win)
         tactics = day.open_team_tactics()
-        self.assertEqual(len(tactics.strip.shown_texts()), 24)
+        self.assertEqual(len(tactics.strip.shown_texts()), 22)
         self.assertTrue(tactics.characteristics.isVisible())
         assert_fits(self, self.win)
         self.key(Qt.Key.Key_Escape)
@@ -227,8 +224,9 @@ class SelectedSquadUI(unittest.TestCase):
         player = self.win.current()
         self.assertIsInstance(player, PlayerTacticsScreen)
         self.assertEqual(player.word, last)
-        self.assertEqual(len(player.strip.shown_texts()), 24)
-        self.assertTrue(player.strip.rows[-1].on)
+        self.assertEqual(len(player.strip.shown_texts()), 22)
+        # the expanded strip keeps 24 rows; at 22 places only the 22 shown ones take the cursor
+        self.assertTrue(player.strip.rows[len(player.strip.shown_texts()) - 1].on)
         assert_fits(self, self.win)
         self.key(Qt.Key.Key_Escape)
         self.assertIs(self.win.current(), bench)

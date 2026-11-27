@@ -46,7 +46,7 @@ class Preparation(unittest.TestCase):
         self.assertEqual(self.model.state, before)
 
     def test_empty_partial_full_capacity_returns_exact_current_native_lists(self):
-        for capacity, count in ((22,0),(22,1),(22,2),(24,0),(24,1),(24,3),(24,4)):
+        for capacity, count in ((22,0),(22,1),(22,2)):
             with self.subTest(capacity=capacity, count=count):
                 self.model = model(); words = self.selected(capacity, count)
                 before = copy.deepcopy(self.model.state); got, extras = self.projected()
@@ -58,7 +58,7 @@ class Preparation(unittest.TestCase):
                 self.assertEqual(self.model.state, before)
 
     def test_actual_selected_promotion_and_outside_recruitment_use_current_pool(self):
-        words = self.selected(24,2); m = self.model
+        words = self.selected(22,2); m = self.model
         m.swap(m.state.starting_eleven[2], words[0])
         incoming = next(w for w in campaign_pool.validate(m.state) if w not in m.state.extra_squad)
         rec = bytearray(m.state.players[incoming]); rec[14] = 100; rec[16] &= ~0xA4
@@ -72,7 +72,7 @@ class Preparation(unittest.TestCase):
         self.assertEqual(m.state, before)
 
     def test_independent_byte_mask_preserves_finals_calendar_records_and_rng(self):
-        self.selected(24,2); s = self.model.state; image = Image(s.mem)
+        self.selected(22,2); s = self.model.state; image = Image(s.mem)
         game = image.far(0xA923); managers = image.far(0xA91F)
         image.memory[game+1] = 2
         image.memory[game+0x14:game+0x1A] = bytes((1,2,3,4,5,6))
@@ -97,7 +97,7 @@ class Preparation(unittest.TestCase):
     def test_malformed_selection_and_multiple_managers_refuse_purely(self):
         self.selected(22,1); original = copy.deepcopy(self.model.state)
         cases = []
-        for capacity,slots in ((True,[]),(23,[None]*3),(22,[1,1]),(22,[3061,None]),(22,[1,None]),(22,[True,None]),(22,[None])):
+        for capacity,slots in ((True,[]),(23,[None]*3),(24,[None]*4),(22,[1,1]),(22,[3061,None]),(22,[1,None]),(22,[True,None]),(22,[None])):
             s=copy.deepcopy(original); s.squad_capacity=capacity; s.extra_squad=slots; cases.append(s)
         s=copy.deepcopy(original); row=bytearray(s.countries[5]);row[0x2E]=130;s.countries[5]=bytes(row);cases.append(s)
         for s in cases:
@@ -106,7 +106,7 @@ class Preparation(unittest.TestCase):
             self.assertEqual(s,before)
 
     def test_zero_wrapped_overlapping_and_outside_allocations_refuse_without_backend(self):
-        self.selected(24,1); original=copy.deepcopy(self.model.state)
+        self.selected(22,1); original=copy.deepcopy(self.model.state)
         variants=[(0xA927,0,0),(0xA91F,0,0),(0xA923,0,0),
                   (0xA927,0xFFF0,0x1000),(0xA91F,0xFFF0,0x1000),
                   (0xA927,0xFFF0,0xFFFF),(0xA91F,0xFFF0,0xFFFF),

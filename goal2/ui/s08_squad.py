@@ -212,7 +212,7 @@ class SquadScreen(Screen):
             f"QMenu {{ background: {theme.GROUND}; border: 1px solid {theme.FRAME}; }} "
             f"QMenu::item:selected {{ background: {theme.HIGHLIGHT}; color: {theme.ON_HIGHLIGHT}; }}")
         self.size_actions = {}
-        for capacity in (20, 22, 24):
+        for capacity in (20, 22):
             action = self.size_menu.addAction(f"{capacity} players")
             action.setCheckable(True)
             action.triggered.connect(lambda checked=False, size=capacity: self.resize_selection(size))

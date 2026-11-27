@@ -24,22 +24,23 @@ def career():
 class Metadata(unittest.TestCase):
     def test_empty_capacities_and_private_resize(self):
         state=career();before=copy.deepcopy(state)
-        for count in (20,22,24):
+        for count in (20,22):
             with self.subTest(count=count):
                 selected=extra.resized(state,count)
                 self.assertEqual(selected.extra_squad,[None]*(count-20))
                 self.assertEqual(len(extra.squad_slots(selected)),count)
                 self.assertEqual(selected.managed_squad,state.managed_squad)
         self.assertEqual(state,before)
+        self.assertRaises(ValueError,extra.resized,state,24)
 
     def test_selected_members_are_removed_from_visible_pool_and_return_when_shrunk(self):
-        state=extra.resized(career(),24);state.extra_squad=[2561,2562,2563,2564]
-        self.assertEqual(len(extra.visible_pool(state)),76)
-        small=extra.resized(state,22)
-        self.assertEqual(small.extra_squad,[2561,2562])
-        self.assertEqual(len(extra.visible_pool(small)),78)
-        self.assertTrue({2563,2564}<=set(extra.visible_pool(small)))
-        self.assertEqual(state.extra_squad,[2561,2562,2563,2564])
+        state=extra.resized(career(),22);state.extra_squad=[2561,2562]
+        self.assertEqual(len(extra.visible_pool(state)),78)
+        small=extra.resized(state,20)
+        self.assertEqual(small.extra_squad,[])
+        self.assertEqual(len(extra.visible_pool(small)),80)
+        self.assertTrue({2561,2562}<=set(extra.visible_pool(small)))
+        self.assertEqual(state.extra_squad,[2561,2562])
 
     def test_malformed_metadata_never_mutates_the_source(self):
         state=career();before=copy.deepcopy(state)
@@ -51,7 +52,7 @@ class Metadata(unittest.TestCase):
         for data in bad:
             with self.subTest(data=data):self.assertRaises(ValueError,extra.from_data,state,data)
             self.assertEqual(state,before)
-        for count in (True,21,23,25,'24'):
+        for count in (True,21,23,24,25,'24'):
             self.assertRaises(ValueError,extra.resized,state,count)
 
 
@@ -60,10 +61,12 @@ def candidate(word,line,strength,available=True):
 
 
 class Balance(unittest.TestCase):
-    def test_four_cover_all_outfield_groups_then_choose_strongest_remaining(self):
+    def test_two_choose_two_groups_then_the_strongest_remaining(self):
         rows=[candidate(1,0,256),candidate(2,1,90),candidate(3,1,89),
               candidate(4,2,80),candidate(5,3,70),candidate(6,3,256,False)]
-        self.assertEqual(extra.balanced_extras(rows,4),[2,4,5,3])
+        self.assertEqual(extra.balanced_extras(rows,2),[2,4])
+        # [designed: owner, 2026-11-27, #862/T240] four places are withdrawn
+        self.assertRaises(ValueError,extra.balanced_extras,rows,4)
 
     def test_two_choose_two_different_groups_with_stable_pool_order_ties(self):
         rows=[candidate(21,2,100),candidate(22,2,100),candidate(23,1,100),candidate(24,3,100)]
@@ -72,7 +75,7 @@ class Balance(unittest.TestCase):
 
     def test_missing_group_and_insufficient_players_leave_only_real_vacancies(self):
         rows=[candidate(1,1,5),candidate(2,1,4),candidate(3,3,3)]
-        self.assertEqual(extra.balanced_extras(rows,4),[1,3,2,None])
+        self.assertEqual(extra.balanced_extras(rows,2),[1,3])
         self.assertEqual(extra.balanced_extras([candidate(1,0,256)],2),[None,None])
         self.assertEqual(extra.balanced_extras([candidate(1,2,0)],2),[1,None])
 
@@ -83,7 +86,7 @@ class Balance(unittest.TestCase):
              [dict(id=1,line=1,strength=100)]]
         for rows in bad:
             with self.subTest(rows=rows):self.assertRaises(ValueError,extra.balanced_extras,rows,2)
-        for count in (True,1,3,5):self.assertRaises(ValueError,extra.balanced_extras,[],count)
+        for count in (True,1,3,4,5):self.assertRaises(ValueError,extra.balanced_extras,[],count)
 
 
 class Saves(unittest.TestCase):
@@ -98,7 +101,7 @@ class Saves(unittest.TestCase):
         self.assertEqual((loaded.squad_capacity,loaded.extra_squad),(20,[]))
 
     def test_empty_and_filled_larger_squads_roundtrip_all_members_and_names(self):
-        for count in (22,24):
+        for count in (22,):
             for filled in (False,True):
                 with self.subTest(count=count,filled=filled):
                     state=extra.resized(career(),count);state.manager_name='Zoe'
@@ -107,6 +110,29 @@ class Saves(unittest.TestCase):
                     loaded,template=decode(raw)
                     self.assertEqual(loaded,state);self.assertEqual(template,b'template')
                     self.assertEqual(encode(loaded,template),raw)
+
+    def test_a_capacity_24_save_loads_at_22_keeping_the_earliest_places(self):
+        """[designed: owner, 2026-11-27, #862/T240] 24 places are withdrawn: the career keeps 22, empty
+        places go first, then the last filled ones, and those players fall back to the pool."""
+        base=json.loads(encode(extra.resized(career(),22),b'template'))
+        base['state']['extended_squad']={'capacity':24,'players':[2561,None,2562,2563]}
+        state,_=decode(json.dumps(base).encode())
+        self.assertEqual((state.squad_capacity,state.extra_squad),(22,[2561,2562]))
+        self.assertEqual(extra.validate(state),(2561,2562))
+        self.assertEqual(extra.squad_slots(state),(*(state.managed_squad),2561,2562))
+        self.assertIn(2563,extra.visible_pool(state))
+        self.assertNotIn(2561,extra.visible_pool(state))
+        reread=json.loads(encode(state,b'template'))
+        self.assertEqual(reread['state']['extended_squad'],{'capacity':22,'players':[2561,2562]})
+
+    def test_a_capacity_24_save_with_empty_places_drops_them_first(self):
+        base=json.loads(encode(extra.resized(career(),22),b'template'))
+        base['state']['extended_squad']={'capacity':24,'players':[None,2561,None,2562]}
+        state,_=decode(json.dumps(base).encode())
+        self.assertEqual((state.squad_capacity,state.extra_squad),(22,[2561,2562]))
+        base['state']['extended_squad']={'capacity':24,'players':[None,None,None,2561]}
+        state,_=decode(json.dumps(base).encode())
+        self.assertEqual((state.squad_capacity,state.extra_squad),(22,[2561,None]))
 
     def test_version_five_rejects_missing_unknown_and_bad_slot_data(self):
         base=json.loads(encode(extra.resized(career(),22),b'template'))
@@ -126,8 +152,8 @@ class Saves(unittest.TestCase):
         from goal2.game.campaign_pool import validate
         with tempfile.TemporaryDirectory() as temp:
             model=DesktopModel.open(requires.CACHE/'e010-r0008-halftime.sav',requires.CACHE/'GOAL.DAT',Path(temp)/'game',country=4)
-            source=model.state;selected=extra.resized(source,24)
-            selected.extra_squad=validate(selected)[:4]
+            source=model.state;selected=extra.resized(source,22)
+            selected.extra_squad=validate(selected)[:2]
             raw=encode(selected,model.template_bytes);loaded,_=decode(raw)
             self.assertEqual(loaded,selected)
             self.assertEqual(loaded.mem,source.mem)

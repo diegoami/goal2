@@ -32,7 +32,7 @@ def actual_saved(state,raw,fixture,count,competitive):
     real=package.Match;observed=[]
     def observe(image,actual_fixture,**options):
         extras=tuple(options.get('extra_players',()))
-        owner=extended_squad.resized(state,22 if len(extras)<=2 else 24)
+        owner=extended_squad.resized(state,22)
         # Explicit owner presentation metadata; the exact SDK input is its filled order.
         owner.extra_squad=([None,extras[0]] if len(extras)==1 else
                            list(extras)+[None]*(owner.squad_capacity-20-len(extras)))
@@ -85,7 +85,7 @@ class SelectedResultSaves(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.samples={}
 
-    def sample(self,count=4,competitive=False):
+    def sample(self,count=2,competitive=False):
         key=(count,competitive)
         if key not in self.samples:
             state,raw,fixture=campaign(index=42,kind=2 if competitive else 1)
@@ -108,7 +108,7 @@ class SelectedResultSaves(unittest.TestCase):
 
     def test_actual_empty_partial_full_friendly_competitive_version6_roundtrip(self):
         codec()
-        for count,competitive in ((0,False),(1,False),(4,False),(4,True)):
+        for count,competitive in ((0,False),(1,False),(2,False),(2,True)):
             with self.subTest(count=count,competitive=competitive):
                 state,raw,_=self.sample(count,competitive);before=copy.deepcopy(state)
                 saved=encode(state,raw);doc=json.loads(saved)
@@ -121,7 +121,7 @@ class SelectedResultSaves(unittest.TestCase):
 
     def test_retained_profile_survives_live_shrink_growth_names_and_management_edits(self):
         codec();state,raw,_=self.sample();original=copy.deepcopy(state.last_match)
-        for capacity in (20,22,24):
+        for capacity in (20,22):
             with self.subTest(capacity=capacity):
                 live=extended_squad.resized(state,capacity)
                 live.manager_name='Coach';live.player_renames[live.managed_squad[0]]='Selected'

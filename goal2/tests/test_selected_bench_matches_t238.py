@@ -72,7 +72,7 @@ def selected_state(count, competitive):
     state, template, fixture = campaign(index=42, kind=2 if competitive else 1)
     if count is None:
         return state, template, fixture, []
-    state = extended_squad.resized(state, 22 if count <= 2 else 24)
+    state = extended_squad.resized(state, 22)
     pairs = []
 
     def available(word):
@@ -196,7 +196,7 @@ class ActualSelectedBenchMatches(unittest.TestCase):
             competitive_jobs = CompetitiveJobs(owner, command=command)
             worker_pid = None
             try:
-                for count, competitive in ((0, False), (None, False), (1, False), (4, True)):
+                for count, competitive in ((0, False), (None, False), (1, False), (2, True)):
                     with self.subTest(count=count, competitive=competitive):
                         state, template, fixture, pairs = selected_state(count, competitive)
                         owner.state, owner.template_bytes = state, template
