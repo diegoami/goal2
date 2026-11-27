@@ -90,6 +90,7 @@ class Binding:
 
     def __init__(self, keys, captions, text, handler, shown=True):
         self.keys, self.captions, self.text, self.handler, self.shown = tuple(keys), tuple(captions), text, handler, shown
+        self.label = None   # the bar's label for this key, once drawn
 
     def run(self):
         return self.handler()
@@ -372,7 +373,8 @@ class Screen(QWidget):
             row.setSpacing(0)
             for caption in binding.captions:
                 row.addWidget(self._cap(caption))
-            row.addWidget(cells.CellLabel(binding.text, "keyLabel"))
+            binding.label = cells.CellLabel(binding.text, "keyLabel")
+            row.addWidget(binding.label)
             item.binding = binding
             if binding.handler is not None:
                 item.clicked.connect(binding.run)

@@ -270,21 +270,41 @@ class BenchStrip(Frame):
         self.compact = count > 20
         self.area=Cells(cols,24,"benchRosterRows");self.add(self.area,1)
         self.gap=SquadRule() if self.compact else RosterDivider()
-        self.area.put(self.gap,0,11,cols)
+        # [designed: owner, 2026-11-27, #862/T241] At 22 places the two sections are named in the rows the
+        # dropped legend frees: a header above the XI and one over the boundary rule, so the last reserve keeps
+        # its row and the eleven and reserves are told apart without counting. Twenty places keeps the
+        # original's unlabelled roster.
+        self.headers = ()
+        if self.compact:
+            self.area.put(self.gap,0,12,cols)
+            self.headers = (self.area.text("starting eleven","sub",0,0,cols),
+                            self.area.text("reserves","sub",0,12,cols))
+            for header in self.headers:
+                colour(header, theme.CARD_LABEL)   # the roster's own labels, as the card's are
+        else:
+            self.area.put(self.gap,0,11,cols)
         self.rows=[]
         for i in range(count):
             row=BenchRosterRow(i);row.chosen.connect(self.chosen.emit)
-            self.area.put(row,1,i+(i>10 and not self.compact),cols-2);self.rows.append(row)
+            top = 1+i+(1 if i>10 else 0) if self.compact else i+(i>10)
+            self.area.put(row,1,top,cols-2);self.rows.append(row)
         if self.compact:
             self.gap.raise_()
+            for header in self.headers:
+                header.raise_()
         else:
             self.legend=self.area.text("I injured  * marked","sub",0,22,cols)
             self.area.text("^ on  v off","sub",0,23,cols)
 
     def show_rows(self,heading,rows,current=-1,gap=True,injured=(),marks=None):
         self.set_label(heading);self.gap.setVisible(gap);marks=marks or {}
+        if len(self.headers) > 1:
+            self.headers[1].setVisible(gap)   # the boundary the reserves' header names
         for i,row in enumerate(self.rows):
-            self.area.move(row,1,i+(1 if i>10 and gap and not self.compact else 0),self.cols-2)
+            if self.compact:
+                self.area.move(row,1,1+i+(1 if i>10 else 0),self.cols-2)
+            else:
+                self.area.move(row,1,i+(1 if i>10 and gap else 0),self.cols-2)
             if i<len(rows):
                 code,line,name=rows[i];tone=LINE_COLOUR.get(line,theme.TEXT_NORMAL)
                 status=("I" if i in injured else " ")+(marks.get(i,"") or " ")
