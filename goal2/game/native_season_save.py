@@ -12,13 +12,15 @@ from goal2.engine.original_match.port.tables import MODULE_SIZE
 from goal2.game import engine_tables
 from goal2.game.save_file import write_atomic
 from goal2.game.season import canonical_hash
-from goal2.game.season_publication import PublishedCall, SeasonCampaign
+from goal2.game.season_publication import PublishedCall, PublishedManagementEdit, SeasonCampaign
 
 
 FORMAT = 'goal2-native-season'
 VERSION = 1
+MANAGEMENT_VERSION = 2
 _STATE_FIELDS = {'schema', 'load', 'header', 'tables_sha256', 'initialised', 'code_data', 'memory'}
-_DOCUMENT_FIELDS = {'format', 'version', 'state', 'published', 'sha256'}
+_DOCUMENT_FIELDS = {'format', 'version', 'state', 'sha256'}
+_HISTORY_TYPES = {'round': PublishedCall, 'management': PublishedManagementEdit}
 # [designed: T170ay] Retain the T111 image tail (17,055,744 bytes with memory).
 # The document limit allows base64 expansion of the bounded image and its ledger.
 _MAX_MEMORY = 32 * 1024 * 1024
@@ -56,6 +58,14 @@ def _unique_fields(pairs):
     return result
 
 
+def _history_records(rows):
+    for row in rows:
+        if not isinstance(row, dict) or type(row.get('kind')) is not str or row['kind'] not in _HISTORY_TYPES:
+            raise ValueError('invalid native history kind')
+        record_type = _HISTORY_TYPES[row['kind']]
+        yield record_type(**{name: value for name, value in row.items() if name != 'kind'})
+
+
 def decode(raw, *, view=None):
     """Read the committed campaign without opening a worker or invoking a view."""
     if len(raw) > _MAX_DOCUMENT:
@@ -63,9 +73,12 @@ def decode(raw, *, view=None):
     try:
         document = json.loads(raw, object_pairs_hook=_unique_fields)
         if (not isinstance(document, dict) or document.get('format') != FORMAT
-                or type(document.get('version')) is not int or document['version'] != VERSION):
+                or type(document.get('version')) is not int
+                or document['version'] not in (VERSION, MANAGEMENT_VERSION)):
             raise ValueError('unsupported native save format or version')
-        if set(document) != _DOCUMENT_FIELDS:
+        version = document['version']
+        records_key = 'published' if version == VERSION else 'history'
+        if set(document) != _DOCUMENT_FIELDS | {records_key}:
             raise ValueError('invalid native save fields')
         digest = document.pop('sha256')
         if digest != canonical_hash(document):
@@ -75,19 +88,25 @@ def decode(raw, *, view=None):
             _validate_state(state)
         except (ValueError, TypeError, IndexError, KeyError, zlib.error) as exc:
             raise ValueError(f'invalid native state: {exc}') from exc
-        published = document['published']
-        if not isinstance(published, list):
+        rows = document[records_key]
+        if not isinstance(rows, list):
             raise ValueError('invalid native ledger')
-        return SeasonCampaign.from_committed(state, (PublishedCall(**row) for row in published), view)
+        records = (PublishedCall(**row) for row in rows) if version == VERSION else _history_records(rows)
+        return SeasonCampaign.from_committed(state, records, view)
     except (ValueError, TypeError, RecursionError) as exc:
         raise NativeSeasonSaveError(f'cannot read native save: {exc}') from exc
 
 
 def encode(campaign):
     """Encode and validate the campaign's one committed snapshot."""
-    state, published = campaign.committed_snapshot()
-    document = {'format': FORMAT, 'version': VERSION, 'state': state,
-                'published': [asdict(row) for row in published]}
+    state, history = campaign.committed_snapshot()
+    if any(isinstance(row, PublishedManagementEdit) for row in history):
+        document = {'format': FORMAT, 'version': MANAGEMENT_VERSION, 'state': state,
+                    'history': [dict(kind='round' if isinstance(row, PublishedCall) else 'management', **asdict(row))
+                                for row in history]}
+    else:
+        document = {'format': FORMAT, 'version': VERSION, 'state': state,
+                    'published': [asdict(row) for row in history]}
     try:
         document['sha256'] = canonical_hash(document)
         raw = json.dumps(document, ensure_ascii=True, allow_nan=False, separators=(',', ':')).encode('ascii')
