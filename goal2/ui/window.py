@@ -24,8 +24,11 @@ from goal2.ui import start_look, theme
 
 
 class Window(QMainWindow):
-    def __init__(self, target: data_setup.Paths | None = None, choose=None):
+    def __init__(self, target: data_setup.Paths | None = None, choose=None, *, open_native_save=None):
         super().__init__()
+        if open_native_save is not None and not callable(open_native_save):
+            raise ValueError('A native save opener must be callable.')
+        self.open_native_save = open_native_save
         self.target = target if target is not None else data_setup.paths()
         self.choose = choose   # the folder chooser S01 uses (None: the system's)
         self.setWindowTitle("goal2")

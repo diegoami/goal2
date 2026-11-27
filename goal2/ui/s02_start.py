@@ -30,8 +30,10 @@ COLUMNS = (("Name", 18), ("Country", 16), ("Year · stage", 24), ("Next", 16), (
 VISIBLE = 5   # [designed: T163] rows of the list shown at once; the window of rows follows the highlight
 
 
-def year_stage(model) -> str:
+def year_stage(model, summary=None) -> str:
     """'2028 · Continental qualifying', from the model's own year and stage words."""
+    if isinstance(model, saves.NativeSaveOwner):
+        return (model.summary() if summary is None else summary)["year_stage"]
     campaign = model.state.campaign
     if campaign is None:
         return "friendly"
@@ -45,6 +47,7 @@ class StartScreen(Screen):
     def __init__(self, window):
         super().__init__(window)
         self.target = window.target
+        self.open_native_save = window.open_native_save
         self.entries = []
         self.cursor_row = 0
         self.top = 0
@@ -128,7 +131,8 @@ class StartScreen(Screen):
 
     def read(self):
         """Read every save again, newest first, and show them."""
-        self.entries = saves.entries(self.target.saves, self.target.goal_dat)
+        self.entries = saves.entries(self.target.saves, self.target.goal_dat,
+                                     native=self.open_native_save is not None)
         self.cursor_row = min(self.cursor_row, max(0, len(self.entries) - 1))
         self.failed = None
         self._show()
@@ -160,8 +164,8 @@ class StartScreen(Screen):
         refresh(self.new_item)
         if newest is not None:
             summary = newest.model.summary()
-            set_para(self.continue_text, f"Continue {summary['country']}, {year_stage(newest.model)}")
-            self.facts["manager"].setText(newest.model.manager)
+            set_para(self.continue_text, f"Continue {summary['country']}, {year_stage(newest.model, summary)}")
+            self.facts["manager"].setText(summary["manager"])
             self.facts["next"].setText(summary["next"])
             self.facts["saved"].setText(f"“{newest.name}” · {saves.when(newest.saved)}")
         if self.failed is not None:
@@ -194,7 +198,7 @@ class StartScreen(Screen):
             entry = self.entries[index]
             if entry.model is not None:
                 summary = entry.model.summary()
-                row.set_cells([entry.name, summary["country"], year_stage(entry.model), summary["next"],
+                row.set_cells([entry.name, summary["country"], year_stage(entry.model, summary), summary["next"],
                                saves.when(entry.saved)])
             else:
                 row.set_cells([entry.name, "cannot be opened", "", "", saves.when(entry.saved)],
@@ -249,13 +253,15 @@ class StartScreen(Screen):
     def open_entry(self, entry):
         """Open `entry`'s career, read again at the moment of opening; a save that fails says why here."""
         try:
-            model = saves.load(entry.path, self.target.goal_dat)
+            model = saves.load(entry.path, self.target.goal_dat, native=self.open_native_save is not None)
         except saves.SaveError as exc:
             entry.error, entry.model = str(exc), None
             self.failed = entry
             self._show()
             return None
         self.failed = None
+        if isinstance(model, saves.NativeSaveOwner):
+            return self.open_native_save(model)
         return self.window_.open_career(model)
 
     def escape(self):
