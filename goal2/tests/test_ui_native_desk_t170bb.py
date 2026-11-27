@@ -111,11 +111,11 @@ class Journey(unittest.TestCase):
         self.assertIsNot(start, desk)
         original = desk.model.campaign.committed_snapshot()
         with patch('goal2.ui.match_day.play_next_game', side_effect=AssertionError('legacy round')):
-            for key in (Qt.Key.Key_Return, Qt.Key.Key_Space, Qt.Key.Key_T, Qt.Key.Key_F3, Qt.Key.Key_F4):
+            for key in (Qt.Key.Key_Return, Qt.Key.Key_T, Qt.Key.Key_F3, Qt.Key.Key_F4):
                 self.key(key)
                 self.assertIs(self.window.current(), desk)
                 self.assertIn('unavailable', desk.note.text())
-            for option in desk.options[:5] + [desk.options[6]]:
+            for option in desk.options[:4] + [desk.options[6]]:
                 self.click(option)
                 self.assertIs(self.window.current(), desk)
                 self.assertIn('unavailable', desk.note.text())
@@ -132,6 +132,61 @@ class Journey(unittest.TestCase):
         self.assertIsInstance(self.window.current(), QuestionScreen)
         self.key(Qt.Key.Key_N)
         self.assertIs(self.window.current(), desk)
+
+    def test_select_squad_browses_saved_native_cards_and_pool_without_starting_a_worker(self):
+        from goal2.core.views import player_card, pool, squad
+        from goal2.ui.s08_squad import SquadScreen
+
+        saves.write(self.owner, self.target.saves, 'Browse native players')
+        self.window.start_native()
+        self.key(Qt.Key.Key_Return)
+        desk = self.window.current()
+        committed = desk.model.campaign.committed_snapshot()
+        image = Image.from_state(committed[0], engine_tables.load())
+        roster = squad(Memory(image), desk.model.desk_view().team.country)
+        native_pool = [row for row in pool(image)['rows'] if row['player']]
+        with patch('goal2.game.engine_process.EngineProcess.__init__',
+                   side_effect=AssertionError('browsing must not create a worker')):
+            self.key(Qt.Key.Key_Space)
+            page = self.window.current()
+            self.assertIsInstance(page, SquadScreen)
+            self.assertEqual([row['id'] for row in page.rows()], [row['player'] for row in roster])
+            self.assertEqual(page.current(), roster[0]['player'])
+            card = player_card(image, page.current())
+            self.assertEqual(page.card.card['full_name'], card['name'])
+            self.assertEqual(page.card.card['role'], card['code'])
+            self.assertEqual(page.card.card['skills'], card['skills'])
+            self.key(Qt.Key.Key_Down)
+            self.assertEqual(page.current(), roster[1]['player'])
+            self.key(Qt.Key.Key_Right)
+            self.assertEqual([row['id'] for row in page.rows()], [row['player'] for row in native_pool])
+            self.assertEqual(page.card.card['full_name'], native_pool[0]['name'])
+            self.click(page.strip.rows[1])
+            self.assertEqual(page.current(), native_pool[1]['player'])
+            self.key(Qt.Key.Key_P)
+            self.assertEqual([row['id'] for row in page.rows()],
+                             [row['player'] for row in native_pool if row['position'] == 0])
+            self.key(Qt.Key.Key_Slash)
+            QTest.keyClicks(self.window, 'zzzxzzzx')
+            self.key(Qt.Key.Key_Return)
+            self.assertEqual(page.rows(), [])
+            self.assertFalse(page.card.isVisible())
+            self.assertIsNone(page.current())
+            self.key(Qt.Key.Key_Left)
+            self.assertEqual(page.current(), roster[1]['player'])
+            for key in (Qt.Key.Key_Return, Qt.Key.Key_A, Qt.Key.Key_Insert, Qt.Key.Key_R,
+                        Qt.Key.Key_C, Qt.Key.Key_T, Qt.Key.Key_F2):
+                self.key(key)
+                self.assertIs(self.window.current(), page)
+                self.assertIn('Edits are unavailable', page.note.text())
+                self.assertIsNone(page.picked)
+            self.key(Qt.Key.Key_Escape)
+            self.assertIs(self.window.current(), desk)
+            self.click(next(option for option in desk.options if option.enter == 'Select squad'))
+            self.assertIsInstance(self.window.current(), SquadScreen)
+            self.key(Qt.Key.Key_Escape)
+            self.assertIs(self.window.current(), desk)
+        self.assertEqual(desk.model.campaign.committed_snapshot(), committed)
 
     def test_committed_refresh_clears_previous_opponent_and_quit_can_save_the_new_revision(self):
         saves.write(self.owner, self.target.saves, 'Sweden next')

@@ -127,6 +127,16 @@ class NativeDeskScreen(DeskScreen):
         if self.native_round is not None:
             self.native_round.close()
 
+    def select_squad(self):
+        if self.window_.current() is not self or self.window_.career is not self.model:
+            return None
+        from goal2.ui.native_squad import NativeSquadScreen
+        try:
+            screen = NativeSquadScreen(self.window_, self.model.campaign)
+        except (IndexError, KeyError, TypeError, ValueError) as exc:
+            return self.say(f'Cannot read the native squad: {exc}')
+        return self.window_.push(screen)
+
     def closing(self):
         self.close_native_round()
         super().closing()
@@ -136,4 +146,4 @@ class NativeDeskScreen(DeskScreen):
 
     # [designed: T170bb/#817] Keep S06's controls and focus order while each action gets its native owner.
     team_info = fixture_list = tournament = history = _unavailable
-    select_squad = team_tactics = recordings = rename = _unavailable
+    team_tactics = recordings = rename = _unavailable
