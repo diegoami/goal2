@@ -51,6 +51,32 @@ class ReleaseBeforeResult(unittest.TestCase):
             self.assertLess(time.monotonic(), deadline, "the second request did not end")
             time.sleep(0.01)
 
+    def test_starts_counts_accepted_requests_and_not_refused_ones(self):
+        """[designed: #896] `token` names the request that is still pending, so a caller who looks after a
+        fast reply cannot tell a refusal from a request that has already ended. `starts` counts the
+        requests the bridge accepted, whatever their timing."""
+        from goal2.game.best_twenty_jobs import for_model
+        m = model()
+        jobs = for_model(m)
+        self.addCleanup(jobs.close)
+        self.assertEqual(jobs.starts, 0)
+        m.match_pending = True
+        with self.assertRaises(ValueError):
+            jobs.start()
+        self.assertEqual(jobs.starts, 0, "a refused start is not counted")
+        m.match_pending = False
+        token = jobs.start()
+        self.assertIsNotNone(token)
+        deadline, result = time.monotonic() + 120, None
+        while result is None:
+            self.assertLess(time.monotonic(), deadline, "the request did not finish")
+            result = jobs.poll(token)
+            time.sleep(0.01)
+        self.assertEqual(result["status"], "complete")
+        self.assertFalse(jobs.busy)
+        self.assertEqual(jobs.starts, 1)
+        self.assertIsNone(jobs.poll(token), "a finished request has nothing left to poll")
+
     def test_a_reply_is_not_read_before_its_handle_has_ended(self):
         """The reader thread queued a terminal reply, then set `ended` and released. A worker that read the
         reply in between skipped its own release, so the claim outlived the posted result."""

@@ -83,11 +83,12 @@ class SelectedSquadUI(unittest.TestCase):
         self.assertEqual(self.owner.state.squad_capacity, size)
 
     def a_press_state(self, screen, size):
-        """[designed: #896] What the screen held when A left the assistant token unset.
+        """[designed: #896] What the screen held when an A press started no request.
 
-        The flaky assertion at the A key has three candidate causes (an early return, a refused
-        start, or the key going to the size menu), and the module alone never reproduced it. The
-        message names which one the next failure is, instead of it being guessed."""
+        A press is accepted when the bridge counts a start; `_assistant_token` cannot say so, because
+        a fast reply ends the request and clears it before the caller looks. The message names which
+        refusal path ran instead: an early return (note), a refused start (note), or the key going to
+        the size menu (its visibility and the focus widget)."""
         focus = self.app.focusWidget()
         jobs = screen._assistant_jobs
         return (f"size {size}: token {screen._assistant_token!r}, side {screen.side!r}, "
@@ -96,6 +97,7 @@ class SelectedSquadUI(unittest.TestCase):
                 f"focus {type(focus).__name__ if focus is not None else None}, "
                 f"size menu visible {screen.size_menu.isVisible()}, "
                 f"shown {type(self.win.current()).__name__}, "
+                f"starts {None if jobs is None else jobs.starts}, "
                 f"job busy {None if jobs is None else jobs.busy}, "
                 f"timer active {screen._assistant_timer.isActive()}")
 
@@ -152,13 +154,15 @@ class SelectedSquadUI(unittest.TestCase):
         screen = open_squad(self.win, self.owner)
         original = None
         initial = copy.deepcopy(self.owner.state)
+        jobs = self.owner.assistant_jobs()
         for size in (20, 22, 24):
             if size != 20:
                 self.owner.state = copy.deepcopy(initial)
                 screen.refresh()
                 self.choose(screen, size)
+            started = jobs.starts
             self.key(Qt.Key.Key_A)
-            self.assertIsNotNone(screen._assistant_token, self.a_press_state(screen, size))
+            self.assertEqual(jobs.starts, started + 1, self.a_press_state(screen, size))
             self.until(lambda: screen._assistant_token is None)
             count = size - 20
             self.assertEqual(len(screen.strip.shown_texts()), size)
@@ -174,6 +178,22 @@ class SelectedSquadUI(unittest.TestCase):
             else:
                 self.assertEqual(state.managed_squad, original)
             assert_fits(self, self.win)
+
+    def test_a_reply_that_ends_before_its_check_still_counts_the_request(self):
+        """[designed: #896] A slow runner can deliver and handle the reply inside the A key's own event
+        processing, so `_assistant_token` is already None when the caller looks. The request still
+        started, and it is what fills the places."""
+        screen = open_squad(self.win, self.owner)
+        self.choose(screen, 22)
+        jobs = self.owner.assistant_jobs()
+        started = jobs.starts
+        self.key(Qt.Key.Key_A)
+        self.until(lambda: screen._assistant_token is None)     # the reply ends the request before the check
+        self.assertIsNone(screen._assistant_token)
+        self.assertEqual(jobs.starts, started + 1, self.a_press_state(screen, 22))
+        self.assertTrue(all(w is not None for w in self.owner.state.extra_squad), screen.note.text())
+        self.assertEqual(len(screen.strip.shown_texts()), 22)
+        assert_fits(self, self.win)
 
     @requires.need(slow=True)
     def test_actual_quick_watch_bench_selects_last_extra_and_reloads(self):
