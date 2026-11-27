@@ -487,3 +487,4 @@ operational status.
 - [T170ax](T170ax.md): publish acknowledged native worker rounds atomically (#882).
 - [T170ay](T170ay.md): save and restore committed native campaigns (#886).
 - [T170az](T170az.md): native named saves in Save and Continue (#889).
+- [T170ba](T170ba.md): committed native manager’s Desk view (#894).
