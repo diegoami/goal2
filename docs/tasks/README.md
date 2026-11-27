@@ -485,3 +485,4 @@ operational status.
 - [T170av](T170av.md): verified native round results in S14 (#876).
 - [T170aw](T170aw.md): verified native results without a managed fixture (#880).
 - [T170ax](T170ax.md): publish acknowledged native worker rounds atomically (#882).
+- [T170ay](T170ay.md): save and restore committed native campaigns (#886).
