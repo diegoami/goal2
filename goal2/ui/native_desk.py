@@ -9,6 +9,8 @@ _CONTINENT_CHAMPIONSHIPS = {name.casefold(): CHAMPIONSHIPS[number] for number, n
 
 
 class NativeDeskScreen(DeskScreen):
+    GRID = True  # [designed: T215] The concrete native Desk uses the shared cell layout.
+
     def refresh(self):
         view = self.model.desk_view()
         if view.stage in PHASES:
