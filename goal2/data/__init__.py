@@ -1,7 +1,7 @@
 """The `goal2.data` package: the data the rebuild reads to make a new game.
 
 `GOAL.DAT` is the original game's data file; the rebuild never edits it
-(CLAUDE.md rule 19 — no asset of the original game is committed). The loader
+(CLAUDE.md rule 14 — no asset of the original game is committed). The loader
 exposes its ten blocks as Python objects, and a CLI entry (`python -m goal2.data
 --check <path>`) runs the R001–R011 block-shape checks F002 records.
 

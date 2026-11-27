@@ -6,13 +6,21 @@ country competently for idle play (the owner, 2026-10-11), built from the eviden
 [`docs/plan.md`](docs/plan.md); how work runs is [`docs/process.md`](docs/process.md). Tasks are
 `docs/tasks/T<nn>.md`, indexed in `docs/tasks/README.md`.
 
+**Today, in short** [derived: docs/plan.md, 2026-11-27]: v0.1 shipped on the core route (2026-11-13). The work now
+is m3: the Python route on the sealed engine under PyPy, without Unicorn, and the redesigned window
+`goal2/ui` (#862). [AGENTS.md](AGENTS.md) says where each track stands and how to find the next step.
+[docs/plan.md](docs/plan.md) holds the current decisions. The dated owner paragraphs below are the
+decision log; where an older one conflicts with a newer one or with the plan, the newer one wins.
+
 [designed: owner, 2026-10-20] The project runs from any checkout, a cloud session included. The
 earlier review harness (OpenCode protocol, guards, jail, model switching, worktrees, per-PR review
 gates) was removed; it is kept on the branch `local`. A fresh checkout is prepared with `tools/cloud_setup.sh`
 ([docs/cloud.md](docs/cloud.md)). The first release is lane 3 of the approved queue, the bounded
-first supported session (`docs/redesign-253/vision-reconciliation.md`; O03/O04 resolved 2026-10-20).
+first supported session (`docs/redesign-253/vision-reconciliation.md`; O03/O04 resolved 2026-10-20). (History: the first
+release became v0.1, 2026-11-13, below.)
 [designed: owner, 2026-10-22] It runs the original's whole game under Unicorn as goal2's core (stage 3,
-#308); the long-term goal stays an independent executable, fed by goal2-archaeology (label `long-term`).
+#308); the long-term goal stays an independent executable, fed by goal2-archaeology (label `long-term`). (Superseded
+by 2026-10-27 and plan.md: the Unicorn core is now only the test oracle, and leaves the build at m3.)
 
 [designed: owner, 2026-10-27] **Standalone engine replacement is now top priority**,
 superseding the earlier long-term/planning-only deferral. Stop optimizing the Unicorn
@@ -42,8 +50,8 @@ as its tasks are merged and the package run is green; its milestone review and p
 
 [designed: owner handover, 2026-10-29] Continue in the owner's selected fresh Claude
 session, with the same task, fidelity and merge requirements. First read
-[AGENTS.md](AGENTS.md), [docs/process.md](docs/process.md) and the current
-latest comment on the `checkpoint` issue #471 (the earlier handover is
+[AGENTS.md](AGENTS.md), [docs/process.md](docs/process.md) and the newest comment
+for your track on the `checkpoint` issue #471 (the earlier handover is
 [#308's](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606)), then recheck live PR
 heads, labels and checks. Status and pending runs belong on
 those issues/PRs; never infer completion from an old handover or a percentage estimate.

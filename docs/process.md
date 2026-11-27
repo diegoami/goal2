@@ -165,6 +165,9 @@ milestones ([plan.md](plan.md#milestones-in-order)), and #862 for the UI redesig
 [designed: owner, 2026-10-29, T149] Work can stop at any point and resume from durable state, in
 another session, model or computer.
 - **Where work stands** is the latest comment on the one open issue labelled `checkpoint`.
+  [designed: main session, 2026-11-27] Two tracks post there (AGENTS.md §2), so a checkpoint's next
+  action starts with its track: `UI (#862): …` or `Native (#566): …`. A resuming session takes the
+  newest comment for its own track.
   `python3 tools/checkpoint.py --post "<next action>" [--notes FILE]` posts it: each checkout's
   branch, head and dirty count, the open PRs with heads, labels and checks, and all unresolved
   jobs plus the eight most recent finished jobs, with the next action and any notes.
