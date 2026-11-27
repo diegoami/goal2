@@ -12,6 +12,7 @@ the session computed them, publication only moves them. It reads either the sess
 `observe()` and `state`, or the native owner's verified current completion (T170ax).
 """
 import copy
+import re
 import secrets
 from dataclasses import dataclass
 
@@ -25,6 +26,7 @@ from goal2.game.season import canonical_hash
 PUBLISHABLE = ('complete', 'deferred-rollover')
 _COMPARED = ('call_number', 'status', 'input_hash', 'output_hash', 'rng_words')
 _INSTALLING = object()
+_DIGEST = re.compile(r'[0-9a-f]{64}')
 
 
 @dataclass(frozen=True)
@@ -34,6 +36,10 @@ class PublishedCall:
     status: str
     input_hash: str
     output_hash: str
+
+    @property
+    def identity(self):
+        return self.call_number, self.input_hash, self.output_hash
 
 
 @dataclass(frozen=True)
@@ -78,9 +84,39 @@ class SeasonCampaign:
     def revision(self):
         return self._held[2]
 
+    def committed_snapshot(self):
+        """[designed: T170ay] Read state and immutable ledger from one committed holding."""
+        state, ledger, _ = self._held
+        return copy.deepcopy(state), ledger
+
+    @classmethod
+    def from_committed(cls, state, records, view=None):
+        """[designed: T170ay] Restore one checked holding without reapplying its call history."""
+        campaign = cls(state, view)
+        ledger = tuple(records)
+        seen = set()
+        previous = None
+        for row in ledger:
+            if (not isinstance(row, PublishedCall)
+                    or type(row.call_number) is not int or row.call_number < 1
+                    or row.status not in PUBLISHABLE
+                    or any(not isinstance(digest, str) or not _DIGEST.fullmatch(digest)
+                           for digest in (row.input_hash, row.output_hash))):
+                raise ValueError('invalid native ledger record')
+            if row.identity in seen:
+                raise ValueError('duplicate native ledger record')
+            if previous is not None and previous != row.input_hash:
+                raise ValueError('native ledger chain does not connect')
+            seen.add(row.identity)
+            previous = row.output_hash
+        if ledger and previous != campaign.canonical_hash:
+            raise ValueError('native ledger does not end at the saved state')
+        campaign._held = (campaign._held[0], ledger, len(ledger))
+        return campaign
+
     def has_published(self, call_number, input_hash, output_hash):
-        return any((row.call_number, row.input_hash, row.output_hash) == (call_number, input_hash, output_hash)
-                   for row in self._held[1])
+        identity = call_number, input_hash, output_hash
+        return any(row.identity == identity for row in self._held[1])
 
     def _view_candidate(self, candidate):
         if self._view is not None:

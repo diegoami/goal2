@@ -10,10 +10,10 @@ import base64
 import json
 import math
 import os
-import tempfile
 from pathlib import Path
 from typing import Any
 
+from goal2.game.save_file import write_atomic
 from goal2.game.state import (
     COUNTRY_SIZE, N_COUNTRIES, N_PLAYERS, PLAYER_SIZE, GameState,
 )
@@ -275,23 +275,7 @@ def save(path: str | os.PathLike[str], state: GameState, template: bytes) -> Non
     """Atomically replace a save; failures leave any previous save intact."""
     target = Path(path)
     raw = encode(state, template)
-    temp_name: str | None = None
     try:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(mode="wb", dir=target.parent,
-                                         prefix=f".{target.name}.", suffix=".tmp",
-                                         delete=False) as stream:
-            temp_name = stream.name
-            stream.write(raw)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temp_name, target)
-        temp_name = None
+        write_atomic(target, raw)
     except OSError as exc:
         raise SessionSaveError(f"cannot write session save {target}: {exc}") from exc
-    finally:
-        if temp_name is not None:
-            try:
-                os.unlink(temp_name)
-            except OSError:
-                pass
