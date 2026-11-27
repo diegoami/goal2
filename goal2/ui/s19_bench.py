@@ -325,9 +325,10 @@ class BenchScreen(Screen):
             self.bind((Qt.Key.Key_R,), "next position", self.reposition)
             self.bind((Qt.Key.Key_C,), "club position", self.club_position)
             self.bind((Qt.Key.Key_T,), "his tactics", self.his_tactics)
-            self.set_enter("", self.press)
-        else:
-            self.set_enter("Back to the match", lambda: self.escape())
+        # [designed: owner, 2026-11-27, #862/T241] Enter's wording sits on the key line, as the original's
+        # `◄┘-take off this player` does, not in a hint box under it.
+        self.enter_bar = self.bind((), "", None, captions=("Enter",))
+        self.set_enter("Back to the match" if self.mode == "refused" else "", self.escape if self.mode == "refused" else self.press)
         last_on_the_bar(self, self.escape_text)
         if self.mode == "refused":
             self.set_enter("Back to the match", self.escape)
@@ -335,8 +336,7 @@ class BenchScreen(Screen):
             self.message = ESC_KEEPS_REQUESTED
         self.refresh()
 
-    def _build(self):
-        # [designed: owner #599/#598] Use the full-width status row so large feedback
+    def _build(self):        # [designed: owner #599/#598] Use the full-width status row so large feedback
         # and all twenty players fit together, including a three-line original refusal.
         body = Cells(BODY_COLS, BODY_ROWS, "benchBody")
         self.body_layout.addWidget(body, 1)
@@ -426,6 +426,7 @@ class BenchScreen(Screen):
             self.card.set_card(answer.card(word))
         self.note.setText(self.line())
         self._refresh_hint()
+        self._sync_enter_caption()
         self._sync_cue()
 
     def _sync_cue(self):
@@ -507,7 +508,7 @@ class BenchScreen(Screen):
         if getattr(self, "answer", None) is None:
             return ""             # Screen.__init__ draws the bar before the bench is set
         if self.pending and self._request_desired is not None:
-            return "Confirming substitution request. The match remains paused; no player is selected."
+            return "Confirming request"
         if self.pending:
             return "Confirming request..." if self._request_desired is not None else "Applying substitution..."
         if self.mode == "refused":
@@ -528,6 +529,27 @@ class BenchScreen(Screen):
             return "Substitutions only at a stoppage"
         # [confirmed: squad-substitution-take-off.png, -put-on.png] the original's prompt
         return "Take off this player" if word in answer.eleven else "Put on this player"
+
+    def _refresh_hint(self):
+        """[designed: owner, 2026-11-27, #862/T241] Enter's wording is on the key line, so the hint item under the
+        bar stays hidden; `_sync_enter_caption` keeps the bar's entry in step."""
+        hint = getattr(self, "enter_hint", None)
+        if hint is not None:
+            hint.setVisible(False)
+        text = getattr(self, "enter_text", None)
+        if text is not None:
+            text.setText("")
+
+    def _sync_enter_caption(self):
+        """The Enter entry on the key line says what Enter does here, per state."""
+        bar = getattr(self, "enter_bar", None)
+        if bar is None:
+            return
+        caption = self.enter_hint_text()
+        if bar.text != caption:
+            bar.text = caption
+            if getattr(bar, "label", None) is not None:
+                bar.label.setText(caption)
 
     # Keys.
     def handle_key(self, key):

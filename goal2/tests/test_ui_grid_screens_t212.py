@@ -702,8 +702,9 @@ class BenchOnTheGrid(Base):
         self.assertEqual(len(screen.card.readiness.lines()), 2)
         self.assertLessEqual(len(screen.card.readiness.lines()), screen.card.readiness.height() // cells.row_px(screen))
 
-    def test_the_bar_keeps_its_two_rows_whatever_the_enter_hint_says(self):
-        """The bar is two rows (the key bar's own height) for each hint the bench gives: take off, put on, cancel, unmark."""
+    def test_the_bar_keeps_its_two_rows_whatever_enter_says(self):
+        """[designed: owner, 2026-11-27, #862/T241] The bar is two rows for each action Enter offers — take off, put
+        on, cancel, unmark — and the wording is on the bar, not in a hint row of its own."""
         window, screen = self.canonical(self.make)
         rows = cells.span_px(screen, 2)
         for put in (lambda: None, lambda: screen.move(11), lambda: self.pair(screen), lambda: screen.move(-11)):
@@ -711,6 +712,8 @@ class BenchOnTheGrid(Base):
             self.relayout(window)
             self.assertEqual(screen.key_bar.height(), rows, screen.enter_hint_text())
             self.assertEqual(screen.body.height(), window.page.height() - cells.row_px(screen) - rows)
+            self.assertIn((("Enter",), screen.enter_hint_text()), screen.key_texts())
+            self.assertFalse(screen.enter_hint.isVisibleTo(screen), "no hint row under the bar")
 
     def shown(self, injured):
         """The bench on a shown window at the page's own size, with `injured` (indices in the squad) said injured by the match. A desktop
@@ -787,6 +790,126 @@ class BenchOnTheGrid(Base):
                     self.assertEqual(label.text(), word)
 
 
+@BENCH
+class Bench22OnTheGrid(Base):
+    """[designed: owner, 2026-11-27, #862/T241] The 22-place bench: the roster names its two sections in the rows the
+    dropped legend frees, and Enter's wording sits on the key line instead of a hint row under it."""
+
+    mode = "now"
+    injured = ()
+
+    def make(self, window):
+        from types import SimpleNamespace
+        from goal2.tests.test_ui_match_day_t167 import career
+        from goal2.ui.s19_bench import BenchAnswer, BenchScreen
+        model = career()
+        window.open_career(model)
+        model.resize_squad(22)
+        pool = [w for w in model.state.campaign.reserve_ids if w not in model.state.managed_squad]
+        for i, word in enumerate(pool[:2]):
+            model.fill_extra(i, word)
+        self.model = model
+        words = list(model.state.managed_squad) + [w for w in model.state.extra_squad if w is not None]
+        self.words, self.off, self.on = words, words[1], words[12]
+        data = dict(context="half_time", eleven=words[:11], bench=words[11:], substitutions_left=5, injured=[])
+        answer = BenchAnswer(model, SimpleNamespace(minute=45, score=[0, 0], data=data))
+        screen = window.push(BenchScreen(window, model, answer, names=("Italy", "Poland")))
+        screen.cue_timer.stop()
+        self.addCleanup(screen.cue_timer.stop)
+        return screen
+
+    def states(self):
+        def pair(screen):
+            screen.answer.enter(self.off)
+            screen.answer.enter(self.on)
+            screen.refresh()
+
+        def marked(screen):
+            screen.answer.first = self.off
+            screen.refresh()
+
+        def pending(screen):
+            pair(screen)
+            screen.pending = True
+            screen.refresh()
+
+        def longest(screen):
+            data = screen.model.goaldat
+            for word in screen.answer.words():
+                data.player_names[word] = "Abcdefghij"
+                data.player_initials[word] = "X"
+            screen.refresh()
+
+        def injured(screen):
+            screen.answer.injured.update(self.words[1:3])
+            screen.refresh()
+
+        return (("default", lambda screen: None), ("a pair", pair), ("a mark", marked),
+                ("waiting for the reply", pending), ("longest names", longest), ("two injured", injured))
+
+    def test_the_two_sections_are_named_and_the_last_reserve_keeps_its_row(self):
+        window, screen = self.canonical(self.make)
+        strip = screen.strip
+        self.assertEqual([h.text() for h in strip.headers], ["starting eleven", "reserves"])
+        self.assertTrue(all(h.isVisibleTo(screen) for h in strip.headers))
+        self.assertEqual(len(strip.shown_texts()), 22)
+        self.assertEqual(strip.headers[1].y(), strip.gap.y(), "the reserves' header sits on the boundary rule")
+        self.assertLess(strip.headers[0].y(), strip.rows[0].y())
+        self.assertLess(strip.rows[10].y(), strip.headers[1].y())
+        self.assertLess(strip.headers[1].y(), strip.rows[11].y())
+        self.assertTrue(strip.rows[-1].isVisibleTo(screen))
+        self.assertLessEqual(strip.rows[-1].geometry().bottom(), strip.area.height())
+        self.on_the_grid(window)
+        self.assertEqual(fixed_page.problems(window), [])
+
+    def test_the_twenty_place_bench_keeps_the_originals_unlabelled_roster(self):
+        window, screen = self.canonical(lambda window: BenchOnTheGrid.make(self, window))
+        self.assertEqual(screen.strip.headers, ())
+        self.assertTrue(screen.strip.legend.isVisibleTo(screen))
+        self.assertEqual(len(screen.strip.shown_texts()), 20)
+
+    def test_enter_says_what_it_does_on_the_key_line(self):
+        window, screen = self.canonical(self.make)
+        self.assertFalse(screen.enter_hint.isVisibleTo(screen), "no hint row under the bar")
+        self.assertEqual(screen.enter_text.text(), "")
+        self.assertEqual(dict(screen.key_texts())[("Enter",)], "Take off this player")
+        screen.row = 12
+        screen.refresh()
+        self.assertEqual(dict(screen.key_texts())[("Enter",)], "Put on this player")
+        screen.row = 1
+        screen.answer.first = self.words[1]
+        screen.refresh()
+        self.assertEqual(dict(screen.key_texts())[("Enter",)], "Unmark this player")
+        screen.answer.first = None
+        screen.answer.enter(self.off)
+        screen.answer.enter(self.on)
+        screen.row = screen.answer.words().index(self.on)
+        screen.refresh()
+        self.assertEqual(dict(screen.key_texts())[("Enter",)], "Cancel this substitution")
+        screen.pending = True
+        screen.refresh()
+        self.assertEqual(dict(screen.key_texts())[("Enter",)], "Applying substitution...")
+
+    def test_the_request_and_refused_modes_carry_their_own_enter_wording(self):
+        for mode in ("request", "refused", "view"):
+            with self.subTest(mode=mode):
+                self.mode = mode
+                window, screen = self.canonical(lambda window: BenchOnTheGrid.make(self, window))
+                caption = dict(screen.key_texts()).get(("Enter",))
+                if mode == "refused":
+                    self.assertEqual(caption, "Back to the match")
+                elif mode == "view":
+                    self.assertEqual(caption, "")
+                else:
+                    self.assertEqual(caption, "Request substitution" if screen.answer.can_request_substitution
+                                     else "Substitutions only at a stoppage")
+        self.mode = "now"
+
+    def test_make_substitutions_now_fits_at_every_size_and_is_on_the_grid(self):
+        self.mode = "now"
+        self.every_state_fits()
+
+
 def assert_fractional_bench_rule():
     from PySide6.QtCore import QPoint
     from PySide6.QtWidgets import QApplication, QWidget
@@ -796,10 +919,10 @@ def assert_fractional_bench_rule():
     theme.install(app)
     window = QWidget()
     window.resize(400, 1000)
-    strip = BenchStrip(count=24)
+    strip = BenchStrip(count=22)
     strip.setParent(window)
     strip.setGeometry(11, 11, 320, 950)
-    strip.show_rows("Holland", [("D", "defence", f"Player {i + 1}") for i in range(24)], current=0)
+    strip.show_rows("Holland", [("D", "defence", f"Player {i + 1}") for i in range(22)], current=0)
     window.show()
     app.processEvents()
     pixmap = window.grab()
@@ -808,7 +931,9 @@ def assert_fractional_bench_rule():
         raise AssertionError(f"Expected a 150% display, got {ratio}")
     image = pixmap.toImage()
     origin = strip.gap.mapTo(window, QPoint(0, 0))
-    left = math.ceil(origin.x() * ratio) + 2
+    # [designed: owner, 2026-11-27, #862/T241] the reserves' header sits on the rule's row at its left, so the
+    # line is checked from the end of the label to the strip's right edge
+    left = math.ceil((origin.x() + strip.headers[1].width()) * ratio) + 2
     right = math.floor((origin.x() + strip.gap.width()) * ratio) - 2
     row = origin.y() * ratio
     if not any(all(image.pixelColor(x, y).name() == theme.FRAME for x in range(left, right))
