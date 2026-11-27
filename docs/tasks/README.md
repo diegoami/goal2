@@ -488,3 +488,4 @@ operational status.
 - [T170ay](T170ay.md): save and restore committed native campaigns (#886).
 - [T170az](T170az.md): native named saves in Save and Continue (#889).
 - [T170ba](T170ba.md): committed native manager’s Desk view (#894).
+- [T170bb](T170bb.md): open the existing Desk for an explicitly loaded native campaign (#898).
