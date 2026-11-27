@@ -68,6 +68,9 @@ class PitchWidget(QWidget):
         self.enlarged = False
         self.commentary = []              # the enlarged commentary's lines, oldest first
         self.painted = []                 # what the last paint drew: (slot, team, text, colour, QRect)
+        # [designed: #862] The share of the widget's height the field's drawing takes (S17: 18 of its 21 rows): the field keeps the
+        # proportions it had in 18 rows, centred, and the rows the widget gains are surround.
+        self.field_share = 1.0
 
     def sizeHint(self):
         return QSize(WIDTH, HEIGHT)
@@ -76,13 +79,18 @@ class PitchWidget(QWidget):
     def scale(self) -> float:
         return self.width() / WIDTH
 
+    def drawing(self) -> QRect:
+        """Where the field's drawing goes: the widget's width by `field_share` of its height, centred. [designed: #862]"""
+        height = round(self.height() * self.field_share)
+        return QRect(0, (self.height() - height) // 2, self.width(), height)
+
     def scale_y(self) -> float:
         """The vertical scale: the page's 1.2 stretch makes the widget taller than its width's scale (T209)."""
-        return self.height() / HEIGHT
+        return self.drawing().height() / HEIGHT
 
     def field(self) -> QRect:
         inset_x, inset_y = round((SURROUND + 10) * self.scale()), round((SURROUND + 10) * self.scale_y())
-        return self.rect().adjusted(inset_x, inset_y, -inset_x, -inset_y)
+        return self.drawing().adjusted(inset_x, inset_y, -inset_x, -inset_y)
 
     def cell(self):
         field = self.field()

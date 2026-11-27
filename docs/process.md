@@ -63,6 +63,11 @@ one, `git pull` and take the next free number.
      in the clean checkout. The default is the fast regression gate: every module's fast tests and
      the cheap layout/reserve slow checks. Hosted Linux/Windows CI and native scaling checks stay required.
      `--batch-fast` is the same scope; `--fast` also disables layout slow checks.
+     [derived: 2026-11-27, verified on the owner's machine] Locally, run it as
+     `source .cache/cloud.env && export GOAL2_ARCHAEOLOGY=/home/diego/projects/goal2-archaeology-engine`, then
+     `python tools/check_premerge.py …`. `cloud.env` puts `.cache/venv` on PATH and sets `QT_QPA_PLATFORM=offscreen`,
+     `SDL_VIDEODRIVER=dummy` and `SDL_AUDIODRIVER=dummy` (without the SDL driver, `test_core_match_window_t138` fails);
+     the engine clone is needed because the analysis clone lacks the vendored pins.
    - **Integrated milestone:** run the complete suite once on Linux and once on Windows, with
      `python3 tools/check_premerge.py --expected-head <candidate> --slow`, all cases, before the
      milestone review/publication. The self-hosted Linux slow and Windows slow workflows are manual

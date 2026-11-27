@@ -225,7 +225,8 @@ class SameMatch(unittest.TestCase):
             # ↑↓: the display styles.
             for k in (Qt.Key.Key_Down, Qt.Key.Key_Down, Qt.Key.Key_Up):
                 key(window, k)
-                out["marks"].append((screen.pitch.marks, screen.status.text()))
+                screen.pitch.repaint()
+                out["marks"].append((screen.pitch.marks, [(slot, text) for slot, _, text, *_ in screen.pitch.painted]))
             key(window, Qt.Key.Key_Space)
             out["enlarged"] = screen.pitch.enlarged
             out["enlarged_image"] = screen.pitch.grab().toImage()
@@ -291,8 +292,14 @@ class SameMatch(unittest.TestCase):
     def test_up_and_down_change_the_display(self):
         marks = self.out["marks"]
         self.assertEqual([m for m, _ in marks], [2, 3, 2])
-        for m, status in marks:
-            self.assertIn(f"marks: {MARKS[m].lower()}", status)
+        # [confirmed: 0791:05C6] the original names no style: the painted marks are the display (pygame_viewer.glyph)
+        for m, drawn in marks:
+            self.assertTrue(drawn)
+            outfield = [text for slot, text in drawn if slot not in (1, 12)]
+            if m == 2:
+                self.assertTrue(set(outfield) <= {"►", "◄"}, drawn)
+            elif m == 3:
+                self.assertEqual({text for slot, text in drawn if 1 < slot < 12} | {text for slot, text in drawn if slot > 12}, {"H", "A"})
 
     def test_space_enlarges_the_commentary(self):
         self.assertTrue(self.out["enlarged"])
