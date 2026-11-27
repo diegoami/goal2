@@ -61,6 +61,10 @@ If a comparison shows no benefit, keep the original pattern. [designed: owner, 2
      full assistant (#594). (c) No screen-reader route and no participant usability thresholds:
      the original-first rule and the keyboard, mouse and Windows-scaling checks are the bar (#263).
      (d) vision-266's rulings do not bind beyond what the original shows.
+     (e) docs/current-game is recaptured from `goal2/ui` after S17–S18. (f) Slice captures live on
+     `main`, in `ui-2026-11/review-862/`. (g) After S17–S18 come the rest of S19 Bench (the XI and
+     reserve labels, Enter on the key line), then slice 7; slice 6's bulletins wait for the news port
+     (decision 15).
 3. **The accepted design**, [ui-2026-11/README.md](ui-2026-11/README.md): every screen S01–S22
    with its original evidence, the rules for the whole UI (§3) and the mapping of every original
    screen (§5, checked by [check_mapping.py](ui-2026-11/check_mapping.py)). Supporting records:
@@ -87,18 +91,17 @@ If a comparison shows no benefit, keep the original pattern. [designed: owner, 2
 ## Evidence of the redesigned screens
 
 - **Before and after captures of each #862 slice**, from the installed Windows preview at 150%, are
-  indexed in `docs/design/ui-2026-11/review-862/README.md` on the branch
-  [`evidence/862-ui-review`](https://github.com/diegoami/goal2/blob/evidence/862-ui-review/docs/design/ui-2026-11/review-862/README.md).
-  The branch is not merged into `main`. Receipts for each slice are in `goal2-keep/T862/` on the
-  owner's machine.
+  indexed in [ui-2026-11/review-862/README.md](ui-2026-11/review-862/README.md). Each slice's PR adds its
+  own captures there [designed: owner, 2026-11-27]. Receipts for each slice are in `goal2-keep/T862/` on
+  the owner's machine.
 - **Renders of each screen as first built** are in the `T1*-screens/` and `T215-*` folders of
   [ui-2026-11](ui-2026-11/). Each folder records the build it was taken from.
 - **The rebuild's illustrated manual, [docs/current-game](../current-game/README.md), shows the
   older window.** It was captured from `goal2/desktop` (the core route and the pygame match window)
   at 1440 × 900 on 2026-11-09, before T215 and #862. It records what v0.1 ships, not `goal2/ui`.
-  For the redesigned window, use the captures above. A manual of `goal2/ui` is still to be made
-  ([#862 first review](https://github.com/diegoami/goal2/issues/862): "capture the installed
-  `goal2-new.cmd` build").
+  For the redesigned window, use the captures above. [designed: owner, 2026-11-27] The manual is to be
+  recaptured from `goal2/ui` once S17–S18 merges, with the old-window manual kept as history in
+  `docs/current-game/desktop-v0.1/`.
 
 ## Earlier directions: history only
 
