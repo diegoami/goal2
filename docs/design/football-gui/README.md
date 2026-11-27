@@ -1,5 +1,7 @@
 # A football management interface for goal2
 
+> **History only.** This proposal (2026-10-18) was replaced by vision-266 and then by the 2026-11-03 design (#526). It takes no new work. The current UI design, and which source wins, is indexed in [../README.md](../README.md). [derived: docs/plan.md; #526, #666, #862]
+
 [designed: owner #182, 2026-10-18] This is a visual proposal and bounded backlog,
 not an implemented interface. Open [the interactive study](index.html) locally;
 it has three screens, country previews, active-team return, draft controls and

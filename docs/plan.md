@@ -25,6 +25,8 @@ and the P0–P7 table, is in this file's git history (`git log -- docs/plan.md`)
   owner, 2026-11-03, #524–#527].
 - **The window** is `goal2/ui`: PySide6 trimmed to Essentials, the pitch a widget inside it. It
   follows the original's screens and flow ([design](design/ui-2026-11/README.md), [guide](ui.md)).
+  Every design source, which one wins and the issues that carry it: [design/README.md](design/README.md);
+  the order of the redesign: #862 [designed: owner, 2026-11-25].
   `goal2/desktop` stays the shipped window until T169 switches the portable build over [designed:
   owner, 2026-11-03, #526, #527].
 - **The look**: the original's layout grammar at 2×. A 16 × 32 cell, one text size, rule-and-label
@@ -56,7 +58,7 @@ and the P0–P7 table, is in this file's git history (`git log -- docs/plan.md`)
 | m2 Standalone engine | Tagged `m2-standalone-engine` at `e4991d94`, 2026-11-02 | #507 |
 | **v0.1 the core route, shipped** | Today's `goal2/desktop` over the original under Unicorn, booted from the player's own GOAL.EXE; only #455, #454 and #428 fixed; the portable ZIP published [designed: owner, 2026-11-13] | #705 |
 | **m3 GOAL.EXE out entirely** | No code path needs Unicorn or the recorded boot state | #509 |
-| UI fidelity | The 32 px reflow reaches `main` only through T215: milestone review and the owner's Windows playtest | #666, branch `ui/foundation-32` |
+| UI fidelity | The foundation (32 px on a 16 × 32 cell, 4:3) merged through T215 on 2026-11-17 after review and the owner's playtest (#749); the screens are redrawn from the original, slice by slice, in #862's order | #666, #862, [milestone 5](https://github.com/diegoami/goal2/milestone/5) |
 | Autonomous showcase | A country followed through a whole cycle, published as web demos; queued, displaces nothing | #648 |
 
 **v0.1 first** [designed: owner, 2026-11-13, #705]: a scoped exception to "no Unicorn match path" and "no Unicorn
@@ -92,6 +94,7 @@ watched match, the separate Pygame match window and the Unicorn match path. None
 ## Open for the owner
 
 - #415: close m1 or tag it at `044f7bcb`.
+- #749: the UI foundation merged at `3b561483` after its AGREE and playtest; tag it or close it.
 - #422: should the Core window ask before closing and before overwriting a save?
 - #396: does the substitution budget apply to computer-against-computer results worldwide?
 - [raised in the 2026-11-13 evaluation, undecided] Whether a release ships before m3, on the Core

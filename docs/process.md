@@ -157,6 +157,9 @@ would have to weaken, and each milestone: there it opens the milestone issue
 ([milestone-review.md](milestone-review.md)) and waits for the independent review and the owner's
 playtest. Between milestones it merges on checks; a per-PR review only when the owner asks for one.
 
+[derived: plan.md; docs/design/README.md] That queue is history now. The order is the plan's
+milestones ([plan.md](plan.md#milestones-in-order)), and #862 for the UI redesign.
+
 ## 10. Stop and resume
 
 [designed: owner, 2026-10-29, T149] Work can stop at any point and resume from durable state, in

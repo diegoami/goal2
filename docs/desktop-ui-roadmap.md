@@ -1,5 +1,7 @@
 # Desktop UI roadmap
 
+> **History only.** This roadmap is for the older `goal2/desktop` window, which v0.1 ships. The redesigned window is `goal2/ui`. It takes no new work. The current UI design, and which source wins, is indexed in [design/README.md](design/README.md). [derived: docs/plan.md; #526, #666, #862]
+
 [designed: owner #148, 2026-10-16; session choice] The primary app uses PySide6
 with ordinary Qt management widgets. [designed: owner, 2026-10-17] A separate
 Pygame match view consumes original engine events; keep Qt management and saves.

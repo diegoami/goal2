@@ -3,36 +3,38 @@
 Agent instructions: [AGENTS.md](AGENTS.md) for Codex, [CLAUDE.md](CLAUDE.md) for
 Claude Code; both follow [docs/process.md](docs/process.md).
 
-A faithful rebuild of *goal (version 2)* (New Era Software, 1993), and the bot that maximises its
-World Cup win rate. Everything here is built from the evidence of the private
+A faithful rebuild of *goal (version 2)* (New Era Software, 1993) as a native Windows desktop game,
+and the bot that plays a country competently for idle play [designed: owner, 2026-10-11]. Everything here is built from the evidence of the private
 [goal2-archaeology](https://github.com/diegoami/goal2-archaeology) repository: its findings (`F0nn`,
 each with listing lines and run records), its task records and its releases.
 
 - **Language**: Python. The archaeology runtime's models drop in as the engine truth.
 - **Engine truth is vendored** under `goal2/engine/`, pinned in `PROVENANCE.md` (file, source
   commit, findings). Vendored files are never edited here.
-- **Evidence tags** (`CLAUDE.md` rule 17): every behaviour claim in code or docs is `[confirmed]`,
+- **Evidence tags** (`CLAUDE.md` rule 12): every behaviour claim in code or docs is `[confirmed]`,
   `[derived]` or `[designed]`.
 - **Private forever**: nothing of the original GOAL2 — no asset, savestate or executable byte — is
   committed; states load from local caches and the archaeology releases by path, git-ignored
   (game-archaeologist U17/U21).
 
-[designed: owner #148, 2026-10-16; session binding choice] New primary UI work
-uses PySide6 desktop: [roadmap](docs/desktop-ui-roadmap.md). The [desktop management shell](docs/desktop-management.md) supports country choice,
-lineup/captain/tactics and save/resume through `python3 -m goal2.desktop`; install
-`.[desktop]` first. Match execution follows separately in T70. Browser and terminal
-launch instructions below describe the retained interfaces.
-[designed: owner, 2026-11-03, #526, #527] The rebuilt UI's new window, from
-[the design](docs/design/ui-2026-11/README.md), is built beside it in `goal2/ui`
-([guide](docs/ui.md)): `python3 -m goal2.ui`.
+## The UI
+
+[designed: owner, 2026-11-03, #526, #527; 2026-11-08, #666; 2026-11-25, #862] The redesigned
+window is `goal2/ui` ([guide](docs/ui.md)): `python3 -m goal2.ui`, after installing `.[desktop]`. It
+follows the original's screens, flow and keys in the original's layout grammar. **Every source of
+its design, which one wins and the GitHub issues that carry it are indexed in
+[docs/design/README.md](docs/design/README.md).** The current execution order is
+[#862](https://github.com/diegoami/goal2/issues/862).
+
+The older window, `goal2/desktop` (`python3 -m goal2.desktop`,
+[management shell](docs/desktop-management.md)), is what v0.1 ships. It takes no redesign work,
+and T169 replaces it with `goal2/ui` in the portable build. The terminal and browser interfaces
+below are retained and superseded ([plan.md](docs/plan.md#superseded-kept-in-the-tree)).
 
 The plan is [`docs/plan.md`](docs/plan.md); every rule the rebuild plays by, and where it comes
 from, is in [`docs/assumptions.md`](docs/assumptions.md). Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
 
-[designed: #266] The [finished-game vision and visual walkthrough](docs/vision-266/README.md)
-present the proposed destination for owner selection before the redesign plan is committed.
-Static targets, current-build evidence and first-delivery limits are distinct; this package
-does not authorize redesign implementation.
+## Superseded interfaces, retained
 
 Run the screen chain with local game data and a halftime savestate. The loop
 keeps its rebuild-owned continuation save at `.cache/session.g2save` by

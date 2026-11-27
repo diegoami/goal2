@@ -12,6 +12,11 @@ It departs only where a DOS limit forced the original's way or where the owner h
 look is the original's: its own palette and a blocky VGA-style font, on a modern, readable layout. It chooses no toolkit
 and no technology; that is T158. [designed: owner, 2026-11-03, [owner decisions, 2026-11-03, #526](https://github.com/diegoami/goal2/issues/526#issuecomment-6590816260)]
 
+**Since this design.** The owner's layout-grammar decisions of 2026-11-08 (#666) change how these screens are drawn,
+and #862 (2026-11-25) orders the walkthrough-led redesign, which redraws them one slice at a time. The mockups below
+predate both. Every source of the design, and which one wins, is indexed in [docs/design/README.md](../README.md).
+[designed: owner, 2026-11-08, #666; 2026-11-25, #862]
+
 Contents:
 1. [The player's journey](#1-the-players-journey)
 2. [Every screen](#2-every-screen), S01 to S22, each with its mockup

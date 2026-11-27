@@ -1,5 +1,7 @@
 # GOAL2 whole-game plan: parity, queue and gaps (#253)
 
+> **History only.** This plan and its queue were built on vision-266. The 2026-11-03 design (#526) and the order on #862 replaced them. It takes no new work. The current UI design, and which source wins, is indexed in [../design/README.md](../design/README.md). [derived: docs/plan.md; #526, #666, #862]
+
 [designed: owner, 2026-10-20] **The direction is chosen.** The owner accepted [vision #266 / PR #267](https://github.com/diegoami/goal2/issues/266#issuecomment-6287825622): an installable desktop game that looks like the original GOAL2, with black screens, strong varied colors, large text, complete graphical attribute bars, a maximum-size pitch, default-hidden full commentary (latest two lines visible) and independently retractable top and side bars. This package no longer recommends a visual direction. It holds the evidence that makes the accepted vision buildable without silently losing original information: the 234-source parity inventory, the capability boundaries, the current-build audit, the approved queue and the open owner choices. The earlier “A — Country desk” paper/ink/emerald recommendation is superseded and kept only as reviewed history.
 
 ![Accepted target: original-style country desk, next opponent, ranks and the full twenty (finished-target illustration, fictional data)](../vision-266/screens/02-country-desk.png)

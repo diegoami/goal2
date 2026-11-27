@@ -1,5 +1,7 @@
 # Original GOAL2 presentation cues
 
+> **History only.** These cues were for `goal2/desktop` (#412). #666's fidelity review builds on them for `goal2/ui`. It takes no new work. The current UI design, and which source wins, is indexed in [README.md](README.md). [derived: docs/plan.md; #526, #666, #862]
+
 [designed: owner feedback, 2026-10-25; #412] The next presentation pass should recover the
 original GOAL2 character: dense, purposeful screens with related topics grouped in boxes,
 prominent capital-letter headings/commands, the original colour hierarchy, and football

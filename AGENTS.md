@@ -6,7 +6,9 @@ Read [CLAUDE.md](CLAUDE.md): its rules apply to every client (Codex, Claude Code
 
 Before investigating or changing a game screen, follow the [UI evidence rule](CLAUDE.md#ui-evidence).
 Start with the [original illustrated manual](docs/original-game/README.md) and the
-[rebuild’s illustrated manual](docs/current-game/README.md).
+[rebuild’s illustrated manual](docs/current-game/README.md). The rebuild's manual shows the older
+`goal2/desktop` window. The UI design's sources and issues are indexed in
+[docs/design/README.md](docs/design/README.md), and the redesign's execution order is #862.
 
 ## Active engine-replacement work
 
@@ -103,8 +105,8 @@ G4B native finals refusal/acknowledgement and exact PyPy equality; archaeology#7
 is fulfilled. T183e/#774 supplies the synchronous native SeasonSession assistant
 at completed manager boundaries. T183f/#775 scopes private proposals and explicit
 commit/abort before separate cancellable worker/UI delivery. Preserve that session and checkout.
-The redesigned-UI look items
-#666–#680 stay owner-scoped alongside.
+The UI redesign runs alongside, in the order of #862 (owner, 2026-11-25), under the umbrella #666;
+its slices take up #673–#680. Sources and status: [docs/design/README.md](docs/design/README.md).
 
 Durable task decisions/status live on the relevant GitHub issues/PRs; supporting evidence is in `/home/diego/projects/goal2-keep`. The owner's final naming scope (2026-10-26) is only the existing33 authored profiles: canonical top32 plus Greece,80 surnames each, unchanged. Drop the128-country expansion; unlisted countries retain original names. Do not restart extra-country surname research.
 
