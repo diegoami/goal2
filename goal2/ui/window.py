@@ -110,11 +110,21 @@ class Window(QMainWindow):
             return self.replace_home(StartScreen(self))
         return self.replace_home(ImportScreen(self, self.target, self.choose))
 
+    def start_native(self):
+        """[designed: T170bb] Opt this window into loading the native Desk through S02."""
+        self.open_native_save = self.open_career
+        return self.start()
+
     def open_career(self, model, pages=()):
         """A career started (S04) or loaded (S02): its bulletin pages first (S05), if it has any, then the manager's
         desk (S06), the career's home. [designed: owner, 2026-11-03, #509] The Python route has no bulletins yet, so
         a new career goes straight to the desk until the news is ported. [designed: T164, #538]"""
+        from goal2.desktop.native_save_owner import NativeSaveOwner
         from goal2.ui.s06_desk import DeskScreen
+        native_desk = None
+        if isinstance(model, NativeSaveOwner):
+            from goal2.ui.native_desk import NativeDeskScreen
+            native_desk = NativeDeskScreen(self, model)
         if self.career is not None and self.career is not model:
             from goal2.game.best_twenty_jobs import close_model
             from goal2.ui.match_day import close_window
@@ -124,8 +134,10 @@ class Window(QMainWindow):
         pages = list(pages)
         if pages:
             from goal2.ui.s05_bulletin import BulletinScreen
+            if native_desk is not None:
+                return self.replace_home(BulletinScreen(self, pages, lambda: self.replace_home(native_desk)))
             return self.replace_home(BulletinScreen(self, pages, lambda: self.open_career(model)))
-        return self.replace_home(DeskScreen(self, model))
+        return self.replace_home(native_desk if native_desk is not None else DeskScreen(self, model))
 
     def open_help(self):
         """F1: the help (S22) over the current screen."""
