@@ -134,6 +134,18 @@ class Saves(unittest.TestCase):
         state,_=decode(json.dumps(base).encode())
         self.assertEqual((state.squad_capacity,state.extra_squad),(22,[2561,None]))
 
+    def test_a_career_whose_last_match_saved_a_24_bench_receipt_still_loads(self):
+        """[designed: owner, 2026-11-27, #862/T240] A 22-place squad cannot host a 24-place bench receipt
+        (four extras, and a player who came on may be one of the two dropped), so that one receipt is
+        dropped rather than refusing the career."""
+        base=json.loads(encode(extra.resized(career(),22),b'template'))
+        base['version']=6
+        base['state']['last_match']={'selected_bench':{'capacity':24,'slots':[None]*4}}
+        state,_=decode(json.dumps(base).encode())
+        self.assertIsNone(state.last_match)
+        self.assertEqual((state.squad_capacity,state.extra_squad),(22,[None,None]))
+        self.assertEqual(state.managed_squad,json.loads(encode(extra.resized(career(),22),b'template'))['state']['managed_squad'])
+
     def test_version_five_rejects_missing_unknown_and_bad_slot_data(self):
         base=json.loads(encode(extra.resized(career(),22),b'template'))
         for edit in ('missing','unknown','bad-slot','wrong-capacity','old-version'):

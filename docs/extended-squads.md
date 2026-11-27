@@ -8,7 +8,11 @@ match-day eligible: eleven starters plus eleven substitutes.
 [designed: owner, 2026-11-27, #862/T240] Twenty-four places are withdrawn: 22 is
 the largest. A career saved with 24 places loads as 22 — empty extra places are
 dropped first, then the last filled ones, and those players return to the pool
-they were recruited from — so no save is refused.
+they were recruited from — so no save is refused. The one exception is a receipt
+a 22-place squad cannot host: if that career's last watched match saved a
+24-place selected-bench receipt, that receipt is dropped (its summary and F4
+for that one match are no longer available) rather than refusing the career;
+its records, results and RNG are untouched.
 The complete feature requires the native extended-bench input capability and
 the screen/worker wiring; the state/save layer alone does not activate it.
 

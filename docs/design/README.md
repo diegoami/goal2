@@ -87,7 +87,9 @@ If a comparison shows no benefit, keep the original pattern. [designed: owner, 2
     - [#862](https://github.com/diegoami/goal2/issues/862), 2026-11-27 (third set): (a) **24-player
       squads are withdrawn**; 22 is the largest, a correction of #777 (T240). A career saved with 24
       places loads as 22 — empty extra places are dropped first, then the last filled ones, and those
-      players return to the pool — so no save is refused. (b) S19's XI and reserve labels are one-row
+      players return to the pool — so no save is refused; if that career's last watched match saved a
+      24-place bench receipt, that one receipt is dropped (a 22-place squad cannot host it).
+      (b) S19's XI and reserve labels are one-row
       headers: *starting eleven* above the XI, *reserves* on the boundary rule, drawn at 22 places
       only, where the roster has the two rows the dropped legend frees; 20 keeps the original's
       unlabelled roster. (c) #573's pitch drawing follows slice 7, so the ordered backlog stands and
