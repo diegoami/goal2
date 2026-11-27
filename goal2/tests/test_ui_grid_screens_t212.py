@@ -282,8 +282,8 @@ PITCH = requires.need(modules=("PySide6", "pygame"), **requires.HALFTIME)
 
 @PITCH
 class PitchOnTheGrid(Base):
-    """S17, the screen that hosts the pitch: the score, the pitch's cells, the commentary, what is said under the pitch, the
-    stop box over it. The pitch's own drawing is not tested here (it is T179's)."""
+    """S17, the screen that hosts the pitch: the band, the pitch's cells, the commentary and what is said at its foot, the stop on
+    the key line (#862). The pitch's own drawing is not tested here (it is T179's)."""
 
     SEEN = 25
     names = None   # the two countries' names the match is made with (None: the fixture's)
@@ -387,10 +387,12 @@ class PitchOnTheGrid(Base):
         ui_assertions.assert_no_exemptions(self)
 
     def test_the_score_the_pitch_and_the_commentary_are_where_the_cells_put_them(self):
-        """The score in three rows, the pitch 64 x 18 under it, the commentary's frame at its right a cell apart and a row lower."""
+        """The band in four rows (owner, 2026-11-25, #862: the original's), the pitch 64 x 21 under it down to the key line, the
+        commentary's frame at its right a cell apart and a row lower."""
         from goal2.ui.s17_pitch import COMMENTARY_COLS, HEAD_ROWS, PITCH_COLS, PITCH_ROWS
         window, screen = self.canonical(self.make)
         cell, row = cells.cell_w(screen), cells.row_px(screen)
+        self.assertEqual((HEAD_ROWS, PITCH_ROWS), (4, 21))
         self.assertEqual(round(screen.pitch.width() / cell), PITCH_COLS)
         self.assertEqual(round(screen.pitch.height() / row), PITCH_ROWS)
         self.assertEqual(round(screen.score_head.height() / row), HEAD_ROWS)
@@ -403,11 +405,14 @@ class PitchOnTheGrid(Base):
         self.assertEqual(grid_check.cards(window), [])
 
     def test_the_pitch_keeps_its_drawing_size_over_the_mockups_to_the_cell(self):
-        """The pitch's drawing is T179's: the widget is the cells it is given (1024 x 576 logical) and paints at the scale of its size."""
+        """The pitch's drawing is T179's: the field is drawn in 18 of the widget's rows (1024 x 576 logical, as before #862) and
+        paints at the scale of that size; the rows the widget gained are surround."""
         from goal2.ui import pitch
+        from goal2.ui.s17_pitch import FIELD_ROWS
         window, screen = self.canonical(self.make)
         self.assertEqual((pitch.WIDTH, pitch.HEIGHT), (1000, 560), "the drawing's reference size is untouched")
         self.assertAlmostEqual(screen.pitch.scale(), 1024 / 1000, places=3)
+        self.assertEqual(screen.pitch.drawing().height(), cells.row_px(screen, FIELD_ROWS))
 
     def test_the_commentary_keeps_whole_entries_in_the_rows_it_has(self):
         window, screen = self.canonical(self.make)
@@ -443,11 +448,15 @@ class PitchOnTheGrid(Base):
             self.assertEqual(screen.key_bar.height(), rows)
             self.assertEqual(screen.body.height(), window.page.height() - cells.row_px(screen) - rows)
 
-    def test_the_stop_box_is_cells_a_whole_number_of_columns_and_rows_inside_the_pitch(self):
+    def test_the_stop_box_is_cells_a_whole_number_of_columns_and_rows_on_the_key_line(self):
+        """[designed: owner, 2026-11-27, #862; confirmed: t156-067, t156-149, t156-175] The stop is on the key line, as the original's:
+        across the screen in whole cells, its rows the key line's or its words', at the foot, outside the pitch's field."""
+        from PySide6.QtCore import QRect
         window, screen = self.canonical(self.make)
         cell, row = cells.cell_w(screen), cells.row_px(screen)
         for name, put in self.states():
-            if name not in ("replay question", "the other side's substitution", "opportunity", "keeper opportunity"):
+            if name not in ("replay question", "save question", "the other side's substitution", "shoot-out notice", "opportunity",
+                            "keeper opportunity"):
                 continue
             with self.subTest(state=name):
                 screen.stop_box.cancel()
@@ -455,16 +464,16 @@ class PitchOnTheGrid(Base):
                 self.relayout(window)
                 box = screen.stop_box
                 self.assertTrue(box.open)
-                self.assertEqual(box.width(), round(box.cols * cell))
-                self.assertEqual(box.height(), box.rows() * row)
+                self.assertEqual(box.width(), screen.width())
+                self.assertEqual(round(box.width() / cell), box.cols)
+                self.assertEqual(box.height(), cells.span_px(screen, box.rows()))
                 top = box.mapTo(screen, box.rect().topLeft())
-                pitch = screen.pitch.mapTo(screen, screen.pitch.rect().topLeft())
-                self.assertGreaterEqual(top.x(), pitch.x())
-                self.assertGreaterEqual(top.y(), pitch.y())
-                self.assertLessEqual(top.x() + box.width(), pitch.x() + screen.pitch.width())
-                self.assertLessEqual(top.y() + box.height(), pitch.y() + screen.pitch.height())
-                self.assertEqual((top.x() - pitch.x()) % round(cell), 0, "a whole number of cells from the pitch's edge")
-                self.assertEqual((top.y() - pitch.y()) % row, 0)
+                self.assertEqual((top.x(), top.y() + box.height()), (0, screen.height()), "at the foot")
+                self.assertLessEqual(top.y(), screen.key_bar.mapTo(screen, screen.key_bar.rect().topLeft()).y(), "over the key line")
+                field = screen.pitch.field()
+                field = QRect(screen.pitch.mapTo(screen, field.topLeft()), field.size())
+                self.assertFalse(QRect(top, box.size()).intersects(field), "the field stays in view")
+                self.text_fits_its_cells(box, name)
                 screen.stop_box.cancel()
 
 
@@ -498,7 +507,7 @@ class SavedPitchOnTheGrid(PitchOnTheGrid):
     test_the_pitch_screen_fits_at_every_size_and_is_on_the_grid = PitchOnTheGrid.test_the_pitch_screen_fits_at_every_size_and_is_on_the_grid
     test_the_longest_names_and_kind_fit_at_every_size = None
     test_the_reading_pause_banner_takes_the_score_rows_and_the_score_comes_back = None
-    test_the_stop_box_is_cells_a_whole_number_of_columns_and_rows_inside_the_pitch = None
+    test_the_stop_box_is_cells_a_whole_number_of_columns_and_rows_on_the_key_line = None
     test_the_bar_keeps_its_two_rows_whatever_the_keys_say = None
     test_it_is_not_on_either_pending_list = None
     test_the_pitch_keeps_its_drawing_size_over_the_mockups_to_the_cell = None
