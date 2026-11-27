@@ -78,15 +78,17 @@ class AssistantJobs:
         return self.token
 
     def _work(self,token,before,handle,cancelled,results):
-        sent=False
+        # [designed: #896] The result is posted only after the shared engine is released, so a caller who
+        # has read it can start the next request at once (before: put, then release in `finally`).
+        sent=False;outcome=[]
         try:
             try:
                 prepared=prepare(before)
             except ValueError as exc:
-                results.put((token,{'status':'error','reason':'unavailable','message':str(exc)}))
+                outcome.append((token,{'status':'error','reason':'unavailable','message':str(exc)}))
                 return
             if cancelled.is_set():
-                results.put((token,{'status':'cancelled'}));return
+                outcome.append((token,{'status':'cancelled'}));return
             places=before.squad_capacity-20
             number=(self.shared.engine.assistant(prepared.native,extra_places=places) if places
                     else self.shared.engine.assistant(prepared.native))
@@ -100,34 +102,38 @@ class AssistantJobs:
                     break
                 except queue.Empty:
                     if self.closed:
-                        results.put((token,{'status':'cancelled'}));return
+                        outcome.append((token,{'status':'cancelled'}));return
             if cancelled.is_set():
-                results.put((token,{'status':'cancelled'}));return
+                outcome.append((token,{'status':'cancelled'}));return
             if kind=='assistant_cancelled':
-                results.put((token,{'status':'cancelled'}));return
+                outcome.append((token,{'status':'cancelled'}));return
             if kind!='assistant':
                 message=value.get('error',str(value)) if isinstance(value,dict) else str(value)
-                results.put((token,{'status':'error','reason':'failed','message':message}));return
+                outcome.append((token,{'status':'error','reason':'failed','message':message}));return
             if value['request']!=number or value['input_hash']!=prepared.input_hash:
                 raise ValueError('assistant reply differs from the requested snapshot')
             answer=value['result']
             if not answer['allowed']:
-                results.put((token,{'status':'refused','reason':answer['refusal']}));return
+                outcome.append((token,{'status':'refused','reason':answer['refusal']}));return
             proposed=candidate(prepared,answer)
             if cancelled.is_set():
-                results.put((token,{'status':'cancelled'}));return
+                outcome.append((token,{'status':'cancelled'}));return
             recruits=[w for w in proposed.managed_squad if w not in before.managed_squad]
             additional={}
             if places:
                 filled={w for w in proposed.extra_squad if w is not None}
                 previous={w for w in before.extra_squad if w is not None}
                 additional=dict(extra_filled=len(filled),extra_added=len(filled-previous),capacity=before.squad_capacity)
-            results.put((token,{'status':'complete','candidate':proposed,'recruited':len(recruits),**additional}))
+            outcome.append((token,{'status':'complete','candidate':proposed,'recruited':len(recruits),**additional}))
         except Exception as exc:
-            results.put((token,{'status':'error','reason':'failed','message':f'{type(exc).__name__}: {exc}'}))
+            outcome.append((token,{'status':'error','reason':'failed','message':f'{type(exc).__name__}: {exc}'}))
         finally:
-            if not sent or handle.ended.is_set() or self.shared.engine.closed:
-                self.shared.release(handle)
+            try:
+                if not sent or handle.ended.is_set() or self.shared.engine.closed:
+                    self.shared.release(handle)
+            finally:
+                if outcome:
+                    results.put(outcome[0])
 
     def cancel(self,token=None):
         with self._publication:
