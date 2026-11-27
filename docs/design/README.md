@@ -68,7 +68,9 @@ If a comparison shows no benefit, keep the original pattern. [designed: owner, 2
      the current execution order of #666. The issue body orders the slices, the owner's direction
      comment sets the rule above, and each later comment records one slice: its original evidence
      before the work, and its merge, Windows captures and receipts after it.
-   - [#777](https://github.com/diegoami/goal2/issues/777): optional 22- and 24-player squads.
+   - [#777](https://github.com/diegoami/goal2/issues/777): optional 22-player squads. The owner withdrew
+     24-player squads on 2026-11-27 (T240); a longer already-saved squad loads as 22 (see the #862 ruling
+     below).
    - [#573](https://github.com/diegoami/goal2/issues/573), decision 19: S17's players are
      non-overlapping discs with the role letter inside, and everything else on the pitch mimics the original.
    - [#862](https://github.com/diegoami/goal2/issues/862), 2026-11-27 (answers to the design audit):
@@ -82,6 +84,14 @@ If a comparison shows no benefit, keep the original pattern. [designed: owner, 2
      `main`, in `ui-2026-11/review-862/`. (g) After S17–S18 come the rest of S19 Bench (the XI and
      reserve labels, Enter on the key line), then slice 7; slice 6's bulletins wait for the news port
      (decision 15).
+    - [#862](https://github.com/diegoami/goal2/issues/862), 2026-11-27 (third set): (a) **24-player
+      squads are withdrawn**; 22 is the largest, a correction of #777 (T240). A career saved with 24
+      places loads as 22 — empty extra places are dropped first, then the last filled ones, and those
+      players return to the pool — so no save is refused. (b) S19's XI and reserve labels are one-row
+      headers: *starting eleven* above the XI, *reserves* on the boundary rule, drawn at 22 places
+      only, where the roster has the two rows the dropped legend frees; 20 keeps the original's
+      unlabelled roster. (c) #573's pitch drawing follows slice 7, so the ordered backlog stands and
+      the manual recapture is not delayed by it.
 3. **The accepted design**, [ui-2026-11/README.md](ui-2026-11/README.md): every screen S01–S22
    with its original evidence, the rules for the whole UI (§3) and the mapping of every original
    screen (§5, checked by [check_mapping.py](ui-2026-11/check_mapping.py)). Supporting records:

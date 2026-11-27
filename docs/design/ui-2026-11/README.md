@@ -445,6 +445,10 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 - **Shows**: the engine's eleven/bench and remaining budget, live red injury labels, and prominent on/off feedback.
 - [derived: T156-R1 step 124] Separate boxes above the player card show the current substitution mode and budget.
   The roster keeps a visible rule between the starting XI and reserves at larger squad sizes.
+- [designed: owner, 2026-11-27, #862; T240] At 22 places the two sections are named above their rows: *starting
+  eleven* before the XI and *reserves* on the boundary rule, in the rows the dropped legend frees. Twenty places
+  keeps the original's unlabelled roster. [confirmed: T156-R1 step 124] The Enter action and its wording sit on the
+  key line, as the original's `◄┘-take off this player` does, not in a box of its own above it.
 - [derived: T156-R1 step 124; designed: #862] The card shows discrete skill and characteristic blocks. Characteristic
   words sit beside the bar so they stay readable even when few blocks are filled.
 - **Actions**: **↑↓** player; **Enter** marks the first and completes the pair with the second selection. At a legal
