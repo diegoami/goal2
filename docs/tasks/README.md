@@ -489,3 +489,4 @@ operational status.
 - [T170az](T170az.md): native named saves in Save and Continue (#889).
 - [T170ba](T170ba.md): committed native manager’s Desk view (#894).
 - [T170bb](T170bb.md): open the existing Desk for an explicitly loaded native campaign (#898).
+- [T170bc](T170bc.md): play the next native round from the loaded Desk (#901).
