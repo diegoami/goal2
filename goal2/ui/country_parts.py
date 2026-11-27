@@ -42,7 +42,7 @@ class CellLineBars(Cells):
     """The four lines' bars (keeper, defence, midfield, attack) as `team_card.LineBars`, in cells: a brown label, a bar of 25 cells
     that is a row of the original's two colours. The same `panel`, `rows`, `labels`, `set_panel` and `text`."""
 
-    def __init__(self):
+    def __init__(self, *, segmented=False):
         super().__init__(LINE_LABEL_COLS + 1 + LINE_BAR_COLS, len(LINES), "lineBars")
         self.panel = None
         self.rows, self.labels = {}, {}
@@ -50,7 +50,7 @@ class CellLineBars(Cells):
             heading = CellLabel(name, "barLabel")
             colour(heading, theme.CARD_LABEL)
             self.put(heading, 0, number, LINE_LABEL_COLS)
-            bar = CellBar()
+            bar = CellBar(segmented=segmented)
             self.put(bar, LINE_LABEL_COLS + 1, number, LINE_BAR_COLS)
             self.rows[name], self.labels[name] = (bar, heading), heading
         self.set_panel(None)

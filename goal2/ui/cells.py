@@ -22,8 +22,8 @@ import html
 import re
 import textwrap
 
-from PySide6.QtCore import QRect, QSize, Qt
-from PySide6.QtGui import QColor, QPainter
+from PySide6.QtCore import QRect, QRectF, QSize, Qt
+from PySide6.QtGui import QColor, QFontMetricsF, QPainter
 from PySide6.QtWidgets import QLabel, QLayout, QLineEdit, QSizePolicy, QWidget, QWidgetItem
 
 from goal2.desktop import fixed_page
@@ -82,6 +82,25 @@ class CellLabel(QLabel):
 
     def minimumSizeHint(self) -> QSize:
         return self.sizeHint()
+
+
+class FittedCellLabel(CellLabel):
+    """[designed: #862] Fit text when the native font advance exceeds the grid allocation."""
+
+    def paintEvent(self, event):
+        text = self.text()
+        if not text or not self.width():
+            return
+        painter = QPainter(self)
+        font = self.font()
+        painter.setFont(font)
+        painter.setPen(self.palette().color(self.foregroundRole()))
+        advance = QFontMetricsF(font, self).horizontalAdvance(text)
+        scale = min(1.0, self.width() / max(1.0, advance))
+        painter.scale(scale, 1.0)
+        rect = QRectF(0, 0, self.width() / scale, self.height())
+        painter.drawText(rect, int(self.alignment()), text)
+        painter.end()
 
 
 class CellPara(QLabel):
