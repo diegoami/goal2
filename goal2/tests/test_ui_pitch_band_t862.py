@@ -248,9 +248,11 @@ class PitchBand(GridBase):
         SUBSTITUTION OPPORTUNITY overran its cells on Windows at 100% (408 px for 384). Every label's text advance fits its width."""
         screen = self.screen()
         self.addCleanup(screen.stop_box.cancel)
+        self.addCleanup(self.window_.resize, self.window_.size())
         box = screen.stop_box
-        for name, put in self.stops(screen):
-            with self.subTest(stop=name):
+        for (name, put), size in ((stop, size) for stop in self.stops(screen) for size in ((1440, 1080), (1507, 698))):
+            with self.subTest(stop=name, size=size):
+                self.window_.resize(*size)
                 box.cancel()
                 put()
                 self.relayout(self.window_)

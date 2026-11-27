@@ -33,6 +33,8 @@ sample has been painted.
 """
 from __future__ import annotations
 
+import math
+
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QFrame
 
@@ -241,14 +243,20 @@ class StopBox(QFrame):
     def _left(self):
         """The headline's words at the left of the last row."""
         if self.label.isVisibleTo(self):
-            return len(self.label.text()) + 1 + len(self.rest.text())
-        return len(self.headline.text())
+            return self._span(self.label, self.label.text()) + 1 + self._span(self.rest, self.rest.text())
+        return self._span(self.headline, self.headline.text())
+
+    def _span(self, widget, text):
+        """[designed: #862, Windows at 100% in a short window] The whole cells a text takes: its characters, or more where the
+        system's glyph advance at a fractional cell width runs past them (29 characters drew 319 px over 299 px of cells)."""
+        cell = cells.cell_w(self)
+        return max(len(text), math.ceil((widget.fontMetrics().horizontalAdvance(text) - 1) / cell))
 
     def _right(self):
         """The answer's words at the right of the last row."""
         if self.answers:
-            return sum(len(words) for words in self.answers.values()) + len(self.answers) - 1
-        return len(self.key_hint.text())
+            return sum(self._span(item.text, words) for words, item in zip(self.answers.values(), self.answer_items.values())) + len(self.answers) - 1
+        return self._span(self.key_hint, self.key_hint.text())
 
     def rows(self):
         """The bar's rows: the key line's two, or the detail's rows above the last row when the detail does not fit on it."""
@@ -278,20 +286,24 @@ class StopBox(QFrame):
         row = y(rows) - last
         at = 0
         if self.label.isVisibleTo(self):
-            self.label.setGeometry(0, last, round(len(self.label.text()) * cell), row)
-            at = len(self.label.text()) + 1
-            self.rest.setGeometry(round(at * cell), last, round(len(self.rest.text()) * cell), row)
-            at += len(self.rest.text())
+            span = self._span(self.label, self.label.text())
+            self.label.setGeometry(0, last, round(span * cell), row)
+            at = span + 1
+            span = self._span(self.rest, self.rest.text())
+            self.rest.setGeometry(round(at * cell), last, round(span * cell), row)
+            at += span
         else:
-            self.headline.setGeometry(0, last, round(max(1, len(self.headline.text())) * cell), row)
-            at = len(self.headline.text())
+            span = max(1, self._span(self.headline, self.headline.text()))
+            self.headline.setGeometry(0, last, round(span * cell), row)
+            at = span
         right = self._right()
         if self.answers:
             column = self.cols - right
             for words, item in zip(self.answers.values(), self.answer_items.values()):
-                item.setGeometry(round(column * cell), last, round(len(words) * cell), row)
-                item.text.setGeometry(0, 0, round(len(words) * cell), row)
-                column += len(words) + 1
+                span = self._span(item.text, words)
+                item.setGeometry(round(column * cell), last, round(span * cell), row)
+                item.text.setGeometry(0, 0, round(span * cell), row)
+                column += span + 1
         else:
             self.key_hint.setGeometry(round((self.cols - right) * cell), last, round(right * cell), row)
         if not self.detail.isHidden():
