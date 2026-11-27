@@ -82,6 +82,23 @@ class SelectedSquadUI(unittest.TestCase):
         self.click(screen.size_menu, screen.size_menu.actionGeometry(screen.size_actions[size]).center())
         self.assertEqual(self.owner.state.squad_capacity, size)
 
+    def a_press_state(self, screen, size):
+        """[designed: #896] What the screen held when A left the assistant token unset.
+
+        The flaky assertion at the A key has three candidate causes (an early return, a refused
+        start, or the key going to the size menu), and the module alone never reproduced it. The
+        message names which one the next failure is, instead of it being guessed."""
+        focus = self.app.focusWidget()
+        jobs = screen._assistant_jobs
+        return (f"size {size}: token {screen._assistant_token!r}, side {screen.side!r}, "
+                f"capacity {screen.capacity()}, editing {screen.editing}, "
+                f"searching {screen.searching}, note {screen.note.text()!r}, "
+                f"focus {type(focus).__name__ if focus is not None else None}, "
+                f"size menu visible {screen.size_menu.isVisible()}, "
+                f"shown {type(self.win.current()).__name__}, "
+                f"job busy {None if jobs is None else jobs.busy}, "
+                f"timer active {screen._assistant_timer.isActive()}")
+
     def test_keyboard_and_click_resize_then_fill_last_slot_from_pool(self):
         screen = open_squad(self.win, self.owner)
         self.key(Qt.Key.Key_F6)
@@ -141,7 +158,7 @@ class SelectedSquadUI(unittest.TestCase):
                 screen.refresh()
                 self.choose(screen, size)
             self.key(Qt.Key.Key_A)
-            self.assertIsNotNone(screen._assistant_token)
+            self.assertIsNotNone(screen._assistant_token, self.a_press_state(screen, size))
             self.until(lambda: screen._assistant_token is None)
             count = size - 20
             self.assertEqual(len(screen.strip.shown_texts()), size)
