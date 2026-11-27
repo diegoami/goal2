@@ -12,24 +12,37 @@ The format [designed: T163]: a zip file named `<derived name>.g2game` holding tw
   (goal2/game/session_save.py), so the career is read back only by the model's validating loader
   (`DesktopModel.from_save`), never by this module.
 
+[designed: T170az] Version 2 uses a native campaign payload and a
+`<derived name>.native.g2game` filename. An explicit native opener can read
+both versions.
+
 Qt-free.
 """
 from __future__ import annotations
 
 import datetime
+from io import BytesIO
 import json
 import os
 import re
 import tempfile
 import zipfile
+import zlib
 from dataclasses import dataclass
 from pathlib import Path
 
+from goal2.desktop.native_save_owner import NativeSaveOwner
+from goal2.game import native_season_save
+from goal2.game.save_file import write_atomic
+
 FORMAT = "goal2-named-save"
 VERSION = 1
+NATIVE_VERSION = 2
 SUFFIX = ".g2game"
+NATIVE_SUFFIX = ".native.g2game"
 META = "goal2-save.json"
 SESSION = "session.g2save"
+NATIVE_SESSION = "campaign.g2native"
 NAME_MAX = 32   # [designed: T163] a save's free name fits S02's name column at 16 px
 # Names Windows reserves for devices, refused as file names whatever their extension. [derived: the Windows file
 # naming rules]
@@ -63,18 +76,20 @@ def file_stem(name) -> str:
     return stem[:NAME_MAX]
 
 
-def path_for(folder, name) -> Path:
+def path_for(folder, name, *, native=False) -> Path:
     """Where `name` is saved in `folder`: its own file again when a save of that name is there, else a new file
     (`-2`, `-3`… when another name derives the same stem)."""
     folder = Path(folder)
     name = clean_name(name)
     stem = file_stem(name)
+    suffix = NATIVE_SUFFIX if native else SUFFIX
     for n in range(1, 1000):
-        path = folder / (f"{stem}{SUFFIX}" if n == 1 else f"{stem}-{n}{SUFFIX}")
+        path = folder / (f"{stem}{suffix}" if n == 1 else f"{stem}-{n}{suffix}")
         if not path.exists():
             return path
         try:
-            if read_meta(path)[0] == name:
+            old_name, _, version = _metadata(path)
+            if old_name == name and (version == NATIVE_VERSION) == native:
                 return path
         except SaveError:
             pass
@@ -98,8 +113,11 @@ def write(model, folder, name, saved=None) -> Path:
         folder.mkdir(parents=True, exist_ok=True)
     except OSError as exc:
         raise SaveError(f"cannot write in {folder}: {exc}") from exc
-    path = path_for(folder, name)
+    native = isinstance(model, NativeSaveOwner)
+    path = path_for(folder, name, native=native)
     meta = {"format": FORMAT, "version": VERSION, "name": name, "saved": saved.isoformat()}
+    if native:
+        return _write_native(model, path, meta)
     before = {key: getattr(model, key) for key in ("saved", "save_path") if hasattr(model, key)}
     with tempfile.TemporaryDirectory(prefix="goal2-save-") as tmp:
         session = Path(tmp) / SESSION
@@ -128,10 +146,28 @@ def write(model, folder, name, saved=None) -> Path:
     return path
 
 
+def _write_native(model, path, meta):
+    revision = model.campaign.revision
+    try:
+        model.summary()
+        payload = native_season_save.encode(model.campaign)
+        data = BytesIO()
+        with zipfile.ZipFile(data, 'w', zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(META, json.dumps(dict(meta, version=NATIVE_VERSION), ensure_ascii=True))
+            archive.writestr(NATIVE_SESSION, payload)
+        write_atomic(path, data.getvalue())
+    except (OSError, ValueError) as exc:
+        raise SaveError(f'cannot write {path}: {exc}') from exc
+    model.saved = revision
+    model.save_path = path
+    model.save_name = meta['name']
+    return path
+
+
 def replaces(model, folder, name):
     """The file of another save that saving `model` in `folder` under `name` would replace, else None. The career's
     own save, the one it was last saved or loaded under, is not another's. [designed: T168, #542]"""
-    path = path_for(folder, name)
+    path = path_for(folder, name, native=isinstance(model, NativeSaveOwner))
     if not path.exists():
         return None
     own = getattr(model, "save_path", None)
@@ -147,14 +183,29 @@ def last_name(model):
 
 def read_meta(path):
     """The stored name and time of a save: (name, saved), or SaveError saying why it cannot be read."""
+    name, saved, _ = _metadata(path)
+    return name, saved
+
+
+def _metadata(path):
     try:
         with zipfile.ZipFile(path) as archive:
-            meta = json.loads(archive.read(META).decode("utf-8"))
+            return _read_metadata(archive)
     except FileNotFoundError as exc:
         raise SaveError("the file is no longer there") from exc
-    except (OSError, KeyError, zipfile.BadZipFile, UnicodeDecodeError, json.JSONDecodeError) as exc:
+    except (OSError, EOFError, KeyError, RuntimeError, zipfile.BadZipFile, zlib.error,
+            UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise SaveError(f"not a goal2 save ({exc})") from exc
-    if not isinstance(meta, dict) or meta.get("format") != FORMAT or meta.get("version") != VERSION:
+
+
+def _read_metadata(archive):
+    with archive.open(META) as stream:
+        raw = stream.read(65537)
+    if len(raw) > 65536:
+        raise SaveError('the save metadata exceeds its size limit')
+    meta = json.loads(raw.decode("utf-8"))
+    if (not isinstance(meta, dict) or meta.get("format") != FORMAT
+            or type(meta.get("version")) is not int or meta["version"] not in (VERSION, NATIVE_VERSION)):
         raise SaveError("not a goal2 save of a version this goal2 reads")
     name = clean_name(meta.get("name"))
     try:
@@ -163,28 +214,47 @@ def read_meta(path):
         raise SaveError("the save's time cannot be read") from exc
     if saved.tzinfo is None:
         raise SaveError("the save's time has no time zone")
-    return name, saved
+    return name, saved, meta["version"]
 
 
-def load(path, data_path):
+def load(path, data_path, *, native=False):
     """The career in the save at `path`, read by the model's validating loader; SaveError saying why when it cannot
     be opened."""
+    try:
+        with zipfile.ZipFile(path) as archive:
+            name, _, version = _read_metadata(archive)
+            if version == NATIVE_VERSION:
+                if not native:
+                    raise SaveError('this save needs an explicit native career opener')
+                with archive.open(NATIVE_SESSION) as stream:
+                    model = NativeSaveOwner(native_season_save.read(stream))
+                model.summary()
+            else:
+                model = _load_session(archive, data_path)
+    except SaveError:
+        raise
+    except (OSError, EOFError, KeyError, ValueError, RuntimeError, zipfile.BadZipFile, zlib.error) as exc:
+        raise SaveError(f'cannot read the career: {exc}') from exc
+    model.save_path = Path(path)
+    model.save_name = name
+    if version == NATIVE_VERSION:
+        model.saved = model.campaign.revision
+    return model
+
+
+def _load_session(archive, data_path):
     from goal2.desktop.model import DesktopModel
-    name = read_meta(path)[0]
+
     with tempfile.TemporaryDirectory(prefix="goal2-load-") as tmp:
         session = Path(tmp) / SESSION
         try:
-            with zipfile.ZipFile(path) as archive:
-                session.write_bytes(archive.read(SESSION))
+            session.write_bytes(archive.read(SESSION))
         except (OSError, KeyError, zipfile.BadZipFile) as exc:
             raise SaveError(f"the career is missing from the save ({exc})") from exc
         try:
-            model = DesktopModel.from_save(session, data_path)
+            return DesktopModel.from_save(session, data_path)
         except ValueError as exc:
             raise SaveError(str(exc)) from exc
-    model.save_path = Path(path)
-    model.save_name = name
-    return model
 
 
 @dataclass
@@ -197,20 +267,24 @@ class Entry:
     error: str | None = None
 
 
-def entries(folder, data_path) -> list:
+def entries(folder, data_path, *, native=False) -> list:
     """Every save in `folder`, newest first, each read through `load`. A file that cannot be read is listed under its
     file name and its file's time, with the reason."""
     folder = Path(folder)
     found = []
     for path in sorted(folder.glob(f"*{SUFFIX}")) if folder.is_dir() else ():
+        if not native and path.name.endswith(NATIVE_SUFFIX):
+            continue
         try:
-            name, saved = read_meta(path)
+            name, saved, version = _metadata(path)
         except SaveError as exc:
             mtime = datetime.datetime.fromtimestamp(path.stat().st_mtime, datetime.timezone.utc)
             found.append(Entry(path, path.stem, mtime, error=str(exc)))
             continue
+        if version == NATIVE_VERSION and not native:
+            continue
         try:
-            found.append(Entry(path, name, saved, model=load(path, data_path)))
+            found.append(Entry(path, name, saved, model=load(path, data_path, native=native)))
         except SaveError as exc:
             found.append(Entry(path, name, saved, error=str(exc)))
     return sorted(found, key=lambda e: e.saved, reverse=True)

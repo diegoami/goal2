@@ -100,10 +100,14 @@ def encode(campaign):
 def load(path, *, view=None):
     try:
         with Path(path).open('rb') as stream:
-            raw = stream.read(_MAX_DOCUMENT + 1)
+            return read(stream, view=view)
     except OSError as exc:
         raise NativeSeasonSaveError(f'cannot read native save {path}: {exc}') from exc
-    return decode(raw, view=view)
+
+
+def read(stream, *, view=None):
+    """Read bounded native save data from a file or archive member."""
+    return decode(stream.read(_MAX_DOCUMENT + 1), view=view)
 
 
 def save(path, campaign):
