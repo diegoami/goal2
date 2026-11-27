@@ -21,6 +21,7 @@ Qt-free.
 from __future__ import annotations
 
 import datetime
+from contextlib import ExitStack, contextmanager
 from io import BytesIO
 import json
 import os
@@ -188,14 +189,22 @@ def read_meta(path):
 
 
 def _metadata(path):
-    try:
-        with zipfile.ZipFile(path) as archive:
-            return _read_metadata(archive)
-    except FileNotFoundError as exc:
-        raise SaveError("the file is no longer there") from exc
-    except (OSError, EOFError, KeyError, RuntimeError, zipfile.BadZipFile, zlib.error,
-            UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise SaveError(f"not a goal2 save ({exc})") from exc
+    with _named_archive(path) as (_, metadata):
+        return metadata
+
+
+@contextmanager
+def _named_archive(path):
+    with ExitStack() as files:
+        try:
+            archive = files.enter_context(zipfile.ZipFile(path))
+            metadata = _read_metadata(archive)
+        except FileNotFoundError as exc:
+            raise SaveError("the file is no longer there") from exc
+        except (OSError, EOFError, KeyError, RuntimeError, zipfile.BadZipFile, zlib.error,
+                UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise SaveError(f"not a goal2 save ({exc})") from exc
+        yield archive, metadata
 
 
 def _read_metadata(archive):
@@ -221,8 +230,7 @@ def load(path, data_path, *, native=False):
     """The career in the save at `path`, read by the model's validating loader; SaveError saying why when it cannot
     be opened."""
     try:
-        with zipfile.ZipFile(path) as archive:
-            name, _, version = _read_metadata(archive)
+        with _named_archive(path) as (archive, (name, _, version)):
             if version == NATIVE_VERSION:
                 if not native:
                     raise SaveError('this save needs an explicit native career opener')

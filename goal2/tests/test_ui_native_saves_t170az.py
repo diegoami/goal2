@@ -176,6 +176,7 @@ class Journey(unittest.TestCase):
         owner.save_path.write_bytes(b'broken')
         self.key(Qt.Key.Key_Y)
         self.assertIn('cannot be opened', start.problem.text())
+        self.assertIn('not a goal2 save', start.problem.text())
         self.assertIs(self.window.career, owner)
         self.assertFalse(self.loaded)
         self.key(Qt.Key.Key_N)
