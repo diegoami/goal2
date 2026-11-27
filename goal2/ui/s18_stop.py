@@ -1,14 +1,20 @@
-"""S18 Match stop: a box over the pitch with the event that stops the match, the score and the minute.
+"""S18 Match stop: the event that stops the match, on the key line at the foot of the screen, as the original shows it.
 
-[designed: owner, 2026-11-03, #526; docs/design/ui-2026-11 S18 and its mockup s18-match-stop.png; T180, #574]
-[confirmed: T156-R1 steps 67-68, 149-150, 274; t156-067-substitution-opportunity.png,
-t156-149-opponent-substitution.png, t156-274-quick-substitution-opportunity.png; E031 g1 step 3874,
-e031-shootout-start.png; M244-G4C-07 step 55, m244-shootout-prompt.png]
+[designed: owner, 2026-11-03, #526; T180, #574; owner, 2026-11-27, #862: on the key line, the pitch and the band in view]
+[confirmed: T156-R1 steps 67-68, 149-150, 175, 274; t156-067-substitution-opportunity.png (a grey label at the left, a magenta
+*press any key* at the right), t156-149-opponent-substitution.png (the grey `SUBSTITUTION`, the players in cyan),
+t156-175-replay-prompt.png (the question in cyan, across the line), t156-274-quick-substitution-opportunity.png; E031 g1 step
+3874, e031-shootout-start.png (green across the line); M244-G4C-07 step 55, m244-shootout-prompt.png]
+
+The stop replaces the key line: a bar across the screen over the bottom bar, as tall as the bar (two rows) or, when its words need
+more, the rows they take above it. Its last row has the headline at the left and the answer at the right; its detail sits on that row
+when it fits, else on the rows above. The pitch's field and the top band are never covered.
 
 [designed: owner #636] Opted-in substitution opportunities use the original timed poll horizon.
 UI Esc accepts with original Enter, then the actual legal bench opens; an ignored notice sends
-no key. Source headline0x70 and hint0x8D colours are retained; the large headline blink is the
-owner's adaptation. This is separate from the compatibility notices below.
+no key. Source headline0x70 and hint0x8D colours are retained; the headline blink is the
+owner's adaptation, kept on the key line so the notice is as prominent as #426 asked (owner, 2026-11-27).
+This is separate from the compatibility notices below.
 
 The legacy presentation, each answered by any key:
 
@@ -20,60 +26,68 @@ The legacy presentation, each answered by any key:
 - **The penalty shoot-out** (`NOTICE_SHOOTOUT`): before the shoot-out order (S16), as the original's notice
   (e031-shootout-start).
 
-The box belongs to S17 (`PitchScreen.stop_box`): it is drawn over the pitch, and while it shows every key answers it.
-The goal questions (*action replay?*, *save this goal?*) are T181's: `show(..., answers=...)` takes keys with their
-words for a question; T181 asks those questions once the goal's sample has been painted.
+The bar belongs to S17 (`PitchScreen.stop_box`); while it shows every key answers it, and a click answers as the keys do: on the
+bar, Enter (any key); on an answer of a question, that answer's key. The goal questions (*action replay?*, *save this goal?*)
+are T181's: `show(..., answers=...)` takes keys with their words for a question; T181 asks those questions once the goal's
+sample has been painted.
 """
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import QFrame
 
 from goal2.ui import cells, theme
 from goal2.ui.cells import CellLabel, CellPara
+from goal2.ui.screen import Clickable
 from goal2.ui.squad_card import colour
 
 NOTICE_SUBSTITUTION = "substitution"
 NOTICE_OPPONENT = "opponent"
 NOTICE_SHOOTOUT = "shootout"
-TAG = "THE MATCH STOPS"                 # [designed: s18-match-stop.png]
+TAG = "THE MATCH STOPS"                 # [designed: s18-match-stop.png] (the box's; the key line has no tag)
 ANY_KEY = "press any key"               # [confirmed: t156-067, t156-149: "press any key"]
 SUBSTITUTION_OPPORTUNITY = "SUBSTITUTION OPPORTUNITY"   # [confirmed: t156-067]
 NO_GOALKEEPER = "HAS NO GOALKEEPER"  # [confirmed: upstream695 keeper notice template0x0B]
 SHOOTOUT = "PENALTY SHOOT-OUT"          # [confirmed: E031 C44-C46b; s17_pitch.STOPS]
+SUBSTITUTION = "SUBSTITUTION"           # [confirmed: t156-149, the grey label before the players]
 # [confirmed: T156-R1 steps 175–177] The goal questions; only Y or N answers them.
 ACTION_REPLAY = 'Do you want an action replay?'
 SAVE_GOAL = 'Do you want to save this goal?'
 YES_NO = {Qt.Key.Key_Y: 'Y yes', Qt.Key.Key_N: 'N no'}
-# [designed: T212] The box is 40 cells wide (the 640 pixels of the mockup, a whole number of cells); its rows are what its words take: one cell
-# in from each edge (the border is drawn at the edge, over no cell the text sits in), the tag, the headline's rows, the detail's rows, the
-# key line. The timed opportunity is as wide as the pitch less two cells, between 24 and 46.
+# The colours. [confirmed: t156-067 (black on grey, magenta), t156-175 (cyan), e031-shootout-start (green)]
+LABEL_GREY = "#aaaaaa"
+LABEL_TEXT = "#000000"
+MIN_ROWS = 2   # the bottom bar's rows (Screen.KEY_ROWS): the stop covers the whole key line
+# [designed: T212] The bar is the screen's width in cells; kept for the API: `cols` is set by `place`.
 COLS = 40
 TIMED_COLS = (24, 46)
-BORDER = 2   # logical pixels
 
 
 class StopBox(QFrame):
-    """The box over the pitch: its tag, the event's headline, the score and minute with what the key does, and the
-    keys that answer it. `show_stop` raises it; `answer(key)` runs the stop's handler once and hides it."""
+    """The stop on the key line: its headline, its detail and the keys that answer it. `show_stop` raises it; `answer(key)` runs the
+    stop's handler once and hides it."""
 
     def __init__(self, parent):
         super().__init__(parent)
         self.setObjectName("stopBox")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; }}")
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.cols = COLS
-        self.edge = theme.HEADING   # the border's colour; None: no border (the timed opportunity is a bar)
-        self.tag = CellLabel(TAG, "tag", self)
-        self.headline = CellPara("", "h1", self)
+        self.tag = CellLabel(TAG, "tag", self)   # the box's tag: the key line has none
+        self.tag.hide()
+        self.headline = CellLabel("", "h1", self)
+        self.label = CellLabel("", "h1", self)    # a notice's grey label when its headline is split (t156-149)
+        self.rest = CellLabel("", "value", self)  # the rest of a split headline, cyan
         self.detail = CellPara("", "value", self)
         self.key_hint = CellLabel(ANY_KEY, "keyLabel", self)
         self.key_hint.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        colour(self.key_hint, theme.KEY_HINT)
+        self.answer_items = {}
         self.kind = None
         self.handler = None
         self.answers = {}
         self.timed = False
+        self._inline = True
         self.opportunity_timer = QTimer(self)
         self.opportunity_timer.setSingleShot(True)
         self.opportunity_timer.timeout.connect(self._expire_opportunity)
@@ -87,25 +101,58 @@ class StopBox(QFrame):
         """Show a stop: `handler(key)` runs once on the answering key. `answers` {Qt key: words} makes it a
         question answered only by those keys (T181); without it any key answers, as the original's notices."""
         self.cancel()
-        self.cols = COLS
-        self.edge = theme.HEADING
         self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; }}")
-        self.headline.setStyleSheet("")
         self.detail.setStyleSheet("")
-        self.headline.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
-        colour(self.key_hint, theme.KEY_HINT)
-        self.tag.show(); self.detail.show()
         self.kind, self.handler, self.answers = kind, handler, dict(answers or {})
         self.headline.setText(headline)
         self.detail.setText(detail)
         self.key_hint.setText(" · ".join(self.answers.values()) if self.answers else ANY_KEY)
+        split = kind == NOTICE_OPPONENT and headline.startswith(SUBSTITUTION + " ")
+        self.label.setText(SUBSTITUTION if split else "")
+        self.rest.setText(headline[len(SUBSTITUTION) + 1:] if split else "")
+        self.headline.setVisible(not split)
+        self.label.setVisible(split)
+        self.rest.setVisible(split)
+        self.detail.setVisible(bool(detail))
+        self._answer_items()
+        if self.answers:
+            # [confirmed: t156-175] a question is cyan across the line
+            colour(self.headline, theme.HEADING)
+            colour(self.key_hint, theme.HEADING)
+        elif kind == NOTICE_SHOOTOUT:
+            # [confirmed: e031-shootout-start.png] the shoot-out's notice is green
+            colour(self.headline, theme.GOALKEEPER)
+            colour(self.key_hint, theme.GOALKEEPER)
+        else:
+            # [confirmed: t156-067, t156-149] a notice's label is black on grey, its key hint magenta
+            for widget in (self.headline, self.label):
+                widget.setStyleSheet(f"color: {LABEL_TEXT}; background: {LABEL_GREY};")
+            colour(self.key_hint, theme.KEY_HINT)
+        colour(self.rest, theme.HEADING)
+        colour(self.detail, theme.TEXT_NORMAL)
         self.place()
         self.show()
         self.raise_()
 
+    def _answer_items(self):
+        """A question's answers as clickable words at the right; a notice's key hint is one label."""
+        for item in self.answer_items.values():
+            item.setParent(None)
+            item.deleteLater()
+        self.answer_items = {}
+        for key, words in self.answers.items():
+            item = Clickable("stopAnswer", self)
+            text = CellLabel(words, "keyLabel", item)
+            colour(text, theme.HEADING)
+            item.text = text
+            item.clicked.connect(lambda k=key: self._click(k))
+            item.show()
+            self.answer_items[key] = item
+        self.key_hint.setVisible(not self.answers)
+
     def show_opportunity(self, data, handler, *, detail=None):
         """[confirmed: original7FCF/CC2E; #695]400/1000 polls,10 nominal ms.
-        [designed: owner #636] Large lower-pitch flashing heading; UI Esc accepts.
+        [designed: owner #636] Flashing heading; UI Esc accepts. [designed: owner, 2026-11-27, #862] On the key line.
         Ordinary source headline0x70 is black on gray; keeper source0x0B is
         light cyan on black (HAS NO GOALKEEPER). Both hints use blinking magenta0x8D.
         The headline blink is the owner's presentation adaptation.
@@ -118,17 +165,11 @@ class StopBox(QFrame):
         self.show_stop(NOTICE_SUBSTITUTION, NO_GOALKEEPER if keeper else SUBSTITUTION_OPPORTUNITY, detail or '', handler)
         self.timed = True
         self._opportunity_keeper = keeper
-        self.tag.hide()
-        self.detail.setVisible(detail is not None)
-        if detail is not None:
-            colour(self.detail, '#55ffff' if keeper else '#000000')
-        pitch = getattr(self.parentWidget(), 'pitch', self.parentWidget())
-        across = round(pitch.width() / cells.cell_w(self)) - 2
-        self.cols = max(TIMED_COLS[0], min(TIMED_COLS[1], across))
-        background = '#000000' if keeper else '#aaaaaa'
-        self.edge = None
-        self.setStyleSheet(f'#stopBox {{ background:{background}; }}')
-        self.headline.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.detail.setVisible(bool(detail))
+        if detail:
+            colour(self.detail, '#55ffff' if keeper else theme.TEXT_BRIGHT)
+        background = '#000000' if keeper else LABEL_GREY
+        self.setStyleSheet(f'#stopBox {{ background: {theme.GROUND}; }} #stopBox #h1 {{ background: {background}; }}')
         self.key_hint.setText('Esc / Enter: open the bench')
         self._opportunity_lit = True
         self._opportunity_colours()
@@ -137,8 +178,10 @@ class StopBox(QFrame):
         self.opportunity_timer.start(duration)
 
     def _opportunity_colours(self):
-        foreground = ('#55ffff' if self._opportunity_keeper else '#000000') if self._opportunity_lit else ('#000000' if self._opportunity_keeper else '#aaaaaa')
-        self.headline.setStyleSheet(f'color:{foreground};font-weight:700;')
+        keeper = self._opportunity_keeper
+        foreground = ('#55ffff' if keeper else '#000000') if self._opportunity_lit else ('#000000' if keeper else LABEL_GREY)
+        background = '#000000' if keeper else LABEL_GREY
+        self.headline.setStyleSheet(f'color:{foreground};background:{background};font-weight:700;')
         self.key_hint.setStyleSheet(f"color:{'#ff55ff' if self._opportunity_lit else '#000000'};background:#000000;")
 
     def _blink_opportunity(self):
@@ -161,11 +204,11 @@ class StopBox(QFrame):
         return self.kind is not None
 
     def texts(self):
-        """The box as it reads: (headline, detail, key hint)."""
+        """The stop as it reads: (headline, detail, key hint)."""
         return self.headline.text(), self.detail.text(), self.key_hint.text()
 
     def answer(self, key):
-        """A key while the box shows: the stop's handler, once. False when the key does not answer a question."""
+        """A key while the stop shows: the stop's handler, once. False when the key does not answer a question."""
         if self.kind is None or (self.answers and key not in self.answers):
             return False
         handler = self.handler
@@ -176,60 +219,81 @@ class StopBox(QFrame):
             handler(key)
         return True
 
-    # The cells. [designed: T212]
+    # The mouse: a click answers as the keys do. [designed: owner, 2026-11-03, #526: "the mouse does what the keys do"]
+    def _click(self, key):
+        screen = self.parentWidget()
+        answer = getattr(screen, "answer_stop_box", None)
+        return answer(key) if answer is not None else self.answer(key)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton and self.open and not self.answers \
+                and self.rect().contains(event.position().toPoint()):
+            self._click(Qt.Key.Key_Return)
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
+
+    # The cells. [designed: T212; #862]
     def inner_cols(self):
-        """The cells of the words: the box less one cell at each edge."""
-        return self.cols - 2
+        """The cells of the words: the whole bar."""
+        return self.cols
+
+    def _left(self):
+        """The headline's words at the left of the last row."""
+        if self.label.isVisibleTo(self):
+            return len(self.label.text()) + 1 + len(self.rest.text())
+        return len(self.headline.text())
+
+    def _right(self):
+        """The answer's words at the right of the last row."""
+        if self.answers:
+            return sum(len(words) for words in self.answers.values()) + len(self.answers) - 1
+        return len(self.key_hint.text())
 
     def rows(self):
-        """The box's rows: an empty row at each edge, the tag (not the timed bar's), the headline's rows, the detail's, the key line."""
-        wide = round(self.inner_cols() * cells.cell_w(self))
-        tag = 0 if self.tag.isHidden() else 1
-        detail = 0 if self.detail.isHidden() else len(self.detail.lines(wide))
-        return 2 + tag + len(self.headline.lines(wide)) + detail + 1
+        """The bar's rows: the key line's two, or the detail's rows above the last row when the detail does not fit on it."""
+        detail = self.detail.text() if not self.detail.isHidden() else ""
+        self._inline = not detail or self._left() + 1 + len(detail) + 1 + self._right() <= self.cols
+        above = 0 if self._inline else len(self.detail.lines(round(self.cols * cells.cell_w(self))))
+        return max(MIN_ROWS, 1 + above)
 
     def place(self):
-        """The box in its cells, centred over the pitch (the parent's `pitch` widget), as the mockup draws it: its edges are whole
-        cells of the pitch's, so it sits on the grid. The timed bar is at the pitch's foot."""
+        """The bar across its screen at the foot, over the key line, in whole cells."""
         parent = self.parentWidget()
-        pitch = getattr(parent, "pitch", None)
         cell, row = cells.cell_w(self), cells.row_px(self)
-        inner = self.inner_cols()
-        wide = round(inner * cell)
+        width = parent.width() if parent is not None else round(self.cols * cell)
+        self.cols = max(1, round(width / cell))
         rows = self.rows()
-        self.resize(round(self.cols * cell), rows * row)
-        at = 1   # the first row of the words
-        if not self.tag.isHidden():
-            self.tag.setGeometry(round(cell), at * row, wide, row)
-            at += 1
-        head = len(self.headline.lines(wide))
-        self.headline.setGeometry(round(cell), at * row, wide, head * row)
-        at += head
+        height = cells.span_px(self, rows)   # as the bottom bar's own height is made, so the bar covers it exactly
+        self.resize(width, height)
+        last = height - row
+        at = 0
+        if self.label.isVisibleTo(self):
+            self.label.setGeometry(0, last, round(len(self.label.text()) * cell), row)
+            at = len(self.label.text()) + 1
+            self.rest.setGeometry(round(at * cell), last, round(len(self.rest.text()) * cell), row)
+            at += len(self.rest.text())
+        else:
+            self.headline.setGeometry(0, last, round(max(1, len(self.headline.text())) * cell), row)
+            at = len(self.headline.text())
+        right = self._right()
+        if self.answers:
+            column = self.cols - right
+            for words, item in zip(self.answers.values(), self.answer_items.values()):
+                item.setGeometry(round(column * cell), last, round(len(words) * cell), row)
+                item.text.setGeometry(0, 0, round(len(words) * cell), row)
+                column += len(words) + 1
+        else:
+            self.key_hint.setGeometry(round((self.cols - right) * cell), last, round(right * cell), row)
         if not self.detail.isHidden():
-            detail = len(self.detail.lines(wide))
-            self.detail.setGeometry(round(cell), at * row, wide, detail * row)
-            at += detail
-        self.key_hint.setGeometry(round(cell), at * row, wide, row)
-        if pitch is None:
-            return
-        # a whole number of the pitch's cells from its edges
-        columns = round(pitch.width() / cell)
-        left = (columns - self.cols) // 2
-        pitch_rows = round(pitch.height() / row)
-        top = (pitch_rows - rows) // 2 if not self.timed else pitch_rows - rows - 1
-        origin = pitch.mapTo(parent, pitch.rect().topLeft())
-        self.move(max(0, origin.x() + round(left * cell)), max(0, origin.y() + max(0, top) * row))
-
-    def paintEvent(self, event):
-        super().paintEvent(event)
-        if self.edge is None:
-            return
-        painter = QPainter(self)
-        width = max(1, round(BORDER * cells.cell_w(self) / theme.CELL_W))
-        painter.setPen(QColor(self.edge))
-        for step in range(width):   # the border is drawn at the edge, inside the empty cell: no cell of text is under it
-            painter.drawRect(self.rect().adjusted(step, step, -1 - step, -1 - step))
-        painter.end()
+            if self._inline:
+                start = at + 1
+                self.detail.setGeometry(round(start * cell), last, round((self.cols - right - 1 - start) * cell), row)
+            else:
+                lines = len(self.detail.lines(round(self.cols * cell)))
+                self.detail.setGeometry(0, last - lines * row, round(self.cols * cell), lines * row)
+        if parent is not None:
+            self.move(0, parent.height() - height)
 
 
 def score_line(names, score, minute):

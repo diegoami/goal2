@@ -63,6 +63,10 @@ one, `git pull` and take the next free number.
      in the clean checkout. The default is the fast regression gate: every module's fast tests and
      the cheap layout/reserve slow checks. Hosted Linux/Windows CI and native scaling checks stay required.
      `--batch-fast` is the same scope; `--fast` also disables layout slow checks.
+     [derived: 2026-11-27, PR #890's gate] Locally, run it with `GOAL2_ARCHAEOLOGY` set to the engine clone
+     (`/home/diego/projects/goal2-archaeology-engine`): the analysis clone lacks the vendored pins, and the
+     vendor/provenance tests fail against it. Run Qt offscreen (`QT_QPA_PLATFORM=offscreen`, WSLg's
+     `WAYLAND_DISPLAY` unset), with the project venv (`.cache/venv/bin/python`).
    - **Integrated milestone:** run the complete suite once on Linux and once on Windows, with
      `python3 tools/check_premerge.py --expected-head <candidate> --slow`, all cases, before the
      milestone review/publication. The self-hosted Linux slow and Windows slow workflows are manual

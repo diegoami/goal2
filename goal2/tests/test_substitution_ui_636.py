@@ -173,9 +173,11 @@ class Lifecycle(unittest.TestCase):
 
 @requires.need(modules=('PySide6','pygame'), **requires.HALFTIME)
 class OpportunityScaling(unittest.TestCase):
-    def test_heading_scales_with_the_page_and_the_notice_stays_inside_the_lower_pitch(self):
+    def test_heading_scales_with_the_page_and_the_notice_stays_on_the_key_line(self):
+        """[designed: owner, 2026-11-27, #862, superseding #636's lower-pitch placement] The flashing notice sits on the key line
+        across the screen, as the original's (t156-067), at every size, and never covers the pitch's field."""
         from goal2.tests.test_ui_replay_t181 import ReplayScreens
-        from PySide6.QtCore import QPoint
+        from PySide6.QtCore import QPoint, QRect
         from goal2.ui import theme
         ReplayScreens.setUp(self)
         box=self.pitch.stop_box
@@ -183,10 +185,14 @@ class OpportunityScaling(unittest.TestCase):
             box.cancel();self.window.resize(width,height);self.app.processEvents()
             box.show_opportunity(dict(keeper_unavailable=False,timeout_polls=400,poll_ms=10),lambda key:None)
             self.app.processEvents();box.place()
-            top=self.pitch.pitch.mapFromGlobal(box.mapToGlobal(QPoint(0,0)))
-            self.assertGreaterEqual(top.x(),0);self.assertGreaterEqual(top.y(),0)
-            self.assertLessEqual(top.x()+box.width(),self.pitch.pitch.width())
-            self.assertLessEqual(top.y()+box.height(),self.pitch.pitch.height())
+            top=self.pitch.mapFromGlobal(box.mapToGlobal(QPoint(0,0)))
+            self.assertEqual((top.x(),box.width()),(0,self.pitch.width()))
+            self.assertEqual(top.y()+box.height(),self.pitch.height())
+            bar=self.pitch.mapFromGlobal(self.pitch.key_bar.mapToGlobal(QPoint(0,0)))
+            self.assertLessEqual(top.y(),bar.y())
+            field=self.pitch.pitch.field()
+            field=QRect(self.pitch.pitch.mapTo(self.pitch,field.topLeft()),field.size())
+            self.assertFalse(QRect(top,box.size()).intersects(field))
             self.assertGreaterEqual(box.headline.font().pixelSize(),round(theme.TEXT*theme.STRETCH*self.window.frame.scale)-1)
             self.assertFalse(box.headline.text().strip()=='')
             box.cancel()

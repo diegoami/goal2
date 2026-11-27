@@ -390,8 +390,15 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 ### S17 Pitch
 
 - **Purpose**: watch the match and intervene.
-- **Shows**: the score, the minute, the kind of match and the last two events; the pitch with each player's
-  role code (home red, away white, as the original draws them) and the ball; the commentary beside it.
+- **Shows**: the original's top band: the score box (the home side over *versus* over the away side, each name run out
+  with dashes, the home name light red and the away name white, each side's goals boxed on its row), the frame of the kind
+  of match with the last three events, and the minute in large blocky digits at the right, drawn as line-art; the pitch
+  under it down to the key line, with each player's role code in the side's kit colour (#583) and the ball; the commentary
+  beside it, with what the bench or a key said and your side's colour at its foot. The speed's chevrons are in the key
+  line, as the original prints them (`↔-speed»»»»»»`). [confirmed: t156-045-kick-off.png, t156-066-injury-and-booking.png;
+  derived: t156-045, match-commentary.png and e031-shootout-start.png show the home name light red and the away name white
+  whatever the kits; designed: #862] The clock shows the match minute, as the commentary's stamps do; the original shows
+  extra time's own minutes (15 at the extra-time half time, M244-G4C-07 step 50). [designed: #862]
 - **Actions**: **↑↓** display (marks), **←→** speed, **R** result (quick result; it still stops at half time,
   injuries, extra time and the shoot-out), **Space** pauses and enlarges commentary; Space/Enter resumes [designed: owner #597], **F9** sound, **Esc** / **Enter**
   bench. A replay shows *REPLAY* where *R result* is.
