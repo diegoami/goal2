@@ -28,7 +28,7 @@ PUBLISHABLE = ('complete', 'deferred-rollover')
 _COMPARED = ('call_number', 'status', 'input_hash', 'output_hash', 'rng_words')
 _INSTALLING = object()
 _DIGEST = re.compile(r'[0-9a-f]{64}')
-_MANAGEMENT_ACTIONS = ('select-twenty',)
+_MANAGEMENT_ACTIONS = ('select-twenty', 'player-position')
 
 
 @dataclass(frozen=True)
