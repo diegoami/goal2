@@ -1,5 +1,12 @@
 # goal2 as it is today: the build's own manual
 
+> **This manual shows the older window, `goal2/desktop`, as captured on 2026-11-09** (T204, #685): the
+> window v0.1 ships, over the core route, with the separate pygame match window. It predates the
+> redesigned window's 32 px foundation (T215, #748) and the slices of #862, so it does not show
+> `goal2/ui`. For the redesigned screens, use #862's before-and-after captures, indexed with every
+> other design source in [docs/design/README.md](../design/README.md). [derived: T204 capture method;
+> #862 first review]
+
 [designed: owner, 2026-11-08; T204] The original has a manual with its screens
 ([docs/original-game](../original-game/README.md)). This is the rebuild's half of that pair: what
 goal2 shows **today**, screen by screen, grabbed from the real windows. It exists so that the look

@@ -106,9 +106,18 @@ Unicorn performance optimisation is authorised by a resume.
 
 ## UI evidence
 
+[designed: owner, 2026-11-25, #862; 2026-11-27] The UI is redesigned in `goal2/ui` from the
+original. The sources, which one wins when they disagree, and the issues that carry the design
+are indexed in [docs/design/README.md](docs/design/README.md). The current execution order is
+[#862](https://github.com/diegoami/goal2/issues/862). The documented original is the default for
+layout, information hierarchy, colour roles, key placement and the order of play. A departure
+names its benefit to the player.
+
 Before investigating, describing or changing a game screen, read the relevant chapters of the
 [original illustrated manual](docs/original-game/README.md) and the
-[rebuild’s illustrated manual](docs/current-game/README.md). Use the original
+[rebuild’s illustrated manual](docs/current-game/README.md). The rebuild's manual shows the older
+`goal2/desktop` window that v0.1 ships. For `goal2/ui`, use #862's before-and-after captures (see the
+index). Use the original
 [playthrough](docs/original-game/playthrough.md) and [screen inventory](docs/original-game/screen-inventory.md)
 to find the exact capture and its sequence of actions. Check the game version and screen phase when
 comparing the captures with a live report. Check the [accepted UI design](docs/design/ui-2026-11/README.md)

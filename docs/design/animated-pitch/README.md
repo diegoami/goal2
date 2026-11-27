@@ -1,5 +1,7 @@
 # Original-engine animated pitch sequence
 
+> **History only.** This sequence was for the separate pygame pitch window. S17 in `goal2/ui` replaced it (#526 decision 2, #573). It takes no new work. The current UI design, and which source wins, is indexed in [../README.md](../README.md). [derived: docs/plan.md; #526, #666, #862]
+
 [designed: owner,2026-10-18] The next feature after T80 is a simple animated
 pitch before the management GUI redesign. Qt keeps management; Pygame renders
 numbered team markers and a ball from original-engine observations. Owner model

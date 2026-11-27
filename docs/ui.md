@@ -1,5 +1,8 @@
 # The new window (`goal2/ui`)
 
+The design sources for this window, which one wins, and the issues that carry them are indexed in
+[docs/design/README.md](design/README.md). The redesign's current order is #862.
+
 The rebuilt UI of [the design](design/ui-2026-11/README.md), in PySide6 widgets ([the technology](design/technology-2026-11/README.md),
 the owner's decision D1, #527). It is built beside today's window, `goal2/desktop`, which stays the shipped window
 and the portable build's default until T169 switches over. [designed: owner, 2026-11-03, #526, #527, #536]

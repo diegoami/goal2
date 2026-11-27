@@ -1,5 +1,7 @@
 # Browser UI: historical friendly-loop roadmap
 
+> **History only.** The browser interface was superseded twice: by desktop-ui-roadmap, then by the 2026-11-03 design (#526). It takes no new work. The current UI design, and which source wins, is indexed in [design/README.md](design/README.md). [derived: docs/plan.md; #526, #666, #862]
+
 [designed: owner #148, 2026-10-16] Superseded for new primary UI work by the
 [PySide6 desktop roadmap](desktop-ui-roadmap.md). The text below records the earlier
 browser decision and completed task contracts; it does not dispatch more browser work.

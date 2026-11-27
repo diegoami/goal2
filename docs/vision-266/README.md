@@ -1,5 +1,7 @@
 # The game we want to finish
 
+> **History only.** This vision (#266, 2026-10-20) was for the `goal2/desktop` shell. The 2026-11-03 design (#526) and the 2026-11-08 layout grammar (#666) replaced it as the target. It takes no new work. The current UI design, and which source wins, is indexed in [../design/README.md](../design/README.md). [derived: docs/plan.md; #526, #666, #862]
+
 [designed: owner demo feedback, 2026-10-23; T117/#354] **Current match-screen amendment:** three recent commentary rows belong above the pitch, with the speed shown as chevrons below it, following the original. Screens should look as close to the original as possible. This supersedes the earlier two-line footer/thin-header composition; the pinned illustrations and planning evidence below retain their historical wording.
 
 [designed: #266, for owner selection] **Manage a country, understand your players, live through its matches, and build its football story over successive campaigns.** GOAL2 should be an installable desktop national-team management game for people who enjoy choosing a side and following the consequences. Its central appeal is responsibility: these are your twenty players, your next opponent and your country's future. Complete information and meaningful supported choices matter as much as the pitch.

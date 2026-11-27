@@ -12,6 +12,11 @@ It departs only where a DOS limit forced the original's way or where the owner h
 look is the original's: its own palette and a blocky VGA-style font, on a modern, readable layout. It chooses no toolkit
 and no technology; that is T158. [designed: owner, 2026-11-03, [owner decisions, 2026-11-03, #526](https://github.com/diegoami/goal2/issues/526#issuecomment-6590816260)]
 
+**Since this design.** The owner's layout-grammar decisions of 2026-11-08 (#666) change how these screens are drawn,
+and #862 (2026-11-25) orders the walkthrough-led redesign, which redraws them one slice at a time. The mockups below
+predate both. Every source of the design, and which one wins, is indexed in [docs/design/README.md](../README.md).
+[designed: owner, 2026-11-08, #666; 2026-11-25, #862]
+
 Contents:
 1. [The player's journey](#1-the-players-journey)
 2. [Every screen](#2-every-screen), S01 to S22, each with its mockup
@@ -405,7 +410,10 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 - **Purpose**: the questions and notices that stop the match: a goal (*action replay?*, *save this goal?*,
   its file name), *SUBSTITUTION OPPORTUNITY* when your player is injured, the other side's substitution, the
   penalty shoot-out.
-- **Shows**: a box over the pitch with the event, the score and minute, the question and its answers.
+- **Shows**: the stop on the key line at the foot of the screen, as the original does: a grey label with a magenta
+  *press any key* for a notice, a cyan line with its Y/N answer for a question. The pitch and the top band stay
+  in view. The substitution notice blinks in its colours, so it is as prominent as the owner's playtest asked
+  (#426). [confirmed: T156-R1 steps 67, 175; designed: owner, 2026-11-27, #862]
 - **Actions**: **Y** / **N** for a question; any key for a notice (the substitution opportunity's key opens
   the match menu, as in the original); the file name as in S21.
 - **Replaces**: `t156-067-substitution-opportunity`, `t156-149-opponent-substitution`,
