@@ -26,10 +26,12 @@ class _Reply:
     def put(self,kind,value):
         if kind in ('ready','opened'):
             return
-        self.queue.put((kind,value))
+        # [designed: #896] A terminal reply ends the handle and frees the shared engine before it is queued, so
+        # the worker that reads it already sees `ended` and no caller who reads the result finds the engine claimed.
         if kind in self.TERMINAL:
             self.ended.set()
             self.shared.release(self)
+        self.queue.put((kind,value))
 
 
 class AssistantJobs:
