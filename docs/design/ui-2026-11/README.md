@@ -410,7 +410,10 @@ S15–S16 is the [pre-match action inventory](prematch-actions.md).
 - **Purpose**: the questions and notices that stop the match: a goal (*action replay?*, *save this goal?*,
   its file name), *SUBSTITUTION OPPORTUNITY* when your player is injured, the other side's substitution, the
   penalty shoot-out.
-- **Shows**: a box over the pitch with the event, the score and minute, the question and its answers.
+- **Shows**: the stop on the key line at the foot of the screen, as the original does: a grey label with a magenta
+  *press any key* for a notice, a cyan line with its Y/N answer for a question. The pitch and the top band stay
+  in view. The substitution notice blinks in its colours, so it is as prominent as the owner's playtest asked
+  (#426). [confirmed: T156-R1 steps 67, 175; designed: owner, 2026-11-27, #862]
 - **Actions**: **Y** / **N** for a question; any key for a notice (the substitution opportunity's key opens
   the match menu, as in the original); the file name as in S21.
 - **Replaces**: `t156-067-substitution-opportunity`, `t156-149-opponent-substitution`,

@@ -54,6 +54,13 @@ If a comparison shows no benefit, keep the original pattern. [designed: owner, 2
    - [#777](https://github.com/diegoami/goal2/issues/777): optional 22- and 24-player squads.
    - [#573](https://github.com/diegoami/goal2/issues/573), decision 19: S17's players are
      non-overlapping discs with the role letter inside, and everything else on the pitch mimics the original.
+   - [#862](https://github.com/diegoami/goal2/issues/862), 2026-11-27 (answers to the design audit):
+     (a) S18's stops sit on the key line, as in the original, with the pitch fully visible; the
+     substitution notice keeps its blink and colours, so it stays as prominent as #426 asked.
+     (b) #451's targeted pool suggestion is a post-playable `[designed]` addition to S08, after the
+     full assistant (#594). (c) No screen-reader route and no participant usability thresholds:
+     the original-first rule and the keyboard, mouse and Windows-scaling checks are the bar (#263).
+     (d) vision-266's rulings do not bind beyond what the original shows.
 3. **The accepted design**, [ui-2026-11/README.md](ui-2026-11/README.md): every screen S01–S22
    with its original evidence, the rules for the whole UI (§3) and the mapping of every original
    screen (§5, checked by [check_mapping.py](ui-2026-11/check_mapping.py)). Supporting records:
