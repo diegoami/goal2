@@ -493,3 +493,4 @@ operational status.
 - [T170bb](T170bb.md): open the existing Desk for an explicitly loaded native campaign (#898).
 - [T170bc](T170bc.md): play the next native round from the loaded Desk (#901).
 - [T170bd](T170bd.md): browse the committed native squad and pool from the Desk (#904).
+- [T170be](T170be.md): publish and retain a standalone native squad edit (#908).
