@@ -180,6 +180,9 @@ another session, model or computer.
   List other checkouts with `--checkout DIR` or `GOAL2_CHECKOUTS`.
 - **Checkpoint** before stopping, after a merge, when a long job starts or ends, and when a blocker
   is found. A checkpoint records state, not decisions: those go into the documents (CLAUDE.md rule 8).
+- **Never switch a checkout's branch while a job runs in it.** [designed: main session, 2026-11-27] A gate or test job
+  imports the working tree as it goes, so a switch mid-run tests other code under the expected head's name. Do
+  lookups on another branch with `git show <ref>:<path>` or in a separate clone.
 - **One local gate at a time per computer.** [designed: main session, 2026-11-03] WSL crashed twice on the owner's
   main computer (21 GB) while two implementers each ran `check_premerge.py`. Each gate plays PyPy matches in
   parallel. With several implementers running, the main session runs their gates one after another.
