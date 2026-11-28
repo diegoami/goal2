@@ -725,3 +725,15 @@ on the UI thread and refreshes the committed roster and card. It keeps the
 selected player by word across a reorder while the current filter admits that
 player. Popping the page, replacing the career or closing the window discards
 any unpublished result. The existing reverse-position key remains separate.
+
+## Standalone native squad moves and pool exchanges
+
+[confirmed: F031/F029, T128/T134; designed: T170bi/#918]
+`goal2.game.native_roster_move.move_player(state, first, second)` takes ordered
+player words at a manager boundary. It runs the original two Enter routines
+against a private candidate. A pool-pane Enter applies the guest's finals/tour
+gate in either pick order. A refusal returns a reason and no candidate. On
+success, the producer witnesses the exact swap before sorting and returns the
+guest's final order and hashes. Committed publication uses the `squad-move`
+ledger action. Worker delivery and the on-screen pick sequence have separate
+contracts.
