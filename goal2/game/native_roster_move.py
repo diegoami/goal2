@@ -60,20 +60,27 @@ def _locate(rosters, word):
     return side, rosters[side].index(word)
 
 
-def move_player(state, first, second):
-    """Run both original Enter operations, returning a private candidate or refusal."""
-    players = [first, second]
-    if any(type(word) is not int or not 1 <= word < N_PLAYERS for word in players) or first == second:
+def validate_pair(first, second):
+    if any(type(word) is not int or not 1 <= word < N_PLAYERS for word in (first, second)) or first == second:
         raise ValueError('Select two distinct native player words.')
 
-    tables = engine_tables.load()
-    image = Image.from_state(state, tables)
+
+def move_context(image, players):
     roster = manager_roster(image)
-    source_words = roster.words(lambda at, size: image.memory[at:at + size])
-    squad, pool = source_words
+    squad, pool = roster.words(lambda at, size: image.memory[at:at + size])
     if (any(squad.count(word) + pool.count(word) != 1 for word in players)
             or all(word in pool for word in players)):
         raise ValueError('Select two squad players or one squad and one pool player.')
+    return roster, squad, pool
+
+
+def move_player(state, first, second):
+    """Run both original Enter operations, returning a private candidate or refusal."""
+    validate_pair(first, second)
+    players = [first, second]
+    tables = engine_tables.load()
+    image = Image.from_state(state, tables)
+    roster, _, _ = move_context(image, players)
 
     machine = PortMachine(image.memory, image.load)
     installed = install_menu_ports(machine, keys=_Acknowledgement(machine))

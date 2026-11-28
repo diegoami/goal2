@@ -735,5 +735,15 @@ against a private candidate. A pool-pane Enter applies the guest's finals/tour
 gate in either pick order. A refusal returns a reason and no candidate. On
 success, the producer witnesses the exact swap before sorting and returns the
 guest's final order and hashes. Committed publication uses the `squad-move`
-ledger action. Worker delivery and the on-screen pick sequence have separate
-contracts.
+ledger action.
+
+[designed: T170bj/#921] `EngineProcess.move_roster(state, revision=..., first=...,
+second=...)` sends the ordered player words over the same request slot as R/C.
+A `roster_move` reply binds the request, revision, input hash and ordered pair.
+The success carries state/2 and its output hash. The parent checks the hash
+and the requested membership of the XI, bench and pool while retaining the
+original's final order. The finals and tour refusals send no binary payload or
+output hash. A malformed request returns `roster_move_error`; invalid replies
+end the child. `cancel_roster_move(request)` fences a pending result until a
+terminal reply or worker death. The owner still publishes explicitly. The
+on-screen pick sequence follows separately.
