@@ -469,7 +469,7 @@ operational status.
 - [T240](T240.md): withdraw the 24-player squad; a longer saved squad loads as 22 (owner, 2026-11-27, #777).
 - [T241](T241.md): S19's section headers and Enter on the key line (#862).
 - [T242](T242.md): S11–S13 fixtures, tournament and history; the honest Enter caption and the Ins line (#862).
-- [T243](T243.md): S20–S22 board, save box and help, and the help's title (#862).
+- [T243](T243.md): S20–S22 board, save box and help at the page's right edge, and the help's title (#862).
 
 - [T170ai](T170ai.md): read-only native post-match review and explicit Exit (#840).
 
