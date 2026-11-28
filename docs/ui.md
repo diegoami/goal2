@@ -108,7 +108,10 @@ framework; the new window does not use it.
 A screen subclasses `Screen` and fills `self.body_layout`. The base class gives it:
 
 - **the title bar**: the GOAL2 corner and the screen's `title`; with `pre_game = True` (S01–S04) the corner's note
-  "the 1993 game, rebuilt" and the name in normal text, as the mockups draw them;
+  "the 1993 game, rebuilt" and the name in normal text, as the mockups draw them. [designed: owner, 2026-11-28,
+  #673/T244–T245] S02 and the desk hide it: the original has no title bar, and the corner block
+  (`goal2/ui/corner_block.py`) and the competition's banner take its place. The other screens keep it until their
+  #673 task;
 - **the bottom bar**: every key the screen binds, with `bind(keys, text, handler)`, in the key-hint colour; at its
   right end the Enter hint, drawn as the original's highlight bar, saying what Enter does now: the highlighted
   option's `enter` text, or the screen's `set_enter(text, handler)`;
