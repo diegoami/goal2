@@ -227,7 +227,9 @@ changing its 14-character limit or the game rules.
 - **Shows**: the manager (name, rating); the team and its rankings; the next opponents, their rankings and the
   kind of match (friendly away, qualifying home…); the managers; the six options; the twenty players with
   role codes, the eleven above the bench. Every action is on this page: nothing that the original's hub offers
-  is behind another screen.
+  is behind another screen. [designed: owner, 2026-11-28, #673/T245; confirmed: t156-013-hub.png] The original's
+  corner block is at the page's top left and the competition's banner at the top right above the squad column;
+  the desk has no title bar.
 - **Actions**: **↑↓** option, **Enter** open it; **Space** select squad; **T** team tactics; **F1** help,
   **F3** load a saved goal, **F4** load a saved summary, **F7** save, **F10** quit; *next player* with more
   than one manager.

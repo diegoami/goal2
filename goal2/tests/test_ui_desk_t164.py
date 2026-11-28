@@ -36,6 +36,7 @@ from goal2.ui import s03_new_game, s04_country, saves  # noqa: E402
 from goal2.ui.s01_import import ImportScreen  # noqa: E402
 from goal2.ui.s02_start import StartScreen  # noqa: E402
 from goal2.ui.s04_country import CountryScreen  # noqa: E402
+from goal2.ui.corner_block import CornerBlock  # noqa: E402
 from goal2.ui.s06_desk import DeskScreen, ReimportScreen  # noqa: E402
 from goal2.ui.s07_team_info import CountryTacticsScreen, TeamInfoScreen, TeamPlayersScreen  # noqa: E402
 from goal2.ui.s08_squad import SquadScreen  # noqa: E402
@@ -262,6 +263,15 @@ class Landing(App):
         self.assertEqual([t[0] for t in desk.strip.shown_texts()], [r["role"] for r in rows],
                          "the twenty's role codes, the eleven above the bench")
         self.assertTrue(desk.strip.gap.isVisibleTo(desk.strip))
+        # [designed: owner, 2026-11-28, #673; T245; confirmed: t156-013-hub.png] the corner block at the top left,
+        # no title bar, and the competition's banner at the top right above the squad strip.
+        corner = desk.findChild(CornerBlock)
+        self.assertIs(desk.corner, corner)
+        self.assertEqual((corner.x(), corner.y()), (0, 0), "the corner block at the page's top left")
+        self.assertFalse(desk.name_label.isVisibleTo(desk), "no title bar")
+        self.assertEqual(desk.banner.y(), 0, "the banner at the page's top")
+        self.assertGreater(desk.banner.x(), corner.x() + corner.width(), "the banner right of the corner")
+        self.assertGreaterEqual(desk.strip.y(), desk.banner.y() + desk.banner.height(), "the strip below the banner")
         # [T178, #563] the competition's name, as the original's hub: European Championship, QUALIFYING.
         self.assertIn("European Championship", desk.banner.text())
         self.assertIn("QUALIFYING", desk.banner.text())

@@ -66,7 +66,7 @@ from goal2.ui.squad_card import colour, full_name, squad_rows
 
 # [designed: T211; docs/design/ui-2026-11/proposal/README.md] The desk's cells: 90 columns and the 25 rows between the title row and the
 # two key rows; the left column 30 wide, the middle 34, the strip 24, an empty column between each.
-BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 3
+BODY_COLS, BODY_ROWS = theme.COLS, theme.ROWS - 2   # no title bar: #673 the corner block replaces it
 LEFT_COLS, LABEL_COLS = 30, 7  # [designed: T215] Americas and Oceania need seven cells
 MIDDLE_AT, MIDDLE_COLS = LEFT_COLS + 1, 34
 STRIP_AT = MIDDLE_AT + MIDDLE_COLS + 1
@@ -139,19 +139,31 @@ class DeskScreen(Screen):
 
     # Building.
     def _banner(self):
-        """The competition's banner at the title bar's right end, as the original's and the mockup's."""
+        """The competition's banner; placed at the page's top right in `_build` (#673: the title bar is gone)."""
         self.banner = CellLabel("", "who")
         self.banner.setTextFormat(Qt.TextFormat.RichText)
-        self.name_label.parentWidget().layout().addWidget(self.banner)
+        self.banner.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
+
+    def _title_bar(self):
+        """[designed: owner, 2026-11-28, #673] The original has no title bar: the corner block and banner carry it."""
+        bar = super()._title_bar()
+        bar.hide()
+        return bar
 
     def _build(self):
         """[designed: owner, 2026-11-08, #667; T211; docs/design/ui-2026-11/proposal/README.md, s06-hub] The desk on the 90 x 25
         cells between the title row and the key rows: three columns, one empty cell apart. At the left the frames of the manager, the
         team, the next opponent and the managers, and under them the screen's message; in the middle the six options as
         boxes of two rows, as the original's, and the goal2 additions as boxes under their tag; at the right the twenty."""
+        from goal2.ui.corner_block import CornerBlock
         body = Cells(BODY_COLS, BODY_ROWS, "deskBody")
         self.body_layout.addWidget(body, 1)
         self.area = body
+        # [designed: owner, 2026-11-28, #673; confirmed: t156-013-hub.png] the corner block at the top left and the
+        # competition's banner at the top right, the panels started below and beside them.
+        self.corner = CornerBlock()
+        body.put(self.corner, 0, 0, CornerBlock.COLS, CornerBlock.ROWS)
+        body.put(self.banner, 50, 0, 39, 1)
         # The left column.
         manager, inner = panel("manager", LEFT_COLS, 2)
         rows, self.manager = key_values((("name", "name"), ("rating", "rating")), LEFT_COLS, LABEL_COLS)
@@ -160,23 +172,23 @@ class DeskScreen(Screen):
         self.name_field = CellLineField(MANAGER_MAX, count=True)
         self.name_field.hide()
         inner.put(self.name_field, LABEL_COLS + 1, 0, LEFT_COLS - LABEL_COLS - 1)
-        body.put(manager, 0, 0, LEFT_COLS, 3)
+        body.put(manager, 0, 5, LEFT_COLS, 3)
         team, inner = panel("team", LEFT_COLS, 3)
         self.team_name = inner.text("", "h1", 0, 0, LEFT_COLS)
         rows, self.team_ranks = key_values((("world", "world"), ("continent", "continent")), LEFT_COLS, LABEL_COLS)
         inner.put(rows, 0, 1, LEFT_COLS, 2)
-        body.put(team, 0, 4, LEFT_COLS, 4)
+        body.put(team, 0, 9, LEFT_COLS, 4)
         opponents, inner = panel("next opponents", LEFT_COLS, 4)
         self.opponent_name = inner.text("", "h1", 0, 0, LEFT_COLS)
         colour(self.opponent_name, theme.VALUE)
         rows, self.opponent_ranks = key_values((("world", "world"), ("continent", "continent")), LEFT_COLS, LABEL_COLS)
         inner.put(rows, 0, 1, LEFT_COLS, 2)
         self.opponent_kind = inner.text("", "sub", 1, 3, LEFT_COLS - 2)
-        body.put(opponents, 0, 9, LEFT_COLS, 5)
+        body.put(opponents, 0, 14, LEFT_COLS, 5)
         managers, inner = panel("managers", LEFT_COLS, 2)
         self.managers = ManagerSummary()
         inner.put(self.managers, 0, 0, LEFT_COLS, 2)
-        body.put(managers, 0, 15, LEFT_COLS, 3)
+        body.put(managers, 0, 20, LEFT_COLS, 3)
         # The six options, in the original's order. [confirmed: t156-013-hub.png]
         self.add_option("team info", self.team_info, enter="Team info")
         self.add_option("fixture list", self.fixture_list, enter="Fixture list")
@@ -189,27 +201,27 @@ class DeskScreen(Screen):
                 binding.shown = False
         self._refresh_bar()
         for index, option in enumerate(self.options):
-            body.put(option, MIDDLE_AT, 3 * index, MIDDLE_COLS, 2)   # a row between boxes, as the original's
+            body.put(option, MIDDLE_AT, 1 + 3 * index, MIDDLE_COLS, 2)   # a row between boxes, as the original's
         # [designed: #862; t156-013-hub.png] Put the fixture beside the
         # decision to play it, with room for the country and venue on separate rows.
-        self.play_opponent = body.text("", "value", MIDDLE_AT + 1, 14, MIDDLE_COLS - 2)
+        self.play_opponent = body.text("", "value", MIDDLE_AT + 1, 15, MIDDLE_COLS - 2)
         colour(self.play_opponent, theme.VALUE)
-        self.play_kind = body.text("", "sub", MIDDLE_AT + 1, 15, MIDDLE_COLS - 2)
+        self.play_kind = body.text("", "sub", MIDDLE_AT + 1, 16, MIDDLE_COLS - 2)
         play = self.add_option("play next game", self.play_next_game, enter="Play next game")
-        body.put(play, MIDDLE_AT, 16, MIDDLE_COLS, 2)
+        body.put(play, MIDDLE_AT, 17, MIDDLE_COLS, 2)
         self.note = CellPara("", "sub")
         colour(self.note, theme.VALUE)
-        body.put(self.note, 0, 19, LEFT_COLS, 6)
-        body.text("GOAL2 ADDITION", "tagNew", MIDDLE_AT, 18)
+        body.put(self.note, 0, 23, LEFT_COLS, 3)
+        body.text("GOAL2 ADDITION", "tagNew", MIDDLE_AT, 19)
         # [designed: owner #598] the extra actions keep their full size, boxes as the six
         for index, (text, handler, enter) in enumerate((("manager's name", self.rename, "New manager's name"),
                                                         ("new career", self.new_career, "New career"),
                                                         ("re-import data", self.reimport, "Re-import data"))):
-            body.put(self.add_option(text, handler, enter=enter), MIDDLE_AT, 19 + 2 * index, MIDDLE_COLS, 2)
+            body.put(self.add_option(text, handler, enter=enter), MIDDLE_AT, 20 + 2 * index, MIDDLE_COLS, 2)
         self.strip = GridStrip()
         for row in self.strip.rows:
             row.setCursor(Qt.CursorShape.ArrowCursor)   # the desk's strip is read only, as the original's
-        body.put(self.strip, STRIP_AT, 0, GridStrip.COLS, GridStrip.PAGE + 2)
+        body.put(self.strip, STRIP_AT, 2, GridStrip.COLS, GridStrip.PAGE + 2)
 
     # What is shown.
     def refresh(self):
