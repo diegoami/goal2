@@ -260,14 +260,16 @@ stage the route has not reached says so instead of showing rows.
   Championship* from the adjectives at `DS:690A` [derived], *World Cup* from stage 5; QUALIFYING or FINALS by
   stage. Stage 6 (the play-offs) is in no capture and keeps the route's words.
 - **S11** (on the 16 × 32 grid, T211b: the list in a frame across the 90 columns, its heading on the rule, the column names in brown over sixteen rows, the original's own number) lists the round, each fixture's kind (*friendly*, *qualifying*), ✓ on your own match and what happens at
-  kick-off (*your match*, *auto result*); **↑↓** scroll, **Esc** back. Enter on your own match says it is always
-  watched (owner decision 1). The original's ✓ toggle on another country's match is not built: the engine plays only
+  kick-off (*your match*, *auto result*); **↑↓** scroll, **Esc** back. Enter on your own match names the desk's
+  *play next game* (the route starts your match there) and says it is always watched (owner decision 1). The
+  original's ✓ toggle on another country's match is not built: the engine plays only
   the managed country's match watched (`prepare_watched` refuses another fixture, and the world refuses a watched
   silent row), so Enter there says it comes later. *Cancel or rearrange* your own friendly has no call on the route
   and says so too. The two sides have no *home* and *away* headings yet; the model knows the home side since T167 (`DesktopModel.home`, #562).
 - **S12**: the displays (Qualifying, Finals, Championship) and the continents (Europe, Africa, Americas, Asia) as
   tabs, a click on a tab as its key; the group's table P W D L F A T beside its twelve matches. **↑↓** group,
-  **Space** continent, **←→** display, **Ins** the Championship results (not reached), **Esc** the desk. It opens on
+  **Space** continent, **←→** display, **Ins** the Championship results on the Finals display only, where the original
+  prints the line (not reached), **Esc** the desk. It opens on
   your group. Finals and Championship read *not reached yet* until T170.
 - **S13**: the design's five boxes. The results box holds one row per season and competition (2027/28 EC: W D L F A
   of the competition's matches, the best place) and the season's results under it, friendlies too. Statistics,

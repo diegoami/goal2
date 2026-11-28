@@ -9,8 +9,10 @@ continent shown: "American Championship"), t156-229-tournament-finals.png and t1
 
 - **↑↓** another group of the continent, **Space** the next continent, **←→** the display, **Esc** the desk; a click
   on a tab chooses it, as its key does. Read only.
-- **Ins** the Championship results: the original prints them from a World Cup bracket, which this route does not
-  reach, so Ins says so [confirmed: docs/original-game/coverage.md, T156-R1 step 231; designed: T178].
+- **Ins** the Championship results, on the Finals display only: the original prints *Hit Ins for Championship
+  results* from a World Cup bracket (M244-G4C-05 step 9) and prints no such line on the opening stage's displays
+  (t156-229, t156-230) [confirmed: docs/original-game/coverage.md, T156-R1 step 231]. This route does not reach that
+  bracket, so Ins says so [designed: T178, T242].
 - It opens on the managed country's continent and group, on Qualifying.
 
 Every number is the route's (`DesktopModel.tournament`: the world state's groups, `standings.group_table`); the
@@ -92,6 +94,11 @@ class TournamentScreen(Screen):
         self.bind((Qt.Key.Key_Right,), "", lambda: self.move_display(1), captions=("→",), shown=False)
         self.bind((), "display", None, captions=("←", "→"))
         self.bind((Qt.Key.Key_Insert,), "Championship results", self.championship_results)
+        # [confirmed: t156-229-tournament-finals.png, t156-230-tournament-championship.png; M244-G4C-05 step 9,
+        # m244-world-finals-bracket.png] The opening stage's Qualifying and Championship displays print no "Hit Ins
+        # for Championship results" line; the World Cup bracket's Finals display does. The key is shown there only.
+        self.ins_key = self.bindings[-1]
+        self.ins_key.shown = False
         last_on_the_bar(self, self.escape_text)
         self._build()
         self._show()
@@ -243,6 +250,8 @@ class TournamentScreen(Screen):
 
     def choose_display(self, i):
         self.display = i
+        self.ins_key.shown = i == DISPLAYS.index("Finals")   # [confirmed: the original prints the Ins line there]
+        self._refresh_bar()
         self.message = ""
         self._show()
 
