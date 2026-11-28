@@ -694,3 +694,25 @@ result/save profiles and twenty-player guards are unchanged. Empty larger
 capacities still produce the normal result shape. No worker, publication or
 save/UI caller uses this validator yet; those boundaries require their own
 strict extended profiles before activation.
+
+## Standalone native player positions
+
+[designed: T170bg/#913] `EngineProcess.edit_position(state, revision=..., player=...,
+key=...)` sends one detached native state/2 with its canonical hash. The
+`position` operation requires an idle pipe with no held season. The worker
+runs the T170bf standalone producer and retains no candidate or input for replay.
+
+The success reply `position` echoes the request number, revision, input hash,
+player word and R/C key, and returns the output hash, current and club position
+codes, and a state/2 payload. The parent checks the binding, hash and selected
+player's saved codes against the expected R or C result. A repairable failure
+replies `position_error` with the request number and diagnostic. Invalid or
+unbound replies terminate the pipe. The caller can explicitly publish a verified
+result with `SeasonCampaign.publish_management` for the same committed revision
+and hash. Transport delivery alone grants no publication.
+
+`cancel_position(request)` fences a pending result on the parent side. The
+worker can finish the bounded edit, and the pipe remains occupied until the
+parent converts its terminal reply to `position_cancelled` or reports death.
+The cancellation deadline ends an unresponsive child. A caller abandoning an
+already delivered result owns that final publication decision.

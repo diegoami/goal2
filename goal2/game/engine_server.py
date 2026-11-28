@@ -265,6 +265,8 @@ class Server:
                     self._season(header, payload)
                 elif op == "assistant":
                     self._assistant(header, payload)
+                elif op == "position":
+                    self._position(header, payload)
                 elif op == "open":
                     self._open(payload)
                     self.send("opened")
@@ -336,6 +338,29 @@ class Server:
             raise
         except Exception as exc:
             self.send('assistant_error', {'request': number, 'error': f'{type(exc).__name__}: {exc}'})
+
+    def _position(self, header, payload):
+        """[designed: T170bg] Compute a standalone candidate without retaining its state."""
+        from goal2.game.native_position import edit_position
+        from goal2.game.season import canonical_hash
+
+        number = header.get('request')
+        try:
+            fields = ('request', 'revision', 'input_hash', 'player', 'key')
+            if (set(header) != {*fields, 'op', 'size'} or type(number) is not int or number < 1
+                    or type(header['revision']) is not int or header['revision'] < 0):
+                raise ValueError('invalid position request')
+            if self.season.session is not None:
+                raise ValueError('discard the held season before editing a standalone position')
+            state = json.loads(payload.decode('utf8'))
+            if header['input_hash'] != canonical_hash(state):
+                raise ValueError('position input hash mismatch')
+            result = edit_position(state, header['player'], header['key'])
+            data = json.dumps(result.pop('state'), allow_nan=False, separators=(',', ':')).encode('utf8')
+            self.send('position', dict(result, request=number, revision=header['revision'],
+                                       key=header['key']), data)
+        except Exception as exc:
+            self.send('position_error', {'request': number, 'error': f'{type(exc).__name__}: {exc}'})
 
     def _open(self, payload):
         from goal2.game.session_save import decode

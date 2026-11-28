@@ -37,6 +37,7 @@ CANCEL_DEADLINE = 10.0
 # [designed: T159] How long close() waits for the engine to leave after `quit`.
 QUIT_WAIT = 2.0
 STDERR_TAIL = 4096
+POSITION_REPLIES = ('position', 'position_error')
 
 
 class _Life:
@@ -77,6 +78,9 @@ class EngineProcess:
         self._assistant_request = None
         self._assistant_requests = 0
         self._assistant_cancelled = False
+        self._position_request = None
+        self._position_requests = 0
+        self._position_cancel = None
 
     # --- state ---------------------------------------------------------------------------------------------------
 
@@ -105,7 +109,94 @@ class EngineProcess:
     @property
     def busy(self) -> bool:
         return (self._match is not None or self._completion is not None
-                or self._season_request is not None or self._assistant_request is not None)
+                or self._season_request is not None or self._assistant_request is not None
+                or self._position_request is not None)
+
+    def edit_position(self, state, *, revision, player, key):
+        """[designed: T170bg] Send one detached standalone R/C candidate request."""
+        import json
+        from goal2.game.native_position import position_codes, position_goal, validate_selection
+        from goal2.game.season import canonical_hash
+
+        validate_selection(player, key)
+        if type(revision) is not int or revision < 0:
+            raise ValueError('invalid campaign revision for position request')
+        with self._lock:
+            self._usable()
+            if self.busy:
+                raise ValueError('the engine has a pending request')
+            if self._season_active:
+                raise ValueError('discard the held season before editing a standalone position')
+            position, club = position_codes(state, player)
+            payload = json.dumps(state, allow_nan=False, separators=(',', ':')).encode('utf8')
+            number = self._position_requests + 1
+            binding = dict(request=number, revision=revision, input_hash=canonical_hash(state),
+                           player=player, key=key)
+            if self._life is None:
+                self._start()
+            self._send(dict(op='position', **binding), payload)
+            self._position_request = binding, (position_goal(position, club, key), club)
+            self._position_requests = number
+            return number
+
+    def cancel_position(self, number):
+        """Fence this candidate and keep the pipe occupied until the reply or death."""
+        with self._lock:
+            if (type(number) is not int or self._position_request is None
+                    or number != self._position_request[0]['request']):
+                return False
+            if self._position_cancel is None:
+                timer = threading.Timer(self.cancel_deadline, self._position_overdue,
+                                        args=(self._life, number))
+                timer.daemon = True
+                self._position_cancel = timer
+                timer.start()
+            return True
+
+    def _position_overdue(self, life, number):
+        with self._lock:
+            if (self._life is life and self._position_request is not None
+                    and self._position_request[0]['request'] == number):
+                life.process.kill()
+
+    def _clear_position(self):
+        self._position_request = None
+        timer, self._position_cancel = self._position_cancel, None
+        if timer is not None:
+            timer.cancel()
+
+    def _decode_position(self, kind, value, payload):
+        import json
+        import zlib
+        from goal2.game.native_position import position_codes
+        from goal2.game.season import canonical_hash
+
+        pending = self._position_request
+        if (pending is None or not isinstance(value, dict) or type(value.get('request')) is not int
+                or value['request'] != pending[0]['request']):
+            raise ProtocolError('stale or unexpected position reply')
+        binding, expected = pending
+        if kind == 'position_error':
+            if payload or set(value) != {'request', 'error'} or not isinstance(value['error'], str):
+                raise ProtocolError('invalid position error reply')
+        else:
+            if (set(value) != {*binding, 'output_hash', 'position', 'club_position'}
+                    or any(type(value[k]) is not type(v) or value[k] != v for k, v in binding.items())
+                    or type(value['position']) is not int or type(value['club_position']) is not int
+                    or (value['position'], value['club_position']) != expected):
+                raise ProtocolError('invalid position result binding or position codes')
+            try:
+                state = json.loads(payload.decode('utf8'))
+                if (canonical_hash(state) != value['output_hash']
+                        or position_codes(state, binding['player']) != expected):
+                    raise ValueError('output hash or position codes differ')
+            except (ValueError, TypeError, KeyError, IndexError, OverflowError, zlib.error) as exc:
+                raise ProtocolError('invalid position state payload') from exc
+            value['state'] = state
+        if self._position_cancel is not None:
+            kind, value = 'position_cancelled', {'request': binding['request']}
+        self._clear_position()
+        return kind, value
 
     def assistant(self, state, *, extra_places=0):
         """[designed: T183c] Ask on a private state/2; replies are request/hash bound."""
@@ -434,6 +525,7 @@ class EngineProcess:
             self._reset_season_pitch()
             self._assistant_request = None
             self._assistant_cancelled = False
+            self._clear_position()
             self._match = None
             self._take_completion()
             self.ready = None
@@ -451,13 +543,17 @@ class EngineProcess:
         value = _restore_json_value(header.get("value"), "engine reply")
         with self._lock:
             if self._life is not life:
-                if kind in ('assistant', 'assistant_error', 'assistant_cancelled'):
+                if kind in ('assistant', 'assistant_error', 'assistant_cancelled', *POSITION_REPLIES):
                     return None
                 return kind, value
             if kind == "ready":
                 if not isinstance(value, dict):
                     raise ProtocolError("invalid ready reply")
                 self.ready = value
+            elif kind in POSITION_REPLIES:
+                if life.quiet:
+                    return None
+                kind, value = self._decode_position(kind, value, payload)
             elif kind in ('assistant', 'assistant_error', 'assistant_cancelled'):
                 import json
                 from goal2.game.season import canonical_hash
@@ -666,6 +762,8 @@ class EngineProcess:
                 self._match = None
                 self._selected_bench = None
             elif kind == "error":
+                if self._position_request is not None:
+                    raise ProtocolError('unbound error during position request')
                 if self._assistant_request is not None:
                     raise ProtocolError('unbound error during assistant request')
                 if not isinstance(value, str):
