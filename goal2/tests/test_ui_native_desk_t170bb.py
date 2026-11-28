@@ -174,11 +174,10 @@ class Journey(unittest.TestCase):
             self.assertIsNone(page.current())
             self.key(Qt.Key.Key_Left)
             self.assertEqual(page.current(), roster[1]['player'])
-            for key in (Qt.Key.Key_Return, Qt.Key.Key_A, Qt.Key.Key_Insert, Qt.Key.Key_R,
-                        Qt.Key.Key_C, Qt.Key.Key_T, Qt.Key.Key_F2):
+            for key in (Qt.Key.Key_Return, Qt.Key.Key_A, Qt.Key.Key_Insert, Qt.Key.Key_T, Qt.Key.Key_F2):
                 self.key(key)
                 self.assertIs(self.window.current(), page)
-                self.assertIn('Edits are unavailable', page.note.text())
+                self.assertIn('unavailable', page.note.text())
                 self.assertIsNone(page.picked)
             self.key(Qt.Key.Key_Escape)
             self.assertIs(self.window.current(), desk)
@@ -187,6 +186,154 @@ class Journey(unittest.TestCase):
             self.key(Qt.Key.Key_Escape)
             self.assertIs(self.window.current(), desk)
         self.assertEqual(desk.model.campaign.committed_snapshot(), committed)
+
+    def wait_for(self, predicate):
+        from time import monotonic
+        deadline = monotonic() + 30
+        while not predicate() and monotonic() < deadline:
+            QTest.qWait(5)
+        self.assertTrue(predicate())
+
+    def open_position_screen(self):
+        saves.write(self.owner, self.target.saves, 'Native positions')
+        self.window.start_native()
+        self.key(Qt.Key.Key_Return)
+        desk = self.window.current()
+        self.key(Qt.Key.Key_Space)
+        return desk, self.window.current()
+
+    def test_native_squad_and_pool_positions_commit_from_keyboard_and_mouse(self):
+        from goal2.core.views import pool
+        from goal2.tests.pypy_engine import call
+        from goal2.ui.screen import Clickable
+
+        desk, page = self.open_position_screen()
+        campaign = desk.model.campaign
+        for key in (Qt.Key.Key_R, Qt.Key.Key_C):
+            self.assertTrue(any(binding.shown and key in binding.keys for binding in page.bindings))
+        self.key(Qt.Key.Key_Down)
+        for side in ('squad', 'pool'):
+            if side == 'pool':
+                self.key(Qt.Key.Key_Right)
+                # Choose a player for whom the native R edit visibly reorders the pool.
+                initial = [row['id'] for row in page.rows()]
+                for index, word in enumerate(initial):
+                    candidate = call('goal2.tests.test_native_position_t170bf:produce', campaign.state, word, 'R')
+                    edited = Image.from_state(candidate['state'], engine_tables.load())
+                    after = [row['player'] for row in pool(edited)['rows'] if row['player']]
+                    if after.index(word) != index:
+                        page.move(index)
+                        break
+                else:
+                    self.fail('no actual reorder from the original pool fixture')
+            word = page.current()
+            for letter in ('R', 'C'):
+                before = campaign.revision
+                result = call('goal2.tests.test_native_position_t170bf:produce', campaign.state, word, letter)
+                if letter == 'R':
+                    self.key(Qt.Key.Key_R)
+                else:
+                    item = next(widget for widget in page.key_bar.findChildren(Clickable, 'keyItem')
+                                if Qt.Key.Key_C in widget.binding.keys)
+                    self.click(item)
+                self.wait_for(lambda: page.position_edit is None)
+                self.assertEqual(campaign.state, result['state'])
+                self.assertEqual(campaign.revision, before + 1)
+                self.assertEqual(page.current(), word)
+                self.assertEqual(page.model.state.players[word][6], result['position'])
+                self.assertEqual(page.card.card['role'], page.current_row()['role'])
+                if side == 'pool' and letter == 'R':
+                    self.assertNotEqual(page.cursor['pool'], index)
+        self.key(Qt.Key.Key_Escape)
+        self.assertIs(self.window.current(), desk)
+        self.key(Qt.Key.Key_F7)
+        self.key(Qt.Key.Key_Return)
+        restored = saves.load(desk.model.save_path, self.target.goal_dat, native=True)
+        self.assertEqual(restored.campaign.committed_snapshot(), campaign.committed_snapshot())
+
+    def test_native_position_discards_stale_candidate_and_reloads_current_roster(self):
+        from goal2.game.native_position_job import NativePositionJob
+        from goal2.tests.pypy_engine import call
+
+        desk, page = self.open_position_screen()
+        campaign = desk.model.campaign
+        other = page.rows()[1]['id']
+        rival = call('goal2.tests.test_native_position_t170bf:produce', campaign.state, other, 'R')
+        with patch.object(NativePositionJob, 'poll', return_value=None):
+            self.key(Qt.Key.Key_R)
+            job = page.position_edit
+            self.assertIsNotNone(job)
+            self.key(Qt.Key.Key_C)
+            self.assertIs(page.position_edit, job)
+            self.wait_for(lambda: not job.results.empty())
+            self.assertEqual(campaign.revision, 0)
+            campaign.publish_management(rival['state'], action='player-position', revision=0,
+                                        input_hash=rival['input_hash'], output_hash=rival['output_hash'])
+        self.wait_for(lambda: page.position_edit is None)
+        self.assertIn('stale', page.note.text())
+        self.assertEqual(campaign.revision, 1)
+        self.assertEqual(campaign.state, rival['state'])
+        self.assertEqual(page.model.state.players[other][6], rival['position'])
+
+    def test_departure_fences_late_worker_delivery_and_keeps_shared_lease(self):
+        from threading import Event
+        from goal2.game.native_position_job import NativePositionJob
+
+        for departure in ('escape', 'replace', 'close'):
+            with self.subTest(departure=departure):
+                desk, page = self.open_position_screen()
+                campaign = desk.model.campaign
+                before = campaign.committed_snapshot()
+                waiting, release = Event(), Event()
+                actual_put = NativePositionJob.put
+
+                def defer_position(job, kind, value):
+                    if kind == 'position':
+                        waiting.set()
+                        release.wait(30)
+                    actual_put(job, kind, value)
+
+                with patch.object(NativePositionJob, 'put', defer_position):
+                    try:
+                        self.key(Qt.Key.Key_R)
+                        job = page.position_edit
+                        self.assertIsNotNone(job)
+                        self.wait_for(waiting.is_set)
+                        self.assertIs(job.shared.match, job)
+                        if departure == 'escape':
+                            self.key(Qt.Key.Key_Escape)
+                            self.assertIs(self.window.current(), desk)
+                            desk.play_next_game()
+                            self.assertIs(self.window.current(), desk)
+                            self.assertIn('already running', desk.note.text())
+                        elif departure == 'replace':
+                            self.window.open_career(fixture_owner(reference_raw()))
+                        else:
+                            self.window.leave()
+                            self.assertFalse(self.window.isVisible())
+                        self.assertTrue(job.cancelled.is_set())
+                        self.assertIs(job.shared.match, job)
+                    finally:
+                        release.set()
+                    self.wait_for(lambda: not job.results.empty())
+                    self.assertEqual(job.poll(), ('position_cancelled', None))
+                self.assertIsNone(job.shared.match)
+                self.assertEqual(campaign.committed_snapshot(), before)
+
+    def test_native_position_refusal_keeps_the_committed_card(self):
+        image = Image.from_bytes(reference_raw())
+        memory = Memory(image)
+        image.memory[image.far(GAME_PTR) + 0x47 + memory.game(1)] = 1
+        campaign = SeasonCampaign(image.state(engine_tables.load()))
+        desk = self.window.open_career(NativeSaveOwner(campaign))
+        page = desk.select_squad()
+        card = page.card.card
+        before = campaign.committed_snapshot()
+        self.key(Qt.Key.Key_R)
+        self.wait_for(lambda: page.position_edit is None)
+        self.assertIn('active native manager', page.note.text())
+        self.assertEqual(page.card.card, card)
+        self.assertEqual(campaign.committed_snapshot(), before)
 
     def test_committed_refresh_clears_previous_opponent_and_quit_can_save_the_new_revision(self):
         saves.write(self.owner, self.target.saves, 'Sweden next')

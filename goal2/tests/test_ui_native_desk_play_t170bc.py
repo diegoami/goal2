@@ -78,6 +78,7 @@ class Play(unittest.TestCase):
             self.key(Qt.Key.Key_Return)
         self.assertIsInstance(self.window.current(), NativeMatchOpening)
         self.assertIsNotNone(desk.native_round)
+        self.assertIs(desk.native_round.native.owner, desk.model)
         return desk.native_round
 
     def acknowledge(self, desk, day, revision):

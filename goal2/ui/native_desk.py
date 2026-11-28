@@ -88,7 +88,8 @@ class NativeDeskScreen(DeskScreen):
             identity = _NativeRoundIdentity(load_goaldat(self.window_.target.goal_dat.read_bytes()), view)
             self.native_round = NativeMatchDay(
                 self.window_, identity, self.model.campaign.state,
-                campaign=self.model.campaign, show_round_results=True, show_bulletins=True,
+                campaign=self.model.campaign, engine_owner=self.model,
+                show_round_results=True, show_bulletins=True,
                 on_boundary=self._round_published, on_failure=self._return_from_round,
                 on_goal=self._goal, on_tournament=self._round_tournament, on_stats=self._round_stats,
             )
@@ -132,7 +133,7 @@ class NativeDeskScreen(DeskScreen):
             return None
         from goal2.ui.native_squad import NativeSquadScreen
         try:
-            screen = NativeSquadScreen(self.window_, self.model.campaign)
+            screen = NativeSquadScreen(self.window_, self.model)
         except (IndexError, KeyError, TypeError, ValueError) as exc:
             return self.say(f'Cannot read the native squad: {exc}')
         return self.window_.push(screen)

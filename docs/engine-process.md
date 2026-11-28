@@ -716,3 +716,12 @@ worker can finish the bounded edit, and the pipe remains occupied until the
 parent converts its terminal reply to `position_cancelled` or reports death.
 The cancellation deadline ends an unresponsive child. A caller abandoning an
 already delivered result owns that final publication decision.
+
+[designed: T170bh/#915] Native Desk Select Squad uses that same candidate for
+R and C on the existing squad and pool card. The position job claims the native
+save owner's engine lease, which Desk Play also uses. The job submits off the
+UI thread and frees the lease after terminal delivery. The visible page commits
+on the UI thread and refreshes the committed roster and card. It keeps the
+selected player by word across a reorder while the current filter admits that
+player. Popping the page, replacing the career or closing the window discards
+any unpublished result. The existing reverse-position key remains separate.
