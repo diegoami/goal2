@@ -77,7 +77,7 @@ progress stays unsaved. `model.save_name` is the name a career was last saved or
 | `goal2/ui/window.py` | `Window`: one main window holding one screen at a time on a stack. |
 | `goal2/ui/screen.py` | `Screen`, the base class of every screen. |
 | `goal2/ui/s01_import.py` | S01 Import your data, over `data_setup`'s check and copy. |
-| `goal2/ui/s22_help.py` | S22 Help: the imported GOAL.HLP, over the screen F1 was pressed on, in a box that fills most of the screen (owner decision 13). |
+| `goal2/ui/s22_help.py` | S22 Help: the imported GOAL.HLP, over the screen F1 was pressed on, in a box that fills most of the screen (owner decision 13), titled after that screen (*manager's desk · help*) [designed: T243]. |
 | `goal2/ui/home.py` | The placeholder screen with no career open. |
 | `goal2/ui/s02_start.py` | S02 Start: Continue, the named saves, Y load, N new game, a failed load's Y/N; F the standalone friendly (T177). |
 | `goal2/ui/friendly.py` | The standalone friendly (T177): two countries chosen, played on S17, back to S02; nothing saved. |

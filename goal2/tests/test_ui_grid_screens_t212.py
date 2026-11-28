@@ -905,6 +905,14 @@ class Bench22OnTheGrid(Base):
                                      else "Substitutions only at a stoppage")
         self.mode = "now"
 
+    def test_help_opened_on_the_bench_names_the_bench(self):
+        """[designed: T243] S22's title names the screen it was opened on, so its labels describe the active screen."""
+        window, screen = self.canonical(self.make)
+        self.relayout(window)
+        window.open_help()
+        self.assertIn(screen.title, window.current().title)
+        self.assertTrue(window.current().title.endswith(" · help"), window.current().title)
+
     def test_make_substitutions_now_fits_at_every_size_and_is_on_the_grid(self):
         self.mode = "now"
         self.every_state_fits()

@@ -103,13 +103,17 @@ class BoardScreen(Screen):
         self.score_label = body.text(f"{score[home]}  {score[away]}","h1",17,0,10)
         second = body.text(names[away],"h1",28,0,16)
         colour(second,kits.colour(away))
-        time = body.text(TIMES[phase],"h1",46,0,44)
+        # [designed: T243] A right-aligned label ends at column 89, not on the page's last pixel: the last glyph's
+        # right bearing is clipped when it sits on column 90 at every scale.
+        time = body.text(TIMES[phase],"h1",46,0,43)
         time.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        self.time_label = time
         half = data["half_time"]
         detail = (f"half time {half[home]}:{half[away]} · " if half is not None and phase!="half" else "")+kind
         detail_text = CellPara(detail,"sub")
         detail_text.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
-        body.put(detail_text,0,1,90)
+        body.put(detail_text,0,1,89)
+        self.detail_label = detail_text
         motm = data["man_of_the_match"]
         motm_name = data["motm_name"] if "motm_name" in data else full_name(model,motm) if motm else ""
         self.motm = body.text(f"MAN OF THE MATCH {motm_name}" if motm_name else "","value",0,2,90)
@@ -128,6 +132,7 @@ class BoardScreen(Screen):
         dense = scorer_rows > 3
         stats,inner = framed("match statistics",90,12 if dense else 15)
         self.stat_rows = []
+        self.bar_labels = []
         if data["quick"]:
             self.banner = inner.text("QUICK RESULT","h1",0,5,90)
             self.banner.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -150,8 +155,9 @@ class BoardScreen(Screen):
             for row,(name,values) in enumerate(zip(("possession","territory"),data["bars"] or (None,None))):
                 text = (f"{name}: {values[home]} · {values[away]} (the board's counts; its bar is not decoded)"
                         if values is not None else f"{name}: {NOT_YET}")
-                cols = 65 if row == 0 and len(text) <= 65 else 90
+                cols = 65 if row == 0 and len(text) <= 65 else (89 if row == 1 else 90)
                 bar_text = inner.text(text,"sub",0,(10 if dense else 13)+row,cols)
+                self.bar_labels.append(bar_text)
                 if row == 1 or cols == 65:
                     bar_text.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         if not dense and not data["quick"]:

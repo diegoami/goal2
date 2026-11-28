@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 from goal2.tests import requires
 from goal2.tests.test_ui_grid_screens_t211b import Base
+from goal2.tests.test_ui_grid_screens_t211 import SIZES
 from goal2.tests.test_ui_match_day_t167 import CAREER,career,tearDownModule
 requires.require(modules=('PySide6',))
 from PySide6.QtCore import Qt
@@ -46,6 +47,41 @@ class SmallOnTheGrid(Base):
                 for i in range(10):replays.write(window.target.root/'recordings','goal',str(i)+' recording <h1> & name',data)
             return replays.open_list(window,model,'goal')
         return window.push(screen)
+
+    def test_the_save_box_and_the_help_leave_their_right_rule_visible(self):
+        """[designed: T243] The name field, the box's buttons and the help's Close button stop one cell short of
+        the panel's right rule, so the rule is not swallowed by their background at any size."""
+        for kind in ("SaveScreen", "HelpScreen"):
+            self.kind = kind
+            with self.subTest(screen=kind):
+                window, screen = self.canonical(self.make)
+                self.relayout(window)
+                self.rule_stays_clear(screen, kind)
+                shown = self.window()
+                shown_screen = self.make(shown)
+                for width, height in SIZES:
+                    shown.resize(width, height)
+                    shown.show()
+                    for _ in range(3):
+                        self.app.processEvents()
+                    self.rule_stays_clear(shown_screen, kind, f"at {width}x{height}")
+
+    def rule_stays_clear(self, screen, kind, where=""):
+        from goal2.ui.cells import cell_w
+        cell = round(cell_w(screen))
+        if kind == "SaveScreen":
+            row, widgets = screen.dialog, [screen.field, *screen.save_buttons]
+        else:
+            row, widgets = screen.close_button.parentWidget(), [screen.close_button]
+        for widget in widgets:
+            self.assertLessEqual(widget.x() + widget.width(), row.width() - cell + 1,
+                                 f"{where} {type(widget).__name__} reaches the panel's rule")
+
+    def test_the_help_names_the_screen_it_was_opened_on(self):
+        self.kind = "HelpScreen"
+        window, screen = self.canonical(self.make)
+        self.assertEqual(screen.title, "manager's desk · help")
+        self.assertEqual(screen.name_label.text(), "manager's desk · help")
 
     def test_every_small_screen_fits_all_sizes_and_is_on_the_grid(self):
         for kind in ('HomeScreen','BulletinScreen','QuestionScreen','SaveScreen','HelpScreen','RecordingNameScreen','RecordingsScreen'):

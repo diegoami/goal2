@@ -3,6 +3,7 @@ import unittest
 from types import SimpleNamespace
 from goal2.tests import requires
 from goal2.tests.test_ui_grid_screens_t211b import Base
+from goal2.tests.test_ui_grid_screens_t211 import SIZES
 from goal2.tests.test_ui_match_day_t167 import CAREER, career, key, tearDownModule
 requires.require(modules=("PySide6",))
 from PySide6.QtCore import Qt
@@ -12,6 +13,7 @@ from goal2.ui.s14_round import RoundScreen
 from goal2.ui.s15_match_menu import MenuScreen, SavedGoalMenu
 from goal2.ui.s20_board import BoardScreen, COUNTERS
 from goal2.ui.kits import for_fixture
+from goal2.ui import cells
 from goal2.ui.cells import CellLabel, CellPara, Cells
 from goal2.ui import theme
 from goal2.ui.frame import FrameRule
@@ -62,6 +64,40 @@ class MatchDayOnTheGrid(Base):
             with self.subTest(screen=kind.__name__):
                 self.every_state_fits()
                 self.not_pending(kind.__name__,kind)
+
+    def test_the_board_s_right_hand_lines_keep_their_last_letter_on_the_page(self):
+        """[designed: T243] A right-aligned label ends before the page's last pixel at every size: the original's
+        time and kind sit inside the board, and a glyph on the last column loses its right side at every scale."""
+        self.kind = BoardScreen
+        for phase in ("half", "full"):
+            self.phase = phase
+            with self.subTest(phase=phase):
+                window, screen = self.canonical(self.make)
+                self.relayout(window)
+                self.board_lines_end_inside_the_page(window, screen)
+                shown = self.window()
+                shown_screen = self.make(shown)
+                for width, height in SIZES:
+                    shown.resize(width, height)
+                    shown.show()
+                    for _ in range(3):
+                        self.app.processEvents()
+                    self.board_lines_end_inside_the_page(shown, shown_screen)
+
+    def board_lines_end_inside_the_page(self, window, screen):
+        """Each right-aligned line stops a cell short of its area's last column, where a glyph's right bearing
+        would be clipped; the line's own box is measured, as the rule behind it shares the label's colour."""
+        cell = round(cells.cell_w(screen))
+        checked = 0
+        for label in (screen.time_label, screen.detail_label, *screen.bar_labels):
+            if not label.isVisibleTo(screen) or not label.alignment() & Qt.AlignmentFlag.AlignRight:
+                continue
+            parent = label.parentWidget()
+            checked += 1
+            self.assertLessEqual(label.x() + label.width(), parent.width() - cell + 1,
+                                 f"{label.text()!r} reaches its area's last column at "
+                                 f"{window.width()}x{window.height()}")
+        self.assertGreaterEqual(checked, 2, "the time, the kind and at least one bar line were checked")
 
     def test_round_frames_the_results_and_updates_the_controls_as_they_arrive(self):
         completed = dict(home_name="Trinidad/Tobago", away_name="Luxembourg", score=[12, 1],

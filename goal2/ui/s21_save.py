@@ -96,7 +96,8 @@ class BoxScreen(Screen):
                 self.reflow()
             def reflow(self):
                 visible=[item for item in self.buttons if not item.isHidden()]
-                at=self.cols-sum(item.cols for item in visible)-max(0,len(visible)-1)
+                # [designed: T243] One cell short of the frame's right rule, so the rule stays visible beside them.
+                at=self.cols-1-sum(item.cols for item in visible)-max(0,len(visible)-1)
                 for item in visible:self.move(item,at,0,item.cols);at+=item.cols+1
             def eventFilter(self,obj,event):
                 if event.type() in (QEvent.Type.ShowToParent,QEvent.Type.HideToParent):self.reflow()
@@ -112,6 +113,9 @@ class BoxScreen(Screen):
         self._placing=True
         try:
             width=round(self.COLS*cell_w(self))
+            # [designed: T243] The field and the buttons keep one cell between themselves and the box's right rule.
+            if getattr(self, "field", None) is not None:
+                self.field.setMaximumWidth(max(round(cell_w(self)), width-round(cell_w(self))))
             height=self.dialog.layout().totalHeightForWidth(width)
             if height<0:height=self.dialog.minimumSizeHint().height()
             rows=max(1,math.ceil(height/row_px(self)))
