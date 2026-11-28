@@ -84,6 +84,7 @@ class Window(QMainWindow):
         if len(self.stack) < 2:
             return self.current()
         screen = self.stack.pop()
+        self._cancel_position_edit(screen)
         self.page.removeWidget(screen)
         screen.deleteLater()
         self.page.setCurrentWidget(self.stack[-1])
@@ -99,12 +100,19 @@ class Window(QMainWindow):
                 close_native_round()
         while self.stack:
             old = self.stack.pop()
+            self._cancel_position_edit(old)
             stop = getattr(old, 'stop_assistant', None)
             if stop is not None:
                 stop(close=True)
             self.page.removeWidget(old)
             old.deleteLater()
         return self.push(screen)
+
+    @staticmethod
+    def _cancel_position_edit(screen):
+        cancel = getattr(screen, 'cancel_position_edit', None)
+        if cancel is not None:
+            cancel()
 
     def start(self):
         """The first screen: S01 while the data folder lacks a file of the new window's manifest, else S02 Start."""
@@ -181,6 +189,7 @@ class Window(QMainWindow):
         if self.career is not None:
             close_model(self.career)
         for screen in self.stack:
+            self._cancel_position_edit(screen)
             stop = getattr(screen, 'stop_assistant', None)
             if stop is not None:
                 stop(close=True)

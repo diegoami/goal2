@@ -33,7 +33,7 @@ class NativeMatchDay(QObject):
 
     def __init__(self, window, model, state, *, on_boundary, on_failure, on_goal,
                  on_tournament, on_stats, watch=None, show_bulletins=False,
-                 show_round_results=False, round_number=None, campaign=None):
+                 show_round_results=False, round_number=None, campaign=None, engine_owner=None):
         super().__init__(window)
         if not all(callable(callback) for callback in
                    (on_boundary, on_failure, on_goal, on_tournament, on_stats)):
@@ -74,7 +74,8 @@ class NativeMatchDay(QObject):
         self.timer = QTimer(self)
         self.timer.setInterval(20)
         self.timer.timeout.connect(self.poll)
-        self.native = NativeSeasonOwner(model, state, frames=True, post_match_review=True)
+        owner = model if engine_owner is None else engine_owner
+        self.native = NativeSeasonOwner(owner, state, frames=True, post_match_review=True)
         if self.native.managed_country != country:
             self.native.close()
             raise ValueError('The identity model belongs to another native country.')
