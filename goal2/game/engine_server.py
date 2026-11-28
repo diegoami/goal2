@@ -265,8 +265,8 @@ class Server:
                     self._season(header, payload)
                 elif op == "assistant":
                     self._assistant(header, payload)
-                elif op == "position":
-                    self._position(header, payload)
+                elif op in ("position", "roster_move"):
+                    self._management(op, header, payload)
                 elif op == "open":
                     self._open(payload)
                     self.send("opened")
@@ -339,28 +339,38 @@ class Server:
         except Exception as exc:
             self.send('assistant_error', {'request': number, 'error': f'{type(exc).__name__}: {exc}'})
 
-    def _position(self, header, payload):
-        """[designed: T170bg] Compute a standalone candidate without retaining its state."""
+    def _management(self, operation, header, payload):
+        """[designed: T170bg/T170bj] Compute a standalone candidate without retaining its state."""
         from goal2.game.native_position import edit_position
+        from goal2.game.native_roster_move import move_player
         from goal2.game.season import canonical_hash
 
         number = header.get('request')
         try:
-            fields = ('request', 'revision', 'input_hash', 'player', 'key')
+            arguments = ('player', 'key') if operation == 'position' else ('players',)
+            fields = ('request', 'revision', 'input_hash', *arguments)
             if (set(header) != {*fields, 'op', 'size'} or type(number) is not int or number < 1
                     or type(header['revision']) is not int or header['revision'] < 0):
-                raise ValueError('invalid position request')
+                raise ValueError(f'invalid {operation} request')
             if self.season.session is not None:
-                raise ValueError('discard the held season before editing a standalone position')
+                raise ValueError('discard the held season before making a standalone edit')
             state = json.loads(payload.decode('utf8'))
             if header['input_hash'] != canonical_hash(state):
-                raise ValueError('position input hash mismatch')
-            result = edit_position(state, header['player'], header['key'])
-            data = json.dumps(result.pop('state'), allow_nan=False, separators=(',', ':')).encode('utf8')
-            self.send('position', dict(result, request=number, revision=header['revision'],
-                                       key=header['key']), data)
+                raise ValueError(f'{operation} input hash mismatch')
+            if operation == 'position':
+                result = edit_position(state, header['player'], header['key'])
+                result['key'] = header['key']
+            else:
+                players = header['players']
+                if not isinstance(players, list) or len(players) != 2:
+                    raise ValueError('roster_move requires two ordered player words')
+                result = move_player(state, *players)
+            candidate = result.pop('state')
+            data = b'' if candidate is None else json.dumps(candidate, allow_nan=False,
+                                                           separators=(',', ':')).encode('utf8')
+            self.send(operation, dict(result, request=number, revision=header['revision']), data)
         except Exception as exc:
-            self.send('position_error', {'request': number, 'error': f'{type(exc).__name__}: {exc}'})
+            self.send(operation + '_error', {'request': number, 'error': f'{type(exc).__name__}: {exc}'})
 
     def _open(self, payload):
         from goal2.game.session_save import decode
