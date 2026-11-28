@@ -48,23 +48,43 @@ def _context(image):
     return country, image.squad(country), words
 
 
-def edit_position(state, player, key):
-    """[designed: T170bf] Produce a detached candidate for one original R or C."""
+def validate_selection(player, key):
     if type(key) is not str or key not in ('R', 'C'):
         raise ValueError('A standalone position edit needs the original R or C key.')
     if type(player) is not int or not 1 <= player < N_PLAYERS:
         raise ValueError('A standalone position edit needs a valid player word.')
+
+
+def _position_record(image, player):
+    at = image.far(PLAYERS_PTR) + PLAYER_SIZE * player
+    if at + PLAYER_SIZE > MEM_SIZE:
+        raise ValueError('The selected native player record is outside guest memory.')
+    position, club = image.memory[at + 6:at + 8]
+    if position >= 14 or club >= 14:
+        raise ValueError('The player has an unsupported position code.')
+    return at, position, club
+
+
+def position_codes(state, player):
+    """[derived: T170bf] Read the saved position and club position for an admitted word."""
+    image = Image.from_state(state, engine_tables.load())
+    _, position, club = _position_record(image, player)
+    return position, club
+
+
+def position_goal(position, club, key):
+    return club if key == 'C' else (position + 1) % 14
+
+
+def edit_position(state, player, key):
+    """[designed: T170bf] Produce a detached candidate for one original R or C."""
+    validate_selection(player, key)
     tables = engine_tables.load()
     image = Image.from_state(state, tables)
     country, squad, pool = _context(image)
     if squad.count(player) + pool.count(player) != 1:
         raise ValueError('Select a player in the current native squad or pool.')
-    player_at = image.far(PLAYERS_PTR) + PLAYER_SIZE * player
-    if player_at + PLAYER_SIZE > MEM_SIZE:
-        raise ValueError('The selected native player record is outside guest memory.')
-    position, club = image.memory[player_at + 6:player_at + 8]
-    if not 0 <= position < 14 or not 0 <= club < 14:
-        raise ValueError('The player has an unsupported position code.')
+    player_at, position, club = _position_record(image, player)
 
     machine = PortMachine(image.memory, image.load)
     specs = []
@@ -90,7 +110,7 @@ def edit_position(state, player, key):
     _call(machine, _EDIT, (player,), '0791:E72A')
     _call(machine, _EXIT, (), '0791:E7E7')
     new_position = machine.read(player_at + 6, 1)[0]
-    expected = club if key == 'C' else (position + 1) % 14
+    expected = position_goal(position, club, key)
     if visits != [(player, byte)] or new_position != expected:
         raise RuntimeError('The original position edit did not complete for the selected player.')
     image.memory[:MEM_SIZE] = machine.read(0, MEM_SIZE)
