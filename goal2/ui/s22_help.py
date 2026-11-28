@@ -71,6 +71,10 @@ class HelpScreen(Screen):
     offers_help = False
 
     def __init__(self, window, under, target: data_setup.Paths):
+        # [designed: T243] The help names the screen F1 was pressed on, as S21's boxes name the screen they open
+        # over, so its labels describe the active screen.
+        under_title = getattr(under, "title", "") if under is not None else ""
+        self.title = f"{under_title} · help" if under_title else "help"
         super().__init__(window)
         self.under = under
         self.text = help_text(target.help)
@@ -109,7 +113,7 @@ class HelpScreen(Screen):
         dialog.setStyleSheet("#frame { background: "+theme.GROUND+"; }")
         inner.text("F1 · THE ORIGINAL'S HELP","tag",0,0,70)
         self.close_button=CellKeyItem("Close","Esc",self.escape,12,primary=True)
-        inner.put(self.close_button,76,0,12)
+        inner.put(self.close_button,75,0,12)   # [designed: T243] keep one cell inside the panel's right rule
         self.viewer=QTextEdit()
         self.viewer.setObjectName("helpText")
         self.viewer.setReadOnly(True)
