@@ -499,3 +499,4 @@ operational status.
 - [T170bf](T170bf.md): produce native standalone R/C position edits (#910).
 - [T170bg](T170bg.md): carry standalone R/C candidates over the PyPy engine pipe (#913).
 - [T170bh](T170bh.md): enable native position edits from Select Squad (#915).
+- [T170bi](T170bi.md): produce standalone squad moves and pool exchanges (#918).
