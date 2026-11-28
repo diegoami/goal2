@@ -67,17 +67,27 @@ class StartScreen(Screen):
         self.read()
 
     # The screen.
+    def _title_bar(self):
+        """[designed: owner, 2026-11-28, #673; T244] The original has no title bar: the corner block replaces it."""
+        bar = super()._title_bar()
+        bar.hide()
+        return bar
+
     def _build(self):
-        """[designed: #862; confirmed: T156-R1 step 0] Keep the title's choice near the foot."""
+        """[designed: #862; confirmed: T156-R1 step 0; designed: owner, 2026-11-28, #673/T244] Keep the title's
+        choice near the foot, under the original's corner block and tagline band."""
         from goal2.ui.cells import Cells, CellPara
         from goal2.ui.cell_parts import CellKeyItem, CellTableRow
+        from goal2.ui.corner_block import CornerBlock
         from goal2.ui.country_parts import framed
         from goal2.ui.frame import PanelOutline
         from goal2.ui import theme
-        body = self.area = Cells(90, 25, "startBody")
+        body = self.area = Cells(90, 26, "startBody")
         self.body_layout.addWidget(body, 1)
-        banner = self.banner = Cells(90, 1, "startBanner")
-        subtitle = banner.text("International football management", "titleBrand", 0, 0, 90)
+        self.corner = CornerBlock()
+        body.put(self.corner, 0, 0, CornerBlock.COLS, CornerBlock.ROWS)
+        banner = self.banner = Cells(64, 1, "startBanner")
+        subtitle = banner.text("THE international soccer management game", "titleBrand", 0, 0, 64)
         subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         def rules():
@@ -85,19 +95,25 @@ class StartScreen(Screen):
             return ((0, 0, right, 0), (0, bottom, right, bottom))
 
         banner.grid.addWidget(PanelOutline(banner, rules))
-        body.put(banner, 0, 0, 90)
-        self.continue_box, inner = framed("continue", 90, 6)
-        self.continue_item = CellKeyItem("", "Enter", self.press_enter, 90, rows=2, primary=True)
+        body.put(banner, 12, 0, 64)
+        # [confirmed: title-load-prompt.png] the copyright block sits at the top right, right-aligned.
+        copyright_ = Cells(14, 4, "startCopyright")
+        for row, line in enumerate(("(c)", "new era", "software", "1993")):
+            label = copyright_.text(line, "sub", 0, row, 14)
+            label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        body.put(copyright_, 76, 0, 14, 4)
+        self.continue_box, inner = framed("continue", 78, 5)
+        self.continue_item = CellKeyItem("", "Enter", self.press_enter, 78, rows=2, primary=True)
         self.continue_text=self.continue_item.text_label
-        inner.put(self.continue_item, 0, 0, 90, 2)
+        inner.put(self.continue_item, 0, 0, 78, 2)
         self.facts={}
-        for name,row,rows in (("manager",2,1),("next",3,1),("saved",4,2)):
+        for name,row in (("manager",2),("next",3),("saved",4)):
             inner.text(name,"cardLabel",0,row,7)
             value=CellPara("","value")
             value.setTextFormat(Qt.TextFormat.PlainText)
-            inner.put(value, 8, row, 82, rows)
+            inner.put(value, 8, row, 70)
             self.facts[name]=value
-        body.put(self.continue_box, 0, 1, 90, 7)
+        body.put(self.continue_box, 12, 5, 78, 6)
         self.menu_box, menu = framed("load a saved game?", 90, 2)
         self.new_item = CellKeyItem("New game", "N", self.press_n, 42, primary=True)
         self.load_item = CellKeyItem("Load selected save", "Y", self.press_y, 42)
@@ -109,7 +125,7 @@ class StartScreen(Screen):
         menu.put(self.friendly_item, 1, 1, 24)
         self.friendly_tag = menu.text("GOAL2 ADDITION", "tagNew", 26, 1, 19)
         menu.put(self.quit_item, 47, 1, 42)
-        body.put(self.menu_box, 0, 22, 90, 3)
+        body.put(self.menu_box, 0, 23, 90, 3)
         self.list_box,inner=framed("saved games",90,11)
         widths=tuple(width for _,width in COLUMNS)
         heads=CellTableRow(-1,widths)
@@ -122,12 +138,12 @@ class StartScreen(Screen):
             row.chosen.connect(self.click_row)
             inner.put(row,0,1+2*i,90,2)
             self.rows.append(row)
-        body.put(self.list_box,0,8,90,12)
+        body.put(self.list_box,0,11,90,12)
         self.message=CellPara("","sub")
         self.message.hide()
-        body.put(self.message, 0, 20, 90, 2)
+        body.put(self.message, 0, 21, 90, 2)
         self.problem=CellPara("","error")
-        body.put(self.problem, 0, 16, 90, 6)
+        body.put(self.problem, 0, 11, 90, 11)
 
     def read(self):
         """Read every save again, newest first, and show them."""
@@ -145,7 +161,6 @@ class StartScreen(Screen):
         has = bool(self.entries)
         newest = self.newest()
         failed = self.failed is not None
-        self.area.move(self.banner, 0, 0 if has else 10, 90)
         self.continue_box.setVisible(newest is not None and not failed)
         self.list_box.setVisible(has and not failed)
         self.load_item.setVisible(has or failed)

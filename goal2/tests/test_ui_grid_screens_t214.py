@@ -13,7 +13,8 @@ from goal2.ui.s02_start import StartScreen
 from goal2.ui.s03_new_game import NewGameScreen
 from goal2.ui.friendly import FriendlyScreen
 from goal2.ui.s04_country import PlayersScreen
-from goal2.ui.cells import CellPara
+from goal2.ui.cells import CellLabel, CellPara, Cells
+from goal2.ui.corner_block import CornerBlock
 from goal2.ui import saves
 
 @CAREER
@@ -56,14 +57,23 @@ class StartOnTheGrid(Base):
         screen.move(5)
         self.assertEqual(screen.rows[-1].cells[0].text(),screen.entries[-1].name)
 
-    def test_start_uses_one_wordmark_and_keeps_the_load_question_at_the_foot(self):
+    def test_start_carries_the_original_corner_and_keeps_the_load_question_at_the_foot(self):
+        """[designed: owner, 2026-11-28, #673; T244] The original's corner block, not a wordmark, at the top left."""
         self.kind = StartScreen
         for self.saved in (False, True):
             with self.subTest(saved=self.saved):
                 window, screen = self.canonical(self.make)
-                wordmarks = [label for label in screen.findChildren(QLabel)
-                             if label.text() == "GOAL2" and label.isVisibleTo(screen)]
-                self.assertEqual(len(wordmarks), 1)
+                corner = screen.findChild(CornerBlock)
+                self.assertIsNotNone(corner)
+                self.assertIs(screen.corner, corner)
+                self.assertEqual((corner.x(), corner.y()), (0, 0), "the corner block is at the top left")
+                self.assertTrue(corner.isVisibleTo(screen))
+                self.assertFalse(corner.findChildren(QLabel), "the block paints, it is not a label")
+                self.assertEqual([label.text() for label in screen.findChild(Cells, "startCopyright").findChildren(CellLabel)],
+                                 ["(c)", "new era", "software", "1993"])
+                self.assertEqual(screen.banner.shown_texts() if hasattr(screen.banner, "shown_texts") else
+                                 [label.text() for label in screen.banner.findChildren(CellLabel)],
+                                 ["THE international soccer management game"])
                 self.assertEqual(screen.menu_box.label, "load a saved game?")
                 self.assertGreater(screen.menu_box.y(), screen.body.height() * .8)
                 if self.saved:
